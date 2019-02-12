@@ -25,14 +25,14 @@
     </dependency>
   </dependencies>
 
-  <build>
+  <!-- <build>
     <plugins>
-      <<plugin>
+      <plugin>
         <groupId></groupId>
         <artifactId></artifactId>
         <version></version>
-      </plugin>>
+      </plugin>
     </plugins>
-  </build>
+  </build> -->
 
 </project>
