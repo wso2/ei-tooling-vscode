@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/healthcare" name="HealthcareAPI" xmlns="http://ws.apache.org/ns/synapse" xmlns:xsi="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://ws.apache.org/ns/synapse http://product-dist.wso2.com/p2/synapse-schema/synapse_config.xsd">
+    <resource methods="GET" uri-template="/querydoctor/{category}">
+        <inSequence>
+            <log/>
+            <send>
+                <endpoint key="QueryDoctorEP"/>
+            </send>
+        </inSequence>
+        <outSequence>
+            <send/>
+
+        
+        </outSequence>
+        <faultSequence/>
+    </resource>
+    
+
+    
+
+</api>

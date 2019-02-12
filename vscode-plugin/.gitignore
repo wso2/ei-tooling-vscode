@@ -15,8 +15,6 @@
 
 # Generated files
 .idea/**/contentModel.xml
-target
-results
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
@@ -86,7 +84,6 @@ modules.xml
 *.ipr
 
 ### Java ###
->>>>>>> initializing a maven project
 # Compiled class file
 *.class
 
@@ -110,8 +107,6 @@ modules.xml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-<<<<<<< HEAD
-=======
 
 ### macOS ###
 # General
@@ -223,14 +218,16 @@ typings/
 .dynamodb/
 
 ### VisualStudioCode ###
-.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.vsix
+.vscode-test/
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
-.classpath
-.settings
-.project
 
 # End of https://www.gitignore.io/api/java,macos,intellij+all,visualstudiocode,node
-
