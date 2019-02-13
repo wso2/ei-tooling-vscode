@@ -33,4 +33,9 @@
     <module>vscode-plugin</module>
     <module>diagrams</module>
   </modules>
+
+  <properties>
+    <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
+    <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
+  </properties>
 </project>
