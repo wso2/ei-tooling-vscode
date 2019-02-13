@@ -20,9 +20,13 @@ export function activate(context: vscode.ExtensionContext) {
 		
 		if (JAVA_HOME){
 			let excecutable : string = path.join(JAVA_HOME, 'bin', 'java');
+
+			// console.log(__dirname);
 	
 			// let jarPath = path.join(__dirname, '..', 'launcher', 'org.eclipse.lsp4xml-uber.jar');
-			let classPath = path.join(__dirname, '..', 'launcher', 'org.eclipse.lsp4xml-uber.jar');
+			let classPath = path.join(__dirname, '..', 'target', 'launcher', 'org.eclipse.lsp4xml-uber.jar');
+
+			// let classPath = "/Users/sajinieranasinghe/Documents/WebBasedEIToolingVSCodeExtension/vscode-synapse-parent/vscode-synapse/vscode-plugin/target/launcher/org.eclipse.lsp4xml-uber.jar";
 
 			console.log(classPath);
 	

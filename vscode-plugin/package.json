@@ -2,6 +2,7 @@
 	"name": "synapse-vscode",
 	"displayName": "synapse-vscode",
 	"description": "",
+	"publisher": "Sajinie",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.31.0"

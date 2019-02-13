@@ -25,14 +25,83 @@
     </dependency>
   </dependencies>
 
-  <!-- <build>
+  <build>
     <plugins>
+    <!-- <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>org.lsp4xml</groupId>
+              <artifactId>org.eclipse.lsp4xml</artifactId>
+              <version>0.4.0-SNAPSHOT</version>
+              <type>jar</type>
+              <overWrite>false</overWrite>
+              <outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
+              <destFileName>test.jar</destFileName>
+            </artifactItem>
+          </artifactItems>
+          <outputDirectory>${project.build.directory}/wars</outputDirectory>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteSnapshots>true</overWriteSnapshots>
+        </configuration>
+      </plugin> -->
+
       <plugin>
-        <groupId></groupId>
-        <artifactId></artifactId>
-        <version></version>
-      </plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.8</version>
+            <executions>
+                <execution>
+                    <phase>install</phase>
+                    <configuration>
+                        <target>
+                            <copy file="/Users/sajinieranasinghe/Documents/WebBasedEIToolingVSCodeExtension/vscode-synapse-parent/vscode-synapse/language-server/org.eclipse.lsp4xml/target/org.eclipse.lsp4xml-uber.jar" tofile="${project.build.directory}/launcher/org.eclipse.lsp4xml-uber.jar"/>
+                        </target>
+                    </configuration>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
+      <!-- <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+            <execution>
+                <id>copy-appCtx</id>
+                <phase>generate-resources</phase>
+                <goals>
+                    <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
+                    <overwrite>true</overwrite>
+                    <resources>
+                        <resource>
+                            <directory>/Users/sajinieranasinghe/Documents/WebBasedEIToolingVSCodeExtension/vscode-synapse-parent/vscode-synapse/language-server/org.eclipse.lsp4xml/target/org.eclipse.lsp4xml-uber.jar</directory>
+                            <includes>
+                                <include>org.eclipse.lsp4xml-uber.jar</include>
+                            </includes>
+                        </resource>
+                    </resources>
+                </configuration>
+            </execution>
+        </executions>
+      </plugin> -->
     </plugins>
-  </build> -->
+  </build>
 
 </project>
