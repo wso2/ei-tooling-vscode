@@ -15,6 +15,16 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"commands": [
+			{
+				"command": "extension.changeLanguage",
+				"title": "Change Language to Synapse"
+			},
+			{
+				"command": "myExtension.sayHello",
+				"title": "Say Hello"
+			}
+		],
 		"languages": [
 			{
 				"id": "SynapseXml",
@@ -27,8 +37,7 @@
 				"scopeName": "synapse.xml",
 				"path": "./syntaxes/xml.tmLanguage.json"
 			}
-		],
-		"commands": []
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -36,7 +45,7 @@
 		"watch": "tsc -watch -p ./",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"test": "npm run compile && node ./node_modules/vscode/bin/test",
-		"package": "npm run compile && vsce package"
+		"package": "vsce package"
 	},
 	"devDependencies": {
 		"typescript": "^3.3.1",
