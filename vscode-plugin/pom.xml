@@ -82,7 +82,6 @@
 							<arguments>
 								<argument>run</argument>
                 <argument>package</argument>
-                
 							</arguments>
 						</configuration>
 					</execution>

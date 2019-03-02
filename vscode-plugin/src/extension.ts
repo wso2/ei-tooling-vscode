@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { checkLanguage as checkSynapseDocument, checkNamespace} from './language';
+import { checkSynapseLanguage as checkSynapseDocument, registerCommandToChangeLanguageToSyanpse} from './language';
 import * as path from 'path';
 import { ServerOptions, LanguageClientOptions, LanguageClient } from 'vscode-languageclient';
 
@@ -9,33 +9,8 @@ export function activate(context: vscode.ExtensionContext) {
 	//launch server
 	launch(context);
 
-	const commandRegistration = vscode.commands.registerTextEditorCommand('extension.changeLanguage', (editor, edit) => {
-		let rootElements = ["definitions", "api", "proxy", "endpoint", "inbound", "local_entry", "messagestore", 
-		"messageprocessor","sequence", "task", "template", "registry"];
-
-		let number = editor.document.lineCount;
-		var num = 0;
-
-		let count = 0;
-		loop:
-		while (num < number) {
-			let currLine = editor.document.lineAt(num);
-
-			if (count < 2 && !currLine.isEmptyOrWhitespace) {
-				for (let element of rootElements) {
-					if (checkNamespace(currLine.text, element) && !checkNamespace(currLine.text, "\"http:\/\/ws\.apache\.org\/ns\/synapse")){
-						let endCharPosition = currLine.range.end.with(currLine.range.end.line, currLine.range.end.character-1);
-						edit.insert(endCharPosition, " xmlns='http://ws.apache.org/ns/synapse'");
-						break loop;
-					}
-				}
-				count++;
-			}
-			num++;
-		}
-	});
-
-	context.subscriptions.push(commandRegistration);
+	//registering command to forcefully change the editing mode to synapse
+	registerCommandToChangeLanguageToSyanpse(context);
 
 	//check currently active text editor
 	if (vscode.window.activeTextEditor) {
@@ -46,18 +21,13 @@ export function activate(context: vscode.ExtensionContext) {
 	//listen to changing event of the active text editor
 	vscode.window.onDidChangeActiveTextEditor(editor => {
 		if(editor) {
-			let x = editor.document;
-			checkSynapseDocument(x);
+			checkSynapseDocument(editor.document);
 		}
 	});
 	
 	//listen to newly opened text documents
 	vscode.workspace.onDidOpenTextDocument((document)=>{
 		checkSynapseDocument(document);
-	});
-
-	vscode.workspace.onDidCloseTextDocument((document)=> {
-		
 	});
 }
 
@@ -73,6 +43,7 @@ function launch(context: vscode.ExtensionContext) {
 		console.log(schemaPath);
 
 		let schemaPathArg = '-DSCHEMA_PATH='+schemaPath;
+		// let workspaceUri = '-DWORKSPACE_DIRECTORY-PATH='+vscode.workspace.workspaceFolders;
 		const args: string[] = [schemaPathArg, '-cp', classPath];
 		
 		if (process.env.LSDEBUG === "true") {
@@ -95,12 +66,6 @@ function launch(context: vscode.ExtensionContext) {
 		// Create the language client and start the client.
 		let disposable = new LanguageClient('synapseXML', 'Synapse Language Server', serverOptions, clientOptions).start();
 
-		// let disposable = vscode.commands.registerCommand('extension.start', () => {
-		// 	new LanguageClient('synapseXML', 'Synapse Language Server', serverOptions, clientOptions).start();
-		// });
-	
-		// Push the disposable to the context's subscriptions so that the 
-		// client can be deactivated on extension deactivation
 		context.subscriptions.push(disposable);
 	}
 }
