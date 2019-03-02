@@ -32,6 +32,7 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded"/>
+                        <xs:element name="sample" minOccurs="1" maxOccurs="1"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -50,25 +51,16 @@
                 </xs:complexType>
             </xs:element>
         </xs:all>
-        <xs:attribute name="methods" use="required">
+        <xs:attribute name="methods" use="required" default="GET">
             <xs:simpleType>
-                <xs:restriction>
-                    <xs:simpleType>
-                        <xs:list>
-                            <xs:simpleType>
-                                <xs:restriction base="xs:token">
-                                    <xs:enumeration value="GET"/>
-                                    <xs:enumeration value="POST"/>
-                                    <xs:enumeration value="PUT"/>
-                                    <xs:enumeration value="DELETE"/>
-                                    <xs:enumeration value="OPTIONS"/>
-                                    <xs:enumeration value="HEAD"/>
-                                    <xs:enumeration value="PATCH"/>
-                                </xs:restriction>
-                            </xs:simpleType>
-                        </xs:list>
-                    </xs:simpleType>
-                    <xs:minLength value="1"/>
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="GET"/>
+                    <xs:enumeration value="POST"/>
+                    <xs:enumeration value="PUT"/>
+                    <xs:enumeration value="DELETE"/>
+                    <xs:enumeration value="OPTIONS"/>
+                    <xs:enumeration value="HEAD"/>
+                    <xs:enumeration value="PATCH"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
