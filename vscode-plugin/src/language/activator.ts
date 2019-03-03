@@ -2,16 +2,16 @@
 
 import * as vscode from 'vscode';
 
-export function checkSynapseLanguage(document: any) {
+export function setLanguageToSynapse(document: any): boolean {
 	let xmlData = document.getText();
-	if (checkNamespace(xmlData, "xmlns=\"http:\/\/ws\.apache\.org\/ns\/synapse\"")){
+	if (match(xmlData, "xmlns=\"http:\/\/ws\.apache\.org\/ns\/synapse\"")){
 		vscode.languages.setTextDocumentLanguage(document, "SynapseXml");
-	}else {
-		console.log("Not a Synapse document");
+		return true;
 	}
+	return false;
 }
 
-export function checkNamespace(text: string, namespaceSyntax: string): boolean{
+export function match(text: string, namespaceSyntax: string): boolean{
 	let synapseNSPttern = new RegExp(namespaceSyntax);
 	let response = synapseNSPttern.test(text);
 	if (response === true){
@@ -22,120 +22,140 @@ export function checkNamespace(text: string, namespaceSyntax: string): boolean{
 
 export function registerCommandToChangeLanguageToSyanpse(context: vscode.ExtensionContext): any {
 	const commandRegistration = vscode.commands.registerTextEditorCommand('extension.changeLanguage', (editor, edit) => {
-		changeLanguageToSynapse(editor, edit);
+		if(!setLanguageToSynapse(editor.document)) {
+			changeLanguageToSynapse(editor, edit);
+		}
 	});
-
 	context.subscriptions.push(commandRegistration);
 }
 
 export function changeLanguageToSynapse(editor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
-	let rootElements = ["<definitions", "<api", "<proxy", "<endpoint", "<inbound", "<local_entry", "<messagestore", 
-	"<messageprocessor","<sequence", "<task", "<template", "<registry"];
+
+	// let rootElements = ["<definitions", "<api", "<proxy", "<endpoint", "<inbound", "<local_entry", "<messagestore", 
+	// "<messageprocessor","<sequence", "<task", "<template", "<registry"];
 
 	let number = editor.document.lineCount;
 	var num = 0;
-	var count = 0;
+	var column;
 
-	loop:
+	var stack1: any[] = [];
+	var stack2: any[] = [];    
+
 	while (num < number) {
 		let currLine = editor.document.lineAt(num);
+		let charArray = currLine.text.split("");
+		column = stackFunction(charArray, stack1, stack2);
 
-		// let v = currLine.text.split("");
-		// console.log("``````````````````````");
-		// console.log(v);
-		// console.log("``````````````````````");
-
-		// stackFunction(v);
-
-
-
-		if (!currLine.isEmptyOrWhitespace) {
-
-			num = skipCommentBlocks(editor, num, number);
-
-			for (let element of rootElements) {
-				if(checkNamespace(currLine.text, element)) {
-					if(!checkNamespace(currLine.text, "\"http:\/\/ws\.apache\.org\/ns\/synapse")) {
-						let endCharPosition = currLine.range.end.with(currLine.range.end.line, currLine.range.end.character-1);
-						edit.insert(endCharPosition, " xmlns=\"http://ws.apache.org/ns/synapse\"");
-						vscode.languages.setTextDocumentLanguage(editor.document, "SynapseXml");	
-					}
-					break loop;
-				}
-			}
+		if(typeof column === "number") {
+			let endCharPosition = currLine.range.end.with(num, column-1);
+			edit.insert(endCharPosition, " xmlns=\"http://ws.apache.org/ns/synapse\"");
+			vscode.languages.setTextDocumentLanguage(editor.document, "SynapseXml");		
+			break;
 		}
 		num++;
 	}
 }
 
-
-export function skipCommentBlocks(editor: vscode.TextEditor, currLineNumber: number, documentLength: number): number {
-	
-	
-	
-
-	if(checkNamespace(editor.document.lineAt(currLineNumber).text, "<!--")) {
-		while (currLineNumber < documentLength) {
-			if(checkNamespace(editor.document.lineAt(currLineNumber).text, "-->")){
-				return currLineNumber + 1;
-			}
-			currLineNumber++;
-		}
-		// editor.document.lineAt(currLineNumber).text.
-	}
-	return currLineNumber;
-}
-
-
-export function stackFunction(array: any) {
-	var stack = [];
-	stack.push(2);       
-	stack.push(5);       
-	var i = stack.pop(); 
-
-	let type;
-	let prevChar;
-	let lastStackSymbol;
+function stackFunction(array: any, stack1: any[], stack2: any[]) {
+	  
+	let type: string = "undefined";
+	let count: number = 0;
+	let lastStack1Symbol;
+	let lastStack2Symbol;
 
 	for (let char of array) {
-		stack.push(char);
-		if(char ) {
-
-		}
+		count++;
+		lastStack2Symbol = stack2.pop();
 
 		switch (char){
 			case "<":
-				stack.push(char);
+				if(type !== "attribute" && type.substring(0,7) !== "comment") {
+					stack1.push(char);
+					type = "undefined";
+				}
+				break;
 			case ">":
-				lastStackSymbol = stack.pop();
-				if (lastStackSymbol === "<") {
+				lastStack1Symbol = stack1.pop();
 
-				} else if(lastStackSymbol === "!") {
-
+				if(type === "commentStateSix" && lastStack2Symbol === "-" && lastStack1Symbol === "!") { 
+					stack1.pop();
+					type = "undefined";
+					
+				} else if(lastStack1Symbol === "<") {
+					if(type === "xml") {
+						stack1.pop();
+						type = "undefined";
+					} else{
+						return count;
+					}
+				} else{
+					stack1.push(lastStack1Symbol);
 				}
+				break;
+
 			case "?":
-			lastStackSymbol = stack.pop();
-				if(lastStackSymbol !== "?") {
-					stack.push(char);
+				lastStack1Symbol = stack1.pop();
+
+				if(lastStack1Symbol === "?" && type === "xml") {
+					//continue
+				} else if(lastStack1Symbol === "<" && lastStack2Symbol === "<") {
+					stack1.push(lastStack1Symbol);
+					stack1.push(char);
+					type = "xml";
+				} else{
+					stack1.push(lastStack1Symbol);
 				}
+				break;
+
 			case "!":
-				lastStackSymbol = stack.pop();
-				if(lastStackSymbol !== "<") {
-					stack.push(char);
+				lastStack1Symbol = stack1.pop();
+
+				if(lastStack1Symbol === "<" && lastStack2Symbol === "<") {
+					type = "commentStart";
+					stack1.push(lastStack1Symbol);
+					stack1.push(char);
+				} else{
+					stack1.push(lastStack1Symbol);
 				}
+				break;
 
 			case "-":
-
-
+				if(type === "commentStart" && lastStack2Symbol === "!") {
+					type = "commentStateThree"; 
+					stack1.push(char);//<!-
+				} else if(type === "commentStateThree" && lastStack2Symbol === "-") {
+					type = "commentStateFour"; 
+					stack1.push(char);//<!--
+				} else if(type === "commentStateFour") {
+					type = "commentStateFive";
+					stack1.pop(); //<!-
+				} else if(type === "commentStateFive" && lastStack2Symbol === "-") {
+					type = "commentStateSix";
+					stack1.pop(); //<! 
+				} 
+				break;
+				
 			case "\"":
+				lastStack1Symbol = stack1.pop();
+
+				if(lastStack1Symbol === "<") {
+					type = "attribute";
+					stack1.push(lastStack1Symbol);
+					stack1.push(char);
+				} else if(type === "attribute" && lastStack1Symbol === "\"") {
+					if(lastStack2Symbol === "\\") {
+						stack1.push(lastStack1Symbol);
+					} else {
+						type = "undefined";
+					}	
+				} else{
+					stack1.push(lastStack1Symbol);
+				}
+				break;
 		}
-
-		prevChar = char;
+		stack2.push(lastStack2Symbol);
+		stack2.push(char);
 	}
-
-	console.log(stack);
-
-
-
-	// alert(i);            
+	console.log(stack1);
+           
 }

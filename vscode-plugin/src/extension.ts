@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { checkSynapseLanguage as checkSynapseDocument, registerCommandToChangeLanguageToSyanpse} from './language';
+import { setLanguageToSynapse as setLanguageToSynapse, registerCommandToChangeLanguageToSyanpse} from './language';
 import * as path from 'path';
 import { ServerOptions, LanguageClientOptions, LanguageClient } from 'vscode-languageclient';
 
@@ -15,19 +15,19 @@ export function activate(context: vscode.ExtensionContext) {
 	//check currently active text editor
 	if (vscode.window.activeTextEditor) {
 		const currentDoc = vscode.window.activeTextEditor.document;
-		checkSynapseDocument(currentDoc);
+		setLanguageToSynapse(currentDoc);
 	}
 
 	//listen to changing event of the active text editor
 	vscode.window.onDidChangeActiveTextEditor(editor => {
 		if(editor) {
-			checkSynapseDocument(editor.document);
+			setLanguageToSynapse(editor.document);
 		}
 	});
 	
 	//listen to newly opened text documents
 	vscode.workspace.onDidOpenTextDocument((document)=>{
-		checkSynapseDocument(document);
+		setLanguageToSynapse(document);
 	});
 }
 
@@ -43,7 +43,6 @@ function launch(context: vscode.ExtensionContext) {
 		console.log(schemaPath);
 
 		let schemaPathArg = '-DSCHEMA_PATH='+schemaPath;
-		// let workspaceUri = '-DWORKSPACE_DIRECTORY-PATH='+vscode.workspace.workspaceFolders;
 		const args: string[] = [schemaPathArg, '-cp', classPath];
 		
 		if (process.env.LSDEBUG === "true") {
