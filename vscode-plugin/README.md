@@ -11,7 +11,7 @@ This VS Code extension provides support for creating and editing Synapse XML doc
 
 #### Suggestions and Auto-Completion: 
 * <kbd>CTRL</kbd> + <kbd>SPACE</kbd>
-![auto Completion](/docs/autocompletion.gif)
+![auto Completion](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/autocompletion.gif)
 
 #### Goto Definition 
 * Jump to source: <kbd>CTRL</kbd> + <kbd>Click</kbd>    
