@@ -43,3 +43,5 @@ This VS Code extension provides support for creating and editing Synapse XML doc
 ![change Language to Synapse](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/changeLang.gif)
 
 ## License:
+
+Ballerina Visual Studio Code plugin source is available under the [Eclipse Public License 1.0](https://github.com/redhat-developer/vscode-xml/blob/master/LICENSE)
