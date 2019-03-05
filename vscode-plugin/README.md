@@ -34,9 +34,9 @@ This VS Code extension provides support for creating and editing Synapse XML doc
 - Install VS Code plugin
     - Go to Install from VSIX... command in the Extensions View command drop-down, or the Extensions: Install from VSIX... command in the Command Palette, and select the .vsix file to install. [More info](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix)
 - Open a **Synapse** project
-    - Note: The workspace root folder should be the **_default_** folder
-    - Example Path: `/WSO2/EnterpriseIntegrator/6.4.0/repository/deployment/server/synapse-configs/default`
-    - Note: The Language Mode should be changed as **_SynpaseXml_** at the bottom of the editor. To forcefully change the language mode, go to `Change Language to Synapse` command in the Command Palette
+    - **Note:** The workspace root folder should be the **_default_** folder
+    - **Example Path:** `/WSO2/EnterpriseIntegrator/6.4.0/repository/deployment/server/synapse-configs/default`
+    - **Note:** The Language Mode should be changed as **_SynpaseXml_** at the bottom of the editor. To forcefully change the language mode, go to `Change Language to Synapse` command in the Command Palette
 
 #### Change Language to SynapseXml
 
