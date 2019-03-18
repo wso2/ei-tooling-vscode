@@ -36,7 +36,7 @@ This VS Code extension provides support for creating and editing Synapse XML doc
 - Open a **Synapse** project
     - **Note:** The workspace root folder should be the **_default_** folder
     - **Example Path:** `/WSO2/EnterpriseIntegrator/6.4.0/repository/deployment/server/synapse-configs/default`
-    - **Note:** The Language Mode should be changed as **_SynpaseXml_** at the bottom of the editor. To forcefully change the language mode, go to `Change Language to Synapse` command in the Command Palette
+    - **Note:** The Language Mode should be changed as **_SynpaseXml_** at the status bar. To forcefully change the language mode, go to `Change Language to Synapse` command in the Command Palette
 
 #### Change Language to SynapseXml
 
