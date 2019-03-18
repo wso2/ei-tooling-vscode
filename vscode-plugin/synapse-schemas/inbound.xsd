@@ -43,7 +43,7 @@
         <xs:attribute name="sequence" type="xs:string" use="required"/>
         <xs:attribute name="protocol" type="xs:string" use="required"/>
         <xs:attribute name="onError" type="xs:string" use="optional"/>
-        <xs:attribute name="suspend" type="xs:boolean" use="required" default="false"/>
+        <xs:attribute name="suspend" type="xs:boolean" use="required"/>
     </xs:complexType>
 
 </xs:schema>

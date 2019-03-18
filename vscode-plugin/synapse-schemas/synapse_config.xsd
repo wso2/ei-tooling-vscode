@@ -51,7 +51,7 @@
                 configuration
             </xs:documentation>
         </xs:annotation>
-        <xs:choice maxOccurs="unbounded" minOccurs="1">
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
             <xs:element ref="registry" minOccurs="0" maxOccurs="1"/>
             <xs:element ref="api" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element ref="proxy" minOccurs="0" maxOccurs="unbounded"/>
@@ -63,7 +63,34 @@
             <xs:element ref="sequence" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element ref="task" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element ref="template" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="template" minOccurs="0" maxOccurs="unbounded"/>
         </xs:choice>
+        <!--<xs:choice minOccurs="1" maxOccurs="1">-->
+            <!--&lt;!&ndash;<xs:element name="flower" type="flowerVariantA"/>&ndash;&gt;-->
+            <!--<xs:element name="flower" type="flowerVariantB"/>-->
+        <!--</xs:choice>-->
+
     </xs:complexType>
+
+
+
+
+    <!--<xs:element name="flower" type="flowerVariantA"/>-->
+
+    <xs:complexType name="flowerVariantA">
+        <xs:sequence>
+            <xs:element name="color" type="flowerColor"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="flowerVariantB">
+        <xs:attribute name="color" type="flowerColor" use="required"/>
+    </xs:complexType>
+
+    <xs:simpleType name="flowerColor">
+        <xs:restriction base="xs:normalizedString">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
 
 </xs:schema>

@@ -56,10 +56,10 @@
                 </xs:annotation>
                 <xs:complexType>
                     <!-- TODO : this needs to be altered in the configuration to support correctly -->
-                    <xs:sequence>
+                    <!--<xs:sequence>-->
                         <xs:group ref="inlineWsdl" minOccurs="0" maxOccurs="1"/>
-                        <xs:element ref="resource" minOccurs="0" maxOccurs="unbounded"/>
-                    </xs:sequence>
+                        <!--<xs:element ref="resource" minOccurs="0" maxOccurs="unbounded"/>-->
+                    <!--</xs:sequence>-->
                     <xs:attribute name="uri" type="xs:anyURI" use="optional"/>
                     <xs:attribute name="key" type="xs:string" use="required"/>
                 </xs:complexType>

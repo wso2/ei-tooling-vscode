@@ -21,6 +21,7 @@
 
     <xs:include schemaLocation="../mediators/mediators.xsd"/>
 
+
     <xs:complexType name="APIResource">
         <xs:annotation>
             <xs:documentation>
@@ -28,11 +29,11 @@
             </xs:documentation>
         </xs:annotation>
         <xs:all>
-            <xs:element name="inSequence" minOccurs="0" maxOccurs="1">
+            <xs:element name="inSequence" minOccurs="1" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded"/>
-                        <xs:element name="sample" minOccurs="1" maxOccurs="1"/>
+                        <!--<xs:element name="sample" minOccurs="1" maxOccurs="1"/>-->
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -51,7 +52,7 @@
                 </xs:complexType>
             </xs:element>
         </xs:all>
-        <xs:attribute name="methods" use="required" default="GET">
+        <xs:attribute name="methods" use="required">
             <xs:simpleType>
                 <xs:restriction base="xs:token">
                     <xs:enumeration value="GET"/>
@@ -64,6 +65,8 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
+
+
         <xs:attributeGroup ref="templateOrMapping"/>
     </xs:complexType>
 

@@ -48,7 +48,7 @@
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
-            <xs:attribute name="media-type" use="required" default="xml">
+            <xs:attribute name="media-type" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="xml"/>

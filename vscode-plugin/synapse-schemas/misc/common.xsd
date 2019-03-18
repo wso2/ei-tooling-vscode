@@ -64,7 +64,7 @@
         </xs:annotation>
         <xs:complexType>
             <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="value" type="xs:boolean" use="required" default="true"/>
+            <xs:attribute name="value" type="xs:boolean" use="required"/>
         </xs:complexType>
     </xs:element>
 
@@ -82,8 +82,8 @@
                 proxy services and endpoints
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="statistics" default="disabled" type="enableDisable" use="optional"/>
-        <xs:attribute name="trace" default="disabled" type="enableDisable" use="optional"/>
+        <xs:attribute name="statistics" default="disable" type="enableDisable" use="optional"/>
+        <xs:attribute name="trace" default="disable" type="enableDisable" use="optional"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="nameValueOrExpression">
