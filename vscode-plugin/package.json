@@ -21,8 +21,22 @@
 				"title": "Change Language to Synapse"
 			},
 			{
-				"command": "myExtension.sayHello",
-				"title": "Say Hello"
+				"command": "wso2esb.project.create",
+				"title": "Create new ESB project",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "maven.archetype.generate",
+				"title": "%contributes.commands.maven.archetype.generate%",
+				"category": "Maven",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
 			}
 		],
 		"languages": [
@@ -37,7 +51,15 @@
 				"scopeName": "synapse.xml",
 				"path": "./syntaxes/xml.tmLanguage.json"
 			}
-		]
+		],
+		"views": {
+			"explorer": [
+				{
+					"id": "SynapseConfigProjects",
+					"name": "Synapse Config Projects"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -48,6 +70,8 @@
 		"package": "vsce package"
 	},
 	"devDependencies": {
+		"@types/fs-extra": "^4.0.8",
+		"@types/xml2js": "^0.4.3",
 		"typescript": "^3.3.1",
 		"vscode": "^1.1.28",
 		"tslint": "^5.12.1",
@@ -56,6 +80,8 @@
 		"vsce": "^1.36.2"
 	},
 	"dependencies": {
-		"vscode-languageclient": "^4.1.4"
+		"vscode-languageclient": "^4.1.4",
+		"fs-extra": "^4.0.3",
+		"xml2js": "^0.4.19"
 	}
 }

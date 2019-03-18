@@ -1,13 +1,17 @@
 import * as vscode from 'vscode';
 import { setLanguageToSynapse as setLanguageToSynapse, registerCommandToChangeLanguageToSyanpse} from './language';
-import * as path from 'path';
-import { ServerOptions, LanguageClientOptions, LanguageClient } from 'vscode-languageclient';
-
-const main: string = 'org.eclipse.lsp4xml.XMLServerLauncher';
+import { launch as launchServer } from './server';
+import { Uri} from "vscode";
+import { ArchetypeModule } from "./archetype/ArchetypeModule";
 
 export function activate(context: vscode.ExtensionContext) {
+
+	console.log("hellooooo");
+
+	doActivate(context);
+
 	//launch server
-	launch(context);
+	launchServer(context, __dirname);
 
 	//registering command to forcefully change the editing mode to synapse
 	registerCommandToChangeLanguageToSyanpse(context);
@@ -31,43 +35,34 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 }
 
-function launch(context: vscode.ExtensionContext) {
-	const { JAVA_HOME } = process.env;
-	console.log(`Using java from JAVA_HOME: ${JAVA_HOME}`);
-	
-	if (JAVA_HOME){
-		let excecutable : string = path.join(JAVA_HOME, 'bin', 'java');
-		let schemaPath = path.join(__dirname, "..", "synapse-schemas", "synapse_config.xsd");
-		let classPath = path.join(__dirname, '..', 'target', 'launcher', 'org.eclipse.lsp4xml-uber.jar');
-
-		console.log(schemaPath);
-
-		let schemaPathArg = '-DSCHEMA_PATH='+schemaPath;
-		const args: string[] = [schemaPathArg, '-cp', classPath];
-		
-		if (process.env.LSDEBUG === "true") {
-			console.log('LSDEBUG is set to "true". Services will run on debug mode');
-			args.push('-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005,quiet=y');
-		}
-		
-		let serverOptions: ServerOptions = {
-			command: excecutable,
-			args: [...args, main],
-			options: {}
-		};
-
-		// Options to control the language client
-		let clientOptions: LanguageClientOptions = {
-			// Register the server for synapse xml documents
-			documentSelector: [{scheme: 'file', language: 'SynapseXml'}]
-		};
-
-		// Create the language client and start the client.
-		let disposable = new LanguageClient('synapseXML', 'Synapse Language Server', serverOptions, clientOptions).start();
-
-		context.subscriptions.push(disposable);
-	}
-}
-
 // this method is called when your extension is deactivated
 export function deactivate() {}
+
+// function registerCommand(context: vscode.ExtensionContext, commandName: string, func: (...args: any[]) => any, withOperationIdAhead?: boolean): void {
+	
+// 	const commandHandler = (name: string = 'world') => {
+// 		console.log(`Hello ${name}!!!`);
+// 	  };
+
+//     context.subscriptions.push(vscode.commands.registerCommand("maven.archetype.generate", async (entry: Uri | undefined) => {
+//         await ArchetypeModule.generateFromArchetype(entry);
+// 	}));
+// }
+
+async function doActivate(context: vscode.ExtensionContext): Promise<void> {
+	console.log("inside doActivate method");
+	// registerCommand(context, "maven.archetype.generate", async (entry: Uri | undefined) => {
+    //     await ArchetypeModule.generateFromArchetype(entry);
+	// }, true);
+
+	context.subscriptions.push(vscode.commands.registerCommand("maven.archetype.generate", async (entry: Uri | undefined) => {
+        await ArchetypeModule.generateFromArchetype(entry);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.project.create", async (entry: Uri | undefined) => {
+        await ArchetypeModule.createESBProject(entry);
+	}));
+
+}
+
+

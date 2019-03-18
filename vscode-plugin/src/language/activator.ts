@@ -35,25 +35,41 @@ export function changeLanguageToSynapse(editor: vscode.TextEditor, edit: vscode.
 	// "<messageprocessor","<sequence", "<task", "<template", "<registry"];
 
 	let number = editor.document.lineCount;
+
+	
 	var num = 0;
 	var column;
 
-	var stack1: any[] = [];
-	var stack2: any[] = [];    
-
-	while (num < number) {
-		let currLine = editor.document.lineAt(num);
-		let charArray = currLine.text.split("");
-		column = stackFunction(charArray, stack1, stack2);
-
-		if(typeof column === "number") {
-			let endCharPosition = currLine.range.end.with(num, column-1);
-			edit.insert(endCharPosition, " xmlns=\"http://ws.apache.org/ns/synapse\"");
-			vscode.languages.setTextDocumentLanguage(editor.document, "SynapseXml");		
-			break;
+	if(number > 0 && !editor.document.lineAt(0).isEmptyOrWhitespace) {
+		var stack1: any[] = [];
+		var stack2: any[] = [];    
+	
+		while (num < number) {
+			let currLine = editor.document.lineAt(num);
+			let charArray = currLine.text.split("");
+			column = stackFunction(charArray, stack1, stack2);
+	
+			if(typeof column === "number") {
+				let endCharPosition = currLine.range.end.with(num, column-1);
+				edit.insert(endCharPosition, " xmlns=\"http://ws.apache.org/ns/synapse\"");
+				vscode.languages.setTextDocumentLanguage(editor.document, "SynapseXml");		
+				break;
+			}
+			num++;
 		}
-		num++;
+		if(typeof column === "undefined") {
+			let newLine = editor.document.lineAt(num-1);
+			let endCharPosition = newLine.range.end.with(num, 0);
+				edit.insert(endCharPosition, "<definitions xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</definitions>");
+				vscode.languages.setTextDocumentLanguage(editor.document, "SynapseXml");
+		}
+	}else {
+		let endCharPosition = editor.document.positionAt(0);
+		edit.insert(endCharPosition, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<definitions xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</definitions>");
+		vscode.languages.setTextDocumentLanguage(editor.document, "SynapseXml");
 	}
+
+	
 }
 
 function stackFunction(array: any, stack1: any[], stack2: any[]) {
@@ -159,3 +175,4 @@ function stackFunction(array: any, stack1: any[], stack2: any[]) {
 	console.log(stack1);
            
 }
+
