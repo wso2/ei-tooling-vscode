@@ -3,12 +3,13 @@ import { setLanguageToSynapse as setLanguageToSynapse, registerCommandToChangeLa
 import { launch as launchServer } from './server';
 import { Uri} from "vscode";
 import { ArchetypeModule } from "./archetype/ArchetypeModule";
+import { createArtifact } from "./artifacts/apiArtifact/artifactResolver";
+
 
 export function activate(context: vscode.ExtensionContext) {
 
-	console.log("hellooooo");
-
-	doActivate(context);
+	// register commands
+	registerSynapseCommands(context);
 
 	//launch server
 	launchServer(context, __dirname);
@@ -32,37 +33,44 @@ export function activate(context: vscode.ExtensionContext) {
 	//listen to newly opened text documents
 	vscode.workspace.onDidOpenTextDocument((document)=>{
 		setLanguageToSynapse(document);
-	});
+	});	
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {}
 
-// function registerCommand(context: vscode.ExtensionContext, commandName: string, func: (...args: any[]) => any, withOperationIdAhead?: boolean): void {
-	
-// 	const commandHandler = (name: string = 'world') => {
-// 		console.log(`Hello ${name}!!!`);
-// 	  };
+// const exec = require('child_process').exec; 
 
-//     context.subscriptions.push(vscode.commands.registerCommand("maven.archetype.generate", async (entry: Uri | undefined) => {
-//         await ArchetypeModule.generateFromArchetype(entry);
-// 	}));
-// }
 
-async function doActivate(context: vscode.ExtensionContext): Promise<void> {
-	console.log("inside doActivate method");
-	// registerCommand(context, "maven.archetype.generate", async (entry: Uri | undefined) => {
-    //     await ArchetypeModule.generateFromArchetype(entry);
-	// }, true);
-
-	context.subscriptions.push(vscode.commands.registerCommand("maven.archetype.generate", async (entry: Uri | undefined) => {
-        await ArchetypeModule.generateFromArchetype(entry);
-	}));
-
+function registerSynapseCommands(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.project.create", async (entry: Uri | undefined) => {
-        await ArchetypeModule.createESBProject(entry);
+		await ArchetypeModule.createESBProject(entry);
+
+		// fse.writeFile('/Users/sajinieranasinghe/Documents/WebBasedEIToolingVSCodeExtension/vscode-synapse-parent/vscode-synapse/vscode-plugin/test.sh', "echo 'hello sajinie';\necho 'hi menu';");
+
+		// let testRunner: newRunner = new newRunner();
+		// testRunner.runCommand("cd /Users/sajinieranasinghe/deleteThis; ls", []);
+		// let args = ["archetype:generate", '-DarchetypeArtifactId=wso2ei-tooling', '-DarchetypeGroupId=wso2ei.vscode.tooling', '-DgroupId=com.example.jsd', '-DartifactId=budfgcssdies', '-DnewVersion=ds', "-DinteractiveMode=false"];
+		// testRunner.runCommand("mvn", args);
+		// testRunner.runCommand("ls", []);
+
+		// let cmd = "cd /Users/sajinieranasinghe/deleteThis && mvn archetype:generate -DarchetypeArtifactId=wso2ei-tooling -DarchetypeGroupId=wso2ei.vscode.tooling -DgroupId=com.example.jsd -DartifactId=budfgc -DnewVersion=ds -DinteractiveMode=false"
+		// testRunner.runCommand(cmd, []);
+
+
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.api", async (entry: Uri | undefined) => {
+        await createArtifact("api");
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.proxy", async (entry: Uri | undefined) => {
+		await createArtifact("proxy");
+	}));
 }
+
+
+
+
 
 

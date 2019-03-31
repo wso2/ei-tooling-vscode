@@ -58,6 +58,20 @@ export namespace Settings {
     //     }
     // }
 
+    export namespace Executable {
+        export function path(resource: Uri | null): string | undefined{
+            if(resource) {
+                return _getMavenSection("executable.path", resource);
+            }
+        }
+        export function options(resource: Uri): string | undefined{
+            return _getMavenSection("executable.options", resource);
+        }
+        export function preferMavenWrapper(resource?: Uri): boolean | undefined{
+            return _getMavenSection("executable.preferMavenWrapper", resource);
+        }
+    }
+
     function _getMavenSection<T>(section: string, resource?: Uri): T | undefined{
         return workspace.getConfiguration("maven", resource).get<T>(section);
     }

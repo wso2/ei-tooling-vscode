@@ -11,15 +11,12 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onLanguage:xml"
+		"onLanguage:xml",
+		""
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
-			{
-				"command": "extension.changeLanguage",
-				"title": "Change Language to Synapse"
-			},
 			{
 				"command": "wso2esb.project.create",
 				"title": "Create new ESB project",
@@ -30,9 +27,22 @@
 				}
 			},
 			{
-				"command": "maven.archetype.generate",
-				"title": "%contributes.commands.maven.archetype.generate%",
-				"category": "Maven",
+				"command": "extension.changeLanguage",
+				"title": "Change Language to Synapse"
+			},
+			{
+				"command": "wso2esb.artifact.api",
+				"title": "Create new API artifact",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "wso2esb.artifact.proxy",
+				"title": "Create new Proxy artifact",
+				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
 					"dark": "resources/dark/add.svg"

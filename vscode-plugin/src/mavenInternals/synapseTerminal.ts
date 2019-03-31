@@ -4,8 +4,12 @@
 import * as vscode from "vscode";
 import { mavenOutputChannel } from "./mavenOutputChannel";
 import { Settings } from "./Settings";
-import { executeCommand } from "../utils/cdUtils";
+import { executeCommand } from "../utils/cpUtils";
 import { Uri} from "vscode";
+import * as cp from 'child_process';
+import * as path from 'path';
+import { ArchetypeModule } from "../archetype/ArchetypeModule";
+import * as fse from "fs-extra";
 
 interface ITerminalOptions {
     addNewLine?: boolean;
@@ -16,9 +20,10 @@ interface ITerminalOptions {
 class SynapseTerminal implements vscode.Disposable {
     private readonly terminals: { [id: string]: vscode.Terminal } = {};
 
-    public async runInTerminal(command: string, options?: ITerminalOptions): Promise<void> {
+    public async runInTerminal(artifactId:string, command: string, options?: ITerminalOptions): Promise<void> {
         const defaultOptions: ITerminalOptions = { addNewLine: true, name: "Maven" };
         const { addNewLine, name, cwd } = Object.assign(defaultOptions, options);
+
 
         if(typeof name !== "undefined") {
             if (this.terminals[name] === undefined) {
@@ -30,22 +35,30 @@ class SynapseTerminal implements vscode.Disposable {
                 this.terminals[name].sendText(await getCDCommand(cwd), true); 
             }
 
-
-            // var stdin = process.openStdin();
-
-            // stdin.addListener("data", function(d) {
-            //     // note:  d is an object, and when converted to a string it will
-            //     // end with a linefeed.  so we (rather crudely) account for that  
-            //     // with toString() and then substring() 
-            //     console.log("you entered: [" + d.toString().trim() + "]");
-            // });
-
-
-            let cdCommand = await getCDCommand("");
-            const initCommand = getCommand(command + "; code . -r;");
+            let cdCommand = await getCDCommand(artifactId);
+            // const initCommand = getCommand(command);
+            let sourcePath = path.join(__dirname, "..", "..", "temp", "out.txt");
+            let destinationPath = path.join(__dirname, "..", "..", "temp", "output.txt");
+            const initCommand = getCommand(command + " | tee "+ sourcePath +"; mv " + sourcePath + " " + destinationPath);
+            // const initCommand = getCommand(command + "; "+ cdCommand +"; code . -r;");
             this.terminals[name].sendText(initCommand, addNewLine);
 
-            // this.terminals[name].sendText("code .", true);
+            // var fs = require('fs');
+            // let result = false;
+
+            // while(!result) {
+            //     try {
+            //         if (fs.existsSync(destinationPath)) {
+            //             result = true;
+            //             vscode.window.showInformationMessage("file exists");
+            //         //file exists
+            //         }
+            //     } catch(err) {
+            //         result = false;
+            //         console.error(err);
+            //     }
+            // }
+
         }
 
         // await this.openNewWindow(cwd);
@@ -94,7 +107,7 @@ class SynapseTerminal implements vscode.Disposable {
     }
 }
 
-function getCommand(cmd: string): string {
+export function getCommand(cmd: string): string {
     if (process.platform === "win32") {
         switch (currentWindowsShell()) {
             case "PowerShell":
@@ -107,7 +120,7 @@ function getCommand(cmd: string): string {
     }
 }
 
-async function getCDCommand(cwd: string): Promise<string> {
+export async function getCDCommand(cwd: string): Promise<string> {
     if (process.platform === "win32") {
         switch (currentWindowsShell()) {
             case "Git Bash":
@@ -170,3 +183,75 @@ export async function toWinPath(path: string): Promise<string> {
 }
 
 export const synapseTerminal: SynapseTerminal = new SynapseTerminal();
+
+function promptOpenFolder(path: string) {
+    if (vscode.workspace.workspaceFolders) {
+        const folder = vscode.workspace.workspaceFolders.find((folder) => {
+            return folder.uri.fsPath === path;
+        });
+        if (folder) {
+			vscode.window.showInformationMessage("correct");
+            return;
+        }
+    }
+    const action = "Open Project";
+    vscode.window.showInformationMessage("File resides within a Ballerina project at " +
+        path, action)
+        .then((selection) => {
+            if (selection === action) {
+                vscode.workspace.updateWorkspaceFolders(0, 0, { uri: Uri.file(path)});
+            }
+        });
+}
+
+async function createBashScript(commands: Commands) {
+    let commandArray = commands.commands.join(";\n");
+}
+
+import { Runner } from "../mavenInternals/mavenRunner";
+
+async function executeCommandHandlerOld(newProject: ArchetypeModule.ESBProject, cwd: string): Promise<string> {
+    // let mavenRunner: Runner = new Runner();
+    // const args: string[] = [
+    //     "archetype:generate",
+    //     `-DarchetypeArtifactId="${newProject.archetypeArtifactId}"`,
+    //     `-DarchetypeGroupId="${newProject.archetypeGroupId}"`,
+    //     `-DgroupId="${newProject.groupId}"`,
+    //     `-DartifactId="${newProject.artifactId}"`,
+    //     `-DinteractiveMode=false`
+    // ];
+    // if(cwd) {
+    //     mavenRunner.runCommand("mvn", args, cwd, newProject.artifactId);
+    // }
+
+    const cdCommand = await getCDCommand(cwd);
+    const mavenCommand = createMavenGenerateCommandArgs(newProject);
+
+    let commands: Commands = {commands: [cdCommand, mavenCommand]};
+    let command: string = getFullCommand(commands);
+    return command;
+}
+
+function createMavenGenerateCommandArgs(newProject: ArchetypeModule.ESBProject): string {
+    const mavenCommand: string = [
+        "archetype:generate",
+        `-DarchetypeArtifactId="${newProject.archetypeArtifactId}"`,
+        `-DarchetypeGroupId="${newProject.archetypeGroupId}"`,
+        `-DgroupId="${newProject.groupId}"`,
+        `-DartifactId="${newProject.artifactId}"`,
+        `-DinteractiveMode=false`
+    ].join(" ");
+
+    return mavenCommand;
+}
+
+interface Commands{
+    commands: string[];
+}
+
+
+function getFullCommand(commands: Commands): string {
+    let commandArray = commands.commands.join(";\n");
+    return commandArray;
+
+}

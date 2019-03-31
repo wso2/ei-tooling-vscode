@@ -6,14 +6,23 @@ import * as os from "os";
 import * as path from "path";
 import { Uri, window, workspace} from "vscode";
 import * as vscode from 'vscode';
-// import { OperationCanceledError } from "../Errors";
-// import { getPathToExtensionRoot } from "../utils/contextUtils";
 import { executeInTerminal } from "../utils/mavenUtils";
 import { openDialogForFolder } from "../utils/uiUtils";
 import { Utils } from "../utils/Utils";          
 import { Archetype } from "./Archetype";
+import { Runner } from "../mavenInternals/mavenRunner";
+import { executeCommandHandler } from "../mavenInternals/commandHandler";
 
 export namespace ArchetypeModule {
+
+    export interface ESBProject{
+        archetypeGroupId: string;
+        archetypeArtifactId: string;
+        groupId: string;
+        artifactId: string;
+        version?: string;
+    }
+
     async function selectArchetype(): Promise<Archetype | undefined> {
         let selectedArchetype: Archetype | undefined = await showQuickPickForArchetypes();
         if (selectedArchetype && !selectedArchetype.artifactId) {
@@ -38,65 +47,64 @@ export namespace ArchetypeModule {
         return cwd;
     }
 
-    async function executeInTerminalHandler(archetypeGroupId: string | null, archetypeArtifactId: string | null, cwd: string | null): Promise<void> {
-        const cmd: string = [
-            "archetype:generate",
-            `-DarchetypeArtifactId="${archetypeArtifactId}"`,
-            `-DarchetypeGroupId="${archetypeGroupId}"`
-        ].join(" ");
-        await executeInTerminal(cmd, undefined, { cwd });
-    }
+    // async function executeInTerminalHandler(newProject: ESBProject, archetypeGroupId: string | null, archetypeArtifactId: string | null, cwd: string | null): Promise<void> {
+    //     const cmd: string = [
+    //         "archetype:generate",
+    //         `-DarchetypeArtifactId="${archetypeArtifactId}"`,
+    //         `-DarchetypeGroupId="${archetypeGroupId}"`,
+    //         `-DgroupId="${newProject.groupId}"`,
+    //         `-DartifactId="${newProject.artifactId}"`,
+    //         `-DnewVersion="${newProject.version}"`,
+    //         `-DinteractiveMode=false`
+    //     ].join(" ");
+    //     await executeInTerminal(newProject.artifactId, cmd, undefined, { cwd });
+    // }
 
-    async function openNewWindow(cwd: string): Promise<void> {
-        if(cwd) {
-            let uri = Uri.parse(cwd);
-            let success = vscode.commands.executeCommand('vscode.openFolder', uri, vscode.window);
-
-            // vscode.workspace.updateWorkspaceFolders(0, 0, {uri: uri});
-        }
-    }
-    async function executeInTerminalHandlerNew(archetypeGroupId: string | null, archetypeArtifactId: string | null, cwd: string | null): Promise<void> {
-        const cmd: string = [
-            "archetype:generate",
-            `-DarchetypeArtifactId="${archetypeArtifactId}"`,
-            `-DarchetypeGroupId="${archetypeGroupId}"`,
-
-        ].join(" ");
-        await executeInTerminal(cmd, undefined, { cwd });
-    }
 
     export async function createESBProject(entry: Uri | undefined): Promise<void>  {
-        console.log("inside createESBProject method");
+        
+        const archetype  = await getESBArtifact();
+        let projectName: string | undefined = await showInputBoxForProjectName();
 
-        const a  = await getESBArtifact();
+        while(projectName === "") {
+            window.showErrorMessage("ESB Project name is mandatory");
+            projectName = await showInputBoxForProjectName();
+        }
 
-    
-        // vscode.window.sho
-
-        if(typeof a !== "undefined") {
+        if(archetype && archetype.groupId && archetype.artifactId &&  projectName && projectName.length > 0) {
             // choose target folder.
-            let targetFolderHint: Uri;
-            if (entry) {
-                targetFolderHint = entry;
+            const homedir: string = require('os').homedir();
+            
+            const targetFolderHint = Uri.file(homedir);
+            targetFolderHint.scheme == 'file';
+            targetFolderHint.path == homedir;
+            targetFolderHint.fragment == '';
 
-                
-            } else if (workspace.workspaceFolders && workspace.workspaceFolders.length > 0) {
-                targetFolderHint = workspace.workspaceFolders[0].uri;
+            const newProject: ESBProject = {archetypeGroupId: archetype.groupId, archetypeArtifactId: archetype.artifactId, groupId: "com.example." + projectName, artifactId:projectName};
+            const cwd: string | null = await chooseTargetFolder(targetFolderHint);
 
-                const cwd: string | null = await chooseTargetFolder(targetFolderHint);
-                await executeInTerminalHandler(a.groupId, a.artifactId, cwd);
-                    // if(cwd) {
-                    //     let uri = Uri.parse(cwd);
-                    //     let success = vscode.commands.executeCommand('vscode.openFolder', uri, vscode.window);
-    
-                    //     // vscode.workspace.updateWorkspaceFolders(0, 0, {uri: uri});
-                    // }
-                
-
-                
+            // await executeInTerminalHandler(newProject, archetype.groupId, archetype.artifactId, cwd);
+            // await executeMavenCommandHandler(newProject, cwd);
+            if(cwd) {
+                await executeCommandHandler(newProject, cwd);
             }
         }else {
 
+        }
+    }
+
+    function executeMavenCommandHandler(newProject: ESBProject, cwd: string | null) {
+        let mavenRunner: Runner = new Runner();
+        const args: string[] = [
+            "archetype:generate",
+            `-DarchetypeArtifactId="${newProject.archetypeArtifactId}"`,
+            `-DarchetypeGroupId="${newProject.archetypeGroupId}"`,
+            `-DgroupId="${newProject.groupId}"`,
+            `-DartifactId="${newProject.artifactId}"`,
+            `-DinteractiveMode=false`
+        ];
+        if(cwd) {
+            // mavenRunner.runCommand("mvn", args, cwd, newProject.artifactId);
         }
     }
 
@@ -117,21 +125,16 @@ export namespace ArchetypeModule {
             if (entry) {
                 targetFolderHint = entry;
 
-                
             } else if (workspace.workspaceFolders && workspace.workspaceFolders.length > 0) {
                 targetFolderHint = workspace.workspaceFolders[0].uri;
 
                 const cwd: string | null = await chooseTargetFolder(targetFolderHint);
-                await executeInTerminalHandler(groupId, artifactId, cwd);
+                // await executeInTerminalHandler(groupId, artifactId, cwd);
 
                 // window.
             }
             // execute in terminal.
         }
-        
-        
-        
-        
     }
 
     async function showQuickPickForArchetypes(options?: { all: boolean }): Promise<Archetype | undefined> {
@@ -145,6 +148,15 @@ export namespace ArchetypeModule {
             { matchOnDescription: true, placeHolder: "Select an archetype ..." }
         ).then(selected => selected && selected.value);
     }
+
+    async function showInputBoxForProjectName(): Promise<string | undefined> {
+        return await window.showInputBox({ value: "", prompt: "Enter ESB Project Name", placeHolder: "Enter project name here"}).then(text => text);
+    }
+
+    // async function showInputBoxForProjectVerison(): Promise<string | undefined> {
+    //     return await window.showInputBox({ value: "", prompt: "Enter ESB Project Version", placeHolder: "Enter version here"}).then(text => text);
+    // }
+
 
     async function loadArchetypePickItems(options?: { all: boolean }): Promise<Archetype[]> {
         // from local catalog

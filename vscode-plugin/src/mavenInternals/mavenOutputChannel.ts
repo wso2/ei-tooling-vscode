@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT license.
-
 import * as vscode from "vscode";
 
 class MavenOutputChannel implements vscode.Disposable {
@@ -26,7 +23,10 @@ class MavenOutputChannel implements vscode.Disposable {
     public dispose(): void {
         this.channel.dispose();
     }
-    
+
+    public clear(): void {
+        this.channel.clear();
+    }    
 }
 
 export const mavenOutputChannel: MavenOutputChannel = new MavenOutputChannel();
