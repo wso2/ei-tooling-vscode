@@ -1,16 +1,10 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT license.
-
 import * as fse from "fs-extra";
 import * as os from "os";
 import * as path from "path";
 import { Uri, window, workspace} from "vscode";
-import * as vscode from 'vscode';
-import { executeInTerminal } from "../utils/mavenUtils";
 import { openDialogForFolder } from "../utils/uiUtils";
 import { Utils } from "../utils/Utils";          
 import { Archetype } from "./Archetype";
-import { Runner } from "../mavenInternals/mavenRunner";
 import { executeCommandHandler } from "../mavenInternals/commandHandler";
 
 export namespace ArchetypeModule {
@@ -31,7 +25,6 @@ export namespace ArchetypeModule {
         if (!selectedArchetype) {
             // throw new OperationCanceledError("Archetype not selected.");
         }
-
         return selectedArchetype;
     }      
 
@@ -46,20 +39,6 @@ export namespace ArchetypeModule {
         }
         return cwd;
     }
-
-    // async function executeInTerminalHandler(newProject: ESBProject, archetypeGroupId: string | null, archetypeArtifactId: string | null, cwd: string | null): Promise<void> {
-    //     const cmd: string = [
-    //         "archetype:generate",
-    //         `-DarchetypeArtifactId="${archetypeArtifactId}"`,
-    //         `-DarchetypeGroupId="${archetypeGroupId}"`,
-    //         `-DgroupId="${newProject.groupId}"`,
-    //         `-DartifactId="${newProject.artifactId}"`,
-    //         `-DnewVersion="${newProject.version}"`,
-    //         `-DinteractiveMode=false`
-    //     ].join(" ");
-    //     await executeInTerminal(newProject.artifactId, cmd, undefined, { cwd });
-    // }
-
 
     export async function createESBProject(entry: Uri | undefined): Promise<void>  {
         
@@ -93,27 +72,8 @@ export namespace ArchetypeModule {
         }
     }
 
-    function executeMavenCommandHandler(newProject: ESBProject, cwd: string | null) {
-        let mavenRunner: Runner = new Runner();
-        const args: string[] = [
-            "archetype:generate",
-            `-DarchetypeArtifactId="${newProject.archetypeArtifactId}"`,
-            `-DarchetypeGroupId="${newProject.archetypeGroupId}"`,
-            `-DgroupId="${newProject.groupId}"`,
-            `-DartifactId="${newProject.artifactId}"`,
-            `-DinteractiveMode=false`
-        ];
-        if(cwd) {
-            // mavenRunner.runCommand("mvn", args, cwd, newProject.artifactId);
-        }
-    }
-
     export async function generateFromArchetype(entry: Uri | undefined): Promise<void> {
         // select archetype.
-        // const { artifactId, groupId } = await selectArchetype();
-
-        console.log("inside generateFromArchetype method");
-
         const a = await selectArchetype();
 
         if(typeof a !== "undefined") {
@@ -129,9 +89,7 @@ export namespace ArchetypeModule {
                 targetFolderHint = workspace.workspaceFolders[0].uri;
 
                 const cwd: string | null = await chooseTargetFolder(targetFolderHint);
-                // await executeInTerminalHandler(groupId, artifactId, cwd);
-
-                // window.
+                
             }
             // execute in terminal.
         }
@@ -153,11 +111,6 @@ export namespace ArchetypeModule {
         return await window.showInputBox({ value: "", prompt: "Enter ESB Project Name", placeHolder: "Enter project name here"}).then(text => text);
     }
 
-    // async function showInputBoxForProjectVerison(): Promise<string | undefined> {
-    //     return await window.showInputBox({ value: "", prompt: "Enter ESB Project Version", placeHolder: "Enter version here"}).then(text => text);
-    // }
-
-
     async function loadArchetypePickItems(options?: { all: boolean }): Promise<Archetype[]> {
         // from local catalog
         const localItems: Archetype[] = await getLocalArchetypeItems();
@@ -170,18 +123,7 @@ export namespace ArchetypeModule {
 
             return archTypeArr;
         } else {
-            // const recommendedItems: (Archetype | undefined)[] = await getRecomendedItems(remoteItems);
-            // return [new Archetype({"gyfy", "hhg", "hvg", "Find more archetypes available in remote catalog."})];
-
-            // if(typeof recommendedItems !== undefined) {
-                return [new Archetype( null, null, undefined, "Find more archetypes available in remote catalog.")].concat(localItems);
-
-            // }
-
-            // return [new Archetype( null, null, undefined, "Find more archetypes available in remote catalog.")];
-
-            
-            // null, null, null, "Find more archetypes available in remote catalog.")].concat(localOnlyItems, recommendedItems)
+            return [new Archetype( null, null, undefined, "Find more archetypes available in remote catalog.")].concat(localItems);
         }
     }
 

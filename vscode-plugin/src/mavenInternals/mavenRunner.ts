@@ -1,5 +1,5 @@
 import { ChildProcess, spawn } from "child_process";
-import { workspace, window } from "vscode";
+import { window } from "vscode";
 import { mavenOutputChannel } from "./mavenOutputChannel";
 import {promptOpenFolder} from "../project";
 

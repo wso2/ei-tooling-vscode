@@ -1,4 +1,4 @@
-import { workspace, window, Uri, commands } from "vscode";
+import { window, Uri, commands } from "vscode";
 
 export function promptOpenFolder(path: string) {
     

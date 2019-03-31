@@ -1,6 +1,6 @@
 'use strict';
 
-import {Uri, window, workspace, RelativePattern, WorkspaceEdit, WorkspaceFolder, Position, Selection} from "vscode";
+import { window } from "vscode";
 import { APIArtifactModule } from "./ApiArtifactModule";
 import {APIArtifactInfo, ProxyArtifactInfo} from "./artifactUtils";
 

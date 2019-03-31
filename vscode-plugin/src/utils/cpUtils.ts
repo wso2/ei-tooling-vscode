@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT license.
-
 import * as cp from "child_process";
 import * as vscode from "vscode";
 import { mavenOutputChannel } from "../mavenInternals/mavenOutputChannel";

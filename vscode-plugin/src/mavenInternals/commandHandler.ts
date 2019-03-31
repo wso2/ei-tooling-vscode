@@ -55,7 +55,7 @@ export async function getPathCommand(path: string) {
     }
 }
 
-function currentWindowsShell(): string | undefined {
+export function currentWindowsShell(): string | undefined {
     const currentWindowsShellPath: string | undefined = Settings.External.defaultWindowsShell();
     if(typeof currentWindowsShellPath !== "undefined") {
         if (currentWindowsShellPath.endsWith("cmd.exe")) {

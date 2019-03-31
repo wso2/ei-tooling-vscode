@@ -1,25 +1,7 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT license.
-
 import { Uri, workspace } from "vscode";
 
 export namespace Settings {
-    // export function excludedFolders(resource: Uri): string[] {
-    //     return _getMavenSection("excludedFolders", resource);
-    // }
-
-    // export function viewType(): string {
-    //     return _getMavenSection("view");
-    // }
-
-    // export function changeToFlatView(): void {
-    //     workspace.getConfiguration().update("maven.view", "flat", false);
-    // }
-
-    // export function changeToHierarchicalView(): void {
-    //     workspace.getConfiguration().update("maven.view", "hierarchical", false);
-    // }
-
+    
     export namespace External {
         export function javaHome(): string | undefined{
             return workspace.getConfiguration("java").get<string>("home");
@@ -46,18 +28,7 @@ export namespace Settings {
             return _getMavenSection("terminal.favorites", resource);
         }
     }
-    // export namespace Executable {
-    //     export function path(resource: Uri | null ): string {
-    //         return _getMavenSection("executable.path", resource);
-    //     }
-    //     export function options(resource: Uri): string {
-    //         return _getMavenSection("executable.options", resource);
-    //     }
-    //     export function preferMavenWrapper(resource?: Uri): boolean {
-    //         return _getMavenSection("executable.preferMavenWrapper", resource);
-    //     }
-    // }
-
+    
     export namespace Executable {
         export function path(resource: Uri | null): string | undefined{
             if(resource) {
