@@ -88,7 +88,4 @@
       </plugin>
     </plugins>
   </build>
-  <modules>
-    <module>newly</module>
-  </modules>
 </project>
