@@ -64,6 +64,7 @@
             <xs:element ref="task" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element ref="template" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element ref="template" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="template" minOccurs="0" maxOccurs="unbounded"/>
         </xs:choice>
         <!--<xs:choice minOccurs="1" maxOccurs="1">-->
             <!--&lt;!&ndash;<xs:element name="flower" type="flowerVariantA"/>&ndash;&gt;-->
