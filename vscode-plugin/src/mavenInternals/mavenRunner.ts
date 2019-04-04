@@ -1,5 +1,5 @@
 import { ChildProcess, spawn } from "child_process";
-import { window } from "vscode";
+import { window, Uri, commands } from "vscode";
 import { mavenOutputChannel } from "./mavenOutputChannel";
 import {promptOpenFolder} from "../project";
 
@@ -25,10 +25,11 @@ export class Runner {
             if(code === 0) {
                 if(cwd) {
                     window.showInformationMessage("maven success");
-                    promptOpenFolder(cwd);
+                    commands.executeCommand('vscode.openFolder', Uri.file(cwd), true);
+                    // promptOpenFolder(cwd);
                 }
             }else if(code === 1) {
-                window.showInformationMessage("maven failed");
+                window.showInformationMessage("maven failed: " + signal);
                 
             }
         });

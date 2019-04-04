@@ -27,10 +27,10 @@ export class SynapseTerminal implements vscode.Disposable {
             }
             this.terminals[name].show();
             if (cwd) {
-                this.terminals[name].sendText(await getCDCommand(cwd), true); 
+                this.terminals[name].sendText(await getCDCommand(cwd), true);
             }
 
-            let cdCommand = await getCDCommand(artifactId);
+            // let cdCommand = await getCDCommand(artifactId);
             // const initCommand = getCommand(command);
             let sourcePath = path.join(__dirname, "..", "..", "temp", "out.txt");
             let destinationPath = path.join(__dirname, "..", "..", "temp", "output.txt");
@@ -42,12 +42,12 @@ export class SynapseTerminal implements vscode.Disposable {
         // await this.openNewWindow(cwd);
     }
 
-    public async openNewWindow(cwd: string | undefined): Promise<void> {
-        if(cwd) {
-            let uri = Uri.parse(cwd);
-            let success = vscode.commands.executeCommand('vscode.openFolder', uri);
-        }
-    }
+    // public async openNewWindow(cwd: string | undefined): Promise<void> {
+    //     if(cwd) {
+    //         let uri = Uri.parse(cwd);
+    //         let success = vscode.commands.executeCommand('vscode.openFolder', uri);
+    //     }
+    // }
 
     public closeAllTerminals(): void {
         Object.keys(this.terminals).forEach((id: string) => {
