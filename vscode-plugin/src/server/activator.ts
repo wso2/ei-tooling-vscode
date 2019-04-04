@@ -17,14 +17,20 @@ export function launch(context: vscode.ExtensionContext, directoryName: string) 
 		let excecutable : string = path.join(JAVA_HOME, 'bin', 'java');
 		let schemaPath = path.join(directoryName, "..", "synapse-schemas", "synapse_config.xsd");
 		let classPath = path.join(directoryName, '..', 'launcher', 'org.eclipse.lsp4xml-uber.jar');
+		let LSextensionPath = path.join(directoryName,  '..', 'lib', '*');
+		// let LSextensionPath = path.join(directoryName, '..', 'launcher2');
 
 		console.log("classPath");
 		console.log(classPath);
 
 		console.log(schemaPath);
 
-		let schemaPathArg = '-DSCHEMA_PATH='+schemaPath;
-		const args: string[] = [schemaPathArg,'-Djava.ext.dirs=/Users/sajinieranasinghe/Documents/WebBasedEIToolingVSCodeExtension/vscode-synapse-parent/vscode-synapse/language-server/extensions/org.eclipse.lsp4xml.extensions/target', '-cp', classPath];
+		let schemaPathArg = '-DSCHEMA_PATH=' + schemaPath;
+		//let LSextensionPathArg = '-Djava.ext.dirs=' + LSextensionPath;
+		const args: string[] = [schemaPathArg, '-cp', LSextensionPath];
+
+		// const args: string[] = [schemaPathArg,'-Djava.ext.dirs=/Users/sajinieranasinghe/Documents/WebBasedEIToolingVSCodeExtension/vscode-synapse-parent/vscode-synapse/language-server/extensions/org.eclipse.lsp4xml.extensions.synapse/target', '-cp', classPath];
+
 		
 		if (process.env.LSDEBUG === "true") {
 			console.log('LSDEBUG is set to "true". Services will run on debug mode');
