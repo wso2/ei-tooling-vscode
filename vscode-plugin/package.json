@@ -12,7 +12,7 @@
 	],
 	"activationEvents": [
 		"onLanguage:xml",
-		""
+		"onCommand:extension.activateExtension"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -28,7 +28,12 @@
 			},
 			{
 				"command": "extension.changeLanguage",
-				"title": "Change Language to Synapse"
+				"title": "Change Language to Synapse",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
 			},
 			{
 				"command": "wso2esb.artifact.api",
@@ -42,6 +47,15 @@
 			{
 				"command": "wso2esb.artifact.proxy",
 				"title": "Create new Proxy artifact",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "extension.activateExtension",
+				"title": "Activate Synapse Extension",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
