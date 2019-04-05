@@ -1,13 +1,21 @@
-/**
- *  Copyright (c) 2018 Angelo ZERR
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v2.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v20.html
- *
- *  Contributors:
- *  Angelo Zerr <angelo.zerr@gmail.com> - initial API and implementation
- */
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 package org.eclipse.lsp4xml.extensions.synapse.xsd.participants.diagnostics;
 
 import org.apache.xerces.impl.Constants;
@@ -35,7 +43,7 @@ public class XSDValidator {
 	private static final Logger LOGGER = Logger.getLogger(XSDValidator.class.getName());
 
 	public static void doDiagnostics(DOMDocument document, XMLEntityResolver entityResolver,
-			List<Diagnostic> diagnostics, CancelChecker monitor) {
+									 List<Diagnostic> diagnostics, CancelChecker monitor) {
 
 		try {
 			XMLGrammarPreparser grammarPreparser = new LSPXMLGrammarPreparser();
@@ -63,13 +71,13 @@ public class XSDValidator {
 			 * grammarPreparser.setFeature(Constants.XERCES_FEATURE_PREFIX +
 			 * "honour-all-schemaLocations", true); //$NON-NLS-1$ } catch (Exception e) { //
 			 * catch the exception and ignore } }
-			 * 
+			 *
 			 * if(configuration.getFeature(XSDValidationConfiguration.
 			 * FULL_SCHEMA_CONFORMANCE)) { try {
 			 * grammarPreparser.setFeature(Constants.XERCES_FEATURE_PREFIX +
 			 * Constants.SCHEMA_FULL_CHECKING, true); } catch (Exception e) { // ignore
 			 * since we don't want to set it or can't. }
-			 * 
+			 *
 			 * }
 			 */
 
@@ -94,12 +102,10 @@ public class XSDValidator {
 			} catch (Exception e) {
 				// parser will return null pointer exception if the document is structurally
 				// invalid
-				// TODO: log error message
-				// System.out.println(e);
+				LOGGER.warning(e.getMessage());
 			}
 		} catch (Exception e) {
-			// TODO: log error.
-			// System.out.println(e);
+			LOGGER.warning(e.getMessage());
 		}
 	}
 

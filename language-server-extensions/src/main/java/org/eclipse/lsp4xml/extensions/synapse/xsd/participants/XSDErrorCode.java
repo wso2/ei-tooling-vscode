@@ -1,13 +1,21 @@
-/**
- *  Copyright (c) 2018 Angelo ZERR
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v2.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v20.html
- *
- *  Contributors:
- *  Angelo Zerr <angelo.zerr@gmail.com> - initial API and implementation
- */
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 package org.eclipse.lsp4xml.extensions.synapse.xsd.participants;
 
 import org.apache.xerces.xni.XMLLocator;
@@ -22,28 +30,24 @@ import java.util.Map;
 /**
  * XSD error code.
  * 
- * @see https://wiki.xmldation.com/Support/Validator
+ * see https://wiki.xmldation.com/Support/Validator
  *
  */
 public enum XSDErrorCode implements IXMLErrorCode {
 
-	s4s_elt_invalid_content_1("s4s-elt-invalid-content.1"), //
-	s4s_elt_must_match_1("s4s-elt-must-match.1"), //
-	s4s_att_must_appear("s4s-att-must-appear"), //
-	s4s_elt_invalid_content_2("s4s-elt-invalid-content.2"), //
-	s4s_att_not_allowed("s4s-att-not-allowed"), //
-	s4s_att_invalid_value("s4s-att-invalid-value"), //
-	s4s_elt_character("s4s-elt-character"), //
-	src_resolve_4_2("src-resolve.4.2"), //
-	src_resolve("src-resolve");
+	S4S_ELT_INVALID_CONTENT_1("s4s-elt-invalid-content.1"), //
+	S4S_ELT_MUST_MATCH_1("s4s-elt-must-match.1"), //
+	S4S_ATT_MUST_APPEAR("s4s-att-must-appear"), //
+	S4S_ELT_INVALID_CONTENT_2("s4s-elt-invalid-content.2"), //
+	S4S_ATT_NOT_ALLOWED("s4s-att-not-allowed"), //
+	S4S_ATT_INVALID_VALUE("s4s-att-invalid-value"), //
+	S4S_ELT_CHARACTER("s4s-elt-character"), //
+	SRC_RESOLVE_4_2("src-resolve.4.2"), //
+	SRC_RESOLVE("src-resolve");
 
 	private final String code;
 
-	private XSDErrorCode() {
-		this(null);
-	}
-
-	private XSDErrorCode(String code) {
+	XSDErrorCode(String code) {
 		this.code = code;
 	}
 
@@ -55,7 +59,7 @@ public enum XSDErrorCode implements IXMLErrorCode {
 		return code;
 	}
 
-	private final static Map<String, XSDErrorCode> codes;
+	private static final Map<String, XSDErrorCode> codes;
 
 	static {
 		codes = new HashMap<>();
@@ -71,31 +75,29 @@ public enum XSDErrorCode implements IXMLErrorCode {
 	/**
 	 * Create the LSP range from the SAX error.
 	 * 
-	 * @param location
-	 * @param code
-	 * @param arguments
-	 * @param document
+	 * @param location location
+	 * @param code code
+	 * @param arguments arguments
+	 * @param document documents
 	 * @return the LSP range from the SAX error.
 	 */
 	public static Range toLSPRange(XMLLocator location, XSDErrorCode code, Object[] arguments, DOMDocument document) {
 		int offset = location.getCharacterOffset() - 1;
 		// adjust positions
 		switch (code) {
-		case s4s_elt_invalid_content_1:
-		case s4s_elt_must_match_1:
-		case s4s_att_must_appear:
-		case s4s_elt_invalid_content_2:
+		case S4S_ELT_INVALID_CONTENT_1:
+		case S4S_ELT_MUST_MATCH_1:
+		case S4S_ATT_MUST_APPEAR:
+		case S4S_ELT_INVALID_CONTENT_2:
 			return XMLPositionUtility.selectStartTag(offset, document);
-		case s4s_att_not_allowed:
+		case S4S_ATT_NOT_ALLOWED:
 			return XMLPositionUtility.selectAttributeNameAt(offset, document);
-		case s4s_att_invalid_value: {
-			String attrName = "";
-			return XMLPositionUtility.selectAttributeValueAt(attrName, offset, document);
-		}
-		case s4s_elt_character:
+		case S4S_ATT_INVALID_VALUE:
+			return XMLPositionUtility.selectAttributeValueAt("", offset, document);
+		case S4S_ELT_CHARACTER:
 			return XMLPositionUtility.selectContent(offset, document);
-		case src_resolve_4_2:
-		case src_resolve:
+		case SRC_RESOLVE_4_2:
+		case SRC_RESOLVE:
 			String attrValue = (String) arguments[2];
 			return XMLPositionUtility.selectAttributeValueByGivenValueAt(attrValue, offset, document);
 		}

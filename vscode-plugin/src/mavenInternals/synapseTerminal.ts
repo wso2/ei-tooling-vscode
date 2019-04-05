@@ -1,9 +1,25 @@
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 'use strict';
 
 import * as vscode from "vscode";
 import { Settings } from "./Settings";
-import { Uri} from "vscode";
-import * as path from 'path';
 import { getCDCommand, getCommand, currentWindowsShell, toWslPath} from "./commandHandler";
 
 interface ITerminalOptions {
@@ -30,38 +46,17 @@ export class SynapseTerminal implements vscode.Disposable {
                 this.terminals[name].sendText(await getCDCommand(cwd), true);
             }
 
-            // let cdCommand = await getCDCommand(artifactId);
-            // const initCommand = getCommand(command);
-            let sourcePath = path.join(__dirname, "..", "..", "temp", "out.txt");
-            let destinationPath = path.join(__dirname, "..", "..", "temp", "output.txt");
-            const initCommand = getCommand(command + " | tee "+ sourcePath +"; mv " + sourcePath + " " + destinationPath);
-            // const initCommand = getCommand(command + "; "+ cdCommand +"; code . -r;");
+            let cdCommand = await getCDCommand(artifactId);
+            const initCommand = getCommand(command + "; "+ cdCommand +"; code . -r;");
             this.terminals[name].sendText(initCommand, addNewLine);
         }
-
-        // await this.openNewWindow(cwd);
     }
-
-    // public async openNewWindow(cwd: string | undefined): Promise<void> {
-    //     if(cwd) {
-    //         let uri = Uri.parse(cwd);
-    //         let success = vscode.commands.executeCommand('vscode.openFolder', uri);
-    //     }
-    // }
 
     public closeAllTerminals(): void {
         Object.keys(this.terminals).forEach((id: string) => {
             this.terminals[id].dispose();
             delete this.terminals[id];
         });
-    }
-
-    public onDidCloseTerminal(closedTerminal: vscode.Terminal): void {
-        try {
-            delete this.terminals[closedTerminal.name];
-        } catch (error) {
-            // ignore it.
-        }
     }
 
     // To Refactor: remove from here.

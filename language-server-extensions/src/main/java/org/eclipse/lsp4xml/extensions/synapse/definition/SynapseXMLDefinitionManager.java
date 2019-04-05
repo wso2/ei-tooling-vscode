@@ -1,3 +1,21 @@
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 package org.eclipse.lsp4xml.extensions.synapse.definition;
 
 import org.eclipse.lsp4j.WorkspaceFolder;
@@ -68,7 +86,6 @@ public class SynapseXMLDefinitionManager {
                 }else {
                     Collection<WorkspaceFolder> workspaceFolderList = WorkspaceFolders.getInstance().getWorkspaceFolders();
 
-
                     //assumption: akk opened workspaceFolders are synapse workspaces (i.e: WSO2/EnterpriseIntegrator/6.4.0/repository/deployment/server/synapse-config/default)
                     if (workspaceFolderList.size() > 0) {
                         for(WorkspaceFolder workspaceFolder: workspaceFolderList) {
@@ -77,14 +94,6 @@ public class SynapseXMLDefinitionManager {
 
                             listAllFiles(updatedUri, nodeName, attrTo, attrValue, collector);
                         }
-//                        for (int i = 0; i < workspaceFolderList.size(); i++) {
-//                            WorkspaceFolder workspaceFolder = workspaceFolderList.
-//
-//                            String uri = workspaceFolder.getUri();
-//                            String updatedUri = resolveUri(nodeName, uri);
-//
-//                            listAllFiles(updatedUri, nodeName, attrTo, attrValue, collector);
-//                        }
                     }
                     if (targetedElement != null) {
                         collector.accept(targetedElement);
@@ -164,10 +173,6 @@ public class SynapseXMLDefinitionManager {
         uri = uri.substring(7);
         uri = uri + "/src/main/synapse-config/";
 
-//        Path path = Paths.get(uri);
-//        if (Files.exists(path)) {
-//
-//        }
         switch (folderType) {
             case "sequence":
                 uri+="/sequences";
@@ -180,6 +185,10 @@ public class SynapseXMLDefinitionManager {
     }
 
 }
+
+
+
+
 
 
 

@@ -1,3 +1,21 @@
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 'use strict';
 
 import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
@@ -47,11 +65,6 @@ export namespace ArtifactModule {
                                 createTargetArtifact(sourceFile, targetFileUri);
                             }
                         });
-                        // if(checkPathExistence(pathToDestination)) {
-                        //     window.showErrorMessage("Cannot create artifact! File already exists.");
-                        // }else {
-                        //     createTargetArtifact(sourceFile, targetFileUri);
-                        // }
                     }
                 });
 
@@ -75,51 +88,16 @@ export namespace ArtifactModule {
         const dirName = __dirname;
         let sourcePath = path.join(dirName, '..', '..', '..', 'templates', sourceFile+'.xml');
 
-        // // TODO: check whether you can pipe here
-        // await fse.readFile(sourcePath).then((value) => {
-        //     fse.writeFile(uri.path, value.toString()).then(value => {
-        //         open(uri).then(doc => window.showTextDocument(doc));
-        //     }).catch(reason => 
-        //         console.log(reason));
-        // }).catch(reason => {
-        //     console.log(reason);}
-        //     );
-
         const buf: Buffer = await fse.readFile(sourcePath);
-        // let parser = new DOMParser();
-
         await timeout(200);
         await fse.writeFile(uri.path, buf.toString());
         await timeout(200);
         workspace.openTextDocument(uri).then(doc => window.showTextDocument(doc));
-
     }
 
     function timeout(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-    
-    // const writeFile = promisify(fs.writeFile);
-    // const readFile = promisify(fs.readFile);
-
-    // async function readXmlTemplateFile(sourceFile: string): Promise<string|undefined> {
-    //     try {
-    //         const text = await readFile("/Users/sajinieranasinghe/Documents/WebBasedEIToolingVSCodeExtension/vscode-synapse-parent/vscode-synapse/vscode-plugin/templates/"+sourceFile+".xml", "utf-8");
-    //         return text;
-    //     } catch (err) {
-    //         console.log('Error', err);
-    //     }
-    // }
-
-    // async function writeToXmlFile(): Promise<boolean> {
-    //     try {
-    //         const text = await readFile("/Users/sajinieranasinghe/Documents/WebBasedEIToolingVSCodeExtension/vscode-synapse-parent/vscode-synapse/vscode-plugin/templates/api.xml", "utf-8");
-    //         return true;
-    //     } catch (err) {
-    //         console.log('Error', err);
-    //         return false;
-    //     }
-    // }
 
     function resolveUri(path: string): Uri {
         const targetFolder: Uri = Uri.file(path);

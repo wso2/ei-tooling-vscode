@@ -1,13 +1,20 @@
-/**
- *  Copyright (c) 2018 Angelo ZERR
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v2.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v20.html
- *
- *  Contributors:
- *  Angelo Zerr <angelo.zerr@gmail.com> - initial API and implementation
- */
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
 package org.eclipse.lsp4xml.extensions.synapse.contentmodel.model;
 
 import org.eclipse.lsp4xml.dom.DOMDocument;
@@ -17,7 +24,6 @@ import org.eclipse.lsp4xml.extensions.contentmodel.uriresolver.XMLCacheResolverE
 import org.eclipse.lsp4xml.extensions.contentmodel.uriresolver.XMLCatalogResolverExtension;
 import org.eclipse.lsp4xml.extensions.contentmodel.uriresolver.XMLFileAssociationResolverExtension;
 import org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils.SynapseSchemaUtils;
-import org.eclipse.lsp4xml.uriresolver.URIResolverExtensionManager;
 import org.eclipse.lsp4xml.utils.URIUtils;
 import org.eclipse.lsp4xml.extensions.contentmodel.model.CMDocument;
 import org.eclipse.lsp4xml.extensions.contentmodel.model.CMElementDeclaration;
@@ -32,29 +38,23 @@ import java.util.*;
 public class SynapseContentModelManager {
 
 	private final Map<String, CMDocument> cmDocumentCache;
-
-	private final URIResolverExtensionManager resolverManager;
 	private final List<ContentModelProvider> modelProviders;
 
 	private final XMLCacheResolverExtension cacheResolverExtension;
 	private final XMLCatalogResolverExtension catalogResolverExtension;
 	private final XMLFileAssociationResolverExtension fileAssociationResolver;
 
-	public SynapseContentModelManager(URIResolverExtensionManager resolverManager) {
-		this.resolverManager = resolverManager;
+	public SynapseContentModelManager() {
 		modelProviders = new ArrayList<>();
 		cmDocumentCache = Collections.synchronizedMap(new HashMap<>());
 		fileAssociationResolver = new XMLFileAssociationResolverExtension();
-		resolverManager.registerResolver(fileAssociationResolver);
 		catalogResolverExtension = new XMLCatalogResolverExtension();
-		resolverManager.registerResolver(catalogResolverExtension);
 		cacheResolverExtension = new XMLCacheResolverExtension();
-		resolverManager.registerResolver(cacheResolverExtension);
 		// Use cache by default
 		setUseCache(true);
 	}
 
-	public CMElementDeclaration findCMElement(DOMElement element) throws Exception {
+	public CMElementDeclaration findCMElement(DOMElement element) {
 		return findCMElement(element, element.getNamespaceURI());
 	}
 
@@ -66,7 +66,7 @@ public class SynapseContentModelManager {
 	 * @return the declared element which matches the given XML element and null
 	 *         otherwise.
 	 */
-	public CMElementDeclaration findCMElement(DOMElement element, String namespaceURI) throws Exception {
+	private CMElementDeclaration findCMElement(DOMElement element, String namespaceURI) {
 		CMDocument cmDocument = findCMDocument(element);
 		return cmDocument != null ? cmDocument.findCMElement(element, namespaceURI) : null;
 	}
@@ -84,13 +84,13 @@ public class SynapseContentModelManager {
 	 * Returns the content model document loaded by the given uri and null
 	 * otherwise.
 	 *
-	 * @param modelProvider
+	 * @param modelProvider modelProvider
 	 * @return the content model document loaded by the given uri and null
 	 *         otherwise.
 	 */
 	private CMDocument findCMDocument(ContentModelProvider modelProvider) {
 		// Resolve the XML Schema/DTD uri (file, http, etc)
-		String key = SynapseSchemaUtils.schemaLocation;
+		String key = SynapseSchemaUtils.getSchemaLocation();
 
 		if (key == null) {
 			return null;
@@ -119,7 +119,7 @@ public class SynapseContentModelManager {
 		return cmDocument;
 	}
 
-	public CMElementDeclaration findInternalCMElement(DOMElement element) throws Exception {
+	public CMElementDeclaration findInternalCMElement(DOMElement element) {
 		return findInternalCMElement(element, element.getNamespaceURI());
 	}
 
@@ -131,16 +131,16 @@ public class SynapseContentModelManager {
 	 * @return the declared element which matches the given XML element and null
 	 *         otherwise.
 	 */
-	public CMElementDeclaration findInternalCMElement(DOMElement element, String namespaceURI) throws Exception {
-		CMDocument cmDocument = findInternalCMDocument(element, namespaceURI);
+	private CMElementDeclaration findInternalCMElement(DOMElement element, String namespaceURI) {
+		CMDocument cmDocument = findInternalCMDocument(element);
 		return cmDocument != null ? cmDocument.findCMElement(element, namespaceURI) : null;
 	}
 
-	public CMDocument findInternalCMDocument(DOMElement element, String namespaceURI) {
-		return findInternalCMDocument(element.getOwnerDocument(), namespaceURI);
+	private CMDocument findInternalCMDocument(DOMElement element) {
+		return findInternalCMDocument(element.getOwnerDocument());
 	}
 
-	public CMDocument findInternalCMDocument(DOMDocument xmlDocument, String namespaceURI) {
+	private CMDocument findInternalCMDocument(DOMDocument xmlDocument) {
 		ContentModelProvider modelProvider = getModelProviderByStandardAssociation(xmlDocument, true);
 		if (modelProvider != null) {
 			return modelProvider.createInternalCMDocument(xmlDocument);
@@ -153,7 +153,8 @@ public class SynapseContentModelManager {
 	 * (xsi:schemaLocation, xsi:noNamespaceSchemaLocation, doctype) an dnull
 	 * otherwise.
 	 * 
-	 * @param xmlDocument
+	 * @param xmlDocument xmlDocument
+     * @param internal insternal
 	 * @return the content model provider by using standard association
 	 *         (xsi:schemaLocation, xsi:noNamespaceSchemaLocation, doctype) an dnull
 	 *         otherwise.
@@ -200,7 +201,7 @@ public class SynapseContentModelManager {
 	/**
 	 * Set file associations.
 	 * 
-	 * @param fileAssociations
+	 * @param fileAssociations fileAssociations
 	 * @return true if file associations changed and false otherwise
 	 */
 	public boolean setFileAssociations(XMLFileAssociation[] fileAssociations) {

@@ -1,3 +1,21 @@
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 package org.eclipse.lsp4xml.extensions.synapse.contentmodel.completions;
 
 import java.io.FileNotFoundException;
@@ -8,23 +26,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Provides snippets for Synapse elements which are configured in configurations.properties file.
+ */
 public class SnippetProvider {
 
-    public static final Map<String, String> snippets;
+    private static final Map<String, String> snippets;
 
     static {
         snippets = new HashMap<>();
 
-//        for(Snippet snippet: Snippet.values()) {
-//            snippets.put(snippet.getTagName(), snippet.get().getString(true));
-//        }
-
         Properties prop = new Properties();
         InputStream input = null;
         try {
-            SnippetProvider snip = new SnippetProvider();
-
-            input = snip.getClass().getClassLoader().getResourceAsStream("configuration.properties");
+            input = SnippetProvider.class.getClassLoader().getResourceAsStream("configuration.properties");
             if (input != null) {
                 prop.load(input);
 
@@ -50,5 +65,16 @@ public class SnippetProvider {
         }
     }
 
+    /**
+     * Restricted creating new SnippetProviders by making the constructor private
+     */
     private SnippetProvider(){}
+
+    /**
+     *
+     * @return Map\<SynapseElementName, snippet>
+     */
+    public static Map<String, String> getSnippets() {
+        return snippets;
+    }
 }

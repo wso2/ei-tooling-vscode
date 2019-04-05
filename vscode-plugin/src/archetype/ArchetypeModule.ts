@@ -40,7 +40,7 @@ export namespace ArchetypeModule {
         return cwd;
     }
 
-    export async function createESBProject(entry: Uri | undefined): Promise<void>  {
+    export async function createESBProject(): Promise<void>  {
         
         const archetype  = await getESBArtifact();
         let projectName: string | undefined = await showInputBoxForProjectName();
@@ -62,8 +62,6 @@ export namespace ArchetypeModule {
             const newProject: ESBProject = {archetypeGroupId: archetype.groupId, archetypeArtifactId: archetype.artifactId, groupId: "com.example." + projectName, artifactId:projectName};
             const cwd: string | null = await chooseTargetFolder(targetFolderHint);
 
-            // await executeInTerminalHandler(newProject, archetype.groupId, archetype.artifactId, cwd);
-            // await executeMavenCommandHandler(newProject, cwd);
             if(cwd) {
                 await executeCommandHandler(newProject, cwd);
             }
@@ -126,18 +124,6 @@ export namespace ArchetypeModule {
             return [new Archetype( null, null, undefined, "Find more archetypes available in remote catalog.")].concat(localItems);
         }
     }
-
-    // async function getRecomendedItems(allItems: Archetype[]): Promise<Archetype[]> {
-    //     // Top popular archetypes according to usage data
-    //     let fixedList: string[];
-    //     try {
-    //         const rawlist: string = await Utils.downloadFile(POPULAR_ARCHETYPES_URL, true);
-    //         fixedList = JSON.parse(rawlist);
-    //     } catch (error) {
-    //         fixedList = [];
-    //     }
-    //     return fixedList.map((fullname: string) => allItems.find((item: Archetype) => fullname === `${item.groupId}:${item.artifactId}`));
-    // }
 
     async function listArchetypeFromXml(xmlString: string): Promise<Archetype[]> {
         try {
@@ -209,5 +195,17 @@ export namespace ArchetypeModule {
     //     } else {
     //         return [];
     //     }
+    // }
+
+    // async function getRecomendedItems(allItems: Archetype[]): Promise<Archetype[]> {
+    //     // Top popular archetypes according to usage data
+    //     let fixedList: string[];
+    //     try {
+    //         const rawlist: string = await Utils.downloadFile(POPULAR_ARCHETYPES_URL, true);
+    //         fixedList = JSON.parse(rawlist);
+    //     } catch (error) {
+    //         fixedList = [];
+    //     }
+    //     return fixedList.map((fullname: string) => allItems.find((item: Archetype) => fullname === `${item.groupId}:${item.artifactId}`));
     // }
 }

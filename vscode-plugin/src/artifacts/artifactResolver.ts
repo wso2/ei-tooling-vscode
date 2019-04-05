@@ -1,3 +1,21 @@
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 'use strict';
 
 import { window } from "vscode";
@@ -5,38 +23,7 @@ import { ArtifactModule } from "./ArtifactModule";
 import {APIArtifactInfo, ProxyArtifactInfo} from "./artifactUtils";
 
 export async function createArtifact(artifactType: string) {
-    let option: number | undefined;
     switch(artifactType) {
-        case "apiOld": {
-            option = await showQuickPickForArtifactCreationOptions(APIArtifactInfo.CREATE_API, APIArtifactInfo.IMPORT_API, APIArtifactInfo.PLACEHOLDER_API);
-            if(option && option === 1) {
-                const destinationFileName = await window.showInputBox({ value: "", prompt: "Enter Synapse API Artifact Name", placeHolder: "Enter"}).then(text => text);
-                
-                if(destinationFileName) {
-                    ArtifactModule.createTemplate(APIArtifactInfo.API_DESTINATION_FOLDER, "api", destinationFileName);
-                }
-            }else if(option && option === 2) {
-                //resolce import case
-            }
-            break;
-        }
-        case "proxyOld": {
-            option = await showQuickPickForArtifactCreationOptions(ProxyArtifactInfo.CREATE_PROXY, ProxyArtifactInfo.IMPORT_PROXY, ProxyArtifactInfo.PLACEHOLDER_PROXY);
-            if(option && option === 1) {
-                const proxyTypes = createProxyServiceArray();
-                const selectedArifactType = await showQuickPick(proxyTypes);
-                
-                if(selectedArifactType) {
-                    const artifactName = await window.showInputBox({ value: "", prompt: "Enter Synapse Proxy Artifact Name", placeHolder: "Enter"}).then(text => text);
-                    if(artifactName) {
-                        ArtifactModule.createTemplate(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, selectedArifactType, artifactName);
-                    }
-                }
-            }else if(option && option === 2) {
-                //resolce import case
-            }
-            break;
-        }  
         case "api": {
             const destinationFileName = await window.showInputBox({ value: "", prompt: "Enter Synapse API Artifact Name", placeHolder: "Enter"}).then(text => text);
             if(destinationFileName) {
@@ -71,37 +58,6 @@ async function showQuickPick(promise: Promise<{"value": string; "label": string;
     ).then(selected => (
         selected && selected.value
     ));
-}
-
-async function showQuickPickForArtifactCreationOptions(create: string, imports: string, placeHolder: string): Promise<number | undefined> {
-    return await window.showQuickPick(
-        createQuickPickArray(create, imports).then(items => items.map(item => ({
-            value: item.id,
-            label: item.name,
-            description: "",
-            detail: ""
-        }))),
-        { matchOnDescription: true, placeHolder: placeHolder }
-    ).then(selected => selected && selected.value);
-}
-
-async function showQuickPickForArtifactCreationOptionsNew(create: string, imports: string, placeHolder: string): Promise<number | undefined> {
-    return await window.showQuickPick(
-        createQuickPickArray(create, imports).then(items => items.map(item => ({
-            value: item.id,
-            label: item.name,
-            description: "",
-            detail: ""
-        }))),
-        { matchOnDescription: true, placeHolder: placeHolder }
-    ).then(selected => selected && selected.value);
-}
-
-function createQuickPickArray(create: string, imports: string): Promise<{"id": number, "name":string}[]>{
-    return new Promise((resolve, reject)=>{
-        const options = [{"id": 1, "name":create}, {"id": 1, "name":imports}];
-        resolve(options);
-    });
 }
 
 function createProxyServiceArray(): Promise<{"value": string; "label": string;}[]> {

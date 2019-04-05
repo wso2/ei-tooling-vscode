@@ -95,17 +95,17 @@
 	},
 	"devDependencies": {
 		"@types/fs-extra": "^4.0.8",
-		"@types/xml2js": "^0.4.3",
-		"typescript": "^3.3.1",
-		"vscode": "^1.1.28",
-		"tslint": "^5.12.1",
-		"@types/node": "^8.10.25",
 		"@types/mocha": "^2.2.42",
-		"vsce": "^1.36.2"
+		"@types/node": "^8.10.25",
+		"@types/xml2js": "^0.4.3",
+		"tslint": "^5.12.1",
+		"typescript": "^3.3.1",
+		"vsce": "^1.36.2",
+		"vscode": "^1.1.28"
 	},
 	"dependencies": {
-		"vscode-languageclient": "^4.1.4",
 		"fs-extra": "^4.0.3",
+		"vscode-languageclient": "^4.1.4",
 		"xml2js": "^0.4.19"
 	}
 }

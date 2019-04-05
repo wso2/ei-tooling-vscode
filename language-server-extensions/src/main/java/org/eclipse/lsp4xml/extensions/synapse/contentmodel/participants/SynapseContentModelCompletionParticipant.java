@@ -1,28 +1,27 @@
-/**
- *  Copyright (c) 2018 Angelo ZERR
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v2.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v20.html
- *
- *  Contributors:
- *  Angelo Zerr <angelo.zerr@gmail.com> - initial API and implementation
- */
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 package org.eclipse.lsp4xml.extensions.synapse.contentmodel.participants;
 
-import org.apache.xerces.impl.xs.XSComplexTypeDecl;
-import org.apache.xerces.impl.xs.XSElementDecl;
-import org.apache.xerces.impl.xs.XSModelGroupImpl;
-import org.apache.xerces.impl.xs.XSParticleDecl;
-import org.apache.xerces.xs.XSElementDeclaration;
-import org.apache.xerces.xs.XSParticle;
-import org.apache.xerces.xs.XSTerm;
-import org.apache.xerces.xs.XSTypeDefinition;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4xml.commons.BadLocationException;
 import org.eclipse.lsp4xml.dom.DOMDocument;
 import org.eclipse.lsp4xml.dom.DOMElement;
-import org.eclipse.lsp4xml.dom.DOMNode;
 import org.eclipse.lsp4xml.extensions.contentmodel.utils.XMLGenerator;
 import org.eclipse.lsp4xml.extensions.synapse.contentmodel.completions.SnippetProvider;
 import org.eclipse.lsp4xml.extensions.contentmodel.model.CMAttributeDeclaration;
@@ -53,20 +52,14 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 
 			DOMElement parentElement = request.getParentElement();
 			if (parentElement == null) {
-
-				// XML is empty, in case of XML file associations, a XMl Schema/DTD can be bound
-				// check if it's root element (in the case of XML file associations, the link to
-				// XML Schema is done with pattern and not with XML root element)
 				CMDocument cmDocument = synapseContentModelManager.findCMDocument(document);
 
-				CMElementDeclaration cmElement = ((SynapseCMXSDDocument) cmDocument).findElementDeclaration("definitions", "http://ws.apache.org/ns/synapse");
+				CMElementDeclaration cmElement = ((SynapseCMXSDDocument) cmDocument).
+						findElementDeclaration("definitions", SnippetProvider.getSnippets().get("synapse_namespace"));
 				Collection<CMElementDeclaration> cmElements = cmElement.getElements();
 
-//				Collection<CMElementDeclaration> newCMElements = new ArrayList<>(cmElements);
-//				newCMElements.add(cmElement);
-
 				if (cmDocument != null) {
-					fillWithChildrenElementDeclaration(parentElement, cmElements, null, false, true, request, response);
+					fillWithChildrenElementDeclaration(parentElement, cmElements, null, false, request, response);
 				}
 				return;
 			}
@@ -77,7 +70,7 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 			if (cmElement != null) {
 				defaultPrefix = parentElement.getPrefix();
 
-				fillWithChildrenElementDeclaration(parentElement, cmElement.getElements(), defaultPrefix, false, false,
+				fillWithChildrenElementDeclaration(parentElement, cmElement.getElements(), defaultPrefix, false,
 						request, response);
 			}
 			if (parentElement.isDocumentElement()) {
@@ -87,11 +80,10 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 					if (defaultPrefix != null && prefix.equals(defaultPrefix)) {
 						continue;
 					}
-					String namespaceURI = parentElement.getNamespaceURI(prefix);
 					CMDocument cmDocument = synapseContentModelManager.findCMDocument(parentElement);
 					if (cmDocument != null) {
-						fillWithChildrenElementDeclaration(parentElement, cmDocument.getElements(), prefix, true, false,
-								request, response);
+						fillWithChildrenElementDeclaration(parentElement, cmDocument.getElements(), prefix,
+								true, request, response);
 					}
 				}
 			}
@@ -100,41 +92,17 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 			CMElementDeclaration cmInternalElement = synapseContentModelManager.findInternalCMElement(parentElement);
 			if (cmInternalElement != null) {
 				defaultPrefix = parentElement.getPrefix();
-				fillWithChildrenElementDeclaration(parentElement, cmInternalElement.getElements(), defaultPrefix, false, false,
-						request, response);
+				fillWithChildrenElementDeclaration(parentElement, cmInternalElement.getElements(), defaultPrefix,
+						false, request, response);
 			}
 		} catch (CacheResourceDownloadingException e) {
 			// XML Schema, DTD is loading, ignore this error
 		}
 	}
 
-	private XSParticleDecl[] getXsParticleDecls(CMElementDeclaration cmElement) {
-		XSElementDeclaration elementDeclaration = cmElement.getElementDeclaration();
-		XSParticleDecl[] fParticles = null;
-		if (elementDeclaration instanceof XSElementDecl) {
-			XSElementDecl xsElementDecl = (XSElementDecl) elementDeclaration;
-			XSTypeDefinition definition = xsElementDecl.fType;
-			if (definition instanceof XSComplexTypeDecl) {
-				XSComplexTypeDecl typeDecl = (XSComplexTypeDecl) definition;
-				XSParticle particle = typeDecl.getParticle();
-				if (particle instanceof XSParticleDecl) {
-					XSParticleDecl particleDecl = (XSParticleDecl) particle;
-					XSTerm fValue = particleDecl.fValue;
-					if (particle instanceof XSParticleDecl) {
-						XSModelGroupImpl modelGroup = (XSModelGroupImpl) fValue;
-						fParticles = modelGroup.fParticles;
-					} else if(particle instanceof XSModelGroupImpl) {
-
-					}
-				}
-			}
-		}
-		return fParticles;
-	}
-
 	private void fillWithChildrenElementDeclaration(DOMElement element, Collection<CMElementDeclaration> cmElements,
-													String p, boolean forceUseOfPrefix, boolean isRootElement, ICompletionRequest request, ICompletionResponse response)
-			throws BadLocationException {
+													String p, boolean forceUseOfPrefix, ICompletionRequest request,
+													ICompletionResponse response) throws BadLocationException {
 
 		XMLGenerator generator = request.getXMLGenerator();
 
@@ -145,28 +113,25 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 
 			String xml = generateSnippet(child);
 			if (xml != null) {
-				createCompletionItem(child, label, xml, "Snippet: " + documentation, request, response);
+				createCompletionItem(label, xml, "Snippet: " + documentation, request, response);
 				xml = null;
 			}
 
 			xml = generator.generate(child, prefix);
 			if(xml != null) {
-				createCompletionItem(child, label, xml, documentation, request, response);
+				createCompletionItem(label, xml, documentation, request, response);
 			}
-
-
 		}
 	}
 
-	public String generateSnippet(CMElementDeclaration elementDeclaration) {
-
+	private String generateSnippet(CMElementDeclaration elementDeclaration) {
 		String keyword = elementDeclaration.getName();
-		return SnippetProvider.snippets.get(keyword);
+		return SnippetProvider.getSnippets().get(keyword);
 
 	}
 
-	public void createCompletionItem(CMElementDeclaration child, String label, String xml, String documentation, ICompletionRequest request,
-                                     ICompletionResponse response) throws BadLocationException {
+	private void createCompletionItem(String label, String xml, String documentation, ICompletionRequest request,
+                                     ICompletionResponse response) {
 
 			CompletionItem item = new CompletionItem(label);
 			item.setFilterText(request.getFilterForStartTagName(label));
@@ -179,86 +144,9 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 			response.addCompletionItem(item, true);
 	}
 
-	private Collection<CMElementDeclaration> filterRequiredCmElements(DOMElement element, Collection<CMElementDeclaration> cmElements,
-																	  XSParticleDecl[] fParticles){
-		if (element != null) {
-			Map<String, CMElementDeclaration> cmElementsMap = null;
-			if (cmElements.size() > 0) {
-				cmElementsMap = new HashMap<>();
-				for (CMElementDeclaration child : cmElements) {
-					String name = child.getElementDeclaration().getName();
-					cmElementsMap.put(name, child);
-				}
-			}
-
-			//getting original children of the element
-			Collection<CMElementDeclaration> resultantCMElements = new ArrayList<>();
-			List<DOMNode> children = element.getChildren();
-			List<String> namesOfChildren = new ArrayList<>();
-
-			if (children.size() > 0) {
-				for (DOMNode child : children) {
-					namesOfChildren.add(child.getNodeName());
-				}
-			}
-			int index = 0;
-
-			begin:
-			for (XSParticleDecl particleDecl : fParticles) {
-				XSTerm fValue = particleDecl.fValue;
-				int minOccurs = particleDecl.fMinOccurs;
-				int maxOccurs = particleDecl.fMaxOccurs;
-
-				if (fValue instanceof XSModelGroupImpl) {
-					int fParticalCount = ((XSModelGroupImpl) fValue).fParticleCount;
-					XSParticleDecl[] internalfParticles = ((XSModelGroupImpl) fValue).fParticles;
-
-					for(int i = 0; i < fParticalCount; i++) {
-
-					}
-
-
-
-					XSModelGroupImpl modelGroup = (XSModelGroupImpl) fValue;
-					fParticles = modelGroup.fParticles;
-				}else if (fValue instanceof XSElementDecl) {
-					String name = particleDecl.fValue.getName();
-					if (namesOfChildren.size() > 0 && namesOfChildren.contains(name)) {
-						int occurrence = Collections.frequency(namesOfChildren, name);
-
-						if (occurrence < maxOccurs) {
-							((ArrayList<CMElementDeclaration>) resultantCMElements).add(cmElementsMap.get(name));
-						}
-					}else {
-						((ArrayList<CMElementDeclaration>) resultantCMElements).add(cmElementsMap.get(name));
-					}
-				}
-
-			}
-
-
-			for (CMElementDeclaration child : cmElements) {
-				String name = child.getElementDeclaration().getName();
-				if (namesOfChildren.size() > 0 && namesOfChildren.contains(child.getElementDeclaration().getName())) {
-					int occurance = Collections.frequency(namesOfChildren, name);
-					int maxOccurs = fParticles[index].fMaxOccurs;
-
-					if (occurance < maxOccurs) {
-						((ArrayList<CMElementDeclaration>) resultantCMElements).add(child);
-					}
-				}else {
-					boolean status = ((ArrayList<CMElementDeclaration>) resultantCMElements).add(child);
-				}
-				index++;
-			}
-			return resultantCMElements;
-		}
-		return cmElements;
-	}
-
 	@Override
 	public void onAttributeName(boolean generateValue, Range fullRange, ICompletionRequest request,
-								ICompletionResponse response, SharedSettings settings) throws Exception {
+								ICompletionResponse response, SharedSettings settings) {
 		// otherwise, manage completion based on XML Schema, DTD.
 		DOMElement parentElement = request.getNode().isElement() ? (DOMElement) request.getNode() : null;
 		if (parentElement == null) {
@@ -281,8 +169,9 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 	}
 
 	private void fillAttributesWithCMAttributeDeclarations(DOMElement parentElement, Range fullRange,
-														   CMElementDeclaration cmElement, boolean canSupportSnippet, boolean generateValue,
-														   ICompletionResponse response, SharedSettings settings) {
+														   CMElementDeclaration cmElement, boolean canSupportSnippet,
+														   boolean generateValue, ICompletionResponse response,
+														   SharedSettings settings) {
 		if (cmElement == null) {
 			return;
 		}
@@ -307,7 +196,7 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 
 	@Override
 	public void onAttributeValue(String valuePrefix, Range fullRange, boolean addQuotes, ICompletionRequest request,
-								 ICompletionResponse response, SharedSettings settings) throws Exception {
+								 ICompletionResponse response, SharedSettings settings) {
 		DOMElement parentElement = request.getNode().isElement() ? (DOMElement) request.getNode() : null;
 		if (parentElement == null) {
 			return;
@@ -337,9 +226,6 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 					item.setKind(CompletionItemKind.Value);
 					response.addCompletionAttribute(item);
 				});
-
-
-//				cmAttribute.getEnumerationValues().f
 			}
 		}
 	}

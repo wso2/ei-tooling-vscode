@@ -1,3 +1,21 @@
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 'use strict';
 
 import * as vscode from 'vscode';
@@ -16,22 +34,11 @@ export function launch(context: vscode.ExtensionContext, directoryName: string) 
 		console.log(directoryName);
 		let excecutable : string = path.join(JAVA_HOME, 'bin', 'java');
 		let schemaPath = path.join(directoryName, "..", "synapse-schemas", "synapse_config.xsd");
-		let classPath = path.join(directoryName, '..', 'launcher', 'org.eclipse.lsp4xml-uber.jar');
 		let LSextensionPath = path.join(directoryName,  '..', 'lib', '*');
-		// let LSextensionPath = path.join(directoryName, '..', 'launcher2');
-
-		console.log("classPath");
-		console.log(classPath);
-
-		console.log(schemaPath);
 
 		let schemaPathArg = '-DSCHEMA_PATH=' + schemaPath;
-		//let LSextensionPathArg = '-Djava.ext.dirs=' + LSextensionPath;
 		const args: string[] = [schemaPathArg, '-cp', LSextensionPath];
 
-		// const args: string[] = [schemaPathArg,'-Djava.ext.dirs=/Users/sajinieranasinghe/Documents/WebBasedEIToolingVSCodeExtension/vscode-synapse-parent/vscode-synapse/language-server/extensions/org.eclipse.lsp4xml.extensions.synapse/target', '-cp', classPath];
-
-		
 		if (process.env.LSDEBUG === "true") {
 			console.log('LSDEBUG is set to "true". Services will run on debug mode');
 			args.push('-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005,quiet=y');
