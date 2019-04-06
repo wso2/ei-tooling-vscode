@@ -23,6 +23,7 @@ import org.eclipse.lsp4xml.commons.BadLocationException;
 import org.eclipse.lsp4xml.dom.DOMDocument;
 import org.eclipse.lsp4xml.dom.DOMElement;
 import org.eclipse.lsp4xml.extensions.contentmodel.utils.XMLGenerator;
+import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 import org.eclipse.lsp4xml.extensions.synapse.contentmodel.completions.SnippetProvider;
 import org.eclipse.lsp4xml.extensions.contentmodel.model.CMAttributeDeclaration;
 import org.eclipse.lsp4xml.extensions.contentmodel.model.CMDocument;
@@ -55,7 +56,7 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 				CMDocument cmDocument = synapseContentModelManager.findCMDocument(document);
 
 				CMElementDeclaration cmElement = ((SynapseCMXSDDocument) cmDocument).
-						findElementDeclaration("definitions", SnippetProvider.getSnippets().get("synapse_namespace"));
+						findElementDeclaration("definitions", Constants.SYNAPSE_NAMESPACE);
 				Collection<CMElementDeclaration> cmElements = cmElement.getElements();
 
 				if (cmDocument != null) {

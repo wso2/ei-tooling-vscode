@@ -23,7 +23,7 @@ import org.eclipse.lsp4xml.extensions.contentmodel.settings.XMLFileAssociation;
 import org.eclipse.lsp4xml.extensions.contentmodel.uriresolver.XMLCacheResolverExtension;
 import org.eclipse.lsp4xml.extensions.contentmodel.uriresolver.XMLCatalogResolverExtension;
 import org.eclipse.lsp4xml.extensions.contentmodel.uriresolver.XMLFileAssociationResolverExtension;
-import org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils.SynapseSchemaUtils;
+import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 import org.eclipse.lsp4xml.utils.URIUtils;
 import org.eclipse.lsp4xml.extensions.contentmodel.model.CMDocument;
 import org.eclipse.lsp4xml.extensions.contentmodel.model.CMElementDeclaration;
@@ -90,7 +90,7 @@ public class SynapseContentModelManager {
 	 */
 	private CMDocument findCMDocument(ContentModelProvider modelProvider) {
 		// Resolve the XML Schema/DTD uri (file, http, etc)
-		String key = SynapseSchemaUtils.getSchemaLocation();
+		String key = Constants.SCHEMA_LOCATION;
 
 		if (key == null) {
 			return null;

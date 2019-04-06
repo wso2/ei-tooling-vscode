@@ -28,7 +28,7 @@ import org.eclipse.lsp4xml.extensions.contentmodel.settings.ContentModelSettings
 import org.eclipse.lsp4xml.extensions.contentmodel.settings.XMLValidationSettings;
 import org.eclipse.lsp4xml.services.extensions.diagnostics.LSPContentHandler;
 import org.eclipse.lsp4xml.uriresolver.IExternalSchemaLocationProvider;
-import org.eclipse.lsp4xml.utils.SynapseSchemaUtils;
+import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 import org.xml.sax.*;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -61,7 +61,7 @@ public class SynapseXMLValidator {
 
 			parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
 			parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource",
-					SynapseSchemaUtils.schemaLocation);
+					Constants.SCHEMA_LOCATION);
 
 			parser.setProperty("http://apache.org/xml/properties/internal/error-reporter",
 					new LSPErrorReporterForXML(document, diagnostics));

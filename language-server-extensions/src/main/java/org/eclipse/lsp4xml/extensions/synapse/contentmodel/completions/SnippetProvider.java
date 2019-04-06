@@ -18,6 +18,8 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 package org.eclipse.lsp4xml.extensions.synapse.contentmodel.completions;
 
+import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +41,7 @@ public class SnippetProvider {
         Properties prop = new Properties();
         InputStream input = null;
         try {
-            input = SnippetProvider.class.getClassLoader().getResourceAsStream("configuration.properties");
+            input = SnippetProvider.class.getClassLoader().getResourceAsStream(Constants.CONFIG_FILE);
             if (input != null) {
                 prop.load(input);
 

@@ -22,6 +22,7 @@ import org.eclipse.lsp4j.WorkspaceFolder;
 import org.eclipse.lsp4xml.commons.WorkspaceFolders;
 import org.eclipse.lsp4xml.extensions.synapse.definition.utils.DefinitionSource;
 import org.eclipse.lsp4xml.extensions.synapse.definition.utils.WorkspaceDocumentException;
+import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
@@ -171,18 +172,26 @@ public class SynapseXMLDefinitionManager {
     private String resolveUri(String folderType, String uri) {
         //removing file:// form the path
         uri = uri.substring(7);
-        uri = uri + "/src/main/synapse-config/";
 
+        if(isWindows()) {
+            uri = uri + Constants.SYNAPSE_CONFIG_PROJECT_PATH.replace("/", "\\");
+        }else {
+            uri = uri + Constants.SYNAPSE_CONFIG_PROJECT_PATH;
+        }
         switch (folderType) {
-            case "sequence":
-                uri+="/sequences";
+            case Constants.SEQUENCE:
+                uri+= Constants.SEQUENCE_FOLDER_NAME;
                 break;
-            case "endpoint":
-                uri+="/inbound-endpoints";
+            case Constants.ENDPOINT:
+                uri+= Constants.INBOUND_ENDPOINT_FOLDER_NAME;
                 break;
                 default:
         }
         return uri;
+    }
+
+    private boolean isWindows() {
+        return System.getProperty("os.name").startsWith("Windows");
     }
 
 }
