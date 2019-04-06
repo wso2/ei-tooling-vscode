@@ -168,7 +168,7 @@ public class SynapseXMLDefinitionManager {
         }
     }
 
-    public String resolveUri(String folderType, String uri) {
+    private String resolveUri(String folderType, String uri) {
         //removing file:// form the path
         uri = uri.substring(7);
         uri = uri + "/src/main/synapse-config/";
@@ -180,6 +180,7 @@ public class SynapseXMLDefinitionManager {
             case "endpoint":
                 uri+="/inbound-endpoints";
                 break;
+                default:
         }
         return uri;
     }
