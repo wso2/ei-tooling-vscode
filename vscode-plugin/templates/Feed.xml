@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inboundEndpoint name="" protocol="feed" suspend="false" xmlns="http://ws.apache.org/ns/synapse">
+    <parameters>
+        <parameter name="interval">1000</parameter>
+        <parameter name="feed.type">Atom</parameter>
+    </parameters>
+</inboundEndpoint>

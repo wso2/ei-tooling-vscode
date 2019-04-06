@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inboundEndpoint class="org.wso2.sample.inbound.CustomClass" name="custom" onError="main" sequence="main" suspend="false" xmlns="http://ws.apache.org/ns/synapse">
+    <parameters>
+        <parameter name="interval">1000</parameter>
+        <parameter name="inbound.behavior">polling</parameter>
+    </parameters>
+</inboundEndpoint>

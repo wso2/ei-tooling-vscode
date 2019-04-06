@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint name="" xmlns="http://ws.apache.org/ns/synapse">
+    <recipientlist>
+        <endpoint>
+            <default/>
+        </endpoint>
+    </recipientlist>
+</endpoint>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inboundEndpoint name="" onError="main" protocol="kafka" sequence="main" suspend="false" xmlns="http://ws.apache.org/ns/synapse">
+    <parameters>
+        <parameter name="interval">1000</parameter>
+        <parameter name="sequential">true</parameter>
+        <parameter name="coordination">true</parameter>
+        <parameter name="zookeeper.connect">localhost:2181</parameter>
+        <parameter name="group.id">sampleGroupID</parameter>
+        <parameter name="consumer.type">highlevel</parameter>
+        <parameter name="topics">sampleTopic</parameter>
+        <parameter name="thread.count">1</parameter>
+        <parameter name="socket.timeout.ms">30000</parameter>
+        <parameter name="socket.receive.buffer.bytes">65536</parameter>
+        <parameter name="fetch.message.max.bytes">1048576</parameter>
+        <parameter name="num.consumer.fetchers">1</parameter>
+        <parameter name="auto.commit.enable">false</parameter>
+        <parameter name="auto.commit.interval.ms">60000</parameter>
+        <parameter name="queued.max.message.chunks">2</parameter>
+        <parameter name="rebalance.max.retries">4</parameter>
+        <parameter name="fetch.min.bytes">1</parameter>
+        <parameter name="fetch.wait.max.ms">100</parameter>
+        <parameter name="rebalance.backoff.ms">2000</parameter>
+        <parameter name="refresh.leader.backoff.ms">200</parameter>
+        <parameter name="auto.offset.reset">largest</parameter>
+        <parameter name="consumer.timeout.ms">3000</parameter>
+        <parameter name="exclude.internal.topics">false</parameter>
+        <parameter name="partition.assignment.strategy">roundrobin</parameter>
+        <parameter name="zookeeper.session.timeout.ms">6000</parameter>
+        <parameter name="zookeeper.connection.timeout.ms">6000</parameter>
+        <parameter name="zookeeper.sync.time.ms">2000</parameter>
+        <parameter name="offsets.storage">zookeeper</parameter>
+        <parameter name="offsets.channel.backoff.ms">1000</parameter>
+        <parameter name="offsets.channel.socket.timeout.ms">10000</parameter>
+        <parameter name="offsets.commit.max.retries">5</parameter>
+        <parameter name="dual.commit.enabled">true</parameter>
+    </parameters>
+</inboundEndpoint>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inboundEndpoint name="" protocol="cxf_ws_rm" suspend="false" xmlns="http://ws.apache.org/ns/synapse">
+    <parameters>
+        <parameter name="enableSSL">false</parameter>
+    </parameters>
+</inboundEndpoint>

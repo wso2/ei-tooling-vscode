@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inboundEndpoint name="" onError="main" protocol="file" sequence="main" suspend="false" xmlns="http://ws.apache.org/ns/synapse">
+    <parameters>
+        <parameter name="interval">1000</parameter>
+        <parameter name="sequential">true</parameter>
+        <parameter name="coordination">true</parameter>
+        <parameter name="transport.vfs.ContentType">text/plain</parameter>
+        <parameter name="transport.vfs.LockReleaseSameNode">false</parameter>
+        <parameter name="transport.vfs.AutoLockRelease">false</parameter>
+        <parameter name="transport.vfs.ActionAfterFailure">DELETE</parameter>
+        <parameter name="transport.vfs.FailedRecordsFileName">vfs-move-failed-records.properties</parameter>
+        <parameter name="transport.vfs.FailedRecordsFileDestination">repository/conf/</parameter>
+        <parameter name="transport.vfs.MoveFailedRecordTimestampFormat">dd-MM-yyyy HH:mm:ss</parameter>
+        <parameter name="transport.vfs.FailedRecordNextRetryDuration">3000</parameter>
+        <parameter name="transport.vfs.ActionAfterProcess">DELETE</parameter>
+        <parameter name="transport.vfs.ReplyFileName">response.xml</parameter>
+        <parameter name="transport.vfs.DistributedLock">false</parameter>
+        <parameter name="transport.vfs.FileNamePattern">.*.txt</parameter>
+        <parameter name="transport.vfs.Locking">enable</parameter>
+        <parameter name="transport.vfs.FileSortAttribute">none</parameter>
+        <parameter name="transport.vfs.FileSortAscending">true</parameter>
+        <parameter name="transport.vfs.CreateFolder">true</parameter>
+        <parameter name="transport.vfs.Streaming">false</parameter>
+        <parameter name="transport.vfs.Build">false</parameter>
+    </parameters>
+</inboundEndpoint>
