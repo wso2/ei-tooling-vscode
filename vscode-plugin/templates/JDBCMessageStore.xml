@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<messageStore class="org.apache.synapse.message.store.impl.jdbc.JDBCMessageStore" name="" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="store.jdbc.driver"></parameter>
+    <parameter name="store.producer.guaranteed.delivery.enable">false</parameter>
+    <parameter name="store.jdbc.username"></parameter>
+    <parameter name="store.jdbc.connection.url"></parameter>
+    <parameter name="store.jdbc.password"/>
+    <parameter name="store.jdbc.table"></parameter>
+</messageStore>

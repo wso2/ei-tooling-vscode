@@ -20,7 +20,14 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 import { window } from "vscode";
 import { ArtifactModule } from "./ArtifactModule";
-import {APIArtifactInfo, ProxyArtifactInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, LocalEntryArtifactInfo} from "./artifactUtils";
+import {
+    APIArtifactInfo,
+    ProxyArtifactInfo,
+    EndpointArtifactInfo,
+    InboundEndpointArtifactInfo,
+    LocalEntryArtifactInfo,
+    MessageStoreArtifactInfo
+} from "./artifactUtils";
 
 export async function createArtifact(artifactType: string) {
     switch(artifactType) {
@@ -75,6 +82,18 @@ export async function createArtifact(artifactType: string) {
                 const artifactName = await window.showInputBox({ value: "", prompt: InboundEndpointArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
                 if(artifactName) {
                     ArtifactModule.createTemplate(LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
+                }
+            }
+            break;
+        }
+        case MessageStoreArtifactInfo.ARTIFACT_TYPE: {
+            const messageStoreTypes = createMessageStoreServiceArray();
+            const selectedArtifactType = await showQuickPick(messageStoreTypes);
+
+            if(selectedArtifactType) {
+                const artifactName = await window.showInputBox({ value: "", prompt: MessageStoreArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
+                if(artifactName) {
+                    ArtifactModule.createTemplate(MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
                 }
             }
             break;
@@ -159,3 +178,17 @@ function createLocalEntryServiceArray(): Promise<{"value": string; "label": stri
     });
 }
 
+function createMessageStoreServiceArray(): Promise<{"value": string; "label": string;}[]> {
+    return new Promise((resolve) => {
+        const serviceArray = [
+            {"value": MessageStoreArtifactInfo.CUSTOM_MESSAGE_STORE, "label": MessageStoreArtifactInfo.CUSTOM_MESSAGE_STORE_LABEL},
+            {"value": MessageStoreArtifactInfo.IN_MEMORY_MESSAGE_STORE, "label": MessageStoreArtifactInfo.IN_MEMORY_MESSAGE_STORE_LABEL},
+            {"value": MessageStoreArtifactInfo.JDBC_MESSAGE_STORE, "label": MessageStoreArtifactInfo.JDBC_MESSAGE_STORE_LABEL},
+            {"value": MessageStoreArtifactInfo.JMS_MESSAGE_STORE, "label": MessageStoreArtifactInfo.JMS_MESSAGE_STORE_LABEL},
+            {"value": MessageStoreArtifactInfo.RABBIT_MQ_MESSAGE_STORE, "label": MessageStoreArtifactInfo.RABBIT_MQ_MESSAGE_STORE_LABEL},
+            {"value": MessageStoreArtifactInfo.RESEQUENCE_MESSAGE_STORE, "label": MessageStoreArtifactInfo.RESEQUENCE_MESSAGE_STORE_LABEL},
+            {"value": MessageStoreArtifactInfo.WSO2_MB_MESSAGE_STORE, "label": MessageStoreArtifactInfo.WSO2_MB_MESSAGE_STORE_LABEL}
+        ];
+        resolve(serviceArray);
+    });
+}

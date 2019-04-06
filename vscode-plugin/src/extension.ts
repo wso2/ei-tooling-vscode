@@ -26,7 +26,7 @@ import {
 	ProxyArtifactInfo,
 	EndpointArtifactInfo,
 	InboundEndpointArtifactInfo,
-	LocalEntryArtifactInfo
+	LocalEntryArtifactInfo, MessageStoreArtifactInfo
 } from "./artifacts/artifactUtils";
 
 
@@ -90,6 +90,10 @@ function registerSynapseCommands(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.localEntry", async () => {
 		await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.messageStore", async () => {
+		await createArtifact(MessageStoreArtifactInfo.ARTIFACT_TYPE);
 	}));
 }
 

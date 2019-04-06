@@ -122,4 +122,27 @@ export class LocalEntryArtifactInfo {
     static readonly IN_LINE_XML_ENTRY_LABEL: string = "In Line XML Entry";
     static readonly SOURCE_URL_ENTRY_LABEL: string = "Source URL Entry";
 }
+
+export class MessageStoreArtifactInfo {
+    static readonly ARTIFACT_TYPE: string = "messageStore";
+    static readonly PLACEHOLDER: string = "Select an Message-Store Artifact Creation Option...";
+    static readonly PROMPT_MESSAGE: string = "Enter Message-Store artifact name...";
+    static readonly DESTINATION_FOLDER: string = "message-stores";
+
+    static readonly CUSTOM_MESSAGE_STORE: string = "CustomMessageStore";
+    static readonly IN_MEMORY_MESSAGE_STORE: string = "InMemoryMessageStore";
+    static readonly JDBC_MESSAGE_STORE: string = "JDBCMessageStore";
+    static readonly JMS_MESSAGE_STORE: string = "JMSMessageStore";
+    static readonly RABBIT_MQ_MESSAGE_STORE: string = "RabbitMQMessageStore";
+    static readonly RESEQUENCE_MESSAGE_STORE: string = "ResequenceMessageStore";
+    static readonly WSO2_MB_MESSAGE_STORE: string = "WSO2MBMessageStore";
+
+    static readonly CUSTOM_MESSAGE_STORE_LABEL: string = "Custom Message Store";
+    static readonly IN_MEMORY_MESSAGE_STORE_LABEL: string = "In Memory Message Store";
+    static readonly JDBC_MESSAGE_STORE_LABEL: string = "JDBC Message Store";
+    static readonly JMS_MESSAGE_STORE_LABEL: string = "JMS Message Store";
+    static readonly RABBIT_MQ_MESSAGE_STORE_LABEL: string = "RabbitMQ Message Store";
+    static readonly RESEQUENCE_MESSAGE_STORE_LABEL: string = "Resequence Message Store";
+    static readonly WSO2_MB_MESSAGE_STORE_LABEL: string = "WSO2 MB Message Store";
+}
   
