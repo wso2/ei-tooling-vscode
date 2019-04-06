@@ -21,7 +21,13 @@ import { setLanguageToSynapse as setLanguageToSynapse, registerCommandToChangeLa
 import { launch as launchServer } from './server';
 import { ArchetypeModule } from "./archetype/ArchetypeModule";
 import { createArtifact } from "./artifacts/artifactResolver";
-import { APIArtifactInfo, ProxyArtifactInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo } from "./artifacts/artifactUtils";
+import {
+	APIArtifactInfo,
+	ProxyArtifactInfo,
+	EndpointArtifactInfo,
+	InboundEndpointArtifactInfo,
+	LocalEntryArtifactInfo
+} from "./artifacts/artifactUtils";
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -80,6 +86,10 @@ function registerSynapseCommands(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.inboundEndpoint", async () => {
 		await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.localEntry", async () => {
+		await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE);
 	}));
 }
 

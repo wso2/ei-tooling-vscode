@@ -79,6 +79,15 @@
 					"light": "resources/light/add.svg",
 					"dark": "resources/dark/add.svg"
 				}
+			},
+			{
+				"command": "wso2esb.artifact.localEntry",
+				"title": "Create new Local-Entry artifact",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
 			}
 		],
 		"languages": [

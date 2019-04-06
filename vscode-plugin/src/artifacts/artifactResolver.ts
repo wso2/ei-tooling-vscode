@@ -20,14 +20,14 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 import { window } from "vscode";
 import { ArtifactModule } from "./ArtifactModule";
-import {APIArtifactInfo, ProxyArtifactInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo} from "./artifactUtils";
+import {APIArtifactInfo, ProxyArtifactInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, LocalEntryArtifactInfo} from "./artifactUtils";
 
 export async function createArtifact(artifactType: string) {
     switch(artifactType) {
         case APIArtifactInfo.ARTIFACT_TYPE: {
             const destinationFileName = await window.showInputBox({ value: "", prompt: APIArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
             if(destinationFileName) {
-                ArtifactModule.createTemplate(APIArtifactInfo.API_DESTINATION_FOLDER, "api", destinationFileName);
+                ArtifactModule.createTemplate(APIArtifactInfo.DESTINATION_FOLDER, "api", destinationFileName);
             }
             break;
         } 
@@ -50,7 +50,7 @@ export async function createArtifact(artifactType: string) {
             if(selectedArtifactType) {
                 const artifactName = await window.showInputBox({ value: "", prompt: EndpointArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
                 if(artifactName) {
-                    ArtifactModule.createTemplate(EndpointArtifactInfo.ENDPOINT_DESTINATION_FOLDER, selectedArtifactType, artifactName);
+                    ArtifactModule.createTemplate(EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
                 }
             }
             break;
@@ -62,7 +62,19 @@ export async function createArtifact(artifactType: string) {
             if(selectedArtifactType) {
                 const artifactName = await window.showInputBox({ value: "", prompt: InboundEndpointArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
                 if(artifactName) {
-                    ArtifactModule.createTemplate(InboundEndpointArtifactInfo.ENDPOINT_DESTINATION_FOLDER, selectedArtifactType, artifactName);
+                    ArtifactModule.createTemplate(InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
+                }
+            }
+            break;
+        }
+        case LocalEntryArtifactInfo.ARTIFACT_TYPE: {
+            const localEntriesTypes = createLocalEntryServiceArray();
+            const selectedArtifactType = await showQuickPick(localEntriesTypes);
+
+            if(selectedArtifactType) {
+                const artifactName = await window.showInputBox({ value: "", prompt: InboundEndpointArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
+                if(artifactName) {
+                    ArtifactModule.createTemplate(LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
                 }
             }
             break;
@@ -135,3 +147,15 @@ function createInboundEndpointServiceArray(): Promise<{"value": string; "label":
         resolve(serviceArray);
     });
 }
+
+function createLocalEntryServiceArray(): Promise<{"value": string; "label": string;}[]> {
+    return new Promise((resolve) => {
+        const serviceArray = [
+            {"value": LocalEntryArtifactInfo.IN_LINE_TEXT_ENTRY, "label": LocalEntryArtifactInfo.IN_LINE_TEXT_ENTRY_LABEL},
+            {"value": LocalEntryArtifactInfo.IN_LINE_XML_ENTRY, "label": LocalEntryArtifactInfo.IN_LINE_XML_ENTRY_LABEL},
+            {"value": LocalEntryArtifactInfo.SOURCE_URL_ENTRY, "label": LocalEntryArtifactInfo.SOURCE_URL_ENTRY_LABEL}
+        ];
+        resolve(serviceArray);
+    });
+}
+

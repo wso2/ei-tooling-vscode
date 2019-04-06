@@ -20,18 +20,14 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 export class APIArtifactInfo {
     static readonly ARTIFACT_TYPE: string = "api";
-    static readonly CREATE_API: string = "Create a New API Artifact";
-    static readonly IMPORT_API: string = "Import API Artifact";
-    static readonly PLACEHOLDER_API: string = "Select an API Artifact Creation Option...";
-    static readonly API_DESTINATION_FOLDER: string = "api";
+    static readonly PLACEHOLDER: string = "Select an API Artifact Creation Option...";
+    static readonly DESTINATION_FOLDER: string = "api";
     static readonly PROMPT_MESSAGE: string = "Enter API artifact name...";
 }
 
 export class ProxyArtifactInfo {
     static readonly ARTIFACT_TYPE: string = "proxy";
-    static readonly CREATE_PROXY: string = "Create a New Proxy Artifact";
-    static readonly IMPORT_PROXY: string = "Import Proxy Artifact";
-    static readonly PLACEHOLDER_PROXY: string = "Select an Proxy Artifact Creation Option...";
+    static readonly PLACEHOLDER: string = "Select an Proxy Artifact Creation Option...";
     static readonly PROMPT_MESSAGE: string = "Enter Proxy artifact name...";
 
     static readonly PROXY_DESTINATION_FOLDER: string = "proxy-services";
@@ -52,12 +48,10 @@ export class ProxyArtifactInfo {
 
 export class EndpointArtifactInfo {
     static readonly ARTIFACT_TYPE: string = "endpoint";
-    static readonly CREATE_ENDPOINT: string = "Create a New Endpoint Artifact";
-    static readonly IMPORT_ENDPOINT: string = "Import Endpoint Artifact";
-    static readonly PLACEHOLDER_ENDPOINT: string = "Select an Endpoint Artifact Creation Option...";
+    static readonly PLACEHOLDER: string = "Select an Endpoint Artifact Creation Option...";
     static readonly PROMPT_MESSAGE: string = "Enter Endpoint artifact name...";
+    static readonly DESTINATION_FOLDER: string = "endpoints";
 
-    static readonly ENDPOINT_DESTINATION_FOLDER: string = "endpoints";
     static readonly ADDRESS_ENDPOINT: string = "AddressEndpoint";
     static readonly HTTP_ENDPOINT: string = "HttpEndpoint";
     static readonly DEFAULT_ENDPOINT: string = "DefaultEndpoint";
@@ -79,11 +73,9 @@ export class EndpointArtifactInfo {
 
 export class InboundEndpointArtifactInfo {
     static readonly ARTIFACT_TYPE: string = "inboundEndpoint";
-    static readonly CREATE_ENDPOINT: string = "Create a New Inbound-Endpoint Artifact";
-    static readonly IMPORT_ENDPOINT: string = "Import Inbound-Endpoint Artifact";
-    static readonly PLACEHOLDER_ENDPOINT: string = "Select an Inbound-Endpoint Artifact Creation Option...";
+    static readonly PLACEHOLDER: string = "Select an Inbound-Endpoint Artifact Creation Option...";
     static readonly PROMPT_MESSAGE: string = "Enter Inbound-Endpoint artifact name...";
-    static readonly ENDPOINT_DESTINATION_FOLDER: string = "inbound-endpoints";
+    static readonly DESTINATION_FOLDER: string = "inbound-endpoints";
 
     static readonly HTTP_INBOUND_ENDPOINT: string = "HTTP";
     static readonly FILE_INBOUND_ENDPOINT: string = "File";
@@ -114,5 +106,20 @@ export class InboundEndpointArtifactInfo {
     static readonly WSO2_MB_INBOUND_ENDPOINT_LABEL: string = "WSO2_MB";
     static readonly WS_INBOUND_ENDPOINT_LABEL: string = "WS";
     static readonly WSS_INBOUND_ENDPOINT_LABEL: string = "WSS";
+}
+
+export class LocalEntryArtifactInfo {
+    static readonly ARTIFACT_TYPE: string = "localEntry";
+    static readonly PLACEHOLDER: string = "Select an Local-Entry Artifact Creation Option...";
+    static readonly PROMPT_MESSAGE: string = "Enter Local-Entry artifact name...";
+    static readonly DESTINATION_FOLDER: string = "local-entries";
+
+    static readonly IN_LINE_TEXT_ENTRY: string = "InLineTextEntry";
+    static readonly IN_LINE_XML_ENTRY: string = "InLineXMLEntry";
+    static readonly SOURCE_URL_ENTRY: string = "SourceURLEntry";
+
+    static readonly IN_LINE_TEXT_ENTRY_LABEL: string = "In Line Text Entry";
+    static readonly IN_LINE_XML_ENTRY_LABEL: string = "In Line XML Entry";
+    static readonly SOURCE_URL_ENTRY_LABEL: string = "Source URL Entry";
 }
   
