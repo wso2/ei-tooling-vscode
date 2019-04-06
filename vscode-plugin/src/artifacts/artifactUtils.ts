@@ -145,4 +145,20 @@ export class MessageStoreArtifactInfo {
     static readonly RESEQUENCE_MESSAGE_STORE_LABEL: string = "Resequence Message Store";
     static readonly WSO2_MB_MESSAGE_STORE_LABEL: string = "WSO2 MB Message Store";
 }
-  
+
+export class MessageProcessorArtifactInfo {
+    static readonly ARTIFACT_TYPE: string = "messageProcessor";
+    static readonly PLACEHOLDER: string = "Select an Message-Processor Artifact Creation Option...";
+    static readonly PROMPT_MESSAGE: string = "Enter Message-Processor artifact name...";
+    static readonly DESTINATION_FOLDER: string = "message-processors";
+
+    static readonly SCHEDULED_MSG_FORWARDING_PROCESSOR: string = "ScheduledMessageForwardingProcessor";
+    static readonly MESSAGE_SAMPLING_PROCESSOR: string = "MessageSamplingProcessor";
+    static readonly CUSTOM_MESSAGE_PROCESSOR: string = "CustomMessageProcessor";
+    static readonly FAILOVER_SCHEDULED_MESSAGE_FORWARDING_PROCESSOR: string = "FailoverScheduledMessageForwardingProcessor";
+
+    static readonly SCHEDULED_MSG_FORWARDING_PROCESSOR_LABEL: string = "Scheduled Message Forwarding Processor";
+    static readonly MESSAGE_SAMPLING_PROCESSOR_LABEL: string = "Message Sampling Processor";
+    static readonly CUSTOM_MESSAGE_PROCESSOR_LABEL: string = "Custom Message Processor";
+    static readonly FAILOVER_SCHEDULED_MESSAGE_FORWARDING_PROCESSOR_LABEL: string = "Failover Scheduled Message Forwarding Processor";
+}

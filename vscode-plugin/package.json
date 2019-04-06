@@ -97,6 +97,15 @@
 					"light": "resources/light/add.svg",
 					"dark": "resources/dark/add.svg"
 				}
+			},
+			{
+				"command":"wso2esb.artifact.messageProcessor",
+				"title": "Create new Message-Processor artifact",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
 			}
 		],
 		"languages": [

@@ -26,7 +26,8 @@ import {
     EndpointArtifactInfo,
     InboundEndpointArtifactInfo,
     LocalEntryArtifactInfo,
-    MessageStoreArtifactInfo
+    MessageStoreArtifactInfo,
+    MessageProcessorArtifactInfo
 } from "./artifactUtils";
 
 export async function createArtifact(artifactType: string) {
@@ -94,6 +95,18 @@ export async function createArtifact(artifactType: string) {
                 const artifactName = await window.showInputBox({ value: "", prompt: MessageStoreArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
                 if(artifactName) {
                     ArtifactModule.createTemplate(MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
+                }
+            }
+            break;
+        }
+        case MessageProcessorArtifactInfo.ARTIFACT_TYPE: {
+            const messageProcessorTypes = createMessageStoreServiceArray();
+            const selectedArtifactType = await showQuickPick(messageProcessorTypes);
+
+            if(selectedArtifactType) {
+                const artifactName = await window.showInputBox({ value: "", prompt: MessageProcessorArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
+                if(artifactName) {
+                    ArtifactModule.createTemplate(MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
                 }
             }
             break;
@@ -189,6 +202,18 @@ function createMessageStoreServiceArray(): Promise<{"value": string; "label": st
             {"value": MessageStoreArtifactInfo.RESEQUENCE_MESSAGE_STORE, "label": MessageStoreArtifactInfo.RESEQUENCE_MESSAGE_STORE_LABEL},
             {"value": MessageStoreArtifactInfo.WSO2_MB_MESSAGE_STORE, "label": MessageStoreArtifactInfo.WSO2_MB_MESSAGE_STORE_LABEL}
         ];
+        resolve(serviceArray);
+    });
+}
+
+function createMessageProcessorServiceArray(): Promise<{"value": string; "label": string;}[]> {
+    return new Promise((resolve) => {
+        const serviceArray = [
+            {"value": MessageProcessorArtifactInfo.SCHEDULED_MSG_FORWARDING_PROCESSOR, "label": MessageProcessorArtifactInfo.SCHEDULED_MSG_FORWARDING_PROCESSOR_LABEL},
+            {"value": MessageProcessorArtifactInfo.MESSAGE_SAMPLING_PROCESSOR, "label": MessageProcessorArtifactInfo.MESSAGE_SAMPLING_PROCESSOR_LABEL},
+            {"value": MessageProcessorArtifactInfo.CUSTOM_MESSAGE_PROCESSOR, "label": MessageProcessorArtifactInfo.CUSTOM_MESSAGE_PROCESSOR_LABEL},
+            {"value": MessageProcessorArtifactInfo.FAILOVER_SCHEDULED_MESSAGE_FORWARDING_PROCESSOR, "label": MessageProcessorArtifactInfo.FAILOVER_SCHEDULED_MESSAGE_FORWARDING_PROCESSOR_LABEL}
+            ];
         resolve(serviceArray);
     });
 }
