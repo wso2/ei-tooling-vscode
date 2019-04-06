@@ -18,6 +18,15 @@
 	"contributes": {
 		"commands": [
 			{
+				"command": "extension.activateExtension",
+				"title": "Activate Synapse Extension",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
 				"command": "wso2esb.project.create",
 				"title": "Create new ESB project",
 				"category": "Synapse",
@@ -54,8 +63,17 @@
 				}
 			},
 			{
-				"command": "extension.activateExtension",
-				"title": "Activate Synapse Extension",
+				"command": "wso2esb.artifact.endpoint",
+				"title": "Create new Endpoint artifact",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "wso2esb.artifact.inboundEndpoint",
+				"title": "Create new Inbound-Endpoint artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -104,6 +122,7 @@
 		"vscode": "^1.1.28"
 	},
 	"dependencies": {
+		"dom-parser": "^0.1.5",
 		"fs-extra": "^4.0.3",
 		"vscode-languageclient": "^4.1.4",
 		"xml2js": "^0.4.19"

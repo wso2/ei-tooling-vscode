@@ -19,9 +19,9 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import * as vscode from 'vscode';
 import { setLanguageToSynapse as setLanguageToSynapse, registerCommandToChangeLanguageToSyanpse} from './language';
 import { launch as launchServer } from './server';
-import { Uri} from "vscode";
 import { ArchetypeModule } from "./archetype/ArchetypeModule";
 import { createArtifact } from "./artifacts/artifactResolver";
+import { APIArtifactInfo, ProxyArtifactInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo } from "./artifacts/artifactUtils";
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -67,11 +67,19 @@ function registerSynapseCommands(context: vscode.ExtensionContext) {
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.api", async () => {
-        await createArtifact("api");
+        await createArtifact(APIArtifactInfo.ARTIFACT_TYPE);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.proxy", async () => {
-		await createArtifact("proxy");
+		await createArtifact(ProxyArtifactInfo.ARTIFACT_TYPE);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.endpoint", async () => {
+		await createArtifact(EndpointArtifactInfo.ARTIFACT_TYPE);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.inboundEndpoint", async () => {
+		await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE);
 	}));
 }
 

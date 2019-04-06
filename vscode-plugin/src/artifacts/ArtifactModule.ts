@@ -67,7 +67,6 @@ export namespace ArtifactModule {
                         });
                     }
                 });
-
             }else {
                 //TODO: handle mutliple workspace opening
             }
@@ -86,7 +85,7 @@ export namespace ArtifactModule {
         workspace.applyEdit(edit);
 
         const dirName = __dirname;
-        let sourcePath = path.join(dirName, '..', '..', '..', 'templates', sourceFile+'.xml');
+        let sourcePath = path.join(dirName, '..', '..', 'templates', sourceFile+'.xml');
 
         const buf: Buffer = await fse.readFile(sourcePath);
         await timeout(200);
