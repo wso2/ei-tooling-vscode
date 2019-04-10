@@ -29,7 +29,11 @@ import org.eclipse.lsp4xml.extensions.contentmodel.settings.XMLValidationSetting
 import org.eclipse.lsp4xml.services.extensions.diagnostics.LSPContentHandler;
 import org.eclipse.lsp4xml.uriresolver.IExternalSchemaLocationProvider;
 import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
-import org.xml.sax.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;

@@ -45,8 +45,8 @@ public class SynapseXMLDefinitionPlugin implements IXMLExtension {
         registry.registerDefinitionParticipant(definitionParticipant);
 
         List<WorkspaceFolder> workspaceFolderList = params.getWorkspaceFolders();
-        for (int i = 0; i < workspaceFolderList.size(); i++) {
-            workspaceFolders.addWorkspaceFolder(workspaceFolderList.get(i));
+        for (WorkspaceFolder workspaceFolder : workspaceFolderList) {
+            workspaceFolders.addWorkspaceFolder(workspaceFolder);
         }
     }
 

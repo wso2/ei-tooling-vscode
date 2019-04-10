@@ -29,7 +29,12 @@ import org.eclipse.lsp4xml.extensions.contentmodel.model.CMDocument;
 import org.eclipse.lsp4xml.extensions.contentmodel.model.CMElementDeclaration;
 import org.eclipse.lsp4xml.extensions.contentmodel.model.ContentModelProvider;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Content model manager used to load XML Schema, DTD.
@@ -153,10 +158,10 @@ public class SynapseContentModelManager {
 	 * (xsi:schemaLocation, xsi:noNamespaceSchemaLocation, doctype) an dnull
 	 * otherwise.
 	 * 
-	 * @param xmlDocument xmlDocument
-     * @param internal insternal
+	 * @param xmlDocument the xml DOM Document
+     * @param internal boolean value
 	 * @return the content model provider by using standard association
-	 *         (xsi:schemaLocation, xsi:noNamespaceSchemaLocation, doctype) an dnull
+	 *         (xsi:schemaLocation, xsi:noNamespaceSchemaLocation, doctype) an null
 	 *         otherwise.
 	 */
 	private ContentModelProvider getModelProviderByStandardAssociation(DOMDocument xmlDocument, boolean internal) {

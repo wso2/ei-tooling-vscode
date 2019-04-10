@@ -44,7 +44,7 @@ public class Constants {
     public static final String INBOUND_ENDPOINT_FOLDER_NAME = "inbound-endpoints";
 
 
-    private Constants(){};
+    private Constants(){}
 
     static {
         SCHEMA_LOCATION = System.getProperty("SCHEMA_PATH");

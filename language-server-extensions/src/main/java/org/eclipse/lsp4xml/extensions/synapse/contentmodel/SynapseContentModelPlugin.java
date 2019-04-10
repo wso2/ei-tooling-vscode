@@ -31,7 +31,7 @@ import org.eclipse.lsp4xml.extensions.synapse.contentmodel.model.SynapseContentM
 import org.eclipse.lsp4xml.utils.DOMUtils;
 
 /**
- * Content model plugin extension to provide:
+ * Content model plugin extension to provide.
  * 
  * <ul>
  * <li>completion based on XML Schema, DTD...</li>

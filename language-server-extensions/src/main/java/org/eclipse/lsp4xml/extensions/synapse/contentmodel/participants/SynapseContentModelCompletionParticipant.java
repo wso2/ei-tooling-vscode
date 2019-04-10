@@ -18,7 +18,11 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 package org.eclipse.lsp4xml.extensions.synapse.contentmodel.participants;
 
-import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.CompletionItem;
+import org.eclipse.lsp4j.CompletionItemKind;
+import org.eclipse.lsp4j.Range;
+import org.eclipse.lsp4j.TextEdit;
+import org.eclipse.lsp4j.InsertTextFormat;
 import org.eclipse.lsp4xml.commons.BadLocationException;
 import org.eclipse.lsp4xml.dom.DOMDocument;
 import org.eclipse.lsp4xml.dom.DOMElement;
@@ -37,7 +41,7 @@ import org.eclipse.lsp4xml.settings.SharedSettings;
 import org.eclipse.lsp4xml.extensions.synapse.xsd.contentmodel.SynapseCMXSDDocument;
 import org.eclipse.lsp4xml.uriresolver.CacheResourceDownloadingException;
 
-import java.util.*;
+import java.util.Collection;
 
 /**
  * Extension to support XML completion based on content model (XML Schema

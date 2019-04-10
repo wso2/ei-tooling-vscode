@@ -30,7 +30,11 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,11 +51,11 @@ public class SynapseXMLDefinitionManager {
         return INSTANCE;
     }
 
-    public final Map<String, Map<String, String>> gotoDefReferences;
+    private final Map<String, Map<String, String>> gotoDefReferences;
 
-    public final Set<String> referenceKeySet;
+    private final Set<String> referenceKeySet;
 
-    public DOMNode targetedElement = null;
+    private DOMNode targetedElement = null;
 
     private SynapseXMLDefinitionManager() {
         gotoDefReferences = new HashMap<>();
@@ -104,7 +108,7 @@ public class SynapseXMLDefinitionManager {
         }
     }
 
-    public DOMNode findDefinitionChild(NodeList children, String targetTagName, String attributeName, String attributeValue) {
+    private DOMNode findDefinitionChild(NodeList children, String targetTagName, String attributeName, String attributeValue) {
         if (children != null && children.getLength() > 0) {
             for (int i = 0; i < children.getLength(); i++) {
 
@@ -144,7 +148,7 @@ public class SynapseXMLDefinitionManager {
         }
     }
 
-    public void listAllFiles(String path, String nodeName, String attrTo, String attrValue, Consumer<DOMNode> collector){
+    private void listAllFiles(String path, String nodeName, String attrTo, String attrValue, Consumer<DOMNode> collector){
         try(Stream<Path> paths = Files.walk(Paths.get(path))) {
 
             for (Path filePath : paths.collect(Collectors.toList())) {
