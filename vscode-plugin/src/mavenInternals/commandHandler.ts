@@ -16,24 +16,47 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import { mavenOutputChannel } from "./mavenOutputChannel";
-import { Settings } from "./Settings";
-import { executeCommand } from "../utils/cpUtils";
-import { ArchetypeModule } from "../archetype/ArchetypeModule";
-import { Runner } from "./mavenRunner";
+import {mavenOutputChannel} from "./mavenOutputChannel";
+import {Settings} from "./Settings";
+import {executeCommand} from "../utils/cpUtils";
+import {ArchetypeModule} from "../archetype/ArchetypeModule";
+import {Runner} from "./mavenRunner";
 
-export function getCommand(cmd: string): string {
-    if (process.platform === "win32") {
-        switch (currentWindowsShell()) {
-            case "PowerShell":
-                return `cmd /c ${cmd}`; // PowerShell
-            default:
-                return cmd; // others, try using common one.
-        }
-    } else {
-        return cmd;
-    }
+
+export async function executeCommandHandler(newProject: ArchetypeModule.ESBProject, cwd: string) {
+    let commandRunner: Runner = new Runner();
+    await getCDCommand(cwd).then((cdCommand) => {
+        let cmd = cdCommand + " && " + getMavenGenerateCommand(newProject);
+        const newWorkingDir: string = generateDirectoryPath([cwd, newProject.artifactId]);
+
+        commandRunner.runCommand(cmd, [], newWorkingDir, cwd);
+    });
 }
+
+function getMavenGenerateCommand(newProject: ArchetypeModule.ESBProject): string {
+    return [
+        "mvn",
+        "archetype:generate",
+        `-DarchetypeArtifactId=${newProject.archetypeArtifactId}`,
+        `-DarchetypeGroupId=${newProject.archetypeGroupId}`,
+        `-DgroupId=${newProject.groupId}`,
+        `-DartifactId=${newProject.artifactId}`,
+        `-DinteractiveMode=false`
+    ].join(" ");
+}
+
+// export function getCommand(cmd: string): string {
+//     if (process.platform === "win32") {
+//         switch (currentWindowsShell()) {
+//             case "PowerShell":
+//                 return `cmd /c ${cmd}`; // PowerShell
+//             default:
+//                 return cmd; // others, try using common one.
+//         }
+//     } else {
+//         return cmd;
+//     }
+// }
 
 export async function getCDCommand(cwd: string): Promise<string> {
     if (process.platform === "win32") {
@@ -54,28 +77,28 @@ export async function getCDCommand(cwd: string): Promise<string> {
     }
 }
 
-export async function getPathCommand(path: string) {
-    if (process.platform === "win32") {
-        switch (currentWindowsShell()) {
-            case "Git Bash":
-                return `"${path.replace(/\\+$/, "")}"`; // Git Bash: remove trailing '\'
-            case "PowerShell":
-                return `"${path}"`; // PowerShell
-            case "Command Prompt":
-                return `"${path}"`; // CMD
-            case "WSL Bash":
-                return `"${await toWslPath(path)}"`; // WSL
-            default:
-                return `"${path}"`; // Unknown, try using common one.
-        }
-    } else {
-        return `"${path}"`;
-    }
-}
+// export async function getPathCommand(path: string) {
+//     if (process.platform === "win32") {
+//         switch (currentWindowsShell()) {
+//             case "Git Bash":
+//                 return `"${path.replace(/\\+$/, "")}"`; // Git Bash: remove trailing '\'
+//             case "PowerShell":
+//                 return `"${path}"`; // PowerShell
+//             case "Command Prompt":
+//                 return `"${path}"`; // CMD
+//             case "WSL Bash":
+//                 return `"${await toWslPath(path)}"`; // WSL
+//             default:
+//                 return `"${path}"`; // Unknown, try using common one.
+//         }
+//     } else {
+//         return `"${path}"`;
+//     }
+// }
 
 export function currentWindowsShell(): string | undefined {
     const currentWindowsShellPath: string | undefined = Settings.External.defaultWindowsShell();
-    if(typeof currentWindowsShellPath !== "undefined") {
+    if (typeof currentWindowsShellPath !== "undefined") {
         if (currentWindowsShellPath.endsWith("cmd.exe")) {
             return "Command Prompt";
         } else if (currentWindowsShellPath.endsWith("powershell.exe")) {
@@ -111,40 +134,16 @@ export async function toWslPath(path: string): Promise<string> {
     }
 }
 
-export async function toWinPath(path: string): Promise<string> {
-    return (await executeCommand("wsl", ["wslpath", "-w", `"${path}"`])).trim();
-}
-
-export async function  executeCommandHandler(newProject: ArchetypeModule.ESBProject, cwd: string) {
-
-    let commandRunner: Runner = new Runner();
-    await getCDCommand(cwd).then((cdCommand) => {
-        let cmd = cdCommand + " && " + getMavenGenerateCommand(newProject); 
-        const newWorkingDir: string = generateDirectoryPath([cwd, newProject.artifactId]);
-        
-        commandRunner.runCommand(cmd, [], newWorkingDir, cwd);
-    });
-}
-
-function getMavenGenerateCommand(newProject: ArchetypeModule.ESBProject): string {
-    const mavenCommand: string = [
-        "mvn",
-        "archetype:generate",
-        `-DarchetypeArtifactId=${newProject.archetypeArtifactId}`,
-        `-DarchetypeGroupId=${newProject.archetypeGroupId}`,
-        `-DgroupId=${newProject.groupId}`,
-        `-DartifactId=${newProject.artifactId}`,
-        `-DinteractiveMode=false`
-    ].join(" ");
-    return mavenCommand;
-}
-
 function generateDirectoryPath(path: string[]): string {
     let fullPath: string;
     if (process.platform === "win32") {
         fullPath = path.join("\\");
-    }else {
+    } else {
         fullPath = path.join("/");
     }
     return fullPath;
 }
+
+// export async function toWinPath(path: string): Promise<string> {
+//     return (await executeCommand("wsl", ["wslpath", "-w", `"${path}"`])).trim();
+// }

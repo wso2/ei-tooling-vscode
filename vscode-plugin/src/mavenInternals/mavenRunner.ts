@@ -46,7 +46,6 @@ export class Runner {
                 }
             }else if(code === 1) {
                 window.showInformationMessage("maven failed: " + signal);
-                
             }
         });
     }

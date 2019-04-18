@@ -18,35 +18,46 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 'use strict';
 
-import { window } from "vscode";
-import { ArtifactModule } from "./ArtifactModule";
+import {QuickPickItem, window} from "vscode";
+import {ArtifactModule} from "./ArtifactModule";
 import {
     APIArtifactInfo,
-    ProxyArtifactInfo,
     EndpointArtifactInfo,
     InboundEndpointArtifactInfo,
     LocalEntryArtifactInfo,
+    MessageProcessorArtifactInfo,
     MessageStoreArtifactInfo,
-    MessageProcessorArtifactInfo
+    ProxyArtifactInfo,
+    RegistryResourceInfo,
+    SequenceArtifactInfo,
+    TemplateArtifactInfo
 } from "./artifactUtils";
 
 export async function createArtifact(artifactType: string) {
-    switch(artifactType) {
+    switch (artifactType) {
         case APIArtifactInfo.ARTIFACT_TYPE: {
-            const destinationFileName = await window.showInputBox({ value: "", prompt: APIArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
-            if(destinationFileName) {
-                ArtifactModule.createTemplate(APIArtifactInfo.DESTINATION_FOLDER, "api", destinationFileName);
+            const artifactName = await window.showInputBox({
+                prompt: APIArtifactInfo.PROMPT_MESSAGE
+            }).then(text => text);
+
+            if (artifactName) {
+                ArtifactModule.createTemplate(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.API_LABEL, artifactName,
+                    artifactType, APIArtifactInfo.TYPE);
             }
             break;
-        } 
+        }
         case ProxyArtifactInfo.ARTIFACT_TYPE: {
             const proxyTypes = createProxyServiceArray();
-            const selectedArifactType = await showQuickPick(proxyTypes);
-            
-            if(selectedArifactType) {
-                const artifactName = await window.showInputBox({ value: "", prompt: ProxyArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
-                if(artifactName) {
-                    ArtifactModule.createTemplate(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, selectedArifactType, artifactName);
+            const selectedArtifactType = await showQuickPick(proxyTypes);
+
+            if (selectedArtifactType) {
+                const artifactName = await window.showInputBox({
+                    prompt: ProxyArtifactInfo.PROMPT_MESSAGE
+                }).then(text => text);
+
+                if (artifactName) {
+                    ArtifactModule.createTemplate(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName, artifactType, ProxyArtifactInfo.TYPE);
                 }
             }
             break;
@@ -55,10 +66,14 @@ export async function createArtifact(artifactType: string) {
             const endpointTypes = createEndpointServiceArray();
             const selectedArtifactType = await showQuickPick(endpointTypes);
 
-            if(selectedArtifactType) {
-                const artifactName = await window.showInputBox({ value: "", prompt: EndpointArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
-                if(artifactName) {
-                    ArtifactModule.createTemplate(EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
+            if (selectedArtifactType) {
+                const artifactName = await window.showInputBox({
+                    prompt: EndpointArtifactInfo.PROMPT_MESSAGE
+                }).then(text => text);
+
+                if (artifactName) {
+                    ArtifactModule.createTemplate(EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName, artifactType, EndpointArtifactInfo.TYPE);
                 }
             }
             break;
@@ -67,10 +82,14 @@ export async function createArtifact(artifactType: string) {
             const inboundEndpointTypes = createInboundEndpointServiceArray();
             const selectedArtifactType = await showQuickPick(inboundEndpointTypes);
 
-            if(selectedArtifactType) {
-                const artifactName = await window.showInputBox({ value: "", prompt: InboundEndpointArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
-                if(artifactName) {
-                    ArtifactModule.createTemplate(InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
+            if (selectedArtifactType) {
+                const artifactName = await window.showInputBox({
+                    prompt: InboundEndpointArtifactInfo.PROMPT_MESSAGE
+                }).then(text => text);
+
+                if (artifactName) {
+                    ArtifactModule.createTemplate(InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName, artifactType, InboundEndpointArtifactInfo.TYPE);
                 }
             }
             break;
@@ -79,10 +98,14 @@ export async function createArtifact(artifactType: string) {
             const localEntriesTypes = createLocalEntryServiceArray();
             const selectedArtifactType = await showQuickPick(localEntriesTypes);
 
-            if(selectedArtifactType) {
-                const artifactName = await window.showInputBox({ value: "", prompt: InboundEndpointArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
-                if(artifactName) {
-                    ArtifactModule.createTemplate(LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
+            if (selectedArtifactType) {
+                const artifactName = await window.showInputBox({
+                    prompt: InboundEndpointArtifactInfo.PROMPT_MESSAGE
+                }).then(text => text);
+
+                if (artifactName) {
+                    ArtifactModule.createTemplate(LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName, artifactType, LocalEntryArtifactInfo.TYPE);
                 }
             }
             break;
@@ -91,22 +114,82 @@ export async function createArtifact(artifactType: string) {
             const messageStoreTypes = createMessageStoreServiceArray();
             const selectedArtifactType = await showQuickPick(messageStoreTypes);
 
-            if(selectedArtifactType) {
-                const artifactName = await window.showInputBox({ value: "", prompt: MessageStoreArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
-                if(artifactName) {
-                    ArtifactModule.createTemplate(MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
+            if (selectedArtifactType) {
+                const artifactName = await window.showInputBox({
+                    prompt: MessageStoreArtifactInfo.PROMPT_MESSAGE
+                }).then(text => text);
+
+                if (artifactName) {
+                    ArtifactModule.createTemplate(MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName, artifactType, MessageStoreArtifactInfo.TYPE);
                 }
             }
             break;
         }
         case MessageProcessorArtifactInfo.ARTIFACT_TYPE: {
-            const messageProcessorTypes = createMessageStoreServiceArray();
+            const messageProcessorTypes = createMessageProcessorServiceArray();
             const selectedArtifactType = await showQuickPick(messageProcessorTypes);
 
-            if(selectedArtifactType) {
-                const artifactName = await window.showInputBox({ value: "", prompt: MessageProcessorArtifactInfo.PROMPT_MESSAGE, placeHolder: ""}).then(text => text);
-                if(artifactName) {
-                    ArtifactModule.createTemplate(MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType, artifactName);
+            if (selectedArtifactType) {
+                const artifactName = await window.showInputBox({
+                    prompt: MessageProcessorArtifactInfo.PROMPT_MESSAGE
+                }).then(text => text);
+
+                if (artifactName) {
+                    ArtifactModule.createTemplate(MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName, artifactType, MessageProcessorArtifactInfo.TYPE);
+                }
+            }
+            break;
+        }
+        case TemplateArtifactInfo.ARTIFACT_TYPE: {
+            const templateTypes = createTemplateServiceArray();
+            const selectedArtifactType = await showQuickPick(templateTypes);
+
+            if (selectedArtifactType) {
+                const artifactName = await window.showInputBox({
+                    prompt: MessageProcessorArtifactInfo.PROMPT_MESSAGE
+                }).then(text => text);
+
+                if (artifactName) {
+                    let type = TemplateArtifactInfo.getType(selectedArtifactType);
+                    ArtifactModule.createTemplate(TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName, artifactType, type);
+                }
+            }
+            break;
+        }
+        case SequenceArtifactInfo.ARTIFACT_TYPE: {
+            const artifactName = await window.showInputBox({
+                prompt: SequenceArtifactInfo.PROMPT_MESSAGE
+            }).then(text => text);
+
+            if (artifactName) {
+                ArtifactModule.createTemplate(SequenceArtifactInfo.DESTINATION_FOLDER, SequenceArtifactInfo.SEQUENCE_LABEL,
+                    artifactName, artifactType, SequenceArtifactInfo.TYPE);
+            }
+            break;
+        }
+        case RegistryResourceInfo.ARTIFACT_TYPE: {
+            const messageProcessorTypes = createRegistryResourceTemplateArray();
+            const selectedArtifactType = await showQuickPick(messageProcessorTypes);
+
+            if (selectedArtifactType) {
+                const artifactName = await window.showInputBox({
+                    prompt: RegistryResourceInfo.PROMPT_MESSAGE,
+                }).then(text => text);
+
+                const registry = await window.showQuickPick(['conf', 'gov'],
+                    {placeHolder: 'Select the registry type.'});
+
+                const registryPath = await window.showInputBox({
+                    prompt: "Enter valid registry path here",
+                    placeHolder: "eg: Datamapper/example"
+                }).then(text => text);
+
+                if (artifactName && registry && registryPath) {
+                    ArtifactModule.createResource(RegistryResourceInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName, RegistryResourceInfo.TYPE);
                 }
             }
             break;
@@ -114,106 +197,344 @@ export async function createArtifact(artifactType: string) {
     }
 }
 
-async function showQuickPick(promise: Promise<{"value": string; "label": string;}[]>): Promise<string | undefined> {
+async function showQuickPick(quickPickItems: QuickPickItem[]): Promise<string | undefined> {
     return await window.showQuickPick(
-        promise.then(items => items.map(item => ({
-            value: item.value,
-            label: item.label,
-            description: "",
-            detail: ""
-        }))),
-        { matchOnDescription: true, placeHolder: "Select type..." }
+        quickPickItems,
+        {matchOnDescription: true, placeHolder: "Select type..."}
     ).then(selected => (
-        selected && selected.value
+        selected && selected.description
     ));
 }
 
-function createProxyServiceArray(): Promise<{"value": string; "label": string;}[]> {
-    return new Promise((resolve) => {
-        const serviceArray = [
-            {"value": ProxyArtifactInfo.PASS_THROUGH_PROXY, "label": ProxyArtifactInfo.PASS_THROUGH_PROXY_LABEL},
-            {"value": ProxyArtifactInfo.CUSTOM_PROXY, "label": ProxyArtifactInfo.CUSTOM_PROXY_LABEL},
-            {"value": ProxyArtifactInfo.TRANSFORMER_PROXY, "label": ProxyArtifactInfo.TRANSFORMER_PROXY_LABEL},
-            {"value": ProxyArtifactInfo.LOGGING_PROXY, "label": ProxyArtifactInfo.LOGGING_PROXY_LABEL},
-            {"value": ProxyArtifactInfo.WSDL_BASED_PROXY, "label": ProxyArtifactInfo.WSDL_BASED_PROXY_LABEL},
-            {"value": ProxyArtifactInfo.SECURE_PROXY, "label": ProxyArtifactInfo.SECURE_PROXY_LABEL}
-        ];
-        resolve(serviceArray);
-    });
+
+function createProxyServiceArray(): QuickPickItem[] {
+    return [
+        {
+            "description": ProxyArtifactInfo.PASS_THROUGH_PROXY,
+            "label": ProxyArtifactInfo.PASS_THROUGH_PROXY_LABEL
+        },
+        {
+            "description": ProxyArtifactInfo.CUSTOM_PROXY,
+            "label": ProxyArtifactInfo.CUSTOM_PROXY_LABEL
+        },
+        {
+            "description": ProxyArtifactInfo.TRANSFORMER_PROXY,
+            "label": ProxyArtifactInfo.TRANSFORMER_PROXY_LABEL
+        },
+        {
+            "description": ProxyArtifactInfo.LOGGING_PROXY,
+            "label": ProxyArtifactInfo.LOGGING_PROXY_LABEL
+        },
+        {
+            "description": ProxyArtifactInfo.WSDL_BASED_PROXY,
+            "label": ProxyArtifactInfo.WSDL_BASED_PROXY_LABEL
+        },
+        {
+            "description": ProxyArtifactInfo.SECURE_PROXY,
+            "label": ProxyArtifactInfo.SECURE_PROXY_LABEL
+        }
+    ];
+
 }
 
-function createEndpointServiceArray(): Promise<{"value": string; "label": string;}[]> {
-    return new Promise((resolve) => {
-        const serviceArray = [
-            {"value": EndpointArtifactInfo.ADDRESS_ENDPOINT, "label": EndpointArtifactInfo.ADDRESS_ENDPOINT_LABEL},
-            {"value": EndpointArtifactInfo.HTTP_ENDPOINT, "label": EndpointArtifactInfo.HTTP_ENDPOINT_LABEL},
-            {"value": EndpointArtifactInfo.DEFAULT_ENDPOINT, "label": EndpointArtifactInfo.DEFAULT_ENDPOINT_LABEL},
-            {"value": EndpointArtifactInfo.WSDL_ENDPOINT, "label": EndpointArtifactInfo.WSDL_ENDPOINT_LABEL},
-            {"value": EndpointArtifactInfo.FAIL_OVER_ENDPOINT, "label": EndpointArtifactInfo.FAIL_OVER_ENDPOINT_LABEL},
-            {"value": EndpointArtifactInfo.LOAD_BALANCE_ENDPOINT, "label": EndpointArtifactInfo.LOAD_BALANCE_ENDPOINT_LABEL},
-            {"value": EndpointArtifactInfo.RECIPIENT_LIST_ENDPOINT, "label": EndpointArtifactInfo.RECIPIENT_LIST_ENDPOINT_LABEL},
-            {"value": EndpointArtifactInfo.TEMPLATE_ENDPOINT, "label": EndpointArtifactInfo.TEMPLATE_ENDPOINT_LABEL}
-        ];
-        resolve(serviceArray);
-    });
+function createEndpointServiceArray(): QuickPickItem[] {
+    return [
+        {
+            "description": EndpointArtifactInfo.ADDRESS_ENDPOINT,
+            "label": EndpointArtifactInfo.ADDRESS_ENDPOINT_LABEL
+        },
+        {
+            "description": EndpointArtifactInfo.HTTP_ENDPOINT,
+            "label": EndpointArtifactInfo.HTTP_ENDPOINT_LABEL
+        },
+        {
+            "description": EndpointArtifactInfo.DEFAULT_ENDPOINT,
+            "label": EndpointArtifactInfo.DEFAULT_ENDPOINT_LABEL
+        },
+        {
+            "description": EndpointArtifactInfo.WSDL_ENDPOINT,
+            "label": EndpointArtifactInfo.WSDL_ENDPOINT_LABEL
+        },
+        {
+            "description": EndpointArtifactInfo.FAIL_OVER_ENDPOINT,
+            "label": EndpointArtifactInfo.FAIL_OVER_ENDPOINT_LABEL
+        },
+        {
+            "description": EndpointArtifactInfo.LOAD_BALANCE_ENDPOINT,
+            "label": EndpointArtifactInfo.LOAD_BALANCE_ENDPOINT_LABEL
+        },
+        {
+            "description": EndpointArtifactInfo.RECIPIENT_LIST_ENDPOINT,
+            "label": EndpointArtifactInfo.RECIPIENT_LIST_ENDPOINT_LABEL
+        },
+        {
+            "description": EndpointArtifactInfo.TEMPLATE_ENDPOINT,
+            "label": EndpointArtifactInfo.TEMPLATE_ENDPOINT_LABEL
+        }
+    ];
 }
 
-function createInboundEndpointServiceArray(): Promise<{"value": string; "label": string;}[]> {
-    return new Promise((resolve) => {
-        const serviceArray = [
-            {"value": InboundEndpointArtifactInfo.HTTP_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.HTTP_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.FILE_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.FILE_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.JMS_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.JMS_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.CUSTOM_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.CUSTOM_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.HTTPS_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.HTTPS_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.HL7_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.HL7_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.KAFKA_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.KAFKA_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.CXF_WS_RM_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.CXF_WS_RM_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.MQTT_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.MQTT_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.RABBITMQ_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.RABBITMQ_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.FEED_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.FEED_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.WSO2_MB_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.WSO2_MB_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.WS_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.WS_INBOUND_ENDPOINT_LABEL},
-            {"value": InboundEndpointArtifactInfo.WSS_INBOUND_ENDPOINT, "label": InboundEndpointArtifactInfo.WSS_INBOUND_ENDPOINT_LABEL}
-        ];
-        resolve(serviceArray);
-    });
+function createInboundEndpointServiceArray(): QuickPickItem[] {
+    return [
+        {
+            "description": InboundEndpointArtifactInfo.HTTP_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.HTTP_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.FILE_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.FILE_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.JMS_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.JMS_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.CUSTOM_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.CUSTOM_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.HTTPS_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.HTTPS_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.HL7_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.HL7_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.KAFKA_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.KAFKA_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.CXF_WS_RM_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.CXF_WS_RM_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.MQTT_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.MQTT_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.RABBITMQ_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.RABBITMQ_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.FEED_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.FEED_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.WSO2_MB_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.WSO2_MB_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.WS_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.WS_INBOUND_ENDPOINT_LABEL
+        },
+        {
+            "description": InboundEndpointArtifactInfo.WSS_INBOUND_ENDPOINT,
+            "label": InboundEndpointArtifactInfo.WSS_INBOUND_ENDPOINT_LABEL
+        }
+    ];
+
 }
 
-function createLocalEntryServiceArray(): Promise<{"value": string; "label": string;}[]> {
-    return new Promise((resolve) => {
-        const serviceArray = [
-            {"value": LocalEntryArtifactInfo.IN_LINE_TEXT_ENTRY, "label": LocalEntryArtifactInfo.IN_LINE_TEXT_ENTRY_LABEL},
-            {"value": LocalEntryArtifactInfo.IN_LINE_XML_ENTRY, "label": LocalEntryArtifactInfo.IN_LINE_XML_ENTRY_LABEL},
-            {"value": LocalEntryArtifactInfo.SOURCE_URL_ENTRY, "label": LocalEntryArtifactInfo.SOURCE_URL_ENTRY_LABEL}
-        ];
-        resolve(serviceArray);
-    });
+function createLocalEntryServiceArray(): QuickPickItem[] {
+    return [
+        {
+            "description": LocalEntryArtifactInfo.IN_LINE_TEXT_ENTRY,
+            "label": LocalEntryArtifactInfo.IN_LINE_TEXT_ENTRY_LABEL
+        },
+        {
+            "description": LocalEntryArtifactInfo.IN_LINE_XML_ENTRY,
+            "label": LocalEntryArtifactInfo.IN_LINE_XML_ENTRY_LABEL
+        },
+        {
+            "description": LocalEntryArtifactInfo.SOURCE_URL_ENTRY,
+            "label": LocalEntryArtifactInfo.SOURCE_URL_ENTRY_LABEL
+        }
+    ];
+
 }
 
-function createMessageStoreServiceArray(): Promise<{"value": string; "label": string;}[]> {
-    return new Promise((resolve) => {
-        const serviceArray = [
-            {"value": MessageStoreArtifactInfo.CUSTOM_MESSAGE_STORE, "label": MessageStoreArtifactInfo.CUSTOM_MESSAGE_STORE_LABEL},
-            {"value": MessageStoreArtifactInfo.IN_MEMORY_MESSAGE_STORE, "label": MessageStoreArtifactInfo.IN_MEMORY_MESSAGE_STORE_LABEL},
-            {"value": MessageStoreArtifactInfo.JDBC_MESSAGE_STORE, "label": MessageStoreArtifactInfo.JDBC_MESSAGE_STORE_LABEL},
-            {"value": MessageStoreArtifactInfo.JMS_MESSAGE_STORE, "label": MessageStoreArtifactInfo.JMS_MESSAGE_STORE_LABEL},
-            {"value": MessageStoreArtifactInfo.RABBIT_MQ_MESSAGE_STORE, "label": MessageStoreArtifactInfo.RABBIT_MQ_MESSAGE_STORE_LABEL},
-            {"value": MessageStoreArtifactInfo.RESEQUENCE_MESSAGE_STORE, "label": MessageStoreArtifactInfo.RESEQUENCE_MESSAGE_STORE_LABEL},
-            {"value": MessageStoreArtifactInfo.WSO2_MB_MESSAGE_STORE, "label": MessageStoreArtifactInfo.WSO2_MB_MESSAGE_STORE_LABEL}
-        ];
-        resolve(serviceArray);
-    });
+function createMessageStoreServiceArray(): QuickPickItem[] {
+    return [
+        {
+            "description": MessageStoreArtifactInfo.CUSTOM_MESSAGE_STORE,
+            "label": MessageStoreArtifactInfo.CUSTOM_MESSAGE_STORE_LABEL
+        },
+        {
+            "description": MessageStoreArtifactInfo.IN_MEMORY_MESSAGE_STORE,
+            "label": MessageStoreArtifactInfo.IN_MEMORY_MESSAGE_STORE_LABEL
+        },
+        {
+            "description": MessageStoreArtifactInfo.JDBC_MESSAGE_STORE,
+            "label": MessageStoreArtifactInfo.JDBC_MESSAGE_STORE_LABEL
+        },
+        {
+            "description": MessageStoreArtifactInfo.JMS_MESSAGE_STORE,
+            "label": MessageStoreArtifactInfo.JMS_MESSAGE_STORE_LABEL
+        },
+        {
+            "description": MessageStoreArtifactInfo.RABBIT_MQ_MESSAGE_STORE,
+            "label": MessageStoreArtifactInfo.RABBIT_MQ_MESSAGE_STORE_LABEL
+        },
+        {
+            "description": MessageStoreArtifactInfo.RESEQUENCE_MESSAGE_STORE,
+            "label": MessageStoreArtifactInfo.RESEQUENCE_MESSAGE_STORE_LABEL
+        },
+        {
+            "description": MessageStoreArtifactInfo.WSO2_MB_MESSAGE_STORE,
+            "label": MessageStoreArtifactInfo.WSO2_MB_MESSAGE_STORE_LABEL
+        }
+    ];
+
 }
 
-function createMessageProcessorServiceArray(): Promise<{"value": string; "label": string;}[]> {
-    return new Promise((resolve) => {
-        const serviceArray = [
-            {"value": MessageProcessorArtifactInfo.SCHEDULED_MSG_FORWARDING_PROCESSOR, "label": MessageProcessorArtifactInfo.SCHEDULED_MSG_FORWARDING_PROCESSOR_LABEL},
-            {"value": MessageProcessorArtifactInfo.MESSAGE_SAMPLING_PROCESSOR, "label": MessageProcessorArtifactInfo.MESSAGE_SAMPLING_PROCESSOR_LABEL},
-            {"value": MessageProcessorArtifactInfo.CUSTOM_MESSAGE_PROCESSOR, "label": MessageProcessorArtifactInfo.CUSTOM_MESSAGE_PROCESSOR_LABEL},
-            {"value": MessageProcessorArtifactInfo.FAILOVER_SCHEDULED_MESSAGE_FORWARDING_PROCESSOR, "label": MessageProcessorArtifactInfo.FAILOVER_SCHEDULED_MESSAGE_FORWARDING_PROCESSOR_LABEL}
-            ];
-        resolve(serviceArray);
-    });
+function createMessageProcessorServiceArray(): QuickPickItem[] {
+    return [
+        {
+            "description": MessageProcessorArtifactInfo.SCHEDULED_MSG_FORWARDING_PROCESSOR,
+            "label": MessageProcessorArtifactInfo.SCHEDULED_MSG_FORWARDING_PROCESSOR_LABEL
+        },
+        {
+            "description": MessageProcessorArtifactInfo.MESSAGE_SAMPLING_PROCESSOR,
+            "label": MessageProcessorArtifactInfo.MESSAGE_SAMPLING_PROCESSOR_LABEL
+        },
+        {
+            "description": MessageProcessorArtifactInfo.CUSTOM_MESSAGE_PROCESSOR,
+            "label": MessageProcessorArtifactInfo.CUSTOM_MESSAGE_PROCESSOR_LABEL
+        },
+        {
+            "description": MessageProcessorArtifactInfo.FAILOVER_SCHEDULED_MESSAGE_FORWARDING_PROCESSOR,
+            "label": MessageProcessorArtifactInfo.FAILOVER_SCHEDULED_MESSAGE_FORWARDING_PROCESSOR_LABEL
+        }
+    ];
+
 }
+
+function createTemplateServiceArray(): QuickPickItem[] {
+    return [
+        {
+            "description": TemplateArtifactInfo.SEQUENCE,
+            "label": TemplateArtifactInfo.SEQUENCE_LABEL
+        },
+        {
+            "description": TemplateArtifactInfo.ADDRESS_ENDPOINT,
+            "label": TemplateArtifactInfo.ADDRESS_ENDPOINT_LABEL
+        },
+        {
+            "description": TemplateArtifactInfo.DEFAULT_ENDPOINT,
+            "label": TemplateArtifactInfo.DEFAULT_ENDPOINT_LABEL
+        },
+        {
+            "description": TemplateArtifactInfo.WSDL_ENDPOINT,
+            "label": TemplateArtifactInfo.WSDL_ENDPOINT_LABEL
+        },
+        {
+            "description": TemplateArtifactInfo.HTTP_ENDPOINT,
+            "label": TemplateArtifactInfo.HTTP_ENDPOINT_LABEL
+        }
+
+    ];
+
+}
+
+function createRegistryResourceTemplateArray(): QuickPickItem[] {
+    return [
+        {
+            "description": RegistryResourceInfo.DATA_MAPPER,
+            "label": RegistryResourceInfo.DATA_MAPPER_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.SEQUENCE,
+            "label": RegistryResourceInfo.SEQUENCE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.ADDRESS_ENDPOINT,
+            "label": RegistryResourceInfo.ADDRESS_ENDPOINT_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.HTTP_ENDPOINT,
+            "label": RegistryResourceInfo.HTTP_ENDPOINT_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.DEFAULT_ENDPOINT,
+            "label": RegistryResourceInfo.DEFAULT_ENDPOINT_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.WSDL_ENDPOINT,
+            "label": RegistryResourceInfo.WSDL_ENDPOINT_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.FAIL_OVER_ENDPOINT,
+            "label": RegistryResourceInfo.FAIL_OVER_ENDPOINT_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.LOAD_BALANCE_ENDPOINT,
+            "label": RegistryResourceInfo.LOAD_BALANCE_ENDPOINT_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.RECIPIENT_LIST_ENDPOINT,
+            "label": RegistryResourceInfo.RECIPIENT_LIST_ENDPOINT_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.TEMPLATE_ENDPOINT,
+            "label": RegistryResourceInfo.TEMPLATE_ENDPOINT_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.SMOOKS_CONFIGURATION,
+            "label": RegistryResourceInfo.SMOOKS_CONFIGURATION_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.PASS_THROUGH_PROXY,
+            "label": RegistryResourceInfo.PASS_THROUGH_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.CUSTOM_PROXY,
+            "label": RegistryResourceInfo.CUSTOM_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.TRANSFORMER_PROXY,
+            "label": RegistryResourceInfo.TRANSFORMER_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.LOGGING_PROXY,
+            "label": RegistryResourceInfo.LOGGING_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.WSDL_BASED_PROXY,
+            "label": RegistryResourceInfo.WSDL_BASED_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.LOCAL_ENTRY,
+            "label": RegistryResourceInfo.LOCAL_ENTRY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.CSS_FILE,
+            "label": RegistryResourceInfo.CSS_FILE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.HTML_FILE,
+            "label": RegistryResourceInfo.HTML_FILE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.JS_FILE,
+            "label": RegistryResourceInfo.JS_FILE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.SQL_SCRIPT_FILE,
+            "label": RegistryResourceInfo.SQL_SCRIPT_FILE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.XSL_FILE,
+            "label": RegistryResourceInfo.XSL_FILE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.XSLT_FILE,
+            "label": RegistryResourceInfo.XSLT_FILE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.WSDL_FILE,
+            "label": RegistryResourceInfo.WSDL_FILE_LABEL
+        }
+    ];
+}
+

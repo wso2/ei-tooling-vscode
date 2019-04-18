@@ -1,15 +1,34 @@
+/*
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* WSO2 Inc. licenses this file to you under the Apache License,
+* Version 2.0 (the "License"); you may not use this file except
+* in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied. See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 import * as fse from "fs-extra";
 import * as os from "os";
 import * as path from "path";
-import { Uri, window, workspace} from "vscode";
-import { openDialogForFolder } from "../utils/uiUtils";
-import { Utils } from "../utils/Utils";          
-import { Archetype } from "./Archetype";
-import { executeCommandHandler } from "../mavenInternals/commandHandler";
+import {Uri, window} from "vscode";
+import {openDialogForFolder} from "../utils/uiUtils";
+import {Utils} from "../utils/Utils";
+import {Archetype} from "./Archetype";
+import {executeCommandHandler} from "../mavenInternals/commandHandler";
+import {ArtifactInfo} from "./archetypeUtils";
 
 export namespace ArchetypeModule {
 
-    export interface ESBProject{
+    export interface ESBProject {
         archetypeGroupId: string;
         archetypeArtifactId: string;
         groupId: string;
@@ -17,111 +36,67 @@ export namespace ArchetypeModule {
         version?: string;
     }
 
-    async function selectArchetype(): Promise<Archetype | undefined> {
-        let selectedArchetype: Archetype | undefined = await showQuickPickForArchetypes();
-        if (selectedArchetype && !selectedArchetype.artifactId) {
-            selectedArchetype = await showQuickPickForArchetypes({ all: true });
+    export async function createESBProject(): Promise<void> {
+        // Select ESB artifact from local .m2 repo
+        const archetype = await getESBArtifact();
+        if (!archetype) {
+            window.showErrorMessage("No matching archetype found!!");
+            return;
         }
-        if (!selectedArchetype) {
-            // throw new OperationCanceledError("Archetype not selected.");
-        }
-        return selectedArchetype;
-    }      
-
-    async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
-        const result: Uri | null = await openDialogForFolder({
-            defaultUri: entry,
-            openLabel: "Select Destination Folder"
-        });
-        const cwd: string | null = result && result.fsPath;
-        if (!cwd) {
-            // throw new OperationCanceledError("Target folder not selected.");
-        }
-        return cwd;
-    }
-
-    export async function createESBProject(): Promise<void>  {
-        
-        const archetype  = await getESBArtifact();
         let projectName: string | undefined = await showInputBoxForProjectName();
 
-        while(projectName === "") {
-            window.showErrorMessage("ESB Project name is mandatory");
+        // Loop until the project name is valid
+        while (projectName === "") {
+            window.showErrorMessage("ESB Project name is mandatory!!");
             projectName = await showInputBoxForProjectName();
         }
 
-        if(archetype && archetype.groupId && archetype.artifactId &&  projectName && projectName.length > 0) {
-            // choose target folder.
+        if (archetype && archetype.groupId && archetype.artifactId && projectName && projectName.length > 0) {
+            // Set home dir as the target folder hint.
             const homedir: string = require('os').homedir();
-            
             const targetFolderHint = Uri.file(homedir);
             targetFolderHint.scheme == 'file';
             targetFolderHint.path == homedir;
             targetFolderHint.fragment == '';
 
-            const newProject: ESBProject = {archetypeGroupId: archetype.groupId, archetypeArtifactId: archetype.artifactId, groupId: "com.example." + projectName, artifactId:projectName};
-            const cwd: string | null = await chooseTargetFolder(targetFolderHint);
+            const newProject: ESBProject = {
+                archetypeGroupId: archetype.groupId,
+                archetypeArtifactId: archetype.artifactId,
+                groupId: ArtifactInfo.GROUP_ID_PREFIX + projectName,
+                artifactId: projectName
+            };
 
-            if(cwd) {
+            const cwd: string | null = await chooseTargetFolder(targetFolderHint);
+            if (cwd) {
                 await executeCommandHandler(newProject, cwd);
             }
-        }else {
-
         }
     }
 
-    export async function generateFromArchetype(entry: Uri | undefined): Promise<void> {
-        // select archetype.
-        const a = await selectArchetype();
-
-        if(typeof a !== "undefined") {
-            const artifactId = a.artifactId;
-            const groupId = a.groupId;
-
-            // choose target folder.
-            let targetFolderHint: Uri;
-            if (entry) {
-                targetFolderHint = entry;
-
-            } else if (workspace.workspaceFolders && workspace.workspaceFolders.length > 0) {
-                targetFolderHint = workspace.workspaceFolders[0].uri;
-
-                const cwd: string | null = await chooseTargetFolder(targetFolderHint);
-                
-            }
-            // execute in terminal.
-        }
-    }
-
-    async function showQuickPickForArchetypes(options?: { all: boolean }): Promise<Archetype | undefined> {
-        return await window.showQuickPick(
-            loadArchetypePickItems(options).then(items => items.map(item => ({
-                value: item,
-                label: item.artifactId ? `$(package) ${item.artifactId} ` : "More ...",
-                description: item.groupId ? `${item.groupId}` : "",
-                detail: item.description
-            }))),
-            { matchOnDescription: true, placeHolder: "Select an archetype ..." }
-        ).then(selected => selected && selected.value);
-    }
-
-    async function showInputBoxForProjectName(): Promise<string | undefined> {
-        return await window.showInputBox({ value: "", prompt: "Enter ESB Project Name", placeHolder: "Enter project name here"}).then(text => text);
-    }
-
-    async function loadArchetypePickItems(options?: { all: boolean }): Promise<Archetype[]> {
-        // from local catalog
+    async function getESBArtifact(): Promise<Archetype | undefined> {
         const localItems: Archetype[] = await getLocalArchetypeItems();
-        // from cached remote-catalog
-        // const remoteItems: Archetype[] = await getCachedRemoteArchetypeItems();
-        // const localOnlyItems: Archetype[] = localItems.filter(localItem => !remoteItems.find(remoteItem => remoteItem.identifier === localItem.identifier));
-        if (options && options.all) {
-            const archTypeArr : Archetype[] = [];
-            archTypeArr.concat(localItems);
+        let archetype = undefined;
 
-            return archTypeArr;
+        localItems.forEach(function (item) {
+            let artifactId = item.artifactId;
+            let groupId = item.groupId;
+
+            if (artifactId === ArtifactInfo.ARCHETYPE_ARTIFACT_ID && groupId === ArtifactInfo.ARCHETYPE_GROUP_ID) {
+                archetype = item;
+                return archetype;
+            }
+        });
+        return archetype;
+    }
+
+
+    async function getLocalArchetypeItems(): Promise<Archetype[]> {
+        const localCatalogPath: string = path.join(os.homedir(), ".m2", "repository", "archetype-catalog.xml");
+        if (await fse.pathExists(localCatalogPath)) {
+            const buf: Buffer = await fse.readFile(localCatalogPath);
+            return listArchetypeFromXml(buf.toString());
         } else {
-            return [new Archetype( null, null, undefined, "Find more archetypes available in remote catalog.")].concat(localItems);
+            return [];
         }
     }
 
@@ -154,30 +129,24 @@ export namespace ArchetypeModule {
         return [];
     }
 
-    async function getLocalArchetypeItems(): Promise<Archetype[]> {
-        const localCatalogPath: string = path.join(os.homedir(), ".m2", "repository", "archetype-catalog.xml");
-        if (await fse.pathExists(localCatalogPath)) {
-            const buf: Buffer = await fse.readFile(localCatalogPath);
-            return listArchetypeFromXml(buf.toString());
-        } else {
-            return [];
-        }
+    async function showInputBoxForProjectName(): Promise<string | undefined> {
+        return await window.showInputBox({
+            value: "",
+            prompt: "Enter ESB Project Name",
+            placeHolder: "Enter project name here"
+        }).then(text => text);
     }
 
-    async function getESBArtifact(): Promise<Archetype | undefined> {
-        const localItems: Archetype[] = await getLocalArchetypeItems();
-        let archetype = undefined;
-
-        localItems.forEach(function(item) {
-            let artifactId = item.artifactId;
-            let groupId = item.groupId;
-
-            if(artifactId === "wso2ei-tooling" && groupId === "wso2ei.vscode.tooling") {
-                archetype = item;
-                return archetype;
-            }
+    async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
+        const result: Uri | null = await openDialogForFolder({
+            defaultUri: entry,
+            openLabel: "Select Destination Folder"
         });
-        return archetype;
+        const cwd: string | null = result && result.fsPath;
+        if (!cwd) {
+            window.showErrorMessage("Target folder not selected");
+        }
+        return cwd;
     }
 
     // async function getCachedRemoteArchetypeItems(): Promise<Archetype[]> {

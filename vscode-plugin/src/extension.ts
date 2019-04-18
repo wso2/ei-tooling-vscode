@@ -17,7 +17,10 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 */
 
 import * as vscode from 'vscode';
-import { setLanguageToSynapse as setLanguageToSynapse, registerCommandToChangeLanguageToSyanpse} from './language';
+import {
+	setLanguageToSynapse,
+	changeLanguageToSynapse
+} from './language';
 import { launch as launchServer } from './server';
 import { ArchetypeModule } from "./archetype/ArchetypeModule";
 import { createArtifact } from "./artifacts/artifactResolver";
@@ -26,9 +29,14 @@ import {
 	ProxyArtifactInfo,
 	EndpointArtifactInfo,
 	InboundEndpointArtifactInfo,
-	LocalEntryArtifactInfo, MessageStoreArtifactInfo, MessageProcessorArtifactInfo
+	LocalEntryArtifactInfo,
+	MessageStoreArtifactInfo,
+	MessageProcessorArtifactInfo,
+	RegistryResourceInfo,
+	TemplateArtifactInfo, SequenceArtifactInfo
 } from "./artifacts/artifactUtils";
 
+import { createCApp } from "./archive/archiveResolver";
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -37,9 +45,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	//launch server
 	launchServer(context, __dirname);
-
-	//registering command to forcefully change the editing mode to synapse
-	registerCommandToChangeLanguageToSyanpse(context);
 
 	//check currently active text editor
 	if (vscode.window.activeTextEditor) {
@@ -60,17 +65,24 @@ export function activate(context: vscode.ExtensionContext) {
 	});	
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
-
 function registerSynapseCommands(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("extension.activateExtension", async () => {
 		
 	}));
 
+	context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.changeLanguage', (editor, edit) => {
+		if(!setLanguageToSynapse(editor.document)) {
+			changeLanguageToSynapse(editor, edit);
+		}
+	}));
+
 	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.project.create", async () => {
 		await ArchetypeModule.createESBProject();
 	}));
+	
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.project.build", async () => {
+		await createCApp();
+    }));
 
 	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.api", async () => {
         await createArtifact(APIArtifactInfo.ARTIFACT_TYPE);
@@ -99,8 +111,22 @@ function registerSynapseCommands(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.messageProcessor", async () => {
 		await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE);
 	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.template", async () => {
+		await createArtifact(TemplateArtifactInfo.ARTIFACT_TYPE);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.artifact.sequence", async () => {
+		await createArtifact(SequenceArtifactInfo.ARTIFACT_TYPE);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("wso2esb.resource.registry", async () => {
+		await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE);
+	}));
 }
 
+// this method is called when your extension is deactivated
+export function deactivate() {}
 
 
 

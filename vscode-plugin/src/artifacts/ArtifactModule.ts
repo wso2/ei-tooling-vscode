@@ -21,77 +21,181 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
+import {ServerRoleInfo} from "./artifactUtils";
+
+let DOM = require('xmldom').DOMParser;
+let XMLSerializer = require('xmldom').XMLSerializer;
 
 export namespace ArtifactModule {
-    
-    export async function createTemplate(targetFolder: string, sourceFile: string, destinationFile: string) {
+
+    const dirName = __dirname;
+
+    export function createTemplate(targetFolder: string, sourceFile: string, destinationFile: string, artifactType: string, type: string) {
 
         //first need to check whether there are multiple workspaces opened
-        if(workspace.workspaceFolders) {
-            let workspaces: number | undefined = workspace.workspaceFolders.length;
-            
-            if(workspaces === 0) {
-                window.showErrorMessage("Make sure that you have opened a Synapse Project");
+        if (workspace.workspaceFolders) {
+            const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
-            }else if(workspaces === 1) {
-                let synapseWorkspace: WorkspaceFolder =  workspace.workspaceFolders[0];
+            const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "synapse-config", targetFolder);
+            const targetFilePath = path.join(targetFolderPath, destinationFile + ".xml");
+            const targetFileUri = resolveUri(targetFilePath);
 
-                const path1 = synapseWorkspace.uri.path + "/src/main/synapse-config/" + targetFolder;
-                let pathToDestination = synapseWorkspace.uri.path + "/src/main/synapse-config/" + targetFolder + "/" + destinationFile + ".xml";
-                let targetFileUri = resolveUri(pathToDestination);
+            checkPathExistence(targetFolderPath).then(result => {
+                if (result) {
+                    //check whether the file is already existing
+                    checkPathExistence(targetFilePath).then(result => {
+                        if (result) {
+                            window.showErrorMessage("Error creating artifact! File already exists.");
+                        } else {
+                            let sourcePath = path.join(dirName, '..', '..', 'templates', targetFolder, sourceFile + '.xml');
+                            createTargetArtifact(targetFileUri, destinationFile, sourcePath);
+                            updateConfigArtifactXMLFile(destinationFile, artifactType, targetFolder, type);
+                        }
+                    });
+                }
+            });
+        }
+    }
 
-                checkPathExistence(path1).then(result => {
-                    if(!result) {
-                        const path2 = synapseWorkspace.uri.path + "/synapse-config" + targetFolder;
-                        pathToDestination = synapseWorkspace.uri.path + "/synapse-config/" + targetFolder + "/" + destinationFile + ".xml";
-                        targetFileUri = resolveUri(pathToDestination);
+    export function createResource(targetFolder: string, sourceFile: string, destinationFile: string, type: string) {
+        if (workspace.workspaceFolders) {
+            const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
-                        checkPathExistence(path2).then(result => {
-                            if(!result) {
-                                window.showErrorMessage("Make sure that you have opened a Synapse Project");
-                            }else {
-                                if(checkPathExistence(pathToDestination)) {
-                                    window.showErrorMessage("Cannot create artifact! File already exists.");
-                                }else {
-                                    createTargetArtifact(sourceFile, targetFileUri);
-                                }
-                            }
-                        });
-                    }else {
-                        checkPathExistence(pathToDestination).then(result => {
-                            if(result) {
-                                window.showErrorMessage("Cannot create artifact! File already exists.");
-                            }else {
-                                createTargetArtifact(sourceFile, targetFileUri);
-                            }
-                        });
-                    }
-                });
-            }else {
-                //TODO: handle mutliple workspace opening
-            }
+            const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "registry-resources");
+            const targetFilePath = path.join(targetFolderPath, destinationFile + ".xml");
+            const targetFileUri = resolveUri(targetFilePath);
+
+            checkPathExistence(targetFolderPath).then(result => {
+                if (result) {
+                    checkPathExistence(targetFilePath).then(result => {
+                        if (result) {
+                            window.showErrorMessage("Error creating registry resource! File already exists.");
+                        } else {
+                            let sourcePath = path.join(dirName, '..', '..', 'templates', targetFolder, sourceFile + '.xml');
+                            createTargetArtifact(targetFileUri, destinationFile, sourcePath);
+                            updateRegistryArtifactXMLFile(destinationFile, type);
+                        }
+                    })
+                }
+            });
         }
     }
 
     export async function checkPathExistence(path: string): Promise<boolean> {
-        return await fse.pathExists(path).then(result => {
-            return result;
-        }, error => {console.log(error); return false;});
+        return await fse.pathExists(path).then(
+            result => {
+                return result;
+            }
+            , error => {
+                console.log(error);
+                return false;
+            });
     }
 
-    async function createTargetArtifact(sourceFile: string, uri: Uri) {
+    async function createTargetArtifact(uri: Uri, fileName: string, sourcePath: string) {
         let edit = new WorkspaceEdit();
         edit.createFile(uri);
         workspace.applyEdit(edit);
 
-        const dirName = __dirname;
-        let sourcePath = path.join(dirName, '..', '..', 'templates', sourceFile+'.xml');
-
         const buf: Buffer = await fse.readFile(sourcePath);
         await timeout(200);
-        await fse.writeFile(uri.path, buf.toString());
+        let updatedBody = updateNameAttribute(buf, fileName);
+        await fse.writeFile(uri.path, updatedBody);
         await timeout(200);
         workspace.openTextDocument(uri).then(doc => window.showTextDocument(doc));
+    }
+
+    async function updateConfigArtifactXMLFile(artifactName: string, artifactType: string, targetFolder: string, type: string) {
+        if (workspace.workspaceFolders) {
+            const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.path, "src", "main", "synapse-config", "artifact.xml");
+            const buf: Buffer = await fse.readFile(configArtifactXmlFileLocation);
+            await timeout(200);
+
+            let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+            let parent = xmlDoc.getElementsByTagName("artifacts");
+            let child = xmlDoc.createElement("artifact");
+            parent[0].appendChild(child);
+            child.setAttribute("name", artifactName);
+            child.setAttribute("type", type);
+            child.setAttribute("serverRole", ServerRoleInfo.ENTERPRISE_SERVICE_BUS);
+
+            let fileTag = xmlDoc.createElement("file");
+            fileTag.textContent = path.join(targetFolder, artifactName + ".xml");
+            child.appendChild(fileTag);
+
+            await fse.writeFile(configArtifactXmlFileLocation, new XMLSerializer().serializeToString(xmlDoc));
+            // updatePomFile(artifactName, artifactType);
+        }
+    }
+
+    async function updateRegistryArtifactXMLFile(artifactName: string, type: string) {
+        if (workspace.workspaceFolders) {
+            const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.path, "src", "main", "registry-resources", "artifact.xml");
+            const buf: Buffer = await fse.readFile(registryArtifactXML);
+            await timeout(200);
+
+            let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+            let parent = xmlDoc.getElementsByTagName("artifacts");
+            let child = parent[0].appendChild(xmlDoc.createElement("artifact"));
+            child.setAttribute("name", artifactName);
+            child.setAttribute("type", type);
+            child.setAttribute("serverRole", "EnterpriseIntegrator");
+
+            let item = xmlDoc.createElement("item");
+            let file = xmlDoc.createElement("file");
+            file.textContent = "file";
+            let filePath = xmlDoc.createElement("path");
+            filePath.textContent = "path";
+            let mediaType = xmlDoc.createElement("mediaType");
+            mediaType.textContent = "mediaType";
+
+            item.appendChild(file);
+            item.appendChild(filePath);
+            item.appendChild(mediaType);
+            child.appendChild(item);
+
+            //TODO: complete the code
+            await fse.writeFile(registryArtifactXML, new XMLSerializer().serializeToString(xmlDoc));
+        }
+    }
+
+    async function updatePomFile(artifactName: string, artifactType: string) {
+        if (workspace.workspaceFolders) {
+            const pomXML: string = path.join(workspace.workspaceFolders[0].uri.path, "pom.xml");
+            const buf: Buffer = await fse.readFile(pomXML);
+            await timeout(200);
+
+            let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+            let groupId = xmlDoc.getElementsByTagName("groupId")[0].textContent;
+            let version = xmlDoc.getElementsByTagName("version")[0].textContent;
+            let type = artifactType !== "registry" ? "xml" : "zip";
+
+            // updateProperties(xmlDoc, artifactName, artifactType, groupId);
+            // updateDependencies(xmlDoc, groupId, version, type, artifactType);
+
+            let propertiesTag = xmlDoc.getElementsByTagName("properties");
+            let propertyChild = propertiesTag[0].appendChild(xmlDoc.createElement(groupId + "." + artifactType + "_._" + artifactName));
+            propertyChild.appendChild(xmlDoc.createTextNode("capp/EnterpriseServiceBus"));
+
+            let dependenciesTag = xmlDoc.getElementsByTagName("dependencies");
+            let dependencyChild = dependenciesTag[0].appendChild(xmlDoc.createElement("dependency"));
+            let groupIdTag = dependencyChild.appendChild(xmlDoc.createElement("groupId"));
+            groupIdTag.appendChild(xmlDoc.createTextNode(groupId + "." + artifactType));
+            let artifactIdTag = dependencyChild.appendChild(xmlDoc.createElement("artifactId"));
+            artifactIdTag.appendChild(xmlDoc.createTextNode(artifactName));
+            let versionTag = dependencyChild.appendChild(xmlDoc.createElement("version"));
+            versionTag.appendChild(xmlDoc.createTextNode(version));
+            let typeTag = dependencyChild.appendChild(xmlDoc.createElement("type"));
+            typeTag.appendChild(xmlDoc.createTextNode(type));
+
+            await fse.writeFile(pomXML, new XMLSerializer().serializeToString(xmlDoc));
+        }
+    }
+
+    function updateNameAttribute(buf: Buffer, fileName: string): string {
+        let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+        xmlDoc.lastChild.setAttribute("name", fileName);
+        return new XMLSerializer().serializeToString(xmlDoc);
     }
 
     function timeout(ms: number) {
@@ -105,13 +209,6 @@ export namespace ArtifactModule {
         targetFolder.fragment == '';
 
         return targetFolder;
-    }
-
-    function resolvePath(path:string): string {
-        if (process.platform === "win32") {
-            return path.replace("/", "\\");
-        }
-        return path;
     }
 }
 

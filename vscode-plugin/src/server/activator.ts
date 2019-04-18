@@ -20,45 +20,93 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { ServerOptions, LanguageClientOptions, LanguageClient } from 'vscode-languageclient';
+import {LanguageClient, LanguageClientOptions, ServerOptions} from 'vscode-languageclient';
+import * as os from 'os';
 
 const main: string = 'org.eclipse.lsp4xml.XMLServerLauncher';
 
 export function launch(context: vscode.ExtensionContext, directoryName: string) {
-	const { JAVA_HOME } = process.env;
+    const {JAVA_HOME} = process.env;
 
-	console.log(`Using java from JAVA_HOME: ${JAVA_HOME}`);
-	
-	if (JAVA_HOME){
-		console.log("directoryName");
-		console.log(directoryName);
-		let excecutable : string = path.join(JAVA_HOME, 'bin', 'java');
-		let schemaPath = path.join(directoryName, "..", "synapse-schemas", "synapse_config.xsd");
-		let LSextensionPath = path.join(directoryName,  '..', 'lib', '*');
+    console.log(`Using java from JAVA_HOME: ${JAVA_HOME}`);
 
-		let schemaPathArg = '-DSCHEMA_PATH=' + schemaPath;
-		const args: string[] = [schemaPathArg, '-cp', LSextensionPath];
+    let storagePath = context.storagePath;
+    if (!storagePath) {
+        storagePath = os.homedir() + "/.lsp4xml";
+    }
+    let logfile = path.resolve(storagePath + '/lsp4xml.log');
 
-		if (process.env.LSDEBUG === "true") {
-			console.log('LSDEBUG is set to "true". Services will run on debug mode');
-			args.push('-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005,quiet=y');
-		}
-		
-		let serverOptions: ServerOptions = {
-			command: excecutable,
-			args: [...args, main],
-			options: {}
-		};
+    if (JAVA_HOME) {
+        console.log("directoryName");
+        console.log(directoryName);
+        let executable: string = path.join(JAVA_HOME, 'bin', 'java');
+        let schemaPath = path.join(directoryName, "..", "synapse-schemas", "synapse_config.xsd");
+        let LSExtensionPath = path.join(directoryName, '..', 'lib', '*');
 
-		// Options to control the language client
-		let clientOptions: LanguageClientOptions = {
-			// Register the server for synapse xml documents
-			documentSelector: [{scheme: 'file', language: 'SynapseXml'}]
-		};
+        let schemaPathArg = '-DSCHEMA_PATH=' + schemaPath;
+        const args: string[] = [schemaPathArg, '-cp', LSExtensionPath];
 
-		// Create the language client and start the client.
-		let disposable = new LanguageClient('synapseXML', 'Synapse Language Server', serverOptions, clientOptions).start();
+        if (process.env.LSDEBUG === "true") {
+            console.log('LSDEBUG is set to "true". Services will run on debug mode');
+            args.push('-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005,quiet=y');
+        }
 
-		context.subscriptions.push(disposable);
-	}
+        let serverOptions: ServerOptions = {
+            command: executable,
+            args: [...args, main],
+            options: {}
+        };
+
+        // Options to control the language client
+        let clientOptions: LanguageClientOptions = {
+            initializationOptions: {"settings": getXMLSettings()},
+            synchronize: {
+                //preferences starting with these will trigger didChangeConfiguration
+                configurationSection: ['xml', '[xml]']
+            },
+            // Register the server for synapse xml documents
+            documentSelector: [{scheme: 'file', language: 'SynapseXml'}]
+        };
+
+        // Create the language client and start the client.
+        let disposable = new LanguageClient('synapseXML', 'Synapse Language Server', serverOptions, clientOptions).start();
+
+        context.subscriptions.push(disposable);
+    }
+
+    function getXMLSettings(): JSON {
+        let configXML = vscode.workspace.getConfiguration().get('xml');
+        let xml: any;
+        if (!configXML) { //Set default preferences if not provided
+            const defaultValue: any =
+                {
+                    xml: {
+                        trace: {
+                            server: 'verbose'
+                        },
+                        logs: {
+                            client: true,
+                            file: storagePath + '/lsp4xml.log'
+                        },
+                        format: {
+                            enabled: true,
+                            splitAttributes: false
+                        },
+                        completion: {
+                            autoCloseTags: false
+                        }
+                    }
+                };
+            xml = defaultValue;
+        } else {
+            let x: string = JSON.stringify(configXML); //configXML is not a JSON type
+            JSON.parse(x);
+            xml = {xml: JSON.parse(x)};
+
+        }
+        xml['xml']['logs']['file'] = logfile;
+        xml['xml']['useCache'] = true;
+        return xml;
+    }
 }
+

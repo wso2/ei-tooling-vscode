@@ -14,6 +14,10 @@
 		"onLanguage:xml",
 		"onCommand:extension.activateExtension"
 	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wso2/ei-tooling-vscode.git"
+	},
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
@@ -29,6 +33,15 @@
 			{
 				"command": "wso2esb.project.create",
 				"title": "Create new ESB project",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "wso2esb.project.build",
+				"title": "Create composite Application",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -90,7 +103,7 @@
 				}
 			},
 			{
-				"command":"wso2esb.artifact.messageStore",
+				"command": "wso2esb.artifact.messageStore",
 				"title": "Create new Message-Store artifact",
 				"category": "Synapse",
 				"icon": {
@@ -99,8 +112,35 @@
 				}
 			},
 			{
-				"command":"wso2esb.artifact.messageProcessor",
+				"command": "wso2esb.artifact.messageProcessor",
 				"title": "Create new Message-Processor artifact",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "wso2esb.artifact.template",
+				"title": "Create new Template artifact",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "wso2esb.artifact.sequence",
+				"title": "Create new Sequence artifact",
+				"category": "Synapse",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "wso2esb.resource.registry",
+				"title": "Create new registry resource",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -146,12 +186,14 @@
 		"tslint": "^5.12.1",
 		"typescript": "^3.3.1",
 		"vsce": "^1.36.2",
-		"vscode": "^1.1.28"
+		"vscode": "^1.1.33"
 	},
 	"dependencies": {
+		"archiver": "^3.0.0",
 		"dom-parser": "^0.1.5",
 		"fs-extra": "^4.0.3",
 		"vscode-languageclient": "^4.1.4",
-		"xml2js": "^0.4.19"
+		"xml2js": "^0.4.19",
+		"xmldom": "^0.1.27"
 	}
 }
