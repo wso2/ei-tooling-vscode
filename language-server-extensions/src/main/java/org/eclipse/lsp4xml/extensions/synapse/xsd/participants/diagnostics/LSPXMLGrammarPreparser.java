@@ -40,11 +40,7 @@ public class LSPXMLGrammarPreparser extends XMLGrammarPreparser {
 
 	@Override
 	public Grammar preparseGrammar(String type, XMLInputSource is) throws XNIException, IOException {
-		// if (fLoaders.containsKey(type)) {
-		// XMLGrammarLoaderContainer xglc = (XMLGrammarLoaderContainer) getLoader(type);
 		XMLGrammarLoader gl = getLoader(type);
-		// if (xglc.modCount != fModCount) {
-		// make sure gl's been set up with all the "basic" properties:
 		gl.setProperty(SYMBOL_TABLE, fSymbolTable);
 		gl.setProperty(ENTITY_RESOLVER, fEntityResolver);
 		gl.setProperty(ERROR_REPORTER, errorReporter);
@@ -56,11 +52,7 @@ public class LSPXMLGrammarPreparser extends XMLGrammarPreparser {
 				// too bad...
 			}
 		}
-		// xglc.modCount = fModCount;
-		// }
 		return gl.loadGrammar(is);
-		// }
-		// return null;
 	}
 
 	@Override
@@ -71,7 +63,7 @@ public class LSPXMLGrammarPreparser extends XMLGrammarPreparser {
 		super.setProperty(propId, value);
 	}
 
-	public void setErrorReporter(XMLErrorReporter errorReporter) {
+	private void setErrorReporter(XMLErrorReporter errorReporter) {
 		this.errorReporter = errorReporter;
 	}
 

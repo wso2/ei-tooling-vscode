@@ -30,6 +30,10 @@ import org.eclipse.lsp4xml.utils.XMLPositionUtility;
 
 import java.util.List;
 
+/**
+ * Extension to support XML goto definition based on pre-defined reference key set
+ * in Synapse XML
+ */
 public class SynapseReferencesDefinitionParticipant implements IDefinitionParticipant {
     @Override
     public void findDefinition(DOMDocument document, Position position, List<Location> locations) {

@@ -26,6 +26,7 @@ import org.eclipse.lsp4xml.dom.DOMDocument;
 import org.eclipse.lsp4xml.extensions.contentmodel.participants.diagnostics.LSPErrorReporterForXML;
 import org.eclipse.lsp4xml.extensions.contentmodel.settings.ContentModelSettings;
 import org.eclipse.lsp4xml.extensions.contentmodel.settings.XMLValidationSettings;
+import org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils.ParserConfigurationRuntimeException;
 import org.eclipse.lsp4xml.services.extensions.diagnostics.LSPContentHandler;
 import org.eclipse.lsp4xml.uriresolver.IExternalSchemaLocationProvider;
 import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
@@ -53,7 +54,8 @@ public class SynapseXMLValidator {
 	private static final Logger LOGGER = Logger.getLogger(SynapseXMLValidator.class.getName());
 
 	public static void doDiagnostics(DOMDocument document, XMLEntityResolver entityResolver,
-									 List<Diagnostic> diagnostics, ContentModelSettings contentModelSettings, CancelChecker monitor){
+									 List<Diagnostic> diagnostics, ContentModelSettings contentModelSettings, CancelChecker monitor)
+									throws ParserConfigurationRuntimeException{
 
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -95,24 +97,25 @@ public class SynapseXMLValidator {
 			inputSource.setSystemId(uri);
 
 			reader.parse(inputSource);
-
 		} catch (ParserConfigurationException e) {
-			LOGGER.warning(e.getMessage());
+			LOGGER.severe("");
+			throw new ParserConfigurationRuntimeException(e.getMessage(), e);
 		} catch (SAXException e) {
-			LOGGER.warning(e.getMessage());
+
 		} catch (IOException e) {
-			LOGGER.warning(e.getMessage());
+
 		}
 	}
 
 	private static void checkExternalSchema(Map<String, String> result, SAXParser reader)
 			throws SAXNotRecognizedException, SAXNotSupportedException {
-		if (result != null) {
-			String noNamespaceSchemaLocation = result.get(IExternalSchemaLocationProvider.NO_NAMESPACE_SCHEMA_LOCATION);
-			if (noNamespaceSchemaLocation != null) {
-				reader.setProperty(IExternalSchemaLocationProvider.NO_NAMESPACE_SCHEMA_LOCATION,
-						noNamespaceSchemaLocation);
-			}
+		if(result == null) {
+			return;
+		}
+		String noNamespaceSchemaLocation = result.get(IExternalSchemaLocationProvider.NO_NAMESPACE_SCHEMA_LOCATION);
+		if (noNamespaceSchemaLocation != null) {
+			reader.setProperty(IExternalSchemaLocationProvider.NO_NAMESPACE_SCHEMA_LOCATION,
+					noNamespaceSchemaLocation);
 		}
 	}
 }

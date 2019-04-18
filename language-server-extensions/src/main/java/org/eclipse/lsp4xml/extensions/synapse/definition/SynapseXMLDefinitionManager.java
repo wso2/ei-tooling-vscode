@@ -20,6 +20,7 @@ package org.eclipse.lsp4xml.extensions.synapse.definition;
 
 import org.eclipse.lsp4j.WorkspaceFolder;
 import org.eclipse.lsp4xml.commons.WorkspaceFolders;
+import org.eclipse.lsp4xml.dom.*;
 import org.eclipse.lsp4xml.extensions.synapse.definition.utils.DefinitionSource;
 import org.eclipse.lsp4xml.extensions.synapse.definition.utils.WorkspaceDocumentException;
 import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
@@ -30,20 +31,14 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.eclipse.lsp4xml.dom.DOMNode;
-import org.eclipse.lsp4xml.dom.DOMDocument;
-import org.eclipse.lsp4xml.dom.DOMElement;
-import org.eclipse.lsp4xml.dom.DOMAttr;
-import org.eclipse.lsp4xml.dom.DOMParser;
 
+/**
+ * Definition model manager used to load WorkspaceFolders, reference key set needed for gotoDef.
+ */
 public class SynapseXMLDefinitionManager {
     private static final SynapseXMLDefinitionManager INSTANCE = new SynapseXMLDefinitionManager();
 
@@ -189,7 +184,7 @@ public class SynapseXMLDefinitionManager {
             case Constants.ENDPOINT:
                 uri+= Constants.INBOUND_ENDPOINT_FOLDER_NAME;
                 break;
-                default:
+            default:
         }
         return uri;
     }
@@ -199,10 +194,3 @@ public class SynapseXMLDefinitionManager {
     }
 
 }
-
-
-
-
-
-
-

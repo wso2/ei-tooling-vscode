@@ -30,6 +30,7 @@ import org.eclipse.lsp4xml.services.extensions.save.ISaveContext;
 import org.eclipse.lsp4xml.extensions.synapse.contentmodel.model.SynapseContentModelManager;
 import org.eclipse.lsp4xml.utils.DOMUtils;
 
+
 /**
  * Content model plugin extension to provide.
  * 

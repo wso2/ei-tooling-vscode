@@ -18,5 +18,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 package org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils;
 
-public class ParserConfigurationRuntimeException {
+public class ParserConfigurationRuntimeException extends RuntimeException {
+
+    public ParserConfigurationRuntimeException(String message, Throwable cause) { super(message, cause);}
 }

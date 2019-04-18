@@ -21,7 +21,6 @@ package org.eclipse.lsp4xml.extensions.synapse.contentmodel.completions;
 import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -39,9 +38,7 @@ public class SnippetProvider {
         snippets = new HashMap<>();
 
         Properties prop = new Properties();
-        InputStream input = null;
-        try {
-            input = SnippetProvider.class.getClassLoader().getResourceAsStream(Constants.CONFIG_FILE);
+        try(InputStream input = SnippetProvider.class.getClassLoader().getResourceAsStream(Constants.CONFIG_FILE)) {
             if (input != null) {
                 prop.load(input);
 
@@ -56,14 +53,7 @@ public class SnippetProvider {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+
         }
     }
 

@@ -132,7 +132,6 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 	private String generateSnippet(CMElementDeclaration elementDeclaration) {
 		String keyword = elementDeclaration.getName();
 		return SnippetProvider.getSnippets().get(keyword);
-
 	}
 
 	private void createCompletionItem(String label, String xml, String documentation, ICompletionRequest request,
@@ -177,13 +176,10 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 														   CMElementDeclaration cmElement, boolean canSupportSnippet,
 														   boolean generateValue, ICompletionResponse response,
 														   SharedSettings settings) {
-		if (cmElement == null) {
+		if (cmElement == null || cmElement.getElements() == null) {
 			return;
 		}
 		Collection<CMAttributeDeclaration> attributes = cmElement.getAttributes();
-		if (attributes == null) {
-			return;
-		}
 		for (CMAttributeDeclaration cmAttribute : attributes) {
 			String attrName = cmAttribute.getName();
 			if (!parentElement.hasAttribute(attrName)) {
@@ -202,10 +198,12 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 	@Override
 	public void onAttributeValue(String valuePrefix, Range fullRange, boolean addQuotes, ICompletionRequest request,
 								 ICompletionResponse response, SharedSettings settings) {
-		DOMElement parentElement = request.getNode().isElement() ? (DOMElement) request.getNode() : null;
-		if (parentElement == null) {
+
+		if(!request.getNode().isElement()) {
 			return;
 		}
+		DOMElement parentElement = (DOMElement) request.getNode();
+
 		try {
 			SynapseContentModelManager synapseContentModelManager = request.getComponent(SynapseContentModelManager.class);
 			// Completion on attribute values based on external grammar
@@ -221,17 +219,19 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 
 	private void fillAttributeValuesWithCMAttributeDeclarations(CMElementDeclaration cmElement,
 			ICompletionRequest request, ICompletionResponse response) {
-		if (cmElement != null) {
-			String attributeName = request.getCurrentAttributeName();
-			CMAttributeDeclaration cmAttribute = cmElement.findCMAttribute(attributeName);
-			if (cmAttribute != null) {
-				cmAttribute.getEnumerationValues().forEach(value -> {
-					CompletionItem item = new CompletionItem();
-					item.setLabel(value);
-					item.setKind(CompletionItemKind.Value);
-					response.addCompletionAttribute(item);
-				});
-			}
+
+		if(cmElement == null) {
+			return;
+		}
+		String attributeName = request.getCurrentAttributeName();
+		CMAttributeDeclaration cmAttribute = cmElement.findCMAttribute(attributeName);
+		if (cmAttribute != null) {
+			cmAttribute.getEnumerationValues().forEach(value -> {
+				CompletionItem item = new CompletionItem();
+				item.setLabel(value);
+				item.setKind(CompletionItemKind.Value);
+				response.addCompletionAttribute(item);
+			});
 		}
 	}
 

@@ -46,10 +46,7 @@ public class SynapseCMXSDContentModelProvider implements ContentModelProvider {
 
 	@Override
 	public boolean adaptFor(DOMDocument document, boolean internal) {
-		if (internal) {
-			return false;
-		}
-		return document.hasSchemaLocation() || document.hasNoNamespaceSchemaLocation();
+		return !internal && (document.hasSchemaLocation() || document.hasNoNamespaceSchemaLocation());
 	}
 
 	@Override

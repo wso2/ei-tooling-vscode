@@ -18,6 +18,8 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 package org.eclipse.lsp4xml.extensions.synapse.xsd.participants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xerces.xni.XMLLocator;
 import org.eclipse.lsp4j.Range;
 import org.eclipse.lsp4xml.dom.DOMDocument;
@@ -44,6 +46,8 @@ public enum XSDErrorCode implements IXMLErrorCode {
 	S4S_ELT_CHARACTER("s4s-elt-character"), //
 	SRC_RESOLVE_4_2("src-resolve.4.2"), //
 	SRC_RESOLVE("src-resolve");
+
+	private static Logger logger = LogManager.getLogger(XSDErrorCode.class.getName());
 
 	private final String code;
 

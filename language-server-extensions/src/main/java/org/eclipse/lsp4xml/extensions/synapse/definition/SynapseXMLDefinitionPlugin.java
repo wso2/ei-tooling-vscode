@@ -29,7 +29,13 @@ import org.eclipse.lsp4xml.services.extensions.save.ISaveContext;
 
 import java.util.List;
 
-
+/**
+ * Definition model plugin extension to provide.
+ *
+ * <ul>
+ * <li>gotoDefinition based on pre-defined reference key set for Synapse XML...</li>
+ * </ul>
+ */
 public class SynapseXMLDefinitionPlugin implements IXMLExtension {
 
     private final IDefinitionParticipant definitionParticipant;
