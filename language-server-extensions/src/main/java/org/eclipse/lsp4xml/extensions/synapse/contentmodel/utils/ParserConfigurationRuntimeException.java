@@ -16,17 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import { window, Uri, commands } from "vscode";
+package org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils;
 
-export function promptOpenFolder(path: string) {
-    
-    window.showInformationMessage("How would you like to open the project? ", "New Window", "Cancel", "This Window" )
-        .then((selection) => {
-            if (selection === "This Window") {
-                // workspace.updateWorkspaceFolders(0, 0, { uri: Uri.file(path)});
-                commands.executeCommand('vscode.openFolder', Uri.file(path));
-            }else if(selection === "New Window") {
-                commands.executeCommand('vscode.openFolder', Uri.file(path), true);
-            }
-        });
+public class ParserConfigurationRuntimeException {
 }
