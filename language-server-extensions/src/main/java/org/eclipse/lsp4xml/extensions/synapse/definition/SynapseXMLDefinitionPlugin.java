@@ -21,11 +21,13 @@ package org.eclipse.lsp4xml.extensions.synapse.definition;
 import org.eclipse.lsp4j.InitializeParams;
 import org.eclipse.lsp4j.WorkspaceFolder;
 import org.eclipse.lsp4xml.commons.WorkspaceFolders;
+import org.eclipse.lsp4xml.dom.DOMDocument;
 import org.eclipse.lsp4xml.extensions.synapse.definition.pariticipants.SynapseReferencesDefinitionParticipant;
 import org.eclipse.lsp4xml.services.extensions.IDefinitionParticipant;
 import org.eclipse.lsp4xml.services.extensions.IXMLExtension;
 import org.eclipse.lsp4xml.services.extensions.XMLExtensionsRegistry;
 import org.eclipse.lsp4xml.services.extensions.save.ISaveContext;
+import org.eclipse.lsp4xml.utils.DOMUtils;
 
 import java.util.List;
 
@@ -63,6 +65,13 @@ public class SynapseXMLDefinitionPlugin implements IXMLExtension {
 
     @Override
     public void doSave(ISaveContext context) {
-
+        String documentURI = context.getUri();
+        DOMDocument document = context.getDocument(documentURI);
+        if (DOMUtils.isXSD(document)) {
+            context.collectDocumentToValidate(d -> {
+                DOMDocument xml = context.getDocument(d.getDocumentURI());
+                return xml.usesSchema(context.getUri());
+            });
+        }
     }
 }

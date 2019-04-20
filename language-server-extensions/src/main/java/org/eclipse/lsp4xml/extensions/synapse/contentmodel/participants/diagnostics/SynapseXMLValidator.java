@@ -26,96 +26,95 @@ import org.eclipse.lsp4xml.dom.DOMDocument;
 import org.eclipse.lsp4xml.extensions.contentmodel.participants.diagnostics.LSPErrorReporterForXML;
 import org.eclipse.lsp4xml.extensions.contentmodel.settings.ContentModelSettings;
 import org.eclipse.lsp4xml.extensions.contentmodel.settings.XMLValidationSettings;
-import org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils.ParserConfigurationRuntimeException;
+import org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils.SynapseDiagnosticException;
+import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 import org.eclipse.lsp4xml.services.extensions.diagnostics.LSPContentHandler;
 import org.eclipse.lsp4xml.uriresolver.IExternalSchemaLocationProvider;
-import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 
 /**
  * XML validator utilities class.
- *
  */
-public class SynapseXMLValidator {
+class SynapseXMLValidator {
 
-	private static final Logger LOGGER = Logger.getLogger(SynapseXMLValidator.class.getName());
+    private SynapseXMLValidator() {
+    }
 
-	public static void doDiagnostics(DOMDocument document, XMLEntityResolver entityResolver,
-									 List<Diagnostic> diagnostics, ContentModelSettings contentModelSettings, CancelChecker monitor)
-									throws ParserConfigurationRuntimeException{
+    static void validate(DOMDocument document, XMLEntityResolver entityResolver, List<Diagnostic> diagnostics,
+                         ContentModelSettings contentModelSettings, CancelChecker monitor)
+            throws SynapseDiagnosticException {
 
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		factory.setNamespaceAware(true);
-		factory.setValidating(true);
-		javax.xml.parsers.SAXParser parser;
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        factory.setValidating(true);
+        javax.xml.parsers.SAXParser parser;
 
-		try {
-			parser = factory.newSAXParser();
+        try {
+            parser = factory.newSAXParser();
 
-			parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
-			parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource",
-					Constants.SCHEMA_LOCATION);
+            parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
+                               "http://www.w3.org/2001/XMLSchema");
+            parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource",
+                               Constants.SCHEMA_LOCATION);
 
-			parser.setProperty("http://apache.org/xml/properties/internal/error-reporter",
-					new LSPErrorReporterForXML(document, diagnostics));
+            parser.setProperty("http://apache.org/xml/properties/internal/error-reporter",
+                               new LSPErrorReporterForXML(document, diagnostics));
 
-			XMLReader reader = parser.getXMLReader();
+            XMLReader reader = parser.getXMLReader();
 
-			reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false); //$NON-NLS-1$
-			reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true /* document.hasNamespaces() */); //$NON-NLS-1$
-			reader.setFeature("http://xml.org/sax/features/namespaces", true /* document.hasNamespaces() */); //$NON-NLS-1$
+            reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false); //$NON-NLS-1$
+            reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
+                              true /* document.hasNamespaces() */); //$NON-NLS-1$
+            reader.setFeature("http://xml.org/sax/features/namespaces",
+                              true /* document.hasNamespaces() */); //$NON-NLS-1$
 
-			reader.setContentHandler(new LSPContentHandler(monitor));
+            reader.setContentHandler(new LSPContentHandler(monitor));
 
-			if (entityResolver != null) {
-				reader.setProperty("http://apache.org/xml/properties/internal/entity-resolver", entityResolver); //$NON-NLS-1$
-			}
+            if (entityResolver != null) {
+                reader.setProperty("http://apache.org/xml/properties/internal/entity-resolver",
+                                   entityResolver); //$NON-NLS-1$
+            }
 
-			// If diagnostics for Schema preference is enabled
-			XMLValidationSettings validationSettings = contentModelSettings != null ? contentModelSettings.getValidation() : null;
-			if((validationSettings == null) || validationSettings.isSchema()) {
-				checkExternalSchema(document.getExternalSchemaLocation(), (SAXParser) reader);
-			}
+            // If diagnostics for Schema preference is enabled
+            XMLValidationSettings validationSettings = contentModelSettings != null
+                    ? contentModelSettings.getValidation() : null;
+            if ((validationSettings == null) || validationSettings.isSchema()) {
+                checkExternalSchema(document.getExternalSchemaLocation(), (SAXParser) reader);
+            }
 
-			String content = document.getText();
-			String uri = document.getDocumentURI();
-			InputSource inputSource = new InputSource();
-			inputSource.setByteStream(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
-			inputSource.setSystemId(uri);
+            String content = document.getText();
+            String uri = document.getDocumentURI();
+            InputSource inputSource = new InputSource();
+            inputSource.setByteStream(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
+            inputSource.setSystemId(uri);
 
-			reader.parse(inputSource);
-		} catch (ParserConfigurationException e) {
-			LOGGER.severe("");
-			throw new ParserConfigurationRuntimeException(e.getMessage(), e);
-		} catch (SAXException e) {
+            reader.parse(inputSource);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new SynapseDiagnosticException("Synapse Schema validation failed", e);
+        }
+    }
 
-		} catch (IOException e) {
-
-		}
-	}
-
-	private static void checkExternalSchema(Map<String, String> result, SAXParser reader)
-			throws SAXNotRecognizedException, SAXNotSupportedException {
-		if(result == null) {
-			return;
-		}
-		String noNamespaceSchemaLocation = result.get(IExternalSchemaLocationProvider.NO_NAMESPACE_SCHEMA_LOCATION);
-		if (noNamespaceSchemaLocation != null) {
-			reader.setProperty(IExternalSchemaLocationProvider.NO_NAMESPACE_SCHEMA_LOCATION,
-					noNamespaceSchemaLocation);
-		}
-	}
+    private static void checkExternalSchema(Map<String, String> result, SAXParser reader)
+            throws SAXNotRecognizedException, SAXNotSupportedException {
+        if (result == null) {
+            return;
+        }
+        String noNamespaceSchemaLocation = result.get(IExternalSchemaLocationProvider.NO_NAMESPACE_SCHEMA_LOCATION);
+        if (noNamespaceSchemaLocation != null) {
+            reader.setProperty(IExternalSchemaLocationProvider.NO_NAMESPACE_SCHEMA_LOCATION,
+                               noNamespaceSchemaLocation);
+        }
+    }
 }

@@ -20,50 +20,50 @@ package org.eclipse.lsp4xml.extensions.synapse.contentmodel.completions;
 
 import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provides snippets for Synapse elements which are configured in configurations.properties file.
  */
 public class SnippetProvider {
 
-    private static final Map<String, String> snippets;
+    private static final Logger LOGGER = Logger.getLogger(SnippetProvider.class.getName());
+
+    private static final Map<String, String> snippets = new HashMap<>();
 
     static {
-        snippets = new HashMap<>();
-
         Properties prop = new Properties();
-        try(InputStream input = SnippetProvider.class.getClassLoader().getResourceAsStream(Constants.CONFIG_FILE)) {
+        try (InputStream input = SnippetProvider.class.getClassLoader().getResourceAsStream(Constants.CONFIG_FILE)) {
             if (input != null) {
                 prop.load(input);
 
                 for (Enumeration<?> e = prop.propertyNames(); e.hasMoreElements(); ) {
-                    String name = (String)e.nextElement();
+                    String name = (String) e.nextElement();
                     String value = prop.getProperty(name);
                     snippets.put(name, value);
                 }
             } else {
-                throw new FileNotFoundException("property file not found in the classpath");
+                LOGGER.log(Level.SEVERE, "InputStream from " + Constants.CONFIG_FILE + " is null");
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, Constants.CONFIG_FILE + " property file not found in the classpath", e);
         }
     }
 
     /**
      * Restricted creating new SnippetProviders by making the constructor private
      */
-    private SnippetProvider(){}
+    private SnippetProvider() {
+    }
 
     /**
-     *
      * @return Map\<SynapseElementName, snippet>
      */
     public static Map<String, String> getSnippets() {

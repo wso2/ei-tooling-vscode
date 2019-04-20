@@ -18,16 +18,17 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 package org.eclipse.lsp4xml.extensions.synapse.definition.utils;
 
+/**
+ * Definition key store.
+ */
 public enum DefinitionSource {
 
     SEQUENCE("sequence", "key", "name"),
-
     ENDPOINT("endpoint", "key", "name");
 
     private String key;
     private String from;
     private String to;
-
 
     DefinitionSource(String key, String from, String to) {
         this.key = key;
@@ -35,15 +36,15 @@ public enum DefinitionSource {
         this.to = to;
     }
 
-    public String getKey(){
+    public String getKey() {
         return this.key;
     }
 
-    public String getFrom(){
+    public String getFrom() {
         return this.from;
     }
 
-    public String getTo(){
+    public String getTo() {
         return this.to;
     }
 }

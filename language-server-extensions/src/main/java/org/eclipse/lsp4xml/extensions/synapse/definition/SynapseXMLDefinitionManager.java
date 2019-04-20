@@ -20,7 +20,11 @@ package org.eclipse.lsp4xml.extensions.synapse.definition;
 
 import org.eclipse.lsp4j.WorkspaceFolder;
 import org.eclipse.lsp4xml.commons.WorkspaceFolders;
-import org.eclipse.lsp4xml.dom.*;
+import org.eclipse.lsp4xml.dom.DOMAttr;
+import org.eclipse.lsp4xml.dom.DOMDocument;
+import org.eclipse.lsp4xml.dom.DOMElement;
+import org.eclipse.lsp4xml.dom.DOMNode;
+import org.eclipse.lsp4xml.dom.DOMParser;
 import org.eclipse.lsp4xml.extensions.synapse.definition.utils.DefinitionSource;
 import org.eclipse.lsp4xml.extensions.synapse.definition.utils.WorkspaceDocumentException;
 import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
@@ -31,8 +35,14 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,6 +50,9 @@ import java.util.stream.Stream;
  * Definition model manager used to load WorkspaceFolders, reference key set needed for gotoDef.
  */
 public class SynapseXMLDefinitionManager {
+
+    private static final Logger LOGGER = Logger.getLogger(SynapseXMLDefinitionManager.class.getName());
+
     private static final SynapseXMLDefinitionManager INSTANCE = new SynapseXMLDefinitionManager();
 
     public static SynapseXMLDefinitionManager getInstance() {
@@ -55,10 +68,10 @@ public class SynapseXMLDefinitionManager {
     private SynapseXMLDefinitionManager() {
         gotoDefReferences = new HashMap<>();
 
-        for(DefinitionSource definitionSource: DefinitionSource.values()) {
-            gotoDefReferences.put(definitionSource.getKey(), new HashMap<String,String>(){{
-                put("from",definitionSource.getFrom());
-                put("to",definitionSource.getTo());
+        for (DefinitionSource definitionSource : DefinitionSource.values()) {
+            gotoDefReferences.put(definitionSource.getKey(), new HashMap<String, String>() {{
+                put("from", definitionSource.getFrom());
+                put("to", definitionSource.getTo());
             }});
         }
         referenceKeySet = gotoDefReferences.keySet();
@@ -83,16 +96,22 @@ public class SynapseXMLDefinitionManager {
 
                 if (targetedElement != null) {
                     collector.accept(targetedElement);
-                }else {
-                    Collection<WorkspaceFolder> workspaceFolderList = WorkspaceFolders.getInstance().getWorkspaceFolders();
+                } else {
+                    Collection<WorkspaceFolder> workspaceFolderList =
+                            WorkspaceFolders.getInstance().getWorkspaceFolders();
 
-                    //assumption: akk opened workspaceFolders are synapse workspaces (i.e: WSO2/EnterpriseIntegrator/6.4.0/repository/deployment/server/synapse-config/default)
-                    if (workspaceFolderList.size() > 0) {
-                        for(WorkspaceFolder workspaceFolder: workspaceFolderList) {
+                    //assumption: akk opened workspaceFolders are synapse workspaces (i.e:
+                    // WSO2/EnterpriseIntegrator/6.4.0/repository/deployment/server/synapse-config/default)
+                    if (!workspaceFolderList.isEmpty()) {
+                        for (WorkspaceFolder workspaceFolder : workspaceFolderList) {
                             String uri = workspaceFolder.getUri();
                             String updatedUri = resolveUri(nodeName, uri);
 
-                            listAllFiles(updatedUri, nodeName, attrTo, attrValue, collector);
+                            try {
+                                listAllFiles(updatedUri, nodeName, attrTo, attrValue, collector);
+                            } catch (WorkspaceDocumentException e) {
+                                LOGGER.log(Level.SEVERE, "Error occurred while listing files", e);
+                            }
                         }
                     }
                     if (targetedElement != null) {
@@ -103,7 +122,8 @@ public class SynapseXMLDefinitionManager {
         }
     }
 
-    private DOMNode findDefinitionChild(NodeList children, String targetTagName, String attributeName, String attributeValue) {
+    private DOMNode findDefinitionChild(NodeList children, String targetTagName, String attributeName,
+                                        String attributeValue) {
         if (children != null && children.getLength() > 0) {
             for (int i = 0; i < children.getLength(); i++) {
 
@@ -115,7 +135,7 @@ public class SynapseXMLDefinitionManager {
                         List<DOMAttr> attrList = child.getAttributeNodes();
 
                         if (attrList != null) {
-                            for (DOMAttr domAttr: attrList) {
+                            for (DOMAttr domAttr : attrList) {
                                 String key = domAttr.getName();
                                 if (key.equals(attributeName) && domAttr.getValue().equals(attributeValue)) {
                                     targetedElement = child;
@@ -143,28 +163,23 @@ public class SynapseXMLDefinitionManager {
         }
     }
 
-    private void listAllFiles(String path, String nodeName, String attrTo, String attrValue, Consumer<DOMNode> collector){
-        try(Stream<Path> paths = Files.walk(Paths.get(path))) {
-
+    private void listAllFiles(String path, String nodeName, String attrTo, String attrValue,
+                              Consumer<DOMNode> collector) throws WorkspaceDocumentException {
+        try (Stream<Path> paths = Files.walk(Paths.get(path))) {
             for (Path filePath : paths.collect(Collectors.toList())) {
                 if (Files.isRegularFile(filePath)) {
-                    try {
-                        String content = readFromFileSystem(filePath);
-                        DOMDocument doc = DOMParser.getInstance().parse(content, "file://"+filePath.toString(), null);
-                        findDefinitionChild(doc.getChildNodes(), nodeName, attrTo, attrValue);
 
-                        if (targetedElement!= null) {
-                            break;
-                        }
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                    String content = readFromFileSystem(filePath);
+                    DOMDocument doc = DOMParser.getInstance().parse(content, "file://" + filePath.toString(), null);
+                    findDefinitionChild(doc.getChildNodes(), nodeName, attrTo, attrValue);
+
+                    if (targetedElement != null) {
+                        break;
                     }
                 }
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new WorkspaceDocumentException("Error while listing file in path: " + path, e);
         }
     }
 
@@ -172,17 +187,17 @@ public class SynapseXMLDefinitionManager {
         //removing file:// form the path
         uri = uri.substring(7);
 
-        if(isWindows()) {
+        if (isWindows()) {
             uri = uri + Constants.SYNAPSE_CONFIG_PROJECT_PATH.replace("/", "\\");
-        }else {
+        } else {
             uri = uri + Constants.SYNAPSE_CONFIG_PROJECT_PATH;
         }
         switch (folderType) {
             case Constants.SEQUENCE:
-                uri+= Constants.SEQUENCE_FOLDER_NAME;
+                uri += Constants.SEQUENCE_FOLDER_NAME;
                 break;
             case Constants.ENDPOINT:
-                uri+= Constants.INBOUND_ENDPOINT_FOLDER_NAME;
+                uri += Constants.INBOUND_ENDPOINT_FOLDER_NAME;
                 break;
             default:
         }

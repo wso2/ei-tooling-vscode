@@ -23,34 +23,42 @@ import org.eclipse.lsp4j.Diagnostic;
 import org.eclipse.lsp4j.jsonrpc.CancelChecker;
 import org.eclipse.lsp4xml.dom.DOMDocument;
 import org.eclipse.lsp4xml.extensions.synapse.contentmodel.SynapseContentModelPlugin;
+import org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils.SynapseDiagnosticException;
 import org.eclipse.lsp4xml.services.extensions.diagnostics.IDiagnosticsParticipant;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Validate XML files with Xerces for general SYNTAX validation and XML Schema, DTD.
- *
  */
 public class SynapseContentModelDiagnosticsParticipant implements IDiagnosticsParticipant {
 
-	private final SynapseContentModelPlugin synapseContentModelPlugin;
+    private static final Logger LOGGER = Logger.getLogger(SynapseContentModelDiagnosticsParticipant.class.getName());
 
-	public SynapseContentModelDiagnosticsParticipant(SynapseContentModelPlugin synapseContentModelPlugin) {
-		this.synapseContentModelPlugin = synapseContentModelPlugin;
-	}
+    private final SynapseContentModelPlugin synapseContentModelPlugin;
 
-	@Override
-	public void doDiagnostics(DOMDocument xmlDocument, List<Diagnostic> diagnostics, CancelChecker monitor) {
-		if (xmlDocument.isDTD()) {
-			// Don't validate DTD with XML validator
-			return;
-		}
-		// Get entity resolver (XML catalog resolver, XML schema from the file
-		// associations settings., ...)
-		XMLEntityResolver entityResolver = xmlDocument.getResolverExtensionManager();
-		// Process validation
-		SynapseXMLValidator.doDiagnostics(xmlDocument, entityResolver, diagnostics,
-				synapseContentModelPlugin.getContentModelSettings(), monitor);
-	}
+    public SynapseContentModelDiagnosticsParticipant(SynapseContentModelPlugin synapseContentModelPlugin) {
+        this.synapseContentModelPlugin = synapseContentModelPlugin;
+    }
+
+    @Override
+    public void doDiagnostics(DOMDocument xmlDocument, List<Diagnostic> diagnostics, CancelChecker monitor) {
+        if (xmlDocument.isDTD()) {
+            // Don't validate DTD with XML validator
+            return;
+        }
+        // Get entity resolver (XML catalog resolver, XML schema from the file
+        // associations settings., ...)
+        XMLEntityResolver entityResolver = xmlDocument.getResolverExtensionManager();
+        // Process validation
+        try {
+            SynapseXMLValidator.validate(xmlDocument, entityResolver, diagnostics,
+                    synapseContentModelPlugin.getContentModelSettings(), monitor);
+        } catch (SynapseDiagnosticException e) {
+            LOGGER.log(Level.SEVERE, "Diagnostics failed due to validation error", e);
+        }
+    }
 
 }

@@ -33,86 +33,87 @@ import java.util.Collections;
 
 /**
  * XSD attribute declaration implementation.
- *
  */
 public class SynapseCMXSDAttributeDeclaration implements CMAttributeDeclaration {
 
-	private final XSAttributeUse attributeUse;
-	private String documentation;
+    private final XSAttributeUse attributeUse;
+    private String documentation;
 
-	SynapseCMXSDAttributeDeclaration(XSAttributeUse attributeUse) {
-		this.attributeUse = attributeUse;
-	}
+    SynapseCMXSDAttributeDeclaration(XSAttributeUse attributeUse) {
+        this.attributeUse = attributeUse;
+    }
 
-	@Override
-	public String getName() {
-		return getAttrDeclaration().getName();
-	}
+    @Override
+    public String getName() {
+        return getAttrDeclaration().getName();
+    }
 
-	@Override
-	public String getDefaultValue() {
-		XSValue xsValue = attributeUse.getValueConstraintValue();
-		if (xsValue == null && SynapseCMXSDDocument.isBooleanType(getAttrDeclaration().getTypeDefinition())) {
-			return "false";
-		}
-		return xsValue != null ? xsValue.getNormalizedValue() : null;
-	}
+    @Override
+    public String getDefaultValue() {
+        XSValue xsValue = attributeUse.getValueConstraintValue();
+        if (xsValue == null && SynapseCMXSDDocument.isBooleanType(getAttrDeclaration().getTypeDefinition())) {
+            return "false";
+        }
+        return xsValue != null ? xsValue.getNormalizedValue() : null;
+    }
 
-	@Override
-	public String getDocumentation() {
-		if (documentation != null) {
-			return documentation;
-		}
-		// Try get xs:annotation from the element declaration or type
-		XSObjectList annotations = getAnnotations();
-		documentation = SynapseXSDAnnotationModel.getDocumentation(annotations);
-		return documentation;
-	}
+    @Override
+    public String getDocumentation() {
+        if (documentation != null) {
+            return documentation;
+        }
+        // Try get xs:annotation from the element declaration or type
+        XSObjectList annotations = getAnnotations();
+        documentation = SynapseXSDAnnotationModel.getDocumentation(annotations);
+        return documentation;
+    }
 
-	/**
-	 * Returns list of xs:annotation from the element declaration or type
-	 * declaration.
-	 * 
-	 * @return list of xs:annotation from the element declaration or type
-	 *         declaration.
-	 */
-	private XSObjectList getAnnotations() {
-		// Try get xs:annotation from the element declaration
-		XSAttributeDeclaration attributeDeclaration = getAttrDeclaration();
-		XSObjectList annotation = attributeDeclaration.getAnnotations();
-		if (annotation != null && annotation.getLength() > 0) {
-			return annotation;
-		}
-		// Try get xs:annotation from the type of element declaration
-		XSTypeDefinition typeDefinition = attributeDeclaration.getTypeDefinition();
-		if (typeDefinition == null) {
-			return null;
-		}
-		if (typeDefinition.getTypeCategory() == XSTypeDefinition.COMPLEX_TYPE) {
-			return ((XSComplexTypeDecl) typeDefinition).getAnnotations();
-		} else if (typeDefinition.getTypeCategory() == XSTypeDefinition.SIMPLE_TYPE) {
-			return ((XSSimpleTypeDecl) typeDefinition).getAnnotations();
-		}
-		return null;
-	}
+    /**
+     * Returns list of xs:annotation from the element declaration or type declaration.
+     *
+     * @return list of xs:annotation from the element declaration or type declaration.
+     */
+    private XSObjectList getAnnotations() {
+        // Try get xs:annotation from the element declaration
+        XSAttributeDeclaration attributeDeclaration = getAttrDeclaration();
+        XSObjectList annotation = attributeDeclaration.getAnnotations();
+        if (annotation != null && annotation.getLength() > 0) {
+            return annotation;
+        }
+        // Try get xs:annotation from the type of element declaration
+        XSTypeDefinition typeDefinition = attributeDeclaration.getTypeDefinition();
+        if (typeDefinition == null) {
+            return null;
+        }
+        if (typeDefinition.getTypeCategory() == XSTypeDefinition.COMPLEX_TYPE) {
+            if (typeDefinition instanceof XSComplexTypeDecl) {
+                return ((XSComplexTypeDecl) typeDefinition).getAnnotations();
+            }
+        } else if (typeDefinition.getTypeCategory() == XSTypeDefinition.SIMPLE_TYPE) {
+            if (typeDefinition instanceof XSSimpleTypeDecl) {
+                return ((XSSimpleTypeDecl) typeDefinition).getAnnotations();
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public boolean isRequired() {
-		return attributeUse.getRequired();
-	}
+    @Override
+    public boolean isRequired() {
+        return attributeUse.getRequired();
+    }
 
-	private XSAttributeDeclaration getAttrDeclaration() {
-		return attributeUse.getAttrDeclaration();
-	}
+    private XSAttributeDeclaration getAttrDeclaration() {
+        return attributeUse.getAttrDeclaration();
+    }
 
-	@Override
-	public Collection<String> getEnumerationValues() {
-		XSAttributeDeclaration attributeDeclaration = getAttrDeclaration();
-		if (attributeDeclaration != null) {
-			XSSimpleTypeDefinition typeDefinition = attributeDeclaration.getTypeDefinition();
-			return SynapseCMXSDDocument.getEnumerationValues(typeDefinition);
-		}
-		return Collections.emptyList();
-	}
+    @Override
+    public Collection<String> getEnumerationValues() {
+        XSAttributeDeclaration attributeDeclaration = getAttrDeclaration();
+        if (attributeDeclaration != null) {
+            XSSimpleTypeDefinition typeDefinition = attributeDeclaration.getTypeDefinition();
+            return SynapseCMXSDDocument.getEnumerationValues(typeDefinition);
+        }
+        return Collections.emptyList();
+    }
 
 }

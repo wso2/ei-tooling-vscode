@@ -18,5 +18,11 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 package org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils;
 
-public class SynapseValidationException {
+/**
+ * Synapse validation exception to be thrown at diagnostic generation.
+ */
+public class SynapseDiagnosticException extends Exception {
+    public SynapseDiagnosticException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

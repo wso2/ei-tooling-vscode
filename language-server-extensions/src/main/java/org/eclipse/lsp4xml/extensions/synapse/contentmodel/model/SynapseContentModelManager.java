@@ -29,7 +29,11 @@ import org.eclipse.lsp4xml.extensions.contentmodel.uriresolver.XMLFileAssociatio
 import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 import org.eclipse.lsp4xml.utils.URIUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -59,12 +63,10 @@ public class SynapseContentModelManager {
     }
 
     /**
-     * Returns the declared element which matches the given XML element and null
-     * otherwise.
+     * Returns the declared element which matches the given XML element and null otherwise.
      *
      * @param element the XML element
-     * @return the declared element which matches the given XML element and null
-     * otherwise.
+     * @return the declared element which matches the given XML element and null otherwise.
      */
     private CMElementDeclaration findCMElement(DOMElement element, String namespaceURI) {
         CMDocument cmDocument = findCMDocument(element);
@@ -81,12 +83,10 @@ public class SynapseContentModelManager {
     }
 
     /**
-     * Returns the content model document loaded by the given uri and null
-     * otherwise.
+     * Returns the content model document loaded by the given uri and null otherwise.
      *
      * @param modelProvider modelProvider
-     * @return the content model document loaded by the given uri and null
-     * otherwise.
+     * @return the content model document loaded by the given uri and null otherwise.
      */
     private CMDocument findCMDocument(ContentModelProvider modelProvider) {
         // Resolve the XML Schema/DTD uri (file, http, etc)
@@ -124,12 +124,10 @@ public class SynapseContentModelManager {
     }
 
     /**
-     * Returns the declared element which matches the given XML element and null
-     * otherwise.
+     * Returns the declared element which matches the given XML element and null otherwise.
      *
      * @param element the XML element
-     * @return the declared element which matches the given XML element and null
-     * otherwise.
+     * @return the declared element which matches the given XML element and null otherwise.
      */
     private CMElementDeclaration findInternalCMElement(DOMElement element, String namespaceURI) {
         CMDocument cmDocument = findInternalCMDocument(element);
@@ -149,15 +147,13 @@ public class SynapseContentModelManager {
     }
 
     /**
-     * Returns the content model provider by using standard association
-     * (xsi:schemaLocation, xsi:noNamespaceSchemaLocation, doctype) an dnull
-     * otherwise.
+     * Returns the content model provider by using standard association (xsi:schemaLocation,
+     * xsi:noNamespaceSchemaLocation, doctype) an dnull otherwise.
      *
      * @param xmlDocument the xml DOM Document
      * @param internal    boolean value
-     * @return the content model provider by using standard association
-     * (xsi:schemaLocation, xsi:noNamespaceSchemaLocation, doctype) an null
-     * otherwise.
+     * @return the content model provider by using standard association (xsi:schemaLocation,
+     * xsi:noNamespaceSchemaLocation, doctype) an null otherwise.
      */
     private ContentModelProvider getModelProviderByStandardAssociation(DOMDocument xmlDocument, boolean internal) {
         for (ContentModelProvider modelProvider : modelProviders) {

@@ -20,112 +20,124 @@ package org.eclipse.lsp4xml.extensions.synapse.xsd.contentmodel;
 
 import org.apache.xerces.xs.XSAnnotation;
 import org.apache.xerces.xs.XSObjectList;
+import org.eclipse.lsp4xml.extensions.synapse.xsd.utils.SynapseDocumentationLoadException;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.StringReader;
 
 import static org.eclipse.lsp4xml.utils.StringUtils.normalizeSpace;
 
 /**
  * Extract xs:document & xs:appinfo from the xs:annotation.
- *
  */
 class SynapseXSDAnnotationModel {
 
-	private String appInfo;
-	private String documentation;
+    private static final Logger LOGGER = Logger.getLogger(SynapseXSDAnnotationModel.class.getName());
 
-	private SynapseXSDAnnotationModel() {}
+    private String appInfo;
+    private String documentation;
 
-	private String getAppInfo() {
-		return appInfo;
-	}
+    private SynapseXSDAnnotationModel() {
+    }
 
-	private String getDocumentation() {
-		return documentation;
-	}
+    private String getAppInfo() {
+        return appInfo;
+    }
 
-	static String getDocumentation(XSObjectList annotations) {
-		if (annotations == null) {
-			return "";
-		}
-		StringBuilder doc = new StringBuilder();
-		for (Object object : annotations) {
-			XSAnnotation annotation = (XSAnnotation) object;
-			SynapseXSDAnnotationModel annotationModel = SynapseXSDAnnotationModel.load(annotation);
-			if (annotationModel != null) {
-				if (annotationModel.getAppInfo() != null) {
-					doc.append(annotationModel.getAppInfo());
-				}
-				if (annotationModel.getDocumentation() != null) {
-					doc.append(annotationModel.getDocumentation());
-				}
-			}
-		}
-		return doc.toString();
-	}
+    private String getDocumentation() {
+        return documentation;
+    }
 
-	private static SynapseXSDAnnotationModel load(XSAnnotation annotation) {
-		try {
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			SAXParser saxParser = factory.newSAXParser();
-			XSAnnotationHandler handler = new XSAnnotationHandler();
-			saxParser.parse(new InputSource(new StringReader(annotation.getAnnotationString())), handler);
-			return handler.getModel();
-		} catch (Exception e) {
-			return null;
-		}
-	}
+    static String getDocumentation(XSObjectList annotations) {
+        if (annotations == null) {
+            return "";
+        }
+        StringBuilder doc = new StringBuilder();
+        for (Object object : annotations) {
+            XSAnnotation annotation = (XSAnnotation) object;
+            SynapseXSDAnnotationModel annotationModel = null;
+            try {
+                annotationModel = SynapseXSDAnnotationModel.load(annotation);
+            } catch (SynapseDocumentationLoadException e) {
+                LOGGER.log(Level.SEVERE, "Error occurred when loading XSAnnotation: " + annotation, e);
+            }
+            if (annotationModel != null) {
+                if (annotationModel.getAppInfo() != null) {
+                    doc.append(annotationModel.getAppInfo());
+                }
+                if (annotationModel.getDocumentation() != null) {
+                    doc.append(annotationModel.getDocumentation());
+                }
+            }
+        }
+        return doc.toString();
+    }
 
-	private static class XSAnnotationHandler extends DefaultHandler {
+    private static SynapseXSDAnnotationModel load(XSAnnotation annotation) throws SynapseDocumentationLoadException {
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            XSAnnotationHandler handler = new XSAnnotationHandler();
+            saxParser.parse(new InputSource(new StringReader(annotation.getAnnotationString())), handler);
+            return handler.getModel();
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            throw new SynapseDocumentationLoadException("Parser error", e);
+        }
+    }
 
-		private static final String APPINFO_ELEMENT = "appinfo";
-		private static final String DOCUMENTATION_ELEMENT = "documentation";
+    private static class XSAnnotationHandler extends DefaultHandler {
 
-		private StringBuilder current;
-		private final SynapseXSDAnnotationModel model;
+        private static final String APPINFO_ELEMENT = "appinfo";
+        private static final String DOCUMENTATION_ELEMENT = "documentation";
 
-		XSAnnotationHandler() {
-			model = new SynapseXSDAnnotationModel();
-		}
+        private StringBuilder current;
+        private final SynapseXSDAnnotationModel model;
 
-		SynapseXSDAnnotationModel getModel() {
-			return model;
-		}
+        XSAnnotationHandler() {
+            model = new SynapseXSDAnnotationModel();
+        }
 
-		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attributes)
-				throws SAXException {
-			super.startElement(uri, localName, qName, attributes);
-			if (qName.endsWith(DOCUMENTATION_ELEMENT) || qName.endsWith(APPINFO_ELEMENT)) {
-				current = new StringBuilder();
-			}
-		}
+        SynapseXSDAnnotationModel getModel() {
+            return model;
+        }
 
-		@Override
-		public void endElement(String uri, String localName, String qName) throws SAXException {
-			super.endElement(uri, localName, qName);
-			if (current != null) {
-				if (qName.endsWith(APPINFO_ELEMENT)) {
-					model.appInfo = normalizeSpace(current.toString());
-				} else if (qName.endsWith(DOCUMENTATION_ELEMENT)) {
-					model.documentation = normalizeSpace(current.toString());
-				}
-				current = null;
-			}
-		}
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes)
+                throws SAXException {
+            super.startElement(uri, localName, qName, attributes);
+            if (qName.endsWith(DOCUMENTATION_ELEMENT) || qName.endsWith(APPINFO_ELEMENT)) {
+                current = new StringBuilder();
+            }
+        }
 
-		@Override
-		public void characters(char[] ch, int start, int length) throws SAXException {
-			if (current != null) {
-				current.append(ch, start, length);
-			}
-			super.characters(ch, start, length);
-		}
-	}
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            super.endElement(uri, localName, qName);
+            if (current != null) {
+                if (qName.endsWith(APPINFO_ELEMENT)) {
+                    model.appInfo = normalizeSpace(current.toString());
+                } else if (qName.endsWith(DOCUMENTATION_ELEMENT)) {
+                    model.documentation = normalizeSpace(current.toString());
+                }
+                current = null;
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            if (current != null) {
+                current.append(ch, start, length);
+            }
+            super.characters(ch, start, length);
+        }
+    }
 }

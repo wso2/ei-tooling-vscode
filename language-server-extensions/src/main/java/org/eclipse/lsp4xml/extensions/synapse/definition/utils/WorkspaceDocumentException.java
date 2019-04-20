@@ -18,8 +18,16 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 package org.eclipse.lsp4xml.extensions.synapse.definition.utils;
 
+/**
+ * Exception to be thrown when access workspace folders.
+ */
 public class WorkspaceDocumentException extends Exception {
 
+    /**
+     * Creates a new bad location exception.
+     *
+     * @param message the exception message
+     */
     public WorkspaceDocumentException(String message) {
         super(message);
     }

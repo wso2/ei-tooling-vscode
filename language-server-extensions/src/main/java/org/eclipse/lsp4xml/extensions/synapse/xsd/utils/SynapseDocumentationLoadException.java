@@ -16,9 +16,14 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-package org.eclipse.lsp4xml.extensions.synapse.contentmodel.utils;
+package org.eclipse.lsp4xml.extensions.synapse.xsd.utils;
 
-public class ParserConfigurationRuntimeException extends RuntimeException {
+/**
+ * Synapse documentation exception to be thrown when parsing XSAnnotations.
+ */
+public class SynapseDocumentationLoadException extends Exception {
 
-    public ParserConfigurationRuntimeException(String message, Throwable cause) { super(message, cause);}
+    public SynapseDocumentationLoadException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

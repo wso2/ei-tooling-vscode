@@ -13,17 +13,81 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>Synapse</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven.checkstyle.plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${maven.checkstyle.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>validate</id>
+                            <phase>validate</phase>
+                            <configuration>
+                                <configLocation>
+                                    https://raw.githubusercontent.com/wso2/code-quality-tools/v1.2/checkstyle/checkstyle.xml
+                                </configLocation>
+                                <suppressionsLocation>
+                                    https://raw.githubusercontent.com/wso2/code-quality-tools/v1.1/checkstyle/suppressions.xml
+                                </suppressionsLocation>
+                                <consoleOutput>true</consoleOutput>
+                                <failsOnError>true</failsOnError>
+                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                                <!--Exclude sources-->
+                                <excludes>${maven.checkstyleplugin.excludes}</excludes>
+                            </configuration>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--<plugin>-->
+                    <!--<groupId>com.github.spotbugs</groupId>-->
+                    <!--<artifactId>spotbugs-maven-plugin</artifactId>-->
+                    <!--<version>${maven.spotbugsplugin.version}</version>-->
+                    <!--<configuration>-->
+                        <!--<effort>Max</effort>-->
+                        <!--<threshold>Low</threshold>-->
+                        <!--<xmlOutput>true</xmlOutput>-->
+                        <!--<spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>-->
+                        <!--&lt;!&ndash;Exclude sources&ndash;&gt;-->
+                        <!--<excludeFilterFile>${maven.spotbugsplugin.exclude.file}</excludeFilterFile>-->
+                    <!--</configuration>-->
+                    <!--<executions>-->
+                        <!--<execution>-->
+                            <!--<id>analyze-compile</id>-->
+                            <!--<phase>compile</phase>-->
+                            <!--<goals>-->
+                                <!--<goal>check</goal>-->
+                            <!--</goals>-->
+                        <!--</execution>-->
+                    <!--</executions>-->
+                <!--</plugin>-->
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>4.1.0</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>com.github.spotbugs</groupId>-->
+                <!--<artifactId>spotbugs-maven-plugin</artifactId>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 
@@ -51,5 +115,13 @@
             <artifactId>log4j-core</artifactId>
         </dependency>
     </dependencies>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.checkstyle.plugin.version>3.0.0</maven.checkstyle.plugin.version>
+        <maven.checkstyle.version>7.8.2</maven.checkstyle.version>
+        <!--<maven.spotbugsplugin.version>3.1.1</maven.spotbugsplugin.version>-->
+        <!--<maven.spotbugsplugin.exclude.file>spotbugs-exclude.xml</maven.spotbugsplugin.exclude.file>-->
+    </properties>
 
 </project>

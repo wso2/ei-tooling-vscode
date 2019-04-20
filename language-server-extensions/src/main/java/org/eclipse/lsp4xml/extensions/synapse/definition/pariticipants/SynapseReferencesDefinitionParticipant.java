@@ -29,12 +29,16 @@ import org.eclipse.lsp4xml.services.extensions.IDefinitionParticipant;
 import org.eclipse.lsp4xml.utils.XMLPositionUtility;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Extension to support XML goto definition based on pre-defined reference key set
- * in Synapse XML
+ * Extension to support XML goto definition based on pre-defined reference key set in Synapse XML
  */
 public class SynapseReferencesDefinitionParticipant implements IDefinitionParticipant {
+
+    private static final Logger LOGGER = Logger.getLogger(SynapseReferencesDefinitionParticipant.class.getName());
+
     @Override
     public void findDefinition(DOMDocument document, Position position, List<Location> locations) {
 
@@ -50,7 +54,8 @@ public class SynapseReferencesDefinitionParticipant implements IDefinitionPartic
                 });
             }
         } catch (BadLocationException e) {
-
+            LOGGER.log(Level.SEVERE, "Attempt to access non-existing position " + position + " in document " + document,
+                       e);
         }
     }
 }

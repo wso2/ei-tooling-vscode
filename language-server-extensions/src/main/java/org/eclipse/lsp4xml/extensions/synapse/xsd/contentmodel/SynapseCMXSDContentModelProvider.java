@@ -36,77 +36,77 @@ import org.w3c.dom.DOMErrorHandler;
  */
 public class SynapseCMXSDContentModelProvider implements ContentModelProvider {
 
-	private final URIResolverExtensionManager resolverExtensionManager;
+    private final URIResolverExtensionManager resolverExtensionManager;
 
-	private XSLoaderImpl loader;
+    private XSLoaderImpl loader;
 
-	public SynapseCMXSDContentModelProvider(URIResolverExtensionManager resolverExtensionManager) {
-		this.resolverExtensionManager = resolverExtensionManager;
-	}
+    public SynapseCMXSDContentModelProvider(URIResolverExtensionManager resolverExtensionManager) {
+        this.resolverExtensionManager = resolverExtensionManager;
+    }
 
-	@Override
-	public boolean adaptFor(DOMDocument document, boolean internal) {
-		return !internal && (document.hasSchemaLocation() || document.hasNoNamespaceSchemaLocation());
-	}
+    @Override
+    public boolean adaptFor(DOMDocument document, boolean internal) {
+        return !internal && (document.hasSchemaLocation() || document.hasNoNamespaceSchemaLocation());
+    }
 
-	@Override
-	public boolean adaptFor(String uri) {
-		return DOMUtils.isXSD(uri);
-	}
+    @Override
+    public boolean adaptFor(String uri) {
+        return DOMUtils.isXSD(uri);
+    }
 
-	@Override
-	public String getSystemId(DOMDocument xmlDocument, String namespaceURI) {
-		SchemaLocation schemaLocation = xmlDocument.getSchemaLocation();
-		if (schemaLocation != null) {
-			return schemaLocation.getLocationHint(namespaceURI);
-		} else {
-			NoNamespaceSchemaLocation noNamespaceSchemaLocation = xmlDocument.getNoNamespaceSchemaLocation();
-			if (noNamespaceSchemaLocation != null) {
-				if (namespaceURI != null) {
-					// xsi:noNamespaceSchemaLocation doesn't define namespaces
-					return null;
-				}
-				return noNamespaceSchemaLocation.getLocation();
-			}
-		}
-		return null;
-	}
+    @Override
+    public String getSystemId(DOMDocument xmlDocument, String namespaceURI) {
+        SchemaLocation schemaLocation = xmlDocument.getSchemaLocation();
+        if (schemaLocation != null) {
+            return schemaLocation.getLocationHint(namespaceURI);
+        } else {
+            NoNamespaceSchemaLocation noNamespaceSchemaLocation = xmlDocument.getNoNamespaceSchemaLocation();
+            if (noNamespaceSchemaLocation != null) {
+                if (namespaceURI != null) {
+                    // xsi:noNamespaceSchemaLocation doesn't define namespaces
+                    return null;
+                }
+                return noNamespaceSchemaLocation.getLocation();
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public CMDocument createCMDocument(String key) {
-		XSModel model = getLoader().loadURI(key);
-		if (model != null) {
-			// XML Schema can be loaded
-			return new SynapseCMXSDDocument(model);
-		}
-		return null;
-	}
+    @Override
+    public CMDocument createCMDocument(String key) {
+        XSModel model = getLoader().loadURI(key);
+        if (model != null) {
+            // XML Schema can be loaded
+            return new SynapseCMXSDDocument(model);
+        }
+        return null;
+    }
 
-	@Override
-	public CMDocument createInternalCMDocument(DOMDocument xmlDocument) {
-		return null;
-	}
+    @Override
+    public CMDocument createInternalCMDocument(DOMDocument xmlDocument) {
+        return null;
+    }
 
-	private XSLoaderImpl getLoader() {
-		if (loader == null) {
-			loader = getSynchLoader();
-		}
-		return loader;
-	}
+    private XSLoaderImpl getLoader() {
+        if (loader == null) {
+            loader = getSynchLoader();
+        }
+        return loader;
+    }
 
-	private synchronized XSLoaderImpl getSynchLoader() {
-		if (loader != null) {
-			return loader;
-		}
-		XSLoaderImpl xsLoader = new XSLoaderImpl();
-		xsLoader.setParameter("http://apache.org/xml/properties/internal/entity-resolver", resolverExtensionManager);
-		xsLoader.setParameter(Constants.DOM_ERROR_HANDLER, (DOMErrorHandler) error -> {
-			if (error.getRelatedException() instanceof CacheResourceDownloadingException) {
-				throw ((CacheResourceDownloadingException) error.getRelatedException());
-			}
-			return false;
-		});
-		return xsLoader;
-	}
+    private synchronized XSLoaderImpl getSynchLoader() {
+        if (loader != null) {
+            return loader;
+        }
+        XSLoaderImpl xsLoader = new XSLoaderImpl();
+        xsLoader.setParameter("http://apache.org/xml/properties/internal/entity-resolver", resolverExtensionManager);
+        xsLoader.setParameter(Constants.DOM_ERROR_HANDLER, (DOMErrorHandler) error -> {
+            if (error.getRelatedException() instanceof CacheResourceDownloadingException) {
+                throw ((CacheResourceDownloadingException) error.getRelatedException());
+            }
+            return false;
+        });
+        return xsLoader;
+    }
 
 }
