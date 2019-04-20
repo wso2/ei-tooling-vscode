@@ -20,6 +20,17 @@
 	},
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "XML configuration",
+			"properties": {
+				"xml.logs.client": {
+					"type": "boolean",
+					"default": true,
+					"description": "Should the server log to client output"
+				}
+			}
+		},
 		"commands": [
 			{
 				"command": "extension.activateExtension",
