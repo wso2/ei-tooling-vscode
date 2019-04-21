@@ -137,7 +137,7 @@ export namespace ArchetypeModule {
         }).then(text => text);
     }
 
-    async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
+    export async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
         const result: Uri | null = await openDialogForFolder({
             defaultUri: entry,
             openLabel: "Select Destination Folder"
@@ -178,3 +178,4 @@ export namespace ArchetypeModule {
     //     return fixedList.map((fullname: string) => allItems.find((item: Archetype) => fullname === `${item.groupId}:${item.artifactId}`));
     // }
 }
+

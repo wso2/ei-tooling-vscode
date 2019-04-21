@@ -33,7 +33,8 @@ import {
 	MessageStoreArtifactInfo,
 	MessageProcessorArtifactInfo,
 	RegistryResourceInfo,
-	TemplateArtifactInfo, SequenceArtifactInfo
+	TemplateArtifactInfo,
+	SequenceArtifactInfo
 } from "./artifacts/artifactUtils";
 
 import { createCApp } from "./archive/archiveResolver";

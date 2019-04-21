@@ -75,7 +75,7 @@ export namespace ArtifactModule {
                             createTargetArtifact(targetFileUri, destinationFile, sourcePath);
                             updateRegistryArtifactXMLFile(destinationFile, type);
                         }
-                    })
+                    });
                 }
             });
         }
@@ -107,6 +107,13 @@ export namespace ArtifactModule {
 
     async function updateConfigArtifactXMLFile(artifactName: string, artifactType: string, targetFolder: string, type: string) {
         if (workspace.workspaceFolders) {
+            //read pom
+            const pomFile: string = path.join(workspace.workspaceFolders[0].uri.path, "pom.xml");
+            const pomBuf: Buffer = await fse.readFile(pomFile);
+            let pomDom = new DOM().parseFromString(pomBuf.toString(), "text/xml");
+            const groupId = pomDom.getElementsByTagName("groupId")[0].textContent;
+            const projectVersion = pomDom.getElementsByTagName("version")[0].textContent;
+
             const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.path, "src", "main", "synapse-config", "artifact.xml");
             const buf: Buffer = await fse.readFile(configArtifactXmlFileLocation);
             await timeout(200);
@@ -118,6 +125,8 @@ export namespace ArtifactModule {
             child.setAttribute("name", artifactName);
             child.setAttribute("type", type);
             child.setAttribute("serverRole", ServerRoleInfo.ENTERPRISE_SERVICE_BUS);
+            child.setAttribute("groupId", groupId);
+            child.setAttribute("version", projectVersion);
 
             let fileTag = xmlDoc.createElement("file");
             fileTag.textContent = path.join(targetFolder, artifactName + ".xml");
@@ -144,8 +153,10 @@ export namespace ArtifactModule {
             let item = xmlDoc.createElement("item");
             let file = xmlDoc.createElement("file");
             file.textContent = "file";
+
             let filePath = xmlDoc.createElement("path");
             filePath.textContent = "path";
+
             let mediaType = xmlDoc.createElement("mediaType");
             mediaType.textContent = "mediaType";
 
@@ -179,12 +190,16 @@ export namespace ArtifactModule {
 
             let dependenciesTag = xmlDoc.getElementsByTagName("dependencies");
             let dependencyChild = dependenciesTag[0].appendChild(xmlDoc.createElement("dependency"));
+
             let groupIdTag = dependencyChild.appendChild(xmlDoc.createElement("groupId"));
             groupIdTag.appendChild(xmlDoc.createTextNode(groupId + "." + artifactType));
+
             let artifactIdTag = dependencyChild.appendChild(xmlDoc.createElement("artifactId"));
             artifactIdTag.appendChild(xmlDoc.createTextNode(artifactName));
+
             let versionTag = dependencyChild.appendChild(xmlDoc.createElement("version"));
             versionTag.appendChild(xmlDoc.createTextNode(version));
+
             let typeTag = dependencyChild.appendChild(xmlDoc.createElement("type"));
             typeTag.appendChild(xmlDoc.createTextNode(type));
 

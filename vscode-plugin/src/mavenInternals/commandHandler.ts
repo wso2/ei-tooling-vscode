@@ -41,7 +41,8 @@ function getMavenGenerateCommand(newProject: ArchetypeModule.ESBProject): string
         `-DarchetypeGroupId=${newProject.archetypeGroupId}`,
         `-DgroupId=${newProject.groupId}`,
         `-DartifactId=${newProject.artifactId}`,
-        `-DinteractiveMode=false`
+        `-DinteractiveMode=false`,
+        `-DarchetypeCatalog=internal`
     ].join(" ");
 }
 

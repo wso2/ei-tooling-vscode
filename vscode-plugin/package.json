@@ -52,7 +52,7 @@
 			},
 			{
 				"command": "wso2esb.project.build",
-				"title": "Create composite Application",
+				"title": "Create composite application",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",

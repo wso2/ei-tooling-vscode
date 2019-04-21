@@ -19,7 +19,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 'use strict';
 
 export class ArtifactInfo {
-    static readonly GROUP_ID_PREFIX: string = "com.example";
+    static readonly GROUP_ID_PREFIX: string = "com.example.";
     static readonly ARCHETYPE_ARTIFACT_ID: string = "wso2ei-tooling";
     static readonly ARCHETYPE_GROUP_ID: string = "wso2ei.vscode.tooling";
 }

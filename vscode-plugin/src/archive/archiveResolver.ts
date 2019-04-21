@@ -19,15 +19,23 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import {workspace} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
+import { ArchetypeModule } from "../archetype/ArchetypeModule";
 
-var archiver = require('archiver');
-var DOM = require('xmldom').DOMParser;
+let archiver = require('archiver');
+let DOM = require('xmldom').DOMParser;
 let XMLSerializer = require('xmldom').XMLSerializer;
 
 export async function createCApp() {
 
     if (workspace.workspaceFolders) {
         let projectName = workspace.name;
+
+        // select target directory to create .car file
+        const cwd: string | null = await ArchetypeModule.chooseTargetFolder(workspace.workspaceFolders[0].uri);
+        let carFileLocation = workspace.workspaceFolders[0].uri.path;
+        if (cwd) {
+            carFileLocation = cwd;
+        }
 
         //read pom
         const pomFile: string = path.join(workspace.workspaceFolders[0].uri.path, "pom.xml");
@@ -36,7 +44,7 @@ export async function createCApp() {
         const projectVersion = pomDom.getElementsByTagName("version")[0].textContent;
 
         // create a file to stream archive data to.
-        let output = fse.createWriteStream(workspace.workspaceFolders[0].uri.path + '/example.car');
+        let output = fse.createWriteStream(carFileLocation + '/example.car');
         let archive = archiver('zip', {
             zlib: {level: 9} // Sets the compression level.
         });
