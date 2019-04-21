@@ -73,7 +73,7 @@ public class SynapseContentModelManager {
         return cmDocument != null ? cmDocument.findCMElement(element, namespaceURI) : null;
     }
 
-    public CMDocument findCMDocument(DOMElement element) {
+    private CMDocument findCMDocument(DOMElement element) {
         return findCMDocument(element.getOwnerDocument());
     }
 

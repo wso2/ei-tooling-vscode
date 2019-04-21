@@ -11,7 +11,7 @@
     <groupId>org.eclipse.lsp4xml.extensions.synapse</groupId>
     <artifactId>org.eclipse.lsp4xml.extensions.synapse</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Synapse</name>
+    <name>Synapse Extension</name>
 
     <build>
         <pluginManagement>

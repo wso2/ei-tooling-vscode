@@ -31,13 +31,13 @@ import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -62,8 +62,6 @@ public class SynapseXMLDefinitionManager {
     private final Map<String, Map<String, String>> gotoDefReferences;
 
     private final Set<String> referenceKeySet;
-
-    private DOMNode targetedElement = null;
 
     private SynapseXMLDefinitionManager() {
         gotoDefReferences = new HashMap<>();
@@ -91,69 +89,80 @@ public class SynapseXMLDefinitionManager {
                 NodeList children = ownerDocument.getChildNodes();
 
                 String attrValue = node.getAttribute(attrFrom);
-                targetedElement = null;
-                findDefinitionChild(children, nodeName, attrTo, attrValue);
+                DOMNode targetedElement = findTargetDefinitionNode(children, nodeName, attrTo, attrValue);
 
                 if (targetedElement != null) {
                     collector.accept(targetedElement);
                 } else {
-                    Collection<WorkspaceFolder> workspaceFolderList =
-                            WorkspaceFolders.getInstance().getWorkspaceFolders();
-
-                    //assumption: akk opened workspaceFolders are synapse workspaces (i.e:
-                    // WSO2/EnterpriseIntegrator/6.4.0/repository/deployment/server/synapse-config/default)
-                    if (!workspaceFolderList.isEmpty()) {
-                        for (WorkspaceFolder workspaceFolder : workspaceFolderList) {
-                            String uri = workspaceFolder.getUri();
-                            String updatedUri = resolveUri(nodeName, uri);
-
-                            try {
-                                listAllFiles(updatedUri, nodeName, attrTo, attrValue, collector);
-                            } catch (WorkspaceDocumentException e) {
-                                LOGGER.log(Level.SEVERE, "Error occurred while listing files", e);
-                            }
-                        }
-                    }
-                    if (targetedElement != null) {
-                        collector.accept(targetedElement);
-                    }
+                    findDefinitionInWorkspaceFolders(nodeName, attrTo, attrValue, collector);
                 }
             }
         }
     }
 
-    private DOMNode findDefinitionChild(NodeList children, String targetTagName, String attributeName,
-                                        String attributeValue) {
-        if (children != null && children.getLength() > 0) {
-            for (int i = 0; i < children.getLength(); i++) {
+    private void findDefinitionInWorkspaceFolders(String nodeName, String attrTo, String attrValue,
+                                                  Consumer<DOMNode> collector) {
+        Collection<WorkspaceFolder> workspaceFolderList =
+                WorkspaceFolders.getInstance().getWorkspaceFolders();
 
+        //assumption: only synapse workspaces are opened
+        if (!workspaceFolderList.isEmpty()) {
+            for (WorkspaceFolder workspaceFolder : workspaceFolderList) {
+                String workspaceFolderUri = workspaceFolder.getUri();
+                Path pathToTargetArtifactFolder = resolveUri(nodeName, workspaceFolderUri);
+
+                try {
+                    listAllFiles(pathToTargetArtifactFolder, nodeName, attrTo, attrValue, collector);
+                } catch (WorkspaceDocumentException e) {
+                    LOGGER.log(Level.SEVERE, "Error occurred while listing files", e);
+                }
+            }
+        }
+    }
+
+    private DOMNode findTargetDefinitionNode(NodeList children, String targetTagName,
+                                             String attributeName,
+                                             String attributeValue) {
+
+        DOMNode newTargetedElement = null;
+        if (children != null && children.getLength() > 0) {
+
+            for (int i = 0; i < children.getLength(); i++) {
                 if (children.item(i) instanceof DOMElement) {
                     DOMElement child = (DOMElement) children.item(i);
                     String tagName = child.getTagName();
 
-                    if (tagName.equals(targetTagName) && child.hasAttributes()) {
-                        List<DOMAttr> attrList = child.getAttributeNodes();
-
-                        if (attrList != null) {
-                            for (DOMAttr domAttr : attrList) {
-                                String key = domAttr.getName();
-                                if (key.equals(attributeName) && domAttr.getValue().equals(attributeValue)) {
-                                    targetedElement = child;
-                                    return targetedElement;
-                                }
-                            }
-                        }
+                    DOMNode matchingDomNode = findDefinitionInDOMElement(child, tagName, targetTagName, attributeName,
+                                                                         attributeValue);
+                    if (matchingDomNode != null) {
+                        return matchingDomNode;
                     }
-                    findDefinitionChild(child.getChildNodes(), targetTagName, attributeName, attributeValue);
+                    newTargetedElement = findTargetDefinitionNode(child.getChildNodes(), targetTagName,
+                                                                  attributeName, attributeValue);
                 }
             }
         }
-        return targetedElement;
+        return newTargetedElement;
+    }
+
+    private DOMNode findDefinitionInDOMElement(DOMElement domElement, String tagName, String targetTagName,
+                                               String attributeName, String attributeValue) {
+
+        if (tagName.equals(targetTagName) && domElement.hasAttributes() && domElement.getAttributeNodes() != null) {
+
+            for (DOMAttr domAttr : domElement.getAttributeNodes()) {
+                String key = domAttr.getName();
+                if (key.equals(attributeName) && domAttr.getValue().equals(attributeValue)) {
+                    return domElement;
+                }
+            }
+        }
+        return null;
     }
 
     private String readFromFileSystem(Path filePath) throws WorkspaceDocumentException {
         try {
-            if (Files.exists(filePath)) {
+            if (filePath.toFile().exists()) {
                 byte[] encoded = Files.readAllBytes(filePath);
                 return new String(encoded, Charset.defaultCharset());
             }
@@ -163,17 +172,19 @@ public class SynapseXMLDefinitionManager {
         }
     }
 
-    private void listAllFiles(String path, String nodeName, String attrTo, String attrValue,
+    private void listAllFiles(Path path, String nodeName, String attrTo, String attrValue,
                               Consumer<DOMNode> collector) throws WorkspaceDocumentException {
-        try (Stream<Path> paths = Files.walk(Paths.get(path))) {
+        try (Stream<Path> paths = Files.walk(path)) {
             for (Path filePath : paths.collect(Collectors.toList())) {
-                if (Files.isRegularFile(filePath)) {
+                if (filePath.toFile().isFile()) {
 
                     String content = readFromFileSystem(filePath);
                     DOMDocument doc = DOMParser.getInstance().parse(content, "file://" + filePath.toString(), null);
-                    findDefinitionChild(doc.getChildNodes(), nodeName, attrTo, attrValue);
+                    DOMNode targetedElement = findTargetDefinitionNode(doc.getChildNodes(), nodeName, attrTo,
+                                                                       attrValue);
 
                     if (targetedElement != null) {
+                        collector.accept(targetedElement);
                         break;
                     }
                 }
@@ -183,29 +194,18 @@ public class SynapseXMLDefinitionManager {
         }
     }
 
-    private String resolveUri(String folderType, String uri) {
-        //removing file:// form the path
-        uri = uri.substring(7);
+    private Path resolveUri(String folderType, String uri) {
+        Path path = Paths.get(URI.create(uri).getPath(), "src", "main", "synapse-config");
 
-        if (isWindows()) {
-            uri = uri + Constants.SYNAPSE_CONFIG_PROJECT_PATH.replace("/", "\\");
-        } else {
-            uri = uri + Constants.SYNAPSE_CONFIG_PROJECT_PATH;
-        }
         switch (folderType) {
             case Constants.SEQUENCE:
-                uri += Constants.SEQUENCE_FOLDER_NAME;
+                path = Paths.get(path.toString(), Constants.SEQUENCE_FOLDER_NAME);
                 break;
             case Constants.ENDPOINT:
-                uri += Constants.INBOUND_ENDPOINT_FOLDER_NAME;
+                path = Paths.get(path.toString(), Constants.INBOUND_ENDPOINT_FOLDER_NAME);
                 break;
             default:
         }
-        return uri;
+        return path;
     }
-
-    private boolean isWindows() {
-        return System.getProperty("os.name").startsWith("Windows");
-    }
-
 }
