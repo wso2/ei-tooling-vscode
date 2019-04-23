@@ -22,17 +22,21 @@ import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
 import {ServerRoleInfo} from "./artifactUtils";
+import {XMLSerializer as XMLSerializer} from 'xmldom';
 
 let DOM = require('xmldom').DOMParser;
-let XMLSerializer = require('xmldom').XMLSerializer;
 
 export namespace ArtifactModule {
 
     const dirName = __dirname;
 
-    export function createTemplate(targetFolder: string, sourceFile: string, destinationFile: string, artifactType: string, type: string) {
+    export interface Project {
+        groupId?: string;
+        artifactId?: string;
+        version?: string;
+    }
 
-        //first need to check whether there are multiple workspaces opened
+    export function createTemplate(targetFolder: string, sourceFile: string, destinationFile: string, artifactType: string, type: string) {
         if (workspace.workspaceFolders) {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
@@ -42,7 +46,7 @@ export namespace ArtifactModule {
 
             checkPathExistence(targetFolderPath).then(result => {
                 if (result) {
-                    //check whether the file is already existing
+                    //check whether the file already exists
                     checkPathExistence(targetFilePath).then(result => {
                         if (result) {
                             window.showErrorMessage("Error creating artifact! File already exists.");
@@ -67,6 +71,7 @@ export namespace ArtifactModule {
 
             checkPathExistence(targetFolderPath).then(result => {
                 if (result) {
+                    //check whether the file already exists
                     checkPathExistence(targetFilePath).then(result => {
                         if (result) {
                             window.showErrorMessage("Error creating registry resource! File already exists.");
@@ -109,10 +114,14 @@ export namespace ArtifactModule {
         if (workspace.workspaceFolders) {
             //read pom
             const pomFile: string = path.join(workspace.workspaceFolders[0].uri.path, "pom.xml");
-            const pomBuf: Buffer = await fse.readFile(pomFile);
-            let pomDom = new DOM().parseFromString(pomBuf.toString(), "text/xml");
-            const groupId = pomDom.getElementsByTagName("groupId")[0].textContent;
-            const projectVersion = pomDom.getElementsByTagName("version")[0].textContent;
+            // const pomBuf: Buffer = await fse.readFile(pomFile);
+            // let pomDom = new DOM().parseFromString(pomBuf.toString(), "text/xml");
+            // const groupId = pomDom.getElementsByTagName("groupId")[0].textContent;
+            // const projectVersion = pomDom.getElementsByTagName("version")[0].textContent;
+
+            // read pom and get project version
+            let project: Project = await getProjectInfoFromPOM(pomFile);
+            const {groupId, version} = Object.assign(project);
 
             const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.path, "src", "main", "synapse-config", "artifact.xml");
             const buf: Buffer = await fse.readFile(configArtifactXmlFileLocation);
@@ -126,7 +135,7 @@ export namespace ArtifactModule {
             child.setAttribute("type", type);
             child.setAttribute("serverRole", ServerRoleInfo.ENTERPRISE_SERVICE_BUS);
             child.setAttribute("groupId", groupId);
-            child.setAttribute("version", projectVersion);
+            child.setAttribute("version", version);
 
             let fileTag = xmlDoc.createElement("file");
             fileTag.textContent = path.join(targetFolder, artifactName + ".xml");
@@ -141,7 +150,6 @@ export namespace ArtifactModule {
         if (workspace.workspaceFolders) {
             const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.path, "src", "main", "registry-resources", "artifact.xml");
             const buf: Buffer = await fse.readFile(registryArtifactXML);
-            await timeout(200);
 
             let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
             let parent = xmlDoc.getElementsByTagName("artifacts");
@@ -206,6 +214,17 @@ export namespace ArtifactModule {
             await fse.writeFile(pomXML, new XMLSerializer().serializeToString(xmlDoc));
         }
     }
+
+    export async function getProjectInfoFromPOM(pomFilePath: string): Promise<Project> {
+        const buf: Buffer = await fse.readFile(pomFilePath);
+        let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+        return {
+            groupId: xmlDoc.getElementsByTagName("groupId")[0].textContent,
+            artifactId: xmlDoc.getElementsByTagName("artifactId")[0].textContent,
+            version: xmlDoc.getElementsByTagName("version")[0].textContent
+        };
+    }
+
 
     function updateNameAttribute(buf: Buffer, fileName: string): string {
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");

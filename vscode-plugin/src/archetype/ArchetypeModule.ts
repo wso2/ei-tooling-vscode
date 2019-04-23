@@ -24,7 +24,7 @@ import {openDialogForFolder} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 import {Archetype} from "./Archetype";
 import {executeCommandHandler} from "../mavenInternals/commandHandler";
-import {ArtifactInfo} from "./archetypeUtils";
+import {GROUP_ID_PREFIX, ARCHETYPE_ARTIFACT_ID, ARCHETYPE_GROUP_ID} from "./archetypeUtils";
 
 export namespace ArchetypeModule {
 
@@ -62,7 +62,7 @@ export namespace ArchetypeModule {
             const newProject: ESBProject = {
                 archetypeGroupId: archetype.groupId,
                 archetypeArtifactId: archetype.artifactId,
-                groupId: ArtifactInfo.GROUP_ID_PREFIX + projectName,
+                groupId: GROUP_ID_PREFIX + projectName,
                 artifactId: projectName
             };
 
@@ -81,7 +81,7 @@ export namespace ArchetypeModule {
             let artifactId = item.artifactId;
             let groupId = item.groupId;
 
-            if (artifactId === ArtifactInfo.ARCHETYPE_ARTIFACT_ID && groupId === ArtifactInfo.ARCHETYPE_GROUP_ID) {
+            if (artifactId === ARCHETYPE_ARTIFACT_ID && groupId === ARCHETYPE_GROUP_ID) {
                 archetype = item;
                 return archetype;
             }
@@ -125,6 +125,7 @@ export namespace ArchetypeModule {
 
         } catch (err) {
             // do nothing
+            console.log("Error occurred: " + err);
         }
         return [];
     }

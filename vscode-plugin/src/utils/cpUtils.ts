@@ -17,7 +17,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 */
 
 import * as cp from "child_process";
-import * as vscode from "vscode";
+import {window, ProgressLocation, Progress} from "vscode";
 import { mavenOutputChannel } from "../mavenInternals/mavenOutputChannel";
 
 export async function executeCommand(command: string, args: string[], options: cp.SpawnOptions = { shell: true }): Promise<string> {
@@ -42,7 +42,7 @@ export async function executeCommand(command: string, args: string[], options: c
 
 export async function executeCommandWithProgress(message: string, command: string, args: string[], options: cp.SpawnOptions = { shell: true }): Promise<string> {
     let result: string = "";
-    await vscode.window.withProgress({ location: vscode.ProgressLocation.Window }, async (p: vscode.Progress<{}>) => {
+    await window.withProgress({ location: ProgressLocation.Window }, async (p: Progress<{}>) => {
         mavenOutputChannel.appendLine(`${command}, [${args.join(",")}]`);
         return new Promise(async (resolve: () => void, reject: (e: Error) => void): Promise<void> => {
             p.report({ message });

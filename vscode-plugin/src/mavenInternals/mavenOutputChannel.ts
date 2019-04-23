@@ -16,10 +16,10 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import * as vscode from "vscode";
+import {Disposable, window, OutputChannel} from "vscode";
 
-class MavenOutputChannel implements vscode.Disposable {
-    private readonly channel: vscode.OutputChannel = vscode.window.createOutputChannel("Maven for Java");
+class MavenOutputChannel implements Disposable {
+    private readonly channel: OutputChannel = window.createOutputChannel("Maven for Java");
     
     public appendLine(message: any, title?: string): void {
         if (title) {

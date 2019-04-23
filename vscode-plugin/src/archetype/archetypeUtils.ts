@@ -16,10 +16,6 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-'use strict';
-
-export class ArtifactInfo {
-    static readonly GROUP_ID_PREFIX: string = "com.example.";
-    static readonly ARCHETYPE_ARTIFACT_ID: string = "wso2ei-tooling";
-    static readonly ARCHETYPE_GROUP_ID: string = "wso2ei.vscode.tooling";
-}
+export const GROUP_ID_PREFIX: string = "com.example.";
+export const ARCHETYPE_ARTIFACT_ID: string = "wso2ei-tooling";
+export const ARCHETYPE_GROUP_ID: string = "wso2ei.vscode.tooling";

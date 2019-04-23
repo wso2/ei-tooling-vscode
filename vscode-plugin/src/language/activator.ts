@@ -18,20 +18,21 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 'use strict';
 
-import * as vscode from 'vscode';
+import {languages, TextEditor, TextEditorEdit} from 'vscode';
+import {SYNAPSE_NAMESPACE, SYNAPSE_LANGUAGE_ID} from "./languageUtils";
 
 export function setLanguageToSynapse(document: any): boolean {
     let xmlData = document.getText();
-    let synapseNSPattern = new RegExp("xmlns=\"http:\/\/ws\.apache\.org\/ns\/synapse\"");
+    let synapseNSPattern = new RegExp(SYNAPSE_NAMESPACE);
 
     if (synapseNSPattern.test(xmlData)) {
-        vscode.languages.setTextDocumentLanguage(document, "SynapseXml");
+        languages.setTextDocumentLanguage(document, SYNAPSE_LANGUAGE_ID);
         return true;
     }
     return false;
 }
 
-export function changeLanguageToSynapse(editor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
+export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit) {
 
     let number = editor.document.lineCount;
     let num = 0;
@@ -48,8 +49,8 @@ export function changeLanguageToSynapse(editor: vscode.TextEditor, edit: vscode.
 
             if (typeof column === "number") {
                 let endCharPosition = currLine.range.end.with(num, column - 1);
-                edit.insert(endCharPosition, " xmlns=\"http://ws.apache.org/ns/synapse\"");
-                vscode.languages.setTextDocumentLanguage(editor.document, "SynapseXml");
+                edit.insert(endCharPosition, " " + SYNAPSE_NAMESPACE);
+                languages.setTextDocumentLanguage(editor.document, "SynapseXml");
                 break;
             }
             num++;
@@ -58,12 +59,12 @@ export function changeLanguageToSynapse(editor: vscode.TextEditor, edit: vscode.
             let newLine = editor.document.lineAt(num - 1);
             let endCharPosition = newLine.range.end.with(num, 0);
             edit.insert(endCharPosition, "<definitions xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</definitions>");
-            vscode.languages.setTextDocumentLanguage(editor.document, "SynapseXml");
+            languages.setTextDocumentLanguage(editor.document, SYNAPSE_LANGUAGE_ID);
         }
     } else {
         let endCharPosition = editor.document.positionAt(0);
         edit.insert(endCharPosition, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<definitions xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</definitions>");
-        vscode.languages.setTextDocumentLanguage(editor.document, "SynapseXml");
+        languages.setTextDocumentLanguage(editor.document, "SynapseXml");
     }
 }
 

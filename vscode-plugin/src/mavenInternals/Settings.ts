@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import { Uri, workspace } from "vscode";
+import {Uri, workspace} from "vscode";
 
 export namespace Settings {
     
