@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class SnippetProvider {
 
-    private static final Logger LOGGER = Logger.getLogger(SnippetProvider.class.getName());
+    private static final Logger CLIENT_LOGGER = Logger.getLogger(SnippetProvider.class.getName());
 
     private static final Map<String, String> snippets = new HashMap<>();
 
@@ -50,10 +50,10 @@ public class SnippetProvider {
                     snippets.put(name, value);
                 }
             } else {
-                LOGGER.log(Level.SEVERE, "InputStream from " + Constants.CONFIG_FILE + " is null");
+                CLIENT_LOGGER.log(Level.SEVERE, "InputStream from " + Constants.CONFIG_FILE + " is null");
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, Constants.CONFIG_FILE + " property file not found in the classpath", e);
+            CLIENT_LOGGER.log(Level.SEVERE, Constants.CONFIG_FILE + " property file not found in the classpath", e);
         }
     }
 
