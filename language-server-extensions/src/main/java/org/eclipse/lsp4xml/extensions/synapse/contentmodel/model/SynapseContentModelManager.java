@@ -30,10 +30,7 @@ import org.eclipse.lsp4xml.extensions.synapse.utils.Constants;
 import org.eclipse.lsp4xml.utils.URIUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -41,7 +38,6 @@ import java.util.Map;
  */
 public class SynapseContentModelManager {
 
-    private final Map<String, CMDocument> cmDocumentCache;
     private final List<ContentModelProvider> modelProviders;
 
     private final XMLCacheResolverExtension cacheResolverExtension;
@@ -50,7 +46,6 @@ public class SynapseContentModelManager {
 
     public SynapseContentModelManager() {
         modelProviders = new ArrayList<>();
-        cmDocumentCache = Collections.synchronizedMap(new HashMap<>());
         fileAssociationResolver = new XMLFileAssociationResolverExtension();
         catalogResolverExtension = new XMLCatalogResolverExtension();
         cacheResolverExtension = new XMLCacheResolverExtension();
@@ -69,12 +64,8 @@ public class SynapseContentModelManager {
      * @return the declared element which matches the given XML element and null otherwise.
      */
     private CMElementDeclaration findCMElement(DOMElement element, String namespaceURI) {
-        CMDocument cmDocument = findCMDocument(element);
+        CMDocument cmDocument = findCMDocument(element.getOwnerDocument());
         return cmDocument != null ? cmDocument.findCMElement(element, namespaceURI) : null;
-    }
-
-    private CMDocument findCMDocument(DOMElement element) {
-        return findCMDocument(element.getOwnerDocument());
     }
 
     public CMDocument findCMDocument(DOMDocument xmlDocument) {
@@ -105,18 +96,7 @@ public class SynapseContentModelManager {
         if (modelProvider == null) {
             return null;
         }
-        CMDocument cmDocument = null;
-        boolean isCacheable = isCacheable(key);
-        if (isCacheable) {
-            cmDocument = cmDocumentCache.get(key);
-        }
-        if (cmDocument == null) {
-            cmDocument = modelProvider.createCMDocument(key);
-            if (isCacheable && cmDocument != null) {
-                cmDocumentCache.put(key, cmDocument);
-            }
-        }
-        return cmDocument;
+        return modelProvider.createCMDocument(key);
     }
 
     public CMElementDeclaration findInternalCMElement(DOMElement element) {
@@ -171,10 +151,6 @@ public class SynapseContentModelManager {
             }
         }
         return null;
-    }
-
-    private boolean isCacheable(String uri) {
-        return !URIUtils.isFileResource(uri);
     }
 
     /**
