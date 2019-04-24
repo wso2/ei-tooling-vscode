@@ -20,48 +20,50 @@
 	},
 	"main": "./out/extension.js",
 	"contributes": {
-		"configuration": {
-			"type": "object",
-			"title": "XML configuration",
-			"properties": {
-				"xml.logs.client": {
-					"type": "boolean",
-					"default": true,
-					"description": "Should the server log to client output"
-				},
-				"xml.completion.autoCloseTags": {
-					"type": "boolean",
-					"default": true,
-					"description": "Enable/disable autoclosing of XML tags. \n\nIMPORTANT: Turn off editor.autoClosingTags for this to work",
-					"scope": "window"
-				},
-				"xml.server.vmargs": {
-					"type": [
-						"string",
-						"null"
-					],
-					"default": "-noverify -Xmx64M -XX:+UseG1GC -XX:+UseStringDeduplication",
-					"description": "Specifies extra VM arguments used to launch the XML Language Server. Eg. use `-noverify -Xmx1G  -XX:+UseG1GC -XX:+UseStringDeduplication` to bypass class verification, increase the heap size to 1GB and enable String deduplication with the G1 Garbage collector",
-					"scope": "window"
-				},
-				"xml.format.enabled": {
-					"type": "boolean",
-					"default": true,
-					"description": "Enable/disable ability to format document",
-					"scope": "window"
-				},
-				"xml.format.quotations": {
-					"type": "string",
-					"enum": [
-						"doubleQuotes",
-						"singleQuotes"
-					],
-					"default": "doubleQuotes",
-					"description": "Which type of quotes to use for attribute values when formatting.",
-					"scope": "window"
+		"configuration": [
+			{
+				"type": "object",
+				"title": "XML configuration",
+				"properties": {
+					"xml.logs.client": {
+						"type": "boolean",
+						"default": true,
+						"description": "Should the server log to client output"
+					},
+					"xml.completion.autoCloseTags": {
+						"type": "boolean",
+						"default": true,
+						"description": "Enable/disable autoclosing of XML tags. \n\nIMPORTANT: Turn off editor.autoClosingTags for this to work",
+						"scope": "window"
+					},
+					"xml.server.vmargs": {
+						"type": [
+							"string",
+							"null"
+						],
+						"default": "-noverify -Xmx64M -XX:+UseG1GC -XX:+UseStringDeduplication",
+						"description": "Specifies extra VM arguments used to launch the XML Language Server. Eg. use `-noverify -Xmx1G  -XX:+UseG1GC -XX:+UseStringDeduplication` to bypass class verification, increase the heap size to 1GB and enable String deduplication with the G1 Garbage collector",
+						"scope": "window"
+					},
+					"xml.format.enabled": {
+						"type": "boolean",
+						"default": true,
+						"description": "Enable/disable ability to format document",
+						"scope": "window"
+					},
+					"xml.format.quotations": {
+						"type": "string",
+						"enum": [
+							"doubleQuotes",
+							"singleQuotes"
+						],
+						"default": "doubleQuotes",
+						"description": "Which type of quotes to use for attribute values when formatting.",
+						"scope": "window"
+					}
 				}
 			}
-		},
+		],
 		"configurationDefaults": {
 			"[SynapseXml]": {
 				"editor.autoClosingBrackets": "never"
@@ -186,13 +188,8 @@
 				}
 			},
 			{
-				"command": "wso2esb.resource.registry",
-				"title": "Create new registry resource",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"command": "extension.checkingRightClickFunctionality",
+				"title": "Check"
 			}
 		],
 		"languages": [
@@ -213,6 +210,15 @@
 				{
 					"id": "SynapseConfigProjects",
 					"name": "Synapse Config Projects"
+				}
+			]
+		},
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "extension.checkingRightClickFunctionality",
+					"when": "resourceLangId == xml",
+					"group": "Synapse@1"
 				}
 			]
 		}
@@ -239,6 +245,7 @@
 	},
 	"dependencies": {
 		"archiver": "^3.0.0",
+		"chokidar": "^2.1.5",
 		"dom-parser": "^0.1.5",
 		"fs-extra": "^4.0.3",
 		"vscode-languageclient": "^4.1.4",
