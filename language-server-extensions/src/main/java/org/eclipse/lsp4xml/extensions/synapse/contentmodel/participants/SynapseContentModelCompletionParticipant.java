@@ -63,22 +63,19 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
 
             CMDocument cmDocument = synapseContentModelManager.findCMDocument(document);
             if (parentElement == null && cmDocument != null) {
-                CMElementDeclaration cmElement = ((SynapseCMXSDDocument) cmDocument).
-                        findElementDeclaration("definitions", Constants.SYNAPSE_NAMESPACE);
+                CMElementDeclaration cmElement = ((SynapseCMXSDDocument) cmDocument).findElementDeclaration(
+                        "definitions", Constants.SYNAPSE_NAMESPACE);
                 Collection<CMElementDeclaration> cmElements = cmElement.getElements();
 
-                fillWithChildrenElementDeclaration(null, cmElements, null, false,
-                                                   request, response);
+                fillWithChildrenElementDeclaration(null, cmElements, true, request, response);
 
             } else if (parentElement != null) {
                 // Try to retrieve XML Schema/DTD element declaration for the parent element
                 // where completion was triggered.
                 CMElementDeclaration cmElement = synapseContentModelManager.findCMElement(parentElement);
                 if (cmElement != null) {
-                    String defaultPrefix = parentElement.getPrefix();
-
-                    fillWithChildrenElementDeclaration(parentElement, cmElement.getElements(), defaultPrefix,
-                                                       false, request, response);
+                    fillWithChildrenElementDeclaration(parentElement, cmElement.getElements(), false,
+                                                       request, response);
                 }
             }
 
@@ -89,36 +86,30 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
     }
 
     private void fillWithChildrenElementDeclaration(DOMElement element, Collection<CMElementDeclaration> cmElements,
-                                                    String p, boolean forceUseOfPrefix, ICompletionRequest request,
-                                                    ICompletionResponse response) throws BadLocationException {
+                                                    boolean rootElement, ICompletionRequest request,
+                                                    ICompletionResponse response)
+            throws BadLocationException {
 
         XMLGenerator generator = request.getXMLGenerator();
 
         for (CMElementDeclaration child : cmElements) {
-            String prefix;
-            if (forceUseOfPrefix) {
-                prefix = p;
-            } else {
-                prefix = element != null ? element.getPrefix(child.getNamespace()) : null;
-            }
+            String prefix = element != null ? element.getPrefix(child.getNamespace()) : null;
             String label = child.getName(prefix);
             String documentation = child.getDocumentation();
+            String name = child.getName();
 
-            String predefinedSnippet = generateSnippet(child);
-            if (predefinedSnippet != null) {
-                createCompletionItem(label, predefinedSnippet, "Snippet: " + documentation, request, response);
+            if ((name.equals("sequence") || name.equals("endpoint")) && !rootElement) {
+                name += ".child";
             }
 
-            String completionFromSchema = generator.generate(child, prefix);
-            if (completionFromSchema != null) {
-                createCompletionItem(label, completionFromSchema, documentation, request, response);
+            String completionItem = SnippetProvider.getSnippets().get(name);
+            if (completionItem == null) {
+                completionItem = generator.generate(child, prefix);
+            }
+            if (completionItem != null) {
+                createCompletionItem(label, completionItem, documentation, request, response);
             }
         }
-    }
-
-    private String generateSnippet(CMElementDeclaration elementDeclaration) {
-        String keyword = elementDeclaration.getName();
-        return SnippetProvider.getSnippets().get(keyword);
     }
 
     private void createCompletionItem(String label, String xml, String documentation, ICompletionRequest request,
