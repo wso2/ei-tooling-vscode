@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {window, workspace, commands, ExtensionContext} from 'vscode';
+import {commands, ExtensionContext, Uri, window, workspace, RelativePattern, languages} from 'vscode';
 import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
@@ -35,6 +35,7 @@ import {
 } from "./artifacts/artifactUtils";
 
 import {createCApp} from "./archive/archiveResolver";
+import {ArtifactModule} from "./artifacts/ArtifactModule";
 
 export function activate(context: ExtensionContext) {
 
@@ -60,6 +61,22 @@ export function activate(context: ExtensionContext) {
     //listen to newly opened text documents
     workspace.onDidOpenTextDocument((document) => {
         setLanguageToSynapse(document);
+    });
+
+    const uri = window.activeTextEditor!.document.uri;
+
+    // initialization code...
+    let watcher = workspace.createFileSystemWatcher(
+        new RelativePattern(
+            workspace.getWorkspaceFolder(uri)!,
+            '**/*.{xml,dmc}'
+        ),
+        true,
+        true,
+        false
+    );
+    watcher.onDidDelete((e: Uri)=> {
+        ArtifactModule.safeDeleteArtifact(e);
     });
 }
 
@@ -121,11 +138,20 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2esb.resource.registry", async () => {
         await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE);
     }));
+
+    context.subscriptions.push(commands.registerCommand('extension.checkingRightClickFunctionality',
+                                                        async (clickedFile: Uri) => {
+
+    }));
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
 }
+
+
+
+
 
 
 

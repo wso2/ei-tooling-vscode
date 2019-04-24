@@ -78,7 +78,7 @@ export async function createCApp() {
         artifactTag.setAttribute("version", version);
         artifactTag.setAttribute("type", "carbon/application");
 
-        let promise: Promise<void> = processConfigArtifactXmlFile(targetFolderToGenerateCAR, version, artifactsXML,
+        let promise: Promise<void> = processConfigArtifactXmlFile(cwd, version, artifactsXML,
                                                                   artifactTag, archive);
 
         promise.then(() => {

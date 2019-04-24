@@ -36,51 +36,32 @@ export namespace ArtifactModule {
         version?: string;
     }
 
-    export function createTemplate(targetFolder: string, sourceFile: string, destinationFile: string, artifactType: string, type: string) {
+    export function createTemplate(targetTemplateFolder: string, sourceFile: string, destinationFile: string, artifactType: string, type: string) {
         if (workspace.workspaceFolders) {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
-            const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "synapse-config", targetFolder);
-            const targetFilePath = path.join(targetFolderPath, destinationFile + ".xml");
-            const targetFileUri = resolveUri(targetFilePath);
+            const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "synapse-config", targetTemplateFolder);
 
-            checkPathExistence(targetFolderPath).then(result => {
-                if (result) {
-                    //check whether the file already exists
-                    checkPathExistence(targetFilePath).then(result => {
-                        if (result) {
-                            window.showErrorMessage("Error creating artifact! File already exists.");
-                        } else {
-                            let sourcePath = path.join(dirName, '..', '..', 'templates', targetFolder, sourceFile + '.xml');
-                            createTargetArtifact(targetFileUri, destinationFile, sourcePath);
-                            updateConfigArtifactXMLFile(destinationFile, artifactType, targetFolder, type);
-                        }
-                    });
+            checkPathExistence(targetFolderPath).then(exists => {
+                if (exists) {
+                    createArtifact(targetTemplateFolder, sourceFile, destinationFile, type, targetFolderPath,
+                                   "synapse-config", artifactType);
                 }
             });
         }
     }
 
-    export function createResource(targetFolder: string, sourceFile: string, destinationFile: string, type: string) {
+    export function createResource(targetTemplateFolder: string, sourceFile: string, destinationFile: string, type: string) {
         if (workspace.workspaceFolders) {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
             const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "registry-resources");
-            const targetFilePath = path.join(targetFolderPath, destinationFile + ".xml");
-            const targetFileUri = resolveUri(targetFilePath);
 
-            checkPathExistence(targetFolderPath).then(result => {
-                if (result) {
-                    //check whether the file already exists
-                    checkPathExistence(targetFilePath).then(result => {
-                        if (result) {
-                            window.showErrorMessage("Error creating registry resource! File already exists.");
-                        } else {
-                            let sourcePath = path.join(dirName, '..', '..', 'templates', targetFolder, sourceFile + '.xml');
-                            createTargetArtifact(targetFileUri, destinationFile, sourcePath);
-                            updateRegistryArtifactXMLFile(destinationFile, type);
-                        }
-                    });
+
+            checkPathExistence(targetFolderPath).then(exists => {
+                if (exists) {
+                    createArtifact(targetTemplateFolder, sourceFile, destinationFile, type, targetFolderPath,
+                                   "registry-resources", "");
                 }
             });
         }
@@ -95,6 +76,27 @@ export namespace ArtifactModule {
                 console.log(error);
                 return false;
             });
+    }
+
+    function createArtifact(targetTemplateFolder: string, sourceFile: string, destinationFile: string, type: string,
+                            targetFolderPath: string, resourceType: string, artifactType: string) {
+        //check whether the file already exists
+        let targetFile = path.join("src", "main", "**", "**", destinationFile + ".xml");
+        workspace.findFiles(targetFile).then(result => {
+            if(result.length === 0) {
+                const targetFilePath = path.join(targetFolderPath, destinationFile + ".xml");
+                const targetFileUri = resolveUri(targetFilePath);
+                const sourcePath = path.join(dirName, '..', '..', 'templates', targetTemplateFolder, sourceFile + '.xml');
+                createTargetArtifact(targetFileUri, destinationFile, sourcePath);
+                if(resourceType === "synapse-config") {
+                    updateConfigArtifactXMLFile(destinationFile, artifactType, targetTemplateFolder, type);
+                } else {
+                    updateRegistryArtifactXMLFile(destinationFile, type);
+                }
+            }else {
+                window.showErrorMessage("Error creating registry resource! File already exists.");
+            }
+        });
     }
 
     async function createTargetArtifact(uri: Uri, fileName: string, sourcePath: string) {
@@ -244,5 +246,58 @@ export namespace ArtifactModule {
 
         return targetFolder;
     }
+
+    export async function renameArtifact(artifactUri: Uri) {
+        const buf: Buffer = await fse.readFile(artifactUri.path);
+        let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+        xmlDoc.lastChild.setAttribute("name", "sajinie");
+        console.log(xmlDoc);
+
+        workspace.onDidChangeConfiguration(e => {
+
+        });
+
+    }
+
+    export async function safeDeleteArtifact(deletedFile: Uri) {
+        const filePath: string = deletedFile.fsPath;
+        let array: string[] = filePath.split(path.sep);
+        let deletedArtifact: string = array[array.length - 1];
+        let rawArtifactName: string[] = deletedArtifact.split(".");
+        let resourceType;
+    
+        if (isExistDirectoryPattern(filePath, path.join("src", "main", "synapse-config"))) {
+            resourceType = "synapse-config";
+    
+        } else if (isExistDirectoryPattern(filePath, path.join("src", "main", "registry-resources"))) {
+            resourceType = "registry-resources";
+        }
+    
+        if (workspace.workspaceFolders &&  resourceType) {
+            let artifactXmlFilePath = path.join(workspace.workspaceFolders[0].uri.path, "src", "main", resourceType, "artifact.xml");
+    
+            fse.readFile(artifactXmlFilePath).then(buf => {
+                let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+                let elementList = xmlDoc.getElementsByTagName("artifact");
+    
+                for (let i = 0; i < elementList.length; i++) {
+                    if (elementList[i].getAttribute("name") === rawArtifactName[0]) {
+                        xmlDoc.removeChild(elementList[i]);
+                        fse.writeFile(artifactXmlFilePath, new XMLSerializer().serializeToString(xmlDoc))
+                            .catch(error => console.log(error));
+                        break;
+                    }
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+    }
+    
+    function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
+        let regExpForDirPattern = new RegExp(dirPattern);
+        return regExpForDirPattern.test(filePath);
+    }
+    
 }
 
