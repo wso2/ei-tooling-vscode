@@ -38,14 +38,14 @@ export class Runner {
             mavenOutputChannel.append(data.toString());
         });
 
-        this._process.on("exit",(code, signal)=>{
+        this._process.on("exit",(code)=>{
             if(code === 0) {
                 if(nwd) {
                     window.showInformationMessage("maven process successfully executed");
                     commands.executeCommand('vscode.openFolder', Uri.file(nwd), true);
                 }
             }else if(code === 1) {
-                window.showInformationMessage("maven process failed: " + signal);
+                window.showInformationMessage("maven process failed.");
             }
         });
     }

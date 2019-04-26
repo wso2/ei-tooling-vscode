@@ -19,9 +19,9 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import {window, workspace} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import { ArchetypeModule } from "../archetype/ArchetypeModule";
 import * as archiver from "archiver";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
+import {chooseTargetFolder} from "../utils/uiUtils";
 
 let DOM = require('xmldom').DOMParser;
 
@@ -37,7 +37,7 @@ export async function createCApp() {
         // select target directory to create .car file
         const cwd = workspace.workspaceFolders[0].uri.path;
         let targetFolderToGenerateCAR: string | null =
-            await ArchetypeModule.chooseTargetFolder(workspace.workspaceFolders[0].uri);
+            await chooseTargetFolder(workspace.workspaceFolders[0].uri);
 
         if (!targetFolderToGenerateCAR) {
             targetFolderToGenerateCAR = cwd;

@@ -20,7 +20,7 @@ import * as fse from "fs-extra";
 import * as os from "os";
 import * as path from "path";
 import {Uri, window} from "vscode";
-import {openDialogForFolder, showInputBoxForProjectName} from "../utils/uiUtils";
+import {chooseTargetFolder, showInputBoxForProjectName} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 import {Archetype} from "./Archetype";
 import {executeCommandHandler} from "../mavenInternals/commandHandler";
@@ -46,9 +46,13 @@ export namespace ArchetypeModule {
         let projectName: string | undefined = await showInputBoxForProjectName();
 
         // Loop until the project name is valid
-        while (projectName === "") {
-            window.showErrorMessage("ESB Project name is mandatory!!");
+        while (typeof projectName !== "undefined" && !Utils.validate(projectName)) {
+            window.showErrorMessage("Enter valid ESB Project name!!");
             projectName = await showInputBoxForProjectName();
+        }
+
+        if (typeof projectName === "undefined") {
+            return;
         }
 
         if (archetype && archetype.groupId && archetype.artifactId && projectName && projectName.length > 0) {
@@ -126,18 +130,6 @@ export namespace ArchetypeModule {
             console.log("Error occurred: " + err);
         }
         return [];
-    }
-
-    export async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
-        const result: Uri | null = await openDialogForFolder({
-            defaultUri: entry,
-            openLabel: "Select Destination Folder"
-        });
-        const targetLocation: string | null = result && result.fsPath;
-        if (!targetLocation) {
-            window.showErrorMessage("Target folder not selected");
-        }
-        return targetLocation;
     }
 
     // async function getCachedRemoteArchetypeItems(): Promise<Archetype[]> {
