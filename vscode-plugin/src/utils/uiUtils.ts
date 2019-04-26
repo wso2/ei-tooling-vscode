@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import { OpenDialogOptions, Uri, window } from "vscode";
+import {OpenDialogOptions, QuickPickItem, Uri, window} from "vscode";
 
 // file chooser dialog
 export async function openDialogForFolder(customOptions: OpenDialogOptions): Promise<Uri | null> {
@@ -41,4 +41,30 @@ export async function showInputBoxForProjectName(): Promise<string | undefined> 
                                      }).then(text => text);
 }
 
+export async function showQuickPick(quickPickItems: QuickPickItem[]): Promise<string | undefined> {
+    return await window.showQuickPick(
+        quickPickItems,
+        {matchOnDescription: true, placeHolder: "Select type..."}
+    ).then(selected => (
+        selected && selected.description
+    ));
+}
+
+export async function showInputBox(promptMsg: string) {
+    return await window.showInputBox({
+                                         prompt: promptMsg
+                                     }).then(text => text);
+}
+
+export async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
+    const result: Uri | null = await openDialogForFolder({
+                                                             defaultUri: entry,
+                                                             openLabel: "Select Destination Folder"
+                                                         });
+    const targetLocation: string | null = result && result.fsPath;
+    if (!targetLocation) {
+        window.showErrorMessage("Target folder not selected. Operation aborted!");
+    }
+    return targetLocation;
+}
 

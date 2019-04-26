@@ -34,4 +34,12 @@ export namespace Utils {
             }
         );
     }
+    
+    export function validate(str: string) {
+        if (!str.replace(/\s/g, '').length) {
+            return false;
+        }
+        let regex = /^[a-zA-Z ]{1,30}$/;
+        return regex.test(str);
+    }
 }
