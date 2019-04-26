@@ -2,8 +2,8 @@
 	"name": "synapse-vscode",
 	"displayName": "synapse-vscode",
 	"description": "",
-	"publisher": "Sajinie",
-	"version": "0.0.1",
+	"publisher": "SajinieRanasinghe",
+	"version": "0.7.0",
 	"engines": {
 		"vscode": "^1.31.0"
 	},
@@ -81,7 +81,7 @@
 			},
 			{
 				"command": "wso2esb.project.create",
-				"title": "Create new ESB project",
+				"title": "Create new ESB Project",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -90,7 +90,7 @@
 			},
 			{
 				"command": "wso2esb.project.build",
-				"title": "Create composite application",
+				"title": "Create Deployable Archive",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -108,7 +108,7 @@
 			},
 			{
 				"command": "wso2esb.artifact.api",
-				"title": "Create new API artifact",
+				"title": "Create New API Artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -117,7 +117,7 @@
 			},
 			{
 				"command": "wso2esb.artifact.proxy",
-				"title": "Create new Proxy artifact",
+				"title": "Create New Proxy Artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -126,7 +126,7 @@
 			},
 			{
 				"command": "wso2esb.artifact.endpoint",
-				"title": "Create new Endpoint artifact",
+				"title": "Create New Endpoint Artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -135,7 +135,7 @@
 			},
 			{
 				"command": "wso2esb.artifact.inboundEndpoint",
-				"title": "Create new Inbound-Endpoint artifact",
+				"title": "Create New Inbound-Endpoint Artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -144,7 +144,7 @@
 			},
 			{
 				"command": "wso2esb.artifact.localEntry",
-				"title": "Create new Local-Entry artifact",
+				"title": "Create New Local-Entry Artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -153,7 +153,7 @@
 			},
 			{
 				"command": "wso2esb.artifact.messageStore",
-				"title": "Create new Message-Store artifact",
+				"title": "Create New Message-Store Artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -162,7 +162,7 @@
 			},
 			{
 				"command": "wso2esb.artifact.messageProcessor",
-				"title": "Create new Message-Processor artifact",
+				"title": "Create New Message-Processor Artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -171,7 +171,7 @@
 			},
 			{
 				"command": "wso2esb.artifact.template",
-				"title": "Create new Template artifact",
+				"title": "Create New Template Artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -180,7 +180,7 @@
 			},
 			{
 				"command": "wso2esb.artifact.sequence",
-				"title": "Create new Sequence artifact",
+				"title": "Create New Sequence Artifact",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
