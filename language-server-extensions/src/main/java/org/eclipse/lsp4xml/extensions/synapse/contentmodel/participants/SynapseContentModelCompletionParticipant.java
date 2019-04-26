@@ -98,8 +98,8 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
             String documentation = child.getDocumentation();
             String name = child.getName();
 
-            if ((name.equals("sequence") || name.equals("endpoint")) && !rootElement) {
-                name += ".child";
+            if (name != null && (name.equals("sequence") || name.equals("endpoint")) && rootElement) {
+                name += ".parent";
             }
 
             String completionItem = SnippetProvider.getSnippets().get(name);
@@ -219,5 +219,4 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
             });
         }
     }
-
 }

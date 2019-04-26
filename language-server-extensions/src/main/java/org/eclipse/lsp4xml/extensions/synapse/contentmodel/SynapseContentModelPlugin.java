@@ -23,8 +23,10 @@ import org.eclipse.lsp4xml.dom.DOMDocument;
 import org.eclipse.lsp4xml.extensions.contentmodel.settings.ContentModelSettings;
 import org.eclipse.lsp4xml.extensions.synapse.contentmodel.model.SynapseContentModelManager;
 import org.eclipse.lsp4xml.extensions.synapse.contentmodel.participants.SynapseContentModelCompletionParticipant;
+import org.eclipse.lsp4xml.extensions.synapse.contentmodel.participants.SynapseContentModelHoverParticipant;
 import org.eclipse.lsp4xml.extensions.synapse.contentmodel.participants.diagnostics.SynapseContentModelDiagnosticsParticipant;
 import org.eclipse.lsp4xml.services.extensions.ICompletionParticipant;
+import org.eclipse.lsp4xml.services.extensions.IHoverParticipant;
 import org.eclipse.lsp4xml.services.extensions.IXMLExtension;
 import org.eclipse.lsp4xml.services.extensions.XMLExtensionsRegistry;
 import org.eclipse.lsp4xml.services.extensions.save.ISaveContext;
@@ -46,6 +48,8 @@ public class SynapseContentModelPlugin implements IXMLExtension {
 
     private final SynapseContentModelDiagnosticsParticipant diagnosticsParticipant;
 
+    private final IHoverParticipant hoverParticipant;
+
     private SynapseContentModelManager synapseContentModelManager;
 
     private ContentModelSettings cmSettings;
@@ -53,6 +57,7 @@ public class SynapseContentModelPlugin implements IXMLExtension {
     public SynapseContentModelPlugin() {
         completionParticipant = new SynapseContentModelCompletionParticipant();
         diagnosticsParticipant = new SynapseContentModelDiagnosticsParticipant(this);
+        hoverParticipant = new SynapseContentModelHoverParticipant();
     }
 
     @Override
@@ -128,14 +133,21 @@ public class SynapseContentModelPlugin implements IXMLExtension {
         }
         registry.registerCompletionParticipant(completionParticipant);
         registry.registerDiagnosticsParticipant(diagnosticsParticipant);
+        registry.registerHoverParticipant(hoverParticipant);
     }
 
     @Override
     public void stop(XMLExtensionsRegistry registry) {
         registry.unregisterCompletionParticipant(completionParticipant);
         registry.unregisterDiagnosticsParticipant(diagnosticsParticipant);
+        registry.unregisterHoverParticipant(hoverParticipant);
     }
 
+    /**
+     * Returns content model settings.
+     *
+     * @return content model settings.
+     */
     public ContentModelSettings getContentModelSettings() {
         return cmSettings;
     }

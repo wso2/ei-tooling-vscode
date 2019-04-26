@@ -101,8 +101,10 @@ class SynapseXMLValidator {
             inputSource.setSystemId(uri);
 
             reader.parse(inputSource);
-        } catch (ParserConfigurationException | SAXException | IOException e) {
+        } catch (IOException e) {
             throw new SynapseDiagnosticException("Synapse Schema validation failed", e);
+        } catch (ParserConfigurationException | SAXException e) {
+            // ..
         }
     }
 
