@@ -33,4 +33,12 @@ export async function openDialogForFolder(customOptions: OpenDialogOptions): Pro
     }
 }
 
+export async function showInputBoxForProjectName(): Promise<string | undefined> {
+    return await window.showInputBox({
+                                         value: "",
+                                         prompt: "Enter ESB Project Name",
+                                         placeHolder: "Enter project name here"
+                                     }).then(text => text);
+}
+
 

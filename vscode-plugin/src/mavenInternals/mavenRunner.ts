@@ -24,11 +24,11 @@ export class Runner {
     
 	private _process : ChildProcess | undefined;
 	
-    public runCommand(command: string, args: string[], cwd?: string, oldCwd?: string) {
+    public runCommand(command: string, args: string[], nwd?: string, cwd?: string) {
         mavenOutputChannel.clear();
         mavenOutputChannel.show();
         
-        this._process = spawn(command, args, {cwd: oldCwd, shell: true});
+        this._process = spawn(command, args, {cwd: cwd, shell: true});
         
         this._process.stdout.on('data', (data) => {
             mavenOutputChannel.append(data.toString());
@@ -40,12 +40,12 @@ export class Runner {
 
         this._process.on("exit",(code, signal)=>{
             if(code === 0) {
-                if(cwd) {
-                    window.showInformationMessage("maven success");
-                    commands.executeCommand('vscode.openFolder', Uri.file(cwd), true);
+                if(nwd) {
+                    window.showInformationMessage("maven process successfully executed");
+                    commands.executeCommand('vscode.openFolder', Uri.file(nwd), true);
                 }
             }else if(code === 1) {
-                window.showInformationMessage("maven failed: " + signal);
+                window.showInformationMessage("maven process failed: " + signal);
             }
         });
     }

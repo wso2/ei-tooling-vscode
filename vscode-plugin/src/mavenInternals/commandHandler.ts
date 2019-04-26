@@ -21,15 +21,15 @@ import {Settings} from "./Settings";
 import {executeCommand} from "../utils/cpUtils";
 import {ArchetypeModule} from "../archetype/ArchetypeModule";
 import {Runner} from "./mavenRunner";
+import * as path from 'path';
 
-
-export async function executeCommandHandler(newProject: ArchetypeModule.ESBProject, cwd: string) {
+export async function executeCommandHandler(newProject: ArchetypeModule.ESBProject, targetLocation: string) {
     let commandRunner: Runner = new Runner();
-    await getCDCommand(cwd).then((cdCommand) => {
+    await getCDCommand(targetLocation).then((cdCommand) => {
         let cmd = cdCommand + " && " + getMavenGenerateCommand(newProject);
-        const newWorkingDir: string = generateDirectoryPath([cwd, newProject.artifactId]);
+        const projectRootDir: string = path.join(targetLocation, newProject.artifactId);
 
-        commandRunner.runCommand(cmd, [], newWorkingDir, cwd);
+        commandRunner.runCommand(cmd, [], projectRootDir, targetLocation);
     });
 }
 
@@ -45,19 +45,6 @@ function getMavenGenerateCommand(newProject: ArchetypeModule.ESBProject): string
         `-DarchetypeCatalog=internal`
     ].join(" ");
 }
-
-// export function getCommand(cmd: string): string {
-//     if (process.platform === "win32") {
-//         switch (currentWindowsShell()) {
-//             case "PowerShell":
-//                 return `cmd /c ${cmd}`; // PowerShell
-//             default:
-//                 return cmd; // others, try using common one.
-//         }
-//     } else {
-//         return cmd;
-//     }
-// }
 
 export async function getCDCommand(cwd: string): Promise<string> {
     if (process.platform === "win32") {
@@ -77,25 +64,6 @@ export async function getCDCommand(cwd: string): Promise<string> {
         return `cd "${cwd}"`;
     }
 }
-
-// export async function getPathCommand(path: string) {
-//     if (process.platform === "win32") {
-//         switch (currentWindowsShell()) {
-//             case "Git Bash":
-//                 return `"${path.replace(/\\+$/, "")}"`; // Git Bash: remove trailing '\'
-//             case "PowerShell":
-//                 return `"${path}"`; // PowerShell
-//             case "Command Prompt":
-//                 return `"${path}"`; // CMD
-//             case "WSL Bash":
-//                 return `"${await toWslPath(path)}"`; // WSL
-//             default:
-//                 return `"${path}"`; // Unknown, try using common one.
-//         }
-//     } else {
-//         return `"${path}"`;
-//     }
-// }
 
 export function currentWindowsShell(): string | undefined {
     const currentWindowsShellPath: string | undefined = Settings.External.defaultWindowsShell();
@@ -128,21 +96,12 @@ function toDefaultWslPath(p: string): string {
 
 export async function toWslPath(path: string): Promise<string> {
     try {
-        return (await executeCommand("wsl", ["wslpath", "-u", `"${path.replace(/\\/g, "/")}"`])).trim();
+        return (await executeCommand("wsl", ["wslpath", "-u", `"${path.replace(
+            /\\/g, "/")}"`])).trim();
     } catch (error) {
         mavenOutputChannel.appendLine(error, "WSL");
         return toDefaultWslPath(path);
     }
-}
-
-function generateDirectoryPath(path: string[]): string {
-    let fullPath: string;
-    if (process.platform === "win32") {
-        fullPath = path.join("\\");
-    } else {
-        fullPath = path.join("/");
-    }
-    return fullPath;
 }
 
 // export async function toWinPath(path: string): Promise<string> {

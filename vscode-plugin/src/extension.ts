@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {commands, ExtensionContext, Uri, window, workspace, RelativePattern, languages} from 'vscode';
+import {commands, ExtensionContext, Uri, window, workspace, RelativePattern, TextDocument} from 'vscode';
 import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
@@ -36,56 +36,69 @@ import {
 
 import {createCApp} from "./archive/archiveResolver";
 import {ArtifactModule} from "./artifacts/ArtifactModule";
+import { SYNAPSE_LANGUAGE_ID } from './language/languageUtils';
+
+let serverLaunched: boolean = false;
 
 export function activate(context: ExtensionContext) {
 
     // register commands
     registerSynapseCommands(context);
 
-    //launch server
-    launchServer(context, __dirname);
-
     //check currently active text editor
     if (window.activeTextEditor) {
         const currentDoc = window.activeTextEditor.document;
-        setLanguageToSynapse(currentDoc);
+        setLanguageAndLaunchServer(currentDoc);
     }
 
     //listen to changing event of the active text editor
     window.onDidChangeActiveTextEditor(editor => {
         if (editor) {
-            setLanguageToSynapse(editor.document);
+            setLanguageAndLaunchServer(editor.document);
         }
     });
 
     //listen to newly opened text documents
     workspace.onDidOpenTextDocument((document) => {
-        setLanguageToSynapse(document);
+        setLanguageAndLaunchServer(document);
     });
 
-    const uri = window.activeTextEditor!.document.uri;
+    function setLanguageAndLaunchServer(document: TextDocument) {
+        let settedLanguage: boolean = false;
+        if (document.languageId !== SYNAPSE_LANGUAGE_ID) {
+            settedLanguage = setLanguageToSynapse(document);
+        }
+        if (settedLanguage && !serverLaunched) {
+            //launch server
+            serverLaunched = true;
+            launchServer(context, __dirname);
+        }
+    }
 
-    // initialization code...
-    let watcher = workspace.createFileSystemWatcher(
-        new RelativePattern(
-            workspace.getWorkspaceFolder(uri)!,
-            '**/*.{xml,dmc}'
-        ),
-        true,
-        true,
-        false
-    );
-    watcher.onDidDelete((e: Uri)=> {
-        ArtifactModule.safeDeleteArtifact(e);
-    });
+    // const uri = window.activeTextEditor!.document.uri;
+
+    // // initialization code...
+    // let watcher = workspace.createFileSystemWatcher(
+    //     new RelativePattern(
+    //         workspace.getWorkspaceFolder(uri)!,
+    //         '**/*.{xml,dmc}'
+    //     ),
+    //     true,
+    //     true,
+    //     false
+    // );
+    // watcher.onDidDelete((deletedFile: Uri)=> {
+    //     ArtifactModule.safeDeleteArtifact(deletedFile);
+    // });
 }
 
 function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("extension.activateExtension", async () => {
-
+        window.showInformationMessage('Synapse Extension activated!');
     }));
 
-    context.subscriptions.push(commands.registerTextEditorCommand('extension.changeLanguage', (editor, edit) => {
+    context.subscriptions.push(commands.registerTextEditorCommand('extension.changeLanguage',
+                                                                  (editor, edit) => {
         if (!setLanguageToSynapse(editor.document)) {
             changeLanguageToSynapse(editor, edit);
         }
@@ -111,7 +124,8 @@ function registerSynapseCommands(context: ExtensionContext) {
         await createArtifact(EndpointArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.inboundEndpoint", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.inboundEndpoint",
+                                                        async () => {
         await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE);
     }));
 
@@ -123,7 +137,8 @@ function registerSynapseCommands(context: ExtensionContext) {
         await createArtifact(MessageStoreArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.messageProcessor", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.messageProcessor",
+                                                        async () => {
         await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE);
     }));
 
@@ -141,6 +156,7 @@ function registerSynapseCommands(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand('extension.checkingRightClickFunctionality',
                                                         async (clickedFile: Uri) => {
+        console.log((clickedFile));
 
     }));
 }
@@ -148,13 +164,3 @@ function registerSynapseCommands(context: ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {
 }
-
-
-
-
-
-
-
-
-
-

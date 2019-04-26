@@ -165,7 +165,8 @@ export async function createArtifact(artifactType: string) {
             }).then(text => text);
 
             if (artifactName) {
-                ArtifactModule.createTemplate(SequenceArtifactInfo.DESTINATION_FOLDER, SequenceArtifactInfo.SEQUENCE_LABEL,
+                ArtifactModule.createTemplate(SequenceArtifactInfo.DESTINATION_FOLDER,
+                                              SequenceArtifactInfo.SEQUENCE_LABEL,
                     artifactName, artifactType, SequenceArtifactInfo.TYPE);
             }
             break;
@@ -407,7 +408,6 @@ function createMessageProcessorServiceArray(): QuickPickItem[] {
             "label": MessageProcessorArtifactInfo.FAILOVER_SCHEDULED_MESSAGE_FORWARDING_PROCESSOR_LABEL
         }
     ];
-
 }
 
 function createTemplateServiceArray(): QuickPickItem[] {
@@ -432,9 +432,7 @@ function createTemplateServiceArray(): QuickPickItem[] {
             "description": TemplateArtifactInfo.HTTP_ENDPOINT,
             "label": TemplateArtifactInfo.HTTP_ENDPOINT_LABEL
         }
-
     ];
-
 }
 
 function createRegistryResourceTemplateArray(): QuickPickItem[] {
@@ -537,4 +535,3 @@ function createRegistryResourceTemplateArray(): QuickPickItem[] {
         }
     ];
 }
-

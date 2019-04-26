@@ -36,22 +36,25 @@ export namespace ArtifactModule {
         version?: string;
     }
 
-    export function createTemplate(targetTemplateFolder: string, sourceFile: string, destinationFile: string, artifactType: string, type: string) {
+    export function createTemplate(targetTemplateFolder: string, sourceFile: string, destinationFile: string,
+                                   artifactType: string, type: string) {
         if (workspace.workspaceFolders) {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
-            const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "synapse-config", targetTemplateFolder);
+            const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "synapse-config",
+                                               targetTemplateFolder);
 
             checkPathExistence(targetFolderPath).then(exists => {
                 if (exists) {
                     createArtifact(targetTemplateFolder, sourceFile, destinationFile, type, targetFolderPath,
-                                   "synapse-config", artifactType);
+                                   "synapse-config");
                 }
             });
         }
     }
 
-    export function createResource(targetTemplateFolder: string, sourceFile: string, destinationFile: string, type: string) {
+    export function createResource(targetTemplateFolder: string, sourceFile: string, destinationFile: string,
+                                   type: string) {
         if (workspace.workspaceFolders) {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
@@ -61,7 +64,7 @@ export namespace ArtifactModule {
             checkPathExistence(targetFolderPath).then(exists => {
                 if (exists) {
                     createArtifact(targetTemplateFolder, sourceFile, destinationFile, type, targetFolderPath,
-                                   "registry-resources", "");
+                                   "registry-resources");
                 }
             });
         }
@@ -79,22 +82,23 @@ export namespace ArtifactModule {
     }
 
     function createArtifact(targetTemplateFolder: string, sourceFile: string, destinationFile: string, type: string,
-                            targetFolderPath: string, resourceType: string, artifactType: string) {
+                            targetFolderPath: string, resourceType: string) {
         //check whether the file already exists
         let targetFile = path.join("src", "main", "**", "**", destinationFile + ".xml");
-        workspace.findFiles(targetFile).then(result => {
-            if(result.length === 0) {
+        workspace.findFiles(targetFile).then(async result => {
+            if (result.length === 0) {
                 const targetFilePath = path.join(targetFolderPath, destinationFile + ".xml");
                 const targetFileUri = resolveUri(targetFilePath);
                 const sourcePath = path.join(dirName, '..', '..', 'templates', targetTemplateFolder, sourceFile + '.xml');
-                createTargetArtifact(targetFileUri, destinationFile, sourcePath);
-                if(resourceType === "synapse-config") {
-                    updateConfigArtifactXMLFile(destinationFile, artifactType, targetTemplateFolder, type);
+                await createTargetArtifact(targetFileUri, destinationFile, sourcePath);
+                if (resourceType === "synapse-config") {
+                    await addNewArtifactToConfigArtifactXMLFile(destinationFile, targetTemplateFolder, type);
                 } else {
-                    updateRegistryArtifactXMLFile(destinationFile, type);
+                    await addNewArtifactToRegistryArtifactXMLFile(destinationFile, type);
                 }
-            }else {
-                window.showErrorMessage("Error creating registry resource! File already exists.");
+            } else {
+                window.showErrorMessage("Error creating " + destinationFile + ".xml artifact! \nFile already " +
+                                        "exists in ." + result.join(","));
             }
         });
     }
@@ -112,20 +116,15 @@ export namespace ArtifactModule {
         workspace.openTextDocument(uri).then(doc => window.showTextDocument(doc));
     }
 
-    async function updateConfigArtifactXMLFile(artifactName: string, artifactType: string, targetFolder: string, type: string) {
+    async function addNewArtifactToConfigArtifactXMLFile(artifactName: string, targetFolder: string, type: string) {
         if (workspace.workspaceFolders) {
-            //read pom
-            const pomFile: string = path.join(workspace.workspaceFolders[0].uri.path, "pom.xml");
-            // const pomBuf: Buffer = await fse.readFile(pomFile);
-            // let pomDom = new DOM().parseFromString(pomBuf.toString(), "text/xml");
-            // const groupId = pomDom.getElementsByTagName("groupId")[0].textContent;
-            // const projectVersion = pomDom.getElementsByTagName("version")[0].textContent;
-
             // read pom and get project version
+            const pomFile: string = path.join(workspace.workspaceFolders[0].uri.path, "pom.xml");
             let project: Project = await getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
 
-            const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.path, "src", "main", "synapse-config", "artifact.xml");
+            const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.path,
+                                                                    "src", "main", "synapse-config", "artifact.xml");
             const buf: Buffer = await fse.readFile(configArtifactXmlFileLocation);
             await timeout(200);
 
@@ -148,9 +147,10 @@ export namespace ArtifactModule {
         }
     }
 
-    async function updateRegistryArtifactXMLFile(artifactName: string, type: string) {
+    async function addNewArtifactToRegistryArtifactXMLFile(artifactName: string, type: string) {
         if (workspace.workspaceFolders) {
-            const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.path, "src", "main", "registry-resources", "artifact.xml");
+            const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.path,
+                                                          "src", "main", "registry-resources", "artifact.xml");
             const buf: Buffer = await fse.readFile(registryArtifactXML);
 
             let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
@@ -177,43 +177,6 @@ export namespace ArtifactModule {
 
             //TODO: complete the code
             await fse.writeFile(registryArtifactXML, new XMLSerializer().serializeToString(xmlDoc));
-        }
-    }
-
-    async function updatePomFile(artifactName: string, artifactType: string) {
-        if (workspace.workspaceFolders) {
-            const pomXML: string = path.join(workspace.workspaceFolders[0].uri.path, "pom.xml");
-            const buf: Buffer = await fse.readFile(pomXML);
-            await timeout(200);
-
-            let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-            let groupId = xmlDoc.getElementsByTagName("groupId")[0].textContent;
-            let version = xmlDoc.getElementsByTagName("version")[0].textContent;
-            let type = artifactType !== "registry" ? "xml" : "zip";
-
-            // updateProperties(xmlDoc, artifactName, artifactType, groupId);
-            // updateDependencies(xmlDoc, groupId, version, type, artifactType);
-
-            let propertiesTag = xmlDoc.getElementsByTagName("properties");
-            let propertyChild = propertiesTag[0].appendChild(xmlDoc.createElement(groupId + "." + artifactType + "_._" + artifactName));
-            propertyChild.appendChild(xmlDoc.createTextNode("capp/EnterpriseServiceBus"));
-
-            let dependenciesTag = xmlDoc.getElementsByTagName("dependencies");
-            let dependencyChild = dependenciesTag[0].appendChild(xmlDoc.createElement("dependency"));
-
-            let groupIdTag = dependencyChild.appendChild(xmlDoc.createElement("groupId"));
-            groupIdTag.appendChild(xmlDoc.createTextNode(groupId + "." + artifactType));
-
-            let artifactIdTag = dependencyChild.appendChild(xmlDoc.createElement("artifactId"));
-            artifactIdTag.appendChild(xmlDoc.createTextNode(artifactName));
-
-            let versionTag = dependencyChild.appendChild(xmlDoc.createElement("version"));
-            versionTag.appendChild(xmlDoc.createTextNode(version));
-
-            let typeTag = dependencyChild.appendChild(xmlDoc.createElement("type"));
-            typeTag.appendChild(xmlDoc.createTextNode(type));
-
-            await fse.writeFile(pomXML, new XMLSerializer().serializeToString(xmlDoc));
         }
     }
 
@@ -247,39 +210,28 @@ export namespace ArtifactModule {
         return targetFolder;
     }
 
-    export async function renameArtifact(artifactUri: Uri) {
-        const buf: Buffer = await fse.readFile(artifactUri.path);
-        let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-        xmlDoc.lastChild.setAttribute("name", "sajinie");
-        console.log(xmlDoc);
-
-        workspace.onDidChangeConfiguration(e => {
-
-        });
-
-    }
-
     export async function safeDeleteArtifact(deletedFile: Uri) {
         const filePath: string = deletedFile.fsPath;
         let array: string[] = filePath.split(path.sep);
         let deletedArtifact: string = array[array.length - 1];
         let rawArtifactName: string[] = deletedArtifact.split(".");
         let resourceType;
-    
+
         if (isExistDirectoryPattern(filePath, path.join("src", "main", "synapse-config"))) {
             resourceType = "synapse-config";
-    
+
         } else if (isExistDirectoryPattern(filePath, path.join("src", "main", "registry-resources"))) {
             resourceType = "registry-resources";
         }
-    
-        if (workspace.workspaceFolders &&  resourceType) {
-            let artifactXmlFilePath = path.join(workspace.workspaceFolders[0].uri.path, "src", "main", resourceType, "artifact.xml");
-    
+
+        if (workspace.workspaceFolders && resourceType) {
+            let artifactXmlFilePath = path.join(workspace.workspaceFolders[0].uri.path, "src", "main",
+                                                resourceType, "artifact.xml");
+
             fse.readFile(artifactXmlFilePath).then(buf => {
                 let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
                 let elementList = xmlDoc.getElementsByTagName("artifact");
-    
+
                 for (let i = 0; i < elementList.length; i++) {
                     if (elementList[i].getAttribute("name") === rawArtifactName[0]) {
                         xmlDoc.removeChild(elementList[i]);
@@ -293,11 +245,11 @@ export namespace ArtifactModule {
             });
         }
     }
-    
+
     function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
         let regExpForDirPattern = new RegExp(dirPattern);
         return regExpForDirPattern.test(filePath);
     }
-    
+
 }
 

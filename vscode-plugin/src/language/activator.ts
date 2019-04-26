@@ -34,15 +34,15 @@ export function setLanguageToSynapse(document: any): boolean {
 
 export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit) {
 
-    let number = editor.document.lineCount;
+    let lineCount = editor.document.lineCount;
     let num = 0;
     let column;
 
-    if (number > 0 && !editor.document.lineAt(0).isEmptyOrWhitespace) {
+    if (lineCount > 0 && !editor.document.lineAt(0).isEmptyOrWhitespace) {
         let stack1: any[] = [];
         let stack2: any[] = [];
 
-        while (num < number) {
+        while (num < lineCount) {
             let currLine = editor.document.lineAt(num);
             let charArray = currLine.text.split("");
             column = stackFunction(charArray, stack1, stack2);
@@ -63,7 +63,8 @@ export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit
         }
     } else {
         let endCharPosition = editor.document.positionAt(0);
-        edit.insert(endCharPosition, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<definitions xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</definitions>");
+        edit.insert(endCharPosition, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
+                                     "<definitions xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</definitions>");
         languages.setTextDocumentLanguage(editor.document, "SynapseXml");
     }
 }

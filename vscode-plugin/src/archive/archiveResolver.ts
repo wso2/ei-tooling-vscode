@@ -71,16 +71,15 @@ export async function createCApp() {
 
         let artifactsXML: Document =
             new DOM().parseFromString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<artifacts>\n</artifacts>");
-        let artifactsTag: HTMLCollection = artifactsXML.getElementsByTagName("artifacts");
+        let artifactsTag = artifactsXML.getElementsByTagName("artifacts");
         let artifactTag: Element = artifactsXML.createElement("artifact");
         artifactsTag[0].appendChild(artifactTag);
-        artifactTag.setAttribute("name", projectName + "CompositeApplicationsajiniekaveemenu");
+        artifactTag.setAttribute("name", projectName + "CompositeApplication_" + version);
         artifactTag.setAttribute("version", version);
         artifactTag.setAttribute("type", "carbon/application");
 
         let promise: Promise<void> = processConfigArtifactXmlFile(cwd, version, artifactsXML,
                                                                   artifactTag, archive);
-
         promise.then(() => {
             if(targetFolderToGenerateCAR) {
                 let promise2: Promise<void> = processRegistryArtifactXmlFile(targetFolderToGenerateCAR, version,

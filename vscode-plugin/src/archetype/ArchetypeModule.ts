@@ -20,7 +20,7 @@ import * as fse from "fs-extra";
 import * as os from "os";
 import * as path from "path";
 import {Uri, window} from "vscode";
-import {openDialogForFolder} from "../utils/uiUtils";
+import {openDialogForFolder, showInputBoxForProjectName} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 import {Archetype} from "./Archetype";
 import {executeCommandHandler} from "../mavenInternals/commandHandler";
@@ -66,9 +66,9 @@ export namespace ArchetypeModule {
                 artifactId: projectName
             };
 
-            const cwd: string | null = await chooseTargetFolder(targetFolderHint);
-            if (cwd) {
-                await executeCommandHandler(newProject, cwd);
+            const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
+            if (targetLocation) {
+                await executeCommandHandler(newProject, targetLocation);
             }
         }
     }
@@ -88,7 +88,6 @@ export namespace ArchetypeModule {
         });
         return archetype;
     }
-
 
     async function getLocalArchetypeItems(): Promise<Archetype[]> {
         const localCatalogPath: string = path.join(os.homedir(), ".m2", "repository", "archetype-catalog.xml");
@@ -124,18 +123,9 @@ export namespace ArchetypeModule {
             return Object.keys(dict).map((k: string) => dict[k]);
 
         } catch (err) {
-            // do nothing
             console.log("Error occurred: " + err);
         }
         return [];
-    }
-
-    async function showInputBoxForProjectName(): Promise<string | undefined> {
-        return await window.showInputBox({
-            value: "",
-            prompt: "Enter ESB Project Name",
-            placeHolder: "Enter project name here"
-        }).then(text => text);
     }
 
     export async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
@@ -143,11 +133,11 @@ export namespace ArchetypeModule {
             defaultUri: entry,
             openLabel: "Select Destination Folder"
         });
-        const cwd: string | null = result && result.fsPath;
-        if (!cwd) {
+        const targetLocation: string | null = result && result.fsPath;
+        if (!targetLocation) {
             window.showErrorMessage("Target folder not selected");
         }
-        return cwd;
+        return targetLocation;
     }
 
     // async function getCachedRemoteArchetypeItems(): Promise<Archetype[]> {
@@ -166,7 +156,7 @@ export namespace ArchetypeModule {
     //         return [];
     //     }
     // }
-
+    //
     // async function getRecomendedItems(allItems: Archetype[]): Promise<Archetype[]> {
     //     // Top popular archetypes according to usage data
     //     let fixedList: string[];
