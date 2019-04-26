@@ -1,13 +1,40 @@
 # synapse-vscode README file
 
 ## Description:
-This VS Code extension provides support for creating and editing Synapse XML documents, based on the [LSP4XML language server](https://github.com/angelozerr/lsp4xml) running with Java.
+This VS Code extension provides support for creating and editing WSO2 EI Projects and Synapse XML documents, based on the Synapse Language Server extension written on [LSP4XML language server](https://github.com/angelozerr/lsp4xml). 
 
 ## Requirements:
-- Java JDK 8 or more recent
+- Java JDK 8 at least
 - The `JAVA_HOME` environment variable must be set
 - **Note:** The path should end at the parent folder that contains the `bin `folder.
     - **Example Path:** `/usr/lib/jvm/java-1.8.0` if `bin` exists at `/usr/lib/jvm/java-1.8.0/bin`
+- Maven
+
+## Quick Start:
+- **Step 1.** Install the Synapse extension for Visual Studio Code.
+- **Step 2.** Open or create a Synapse Project and start integration!
+    - Extension is activated when you first access an xml file or via the command `Synapse: Activate Synapse Extension` through command palette
+
+
+## Useful Commands:
+Open the Command Palette ( [Command] + [Shift] + [P] on macOS and [Ctrl] + [Shift] + [P] on Windows/Linux) and type in one of the following commands:
+
+| Command  | Description |
+| ------------- | ------------- | 
+| Synapse: Activate Synapse Extension  |  Activate Synapse Extension.| 
+| Synapse: Change Language to Synapse  | Change language mode to SynapseXml. | 
+| Synapse: Create Deployable Archive  | Create the deployable .car archive from the opened Synapse project.  | 
+| Synapse: Create New ESB Project  | Create a new WSO2 ESB project.  | 
+| Synapse: Create New API Artifact  | Create a new API artifact in the project.  | 
+| Synapse: Create New Proxy Artifact | Create a new proxy artifact in the project  | 
+| Synapse: Create New Endpoint Artifact | Create a new endpoint artifact in the project  | 
+| Synapse: Create New Inbound-Endpoint Artifact | Create a new inbound-endpoint artifact in the project  | 
+| Synapse: Create New Local-Entry Artifact | Create a new local-entry artifact in the project  | 
+| Synapse: Create New Message-Store Artifact | Create a new message-store artifact in the project  | 
+| Synapse: Create New Message-Processor Artifact | Create a new message-processor artifact in the project  | 
+| Synapse: Create New Template Artifact | Create a new template artifact in the project  | 
+| Synapse: Create New Sequence Artifact | Create a new sequence artifact in the project  | 
+
 
 ## Features:
 
@@ -23,25 +50,20 @@ This VS Code extension provides support for creating and editing Synapse XML doc
 ![goto def](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/gotoDefinition.gif)
 
 #### Code Diagnostics
-![goto def](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/diagnostic.gif)
+![diagnostics](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/diagnostic.gif)
 
 #### Hover Support
-![goto def](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/hover1.gif)
+![hover](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/hover1.gif)
 
-## Quick Start:
-- Download the latest development VSIX archive [from here](https://github.com/sajinieKavindya/vscode-synapse/blob/master/vscode-plugin/synapse-vscode-0.0.1.vsix)`(vscode-xml-XXX.vsix)`
-    - After any changes, re-build the project and get the latest VSIX from `vscode-synapse/vscode-plugin/synapse-vscode-0.0.1.vsix`
-- Install VS Code plugin
-    - Go to Install from VSIX... command in the Extensions View command drop-down, or the Extensions: Install from VSIX... command in the Command Palette, and select the .vsix file to install. [More info](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix)
-- Open a **Synapse** project
-    - **Note:** The workspace root folder should be the **_default_** folder
-    - **Example Path:** `/WSO2/EnterpriseIntegrator/6.4.0/repository/deployment/server/synapse-configs/default`
-    - **Note:** The Language Mode should be changed as **_SynpaseXml_** at the status bar. To forcefully change the language mode, go to `Change Language to Synapse` command in the Command Palette
+<!-- #### Automatic Node Intentation
+![indentation]()
+
+#### Code Formatting
+![formatting]() -->
 
 #### Change Language to SynapseXml
-
 ![change Language to Synapse](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/changeLang.gif)
 
 ## License:
 
-Ballerina Visual Studio Code plugin source is available under the [Eclipse Public License 1.0](https://github.com/redhat-developer/vscode-xml/blob/master/LICENSE)
+Synapse Visual Studio Code plugin source is available under the [Eclipse Public License 1.0](https://github.com/redhat-developer/vscode-xml/blob/master/LICENSE)
