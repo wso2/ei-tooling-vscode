@@ -81,7 +81,7 @@ export async function createCApp() {
         let promise: Promise<void> = processConfigArtifactXmlFile(cwd, version, artifactsXML,
                                                                   artifactTag, archive);
         promise.then(() => {
-            if(targetFolderToGenerateCAR) {
+            if (targetFolderToGenerateCAR) {
                 let promise2: Promise<void> = processRegistryArtifactXmlFile(targetFolderToGenerateCAR, version,
                                                                              artifactsXML, artifactTag, archive);
 
@@ -118,7 +118,7 @@ async function processConfigArtifactXmlFile(pathToWorkspaceFolder: string, proje
                                             archive: archiver.Archiver): Promise<void> {
     //read synapse-config artifact.xml file
     const configArtifactXML: string = path.join(pathToWorkspaceFolder, "src", "main",
-        "synapse-config", "artifact.xml");
+                                                "synapse-config", "artifact.xml");
     const configBuf: Buffer = await fse.readFile(configArtifactXML);
     let configArtifactDom = new DOM().parseFromString(configBuf.toString(), "text/xml");
     let configArtifacts = configArtifactDom.getElementsByTagName("artifact");
@@ -149,6 +149,7 @@ async function processConfigArtifactXmlFile(pathToWorkspaceFolder: string, proje
         // append new artifact.xml file to .car file.
         archive.append(newArtifactXmlContent, {name: newFolderName + path.sep});
         archive.append(newArtifactXmlContent, {name: path.join(newFolderName, "artifact.xml")});
+
 
         // copy artifact (api, proxy, endpoint, etc.) directly into relevant place in .car file
         let artifactFileLocation = path.join(pathToWorkspaceFolder, "src", "main", "synapse-config", artifactLocation);

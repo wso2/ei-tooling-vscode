@@ -19,7 +19,8 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 'use strict';
 
 import {languages, TextEditor, TextEditorEdit} from 'vscode';
-import {SYNAPSE_NAMESPACE, SYNAPSE_LANGUAGE_ID} from "./languageUtils";
+import {SYNAPSE_LANGUAGE_ID, SYNAPSE_NAMESPACE} from "./languageUtils";
+import * as path from "path";
 
 export function setLanguageToSynapse(document: any): boolean {
     let xmlData = document.getText();
@@ -58,15 +59,56 @@ export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit
         if (typeof column === "undefined") {
             let newLine = editor.document.lineAt(num - 1);
             let endCharPosition = newLine.range.end.with(num, 0);
-            edit.insert(endCharPosition, "<definitions xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</definitions>");
+            const {rootElementTagName, fileName} = Object.assign(getRootElementTagName(editor.document.uri.fsPath));
+            edit.insert(endCharPosition, "<" + rootElementTagName + " name=\"" + fileName +
+                                         "\" xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName +
+                                         ">");
             languages.setTextDocumentLanguage(editor.document, SYNAPSE_LANGUAGE_ID);
         }
     } else {
         let endCharPosition = editor.document.positionAt(0);
+        const {rootElementTagName, fileName} = Object.assign(getRootElementTagName(editor.document.uri.fsPath));
         edit.insert(endCharPosition, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
-                                     "<definitions xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</definitions>");
+                                     "<" + rootElementTagName + " name=\"" + fileName + "\" " +
+                                     "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">");
         languages.setTextDocumentLanguage(editor.document, "SynapseXml");
     }
+}
+
+interface FileInfo {
+    rootElementTagName: string;
+    fileName: string;
+}
+
+function getRootElementTagName(filePath: string): FileInfo {
+    let fileInfo: FileInfo = {} as any;
+    if (new RegExp(path.join("src", "main", "synapse-config", "api", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "api";
+    } else if (new RegExp(path.join("synapse-config", "endpoints", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "endpoint";
+    } else if (new RegExp(path.join("synapse-config", "inbound-endpoints", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "inboundEndpoint";
+    } else if (new RegExp(path.join("synapse-config", "local-entries", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "localEntry";
+    } else if (new RegExp(path.join("synapse-config", "message-processors", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "messageProcessor";
+    } else if (new RegExp(path.join("synapse-config", "message-stores", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "messageStore";
+    } else if (new RegExp(path.join("synapse-config", "proxy-services", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "proxy";
+    } else if (new RegExp(path.join("synapse-config", "sequences", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "sequence";
+    } else if (new RegExp(path.join("synapse-config", "tasks", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "";
+    } else if (new RegExp(path.join("synapse-config", "templates", "[a-zA-Z ]+.xml$")).test(filePath)) {
+        fileInfo.rootElementTagName = "template";
+    }
+    let array1: string[] = filePath.split(path.sep);
+    let fileName: string = array1[array1.length - 1];
+    let array2: string[] = fileName.split(".");
+    fileInfo.fileName = array2[0];
+    
+    return fileInfo;
 }
 
 function stackFunction(array: any, stack1: any[], stack2: any[]) {

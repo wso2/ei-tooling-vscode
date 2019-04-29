@@ -16,14 +16,15 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Disposable, window, OutputChannel} from "vscode";
+import {Disposable, OutputChannel, window} from "vscode";
 
 class MavenOutputChannel implements Disposable {
     private readonly channel: OutputChannel = window.createOutputChannel("Maven for Java");
-    
+
     public appendLine(message: any, title?: string): void {
         if (title) {
-            const simplifiedTime: string = (new Date()).toISOString().replace(/z|t/gi, " ").trim(); // YYYY-MM-DD HH:mm:ss.sss
+            const simplifiedTime: string = (new Date()).toISOString().replace(/z|t/gi, " ").trim(); // YYYY-MM-DD
+                                                                                                    // HH:mm:ss.sss
             const highlightingTitle: string = `[${title} ${simplifiedTime}]`;
             this.channel.appendLine(highlightingTitle);
         }
@@ -44,7 +45,7 @@ class MavenOutputChannel implements Disposable {
 
     public clear(): void {
         this.channel.clear();
-    }    
+    }
 }
 
 export const mavenOutputChannel: MavenOutputChannel = new MavenOutputChannel();

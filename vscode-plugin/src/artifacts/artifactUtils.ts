@@ -207,7 +207,7 @@ export class TemplateArtifactInfo {
                 return TemplateArtifactInfo.ADDRESS_ENDPOINT_TYPE;
             }
             case TemplateArtifactInfo.DEFAULT_ENDPOINT: {
-                return TemplateArtifactInfo.DEFAULT_ENDPOINT_TYPE
+                return TemplateArtifactInfo.DEFAULT_ENDPOINT_TYPE;
             }
             default: {
                 return TemplateArtifactInfo.SEQUENCE_TYPE;

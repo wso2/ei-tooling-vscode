@@ -88,8 +88,9 @@ export namespace ArtifactModule {
         workspace.findFiles(targetFile).then(async result => {
             if (result.length === 0) {
                 const targetFilePath = path.join(targetFolderPath, destinationFile + ".xml");
-                const targetFileUri = resolveUri(targetFilePath);
-                const sourcePath = path.join(dirName, '..', '..', 'templates', targetTemplateFolder, sourceFile + '.xml');
+                const targetFileUri: Uri = Uri.file(targetFilePath);
+                const sourcePath = path.join(dirName, '..', '..', 'templates', targetTemplateFolder,
+                                             sourceFile + '.xml');
                 await createTargetArtifact(targetFileUri, destinationFile, sourcePath);
                 if (resourceType === "synapse-config") {
                     await addNewArtifactToConfigArtifactXMLFile(destinationFile, targetTemplateFolder, type);
@@ -97,8 +98,8 @@ export namespace ArtifactModule {
                     await addNewArtifactToRegistryArtifactXMLFile(destinationFile, type);
                 }
             } else {
-                window.showErrorMessage("Error creating " + destinationFile + ".xml artifact! \nFile already " +
-                                        "exists in ." + result.join(","));
+                window.showErrorMessage("Error creating " + destinationFile + ".xml artifact! \nFile already "
+                                        + "exists in ." + result.join(","));
             }
         });
     }
@@ -199,15 +200,6 @@ export namespace ArtifactModule {
 
     function timeout(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    function resolveUri(path: string): Uri {
-        const targetFolder: Uri = Uri.file(path);
-        targetFolder.scheme == 'file';
-        targetFolder.path == path;
-        targetFolder.fragment == '';
-
-        return targetFolder;
     }
 
     export async function safeDeleteArtifact(deletedFile: Uri) {

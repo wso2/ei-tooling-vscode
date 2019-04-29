@@ -20,8 +20,8 @@ import {Disposable, Position, Range, SnippetString, TextDocument, TextDocumentCo
     workspace} from "vscode";
 
 export interface AutoCloseResult {
-    snippet: string,
-    range?: Range
+    snippet: string;
+    range?: Range;
 }
 
 export function activateTagClosing(tagProvider: (document: TextDocument, position: Position) => Thenable<AutoCloseResult>,
@@ -80,7 +80,7 @@ export function activateTagClosing(tagProvider: (document: TextDocument, positio
                 let text = result.snippet;
                 let replaceLocation : Position | Range;
                 let range : Range | undefined = result.range;
-                if(range != undefined) {
+                if(range !== undefined) {
                     // re-create Range
                     let line = range.start.line;
                     let character = range.start.character;

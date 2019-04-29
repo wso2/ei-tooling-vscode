@@ -18,9 +18,17 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 'use strict';
 
-import {ExtensionContext, commands, IndentAction, languages,
-    LanguageConfiguration, TextDocument, window, workspace} from 'vscode';
-import {Position} from 'vscode';
+import {
+    commands,
+    ExtensionContext,
+    IndentAction,
+    LanguageConfiguration,
+    languages,
+    Position,
+    TextDocument,
+    window,
+    workspace
+} from 'vscode';
 import * as path from 'path';
 import {
     DidChangeConfigurationNotification,
@@ -30,7 +38,6 @@ import {
     ServerOptions,
     TextDocumentPositionParams
 } from 'vscode-languageclient';
-import * as os from 'os';
 import {activateTagClosing, AutoCloseResult} from './tagClosing';
 
 export interface ScopeInfo {
@@ -198,9 +205,9 @@ export function launch(context: ExtensionContext, directoryName: string) {
         let configXML = workspace.getConfiguration(configurationKey);
         let result = configXML.inspect(key);
         let scope: "default" | "global" | "workspace" | "folder", configurationTarget;
-        if (result && result.workspaceFolderValue == undefined) {
-            if (result.workspaceValue == undefined) {
-                if (result.globalValue == undefined) {
+        if (result && result.workspaceFolderValue === undefined) {
+            if (result.workspaceValue === undefined) {
+                if (result.globalValue === undefined) {
                     scope = "default";
                     configurationTarget = true;
                 } else {

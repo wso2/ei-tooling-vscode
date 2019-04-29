@@ -24,7 +24,7 @@ import {chooseTargetFolder, showInputBoxForProjectName} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 import {Archetype} from "./Archetype";
 import {executeCommandHandler} from "../mavenInternals/commandHandler";
-import {GROUP_ID_PREFIX, ARCHETYPE_ARTIFACT_ID, ARCHETYPE_GROUP_ID} from "./archetypeUtils";
+import {ARCHETYPE_ARTIFACT_ID, ARCHETYPE_GROUP_ID, GROUP_ID_PREFIX} from "./archetypeUtils";
 
 export namespace ArchetypeModule {
 
@@ -38,7 +38,7 @@ export namespace ArchetypeModule {
 
     export async function createESBProject(): Promise<void> {
         // Select ESB artifact from local .m2 repo
-        const archetype = await getESBArtifact();
+        const archetype = await getESBArchetype();
         if (!archetype) {
             window.showErrorMessage("No matching archetype found!!");
             return;
@@ -59,9 +59,6 @@ export namespace ArchetypeModule {
             // Set home dir as the target folder hint.
             const homedir: string = require('os').homedir();
             const targetFolderHint = Uri.file(homedir);
-            targetFolderHint.scheme == 'file';
-            targetFolderHint.path == homedir;
-            targetFolderHint.fragment == '';
 
             const newProject: ESBProject = {
                 archetypeGroupId: archetype.groupId,
@@ -77,7 +74,7 @@ export namespace ArchetypeModule {
         }
     }
 
-    async function getESBArtifact(): Promise<Archetype | undefined> {
+    async function getESBArchetype(): Promise<Archetype | undefined> {
         const localItems: Archetype[] = await getLocalArchetypeItems();
         let archetype = undefined;
 
@@ -158,7 +155,7 @@ export namespace ArchetypeModule {
     //     } catch (error) {
     //         fixedList = [];
     //     }
-    //     return fixedList.map((fullname: string) => allItems.find((item: Archetype) => fullname === `${item.groupId}:${item.artifactId}`));
-    // }
+    //     return fixedList.map((fullname: string) => allItems.find((item: Archetype) => fullname ===
+    // `${item.groupId}:${item.artifactId}`)); }
 }
 

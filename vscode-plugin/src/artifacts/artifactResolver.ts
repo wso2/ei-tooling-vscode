@@ -32,7 +32,7 @@ import {
     SequenceArtifactInfo,
     TemplateArtifactInfo
 } from "./artifactUtils";
-import {showQuickPick, showInputBox} from "../utils/uiUtils";
+import {showInputBox, showQuickPick} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 
 export async function createArtifact(artifactType: string) {
