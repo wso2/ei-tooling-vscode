@@ -66,4 +66,4 @@ Open the Command Palette ( [Command] + [Shift] + [P] on macOS and [Ctrl] + [Shif
 
 ## License:
 
-Synapse Visual Studio Code plugin source is available under the [Eclipse Public License 1.0](https://github.com/redhat-developer/vscode-xml/blob/master/LICENSE)
+Synapse Visual Studio Code plugin source is available under the Apache 2.0 License.
