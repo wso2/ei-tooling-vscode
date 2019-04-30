@@ -16,8 +16,6 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-'use strict';
-
 import {QuickPickItem, window} from "vscode";
 import {ArtifactModule} from "./ArtifactModule";
 import {
@@ -46,7 +44,7 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createTemplate(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.API_LABEL,
+                ArtifactModule.createArtifact(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.API_LABEL,
                                               artifactName, artifactType, APIArtifactInfo.TYPE);
             }
             break;
@@ -64,7 +62,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createTemplate(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName, artifactType, ProxyArtifactInfo.TYPE);
                 }
             }
@@ -83,7 +81,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createTemplate(EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName, artifactType, EndpointArtifactInfo.TYPE);
                 }
             }
@@ -102,7 +100,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createTemplate(InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName, artifactType, InboundEndpointArtifactInfo.TYPE);
                 }
             }
@@ -121,7 +119,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createTemplate(LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName, artifactType, LocalEntryArtifactInfo.TYPE);
                 }
             }
@@ -140,7 +138,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createTemplate(MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName, artifactType, MessageStoreArtifactInfo.TYPE);
                 }
             }
@@ -159,7 +157,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createTemplate(MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName, artifactType, MessageProcessorArtifactInfo.TYPE);
                 }
             }
@@ -179,7 +177,7 @@ export async function createArtifact(artifactType: string) {
 
                 if (artifactName) {
                     let type = TemplateArtifactInfo.getType(selectedArtifactType);
-                    ArtifactModule.createTemplate(TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName, artifactType, type);
                 }
             }
@@ -194,7 +192,7 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createTemplate(SequenceArtifactInfo.DESTINATION_FOLDER,
+                ArtifactModule.createArtifact(SequenceArtifactInfo.DESTINATION_FOLDER,
                                               SequenceArtifactInfo.SEQUENCE_LABEL,
                                               artifactName, artifactType, SequenceArtifactInfo.TYPE);
             }
@@ -257,7 +255,6 @@ function createProxyServiceArray(): QuickPickItem[] {
             "label": ProxyArtifactInfo.SECURE_PROXY_LABEL
         }
     ];
-
 }
 
 function createEndpointServiceArray(): QuickPickItem[] {
@@ -356,7 +353,6 @@ function createInboundEndpointServiceArray(): QuickPickItem[] {
             "label": InboundEndpointArtifactInfo.WSS_INBOUND_ENDPOINT_LABEL
         }
     ];
-
 }
 
 function createLocalEntryServiceArray(): QuickPickItem[] {
@@ -408,7 +404,6 @@ function createMessageStoreServiceArray(): QuickPickItem[] {
             "label": MessageStoreArtifactInfo.WSO2_MB_MESSAGE_STORE_LABEL
         }
     ];
-
 }
 
 function createMessageProcessorServiceArray(): QuickPickItem[] {

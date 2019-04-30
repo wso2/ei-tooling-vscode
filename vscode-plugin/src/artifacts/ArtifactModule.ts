@@ -16,8 +16,6 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-'use strict';
-
 import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
@@ -30,40 +28,51 @@ export namespace ArtifactModule {
 
     const dirName = __dirname;
 
+    /**
+     * Interface that holds project information.
+     */
     export interface Project {
         groupId?: string;
         artifactId?: string;
         version?: string;
     }
 
-    export function createTemplate(targetTemplateFolder: string, sourceFile: string, destinationFile: string,
+    /**
+     * Create new config artifact in Synapse ESB project.
+     */
+    export function createArtifact(targetFolder: string, templateFileName: string, targetArtifactName: string,
                                    artifactType: string, type: string) {
         if (workspace.workspaceFolders) {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
-            const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "synapse-config",
-                                               targetTemplateFolder);
+            // Create target folder path where the new config artifact is going to be added in the project.
+            const pathToTargetFolder = path.join(synapseWorkspace.uri.path, "src", "main", "synapse-config",
+                                               targetFolder);
 
-            checkPathExistence(targetFolderPath).then(exists => {
+            // Check if the path really exists. If not exists, the project is not a standard Synapse ESB Project
+            checkPathExistence(pathToTargetFolder).then(exists => {
                 if (exists) {
-                    createArtifact(targetTemplateFolder, sourceFile, destinationFile, type, targetFolderPath,
-                                   "synapse-config");
+                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, type,
+                                               pathToTargetFolder, "synapse-config");
                 }
             });
         }
     }
 
-    export function createResource(targetTemplateFolder: string, sourceFile: string, destinationFile: string,
+    /**
+     * Create new resource in Synapse ESB project.
+     */
+    export function createResource(targetFolder: string, templateFileName: string, targetArtifactName: string,
                                    type: string) {
         if (workspace.workspaceFolders) {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
             const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "registry-resources");
 
-
+            // Check if the path really exists. If not exists, the project is not a standard Synapse ESB Project
             checkPathExistence(targetFolderPath).then(exists => {
                 if (exists) {
-                    createArtifact(targetTemplateFolder, sourceFile, destinationFile, type, targetFolderPath,
+                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, type, targetFolderPath,
                                    "registry-resources");
                 }
             });
@@ -81,54 +90,80 @@ export namespace ArtifactModule {
             });
     }
 
-    function createArtifact(targetTemplateFolder: string, sourceFile: string, destinationFile: string, type: string,
-                            targetFolderPath: string, resourceType: string) {
-        //check whether the file already exists
-        let targetFile = path.join("src", "main", "**", "**", destinationFile + ".xml");
+    /**
+     * Create artifact from template.
+     */
+    function createArtifactFromTemplate(targetFolder: string, templateFileName: string, targetArtifactName: string,
+                                        type: string, pathToTargetFolder: string, resourceType: string) {
+
+        let targetFile = path.join("src", "main", "**", "**", targetArtifactName + ".xml");
+
+        // Check whether the file already exists in project. Find files with similar name in the workspace.
         workspace.findFiles(targetFile).then(async result => {
-            if (result.length === 0) {
-                const targetFilePath = path.join(targetFolderPath, destinationFile + ".xml");
-                const targetFileUri: Uri = Uri.file(targetFilePath);
-                const sourcePath = path.join(dirName, '..', '..', 'templates', targetTemplateFolder,
-                                             sourceFile + '.xml');
-                await createTargetArtifact(targetFileUri, destinationFile, sourcePath);
+            if (result.length === 0) { //no matching files found
+
+                const targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + ".xml");
+                const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
+                const templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
+                                             templateFileName + '.xml');
+
+                await createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
+                                                       templateArtifactFilePath);
+
                 if (resourceType === "synapse-config") {
-                    await addNewArtifactToConfigArtifactXMLFile(destinationFile, targetTemplateFolder, type);
+                    await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
                 } else {
-                    await addNewArtifactToRegistryArtifactXMLFile(destinationFile, type);
+                    await addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type);
                 }
             } else {
-                window.showErrorMessage("Error creating " + destinationFile + ".xml artifact! \nFile already "
+                window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact! \nFile already "
                                         + "exists in ." + result.join(","));
             }
         });
     }
 
-    async function createTargetArtifact(uri: Uri, fileName: string, sourcePath: string) {
+    /**
+     * Create the artifact from template.
+     */
+    async function createTargetArtifactFromTemplate(targetArtifactFileUri: Uri, targetArtifactName: string,
+                                                    templateArtifactFilePath: string) {
         let edit = new WorkspaceEdit();
-        edit.createFile(uri);
+        edit.createFile(targetArtifactFileUri);
         workspace.applyEdit(edit);
 
-        const buf: Buffer = await fse.readFile(sourcePath);
+        // Read and buffer artifact template file.
+        const buf: Buffer = await fse.readFile(templateArtifactFilePath);
         await timeout(200);
-        let updatedBody = updateNameAttribute(buf, fileName);
-        await fse.writeFile(uri.path, updatedBody);
+
+        // Update the name attribute of the buffered artifact to comply with the new artifact.
+        let updatedBody = updateNameAttribute(buf, targetArtifactName);
+
+        // Write the updated template content to the target file.
+        await fse.writeFile(targetArtifactFileUri.path, updatedBody);
         await timeout(200);
-        workspace.openTextDocument(uri).then(doc => window.showTextDocument(doc));
+
+        // Open and show newly created artifact document in the editor.
+        workspace.openTextDocument(targetArtifactFileUri).then(doc => window.showTextDocument(doc));
     }
 
+    /**
+     * Add artifact info of the newly created artifact to synapse-config artifact.xml file.
+     */
     async function addNewArtifactToConfigArtifactXMLFile(artifactName: string, targetFolder: string, type: string) {
         if (workspace.workspaceFolders) {
-            // read pom and get project version
+            // read pom and get project group_id and version
             const pomFile: string = path.join(workspace.workspaceFolders[0].uri.path, "pom.xml");
             let project: Project = await getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
 
             const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.path,
                                                                     "src", "main", "synapse-config", "artifact.xml");
+            // Read and buffer synapse-config artifact.xml file
             const buf: Buffer = await fse.readFile(configArtifactXmlFileLocation);
             await timeout(200);
 
+            // Parse the artifact.xml file content to a DOM document.
+            // Create new artifact DOM Element info to represent the newly created artifact.
             let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
             let parent = xmlDoc.getElementsByTagName("artifacts");
             let child = xmlDoc.createElement("artifact");
@@ -143,11 +178,14 @@ export namespace ArtifactModule {
             fileTag.textContent = path.join(targetFolder, artifactName + ".xml");
             child.appendChild(fileTag);
 
+            // Update the synapse-config artifact.xml file.
             await fse.writeFile(configArtifactXmlFileLocation, new XMLSerializer().serializeToString(xmlDoc));
-            // updatePomFile(artifactName, artifactType);
         }
     }
 
+    /**
+     * Add artifact info of the newly created artifact to registry-resource artifact.xml file.
+     */
     async function addNewArtifactToRegistryArtifactXMLFile(artifactName: string, type: string) {
         if (workspace.workspaceFolders) {
             const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.path,
@@ -181,6 +219,9 @@ export namespace ArtifactModule {
         }
     }
 
+    /**
+     * Read pom.xml file and abstract project related info.
+     */
     export async function getProjectInfoFromPOM(pomFilePath: string): Promise<Project> {
         const buf: Buffer = await fse.readFile(pomFilePath);
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
@@ -191,10 +232,12 @@ export namespace ArtifactModule {
         };
     }
 
-
-    function updateNameAttribute(buf: Buffer, fileName: string): string {
+    /**
+     * Update the name attribute value in the buffered content.
+     */
+    function updateNameAttribute(buf: Buffer, name: string): string {
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-        xmlDoc.lastChild.setAttribute("name", fileName);
+        xmlDoc.lastChild.setAttribute("name", name);
         return new XMLSerializer().serializeToString(xmlDoc);
     }
 
@@ -202,6 +245,9 @@ export namespace ArtifactModule {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    /**
+     * Delete the artifact info of the deleted artifact from the related artifact.xml file.
+     */
     export async function safeDeleteArtifact(deletedFile: Uri) {
         const filePath: string = deletedFile.fsPath;
         let array: string[] = filePath.split(path.sep);
@@ -209,6 +255,7 @@ export namespace ArtifactModule {
         let rawArtifactName: string[] = deletedArtifact.split(".");
         let resourceType;
 
+        // Check if the deleted file is a synapse-config or a registry-resource file
         if (isExistDirectoryPattern(filePath, path.join("src", "main", "synapse-config"))) {
             resourceType = "synapse-config";
 
@@ -220,6 +267,7 @@ export namespace ArtifactModule {
             let artifactXmlFilePath = path.join(workspace.workspaceFolders[0].uri.path, "src", "main",
                                                 resourceType, "artifact.xml");
 
+            // Read related artifact.xml file, convert it to DOM Document and remove the deleted artifact info
             fse.readFile(artifactXmlFilePath).then(buf => {
                 let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
                 let elementList = xmlDoc.getElementsByTagName("artifact");

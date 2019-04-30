@@ -22,6 +22,9 @@ import {languages, TextEditor, TextEditorEdit} from 'vscode';
 import {SYNAPSE_LANGUAGE_ID, SYNAPSE_NAMESPACE} from "./languageUtils";
 import * as path from "path";
 
+/**
+ * Set language-id to SynapseXml if Synapse namespace exists in the file.
+ */
 export function setLanguageToSynapse(document: any): boolean {
     let xmlData = document.getText();
     let synapseNSPattern = new RegExp(SYNAPSE_NAMESPACE);

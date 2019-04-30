@@ -36,16 +36,19 @@ export namespace ArchetypeModule {
         version?: string;
     }
 
+    /**
+     * Create new ESB Project from esb-project-archetype.
+     */
     export async function createESBProject(): Promise<void> {
-        // Select ESB artifact from local .m2 repo
+        // Select ESB archetype from local .m2 repository.
         const archetype = await getESBArchetype();
         if (!archetype) {
-            window.showErrorMessage("No matching archetype found!!");
+            window.showErrorMessage("No matching archetype found for WSO2 ESB Project!!");
             return;
         }
         let projectName: string | undefined = await showInputBoxForProjectName();
 
-        // Loop until the project name is valid
+        // Make sure the project name is valid.
         while (typeof projectName !== "undefined" && !Utils.validate(projectName)) {
             window.showErrorMessage("Enter valid ESB Project name!!");
             projectName = await showInputBoxForProjectName();
@@ -55,10 +58,13 @@ export namespace ArchetypeModule {
             return;
         }
 
-        if (archetype && archetype.groupId && archetype.artifactId && projectName && projectName.length > 0) {
-            // Set home dir as the target folder hint.
-            const homedir: string = require('os').homedir();
-            const targetFolderHint = Uri.file(homedir);
+        // Set home dir as the target folder hint.
+        const homedir: string = require('os').homedir();
+        const targetFolderHint = Uri.file(homedir);
+        const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
+
+        if (archetype && archetype.groupId && archetype.artifactId && projectName && projectName.length > 0
+            && targetLocation) {
 
             const newProject: ESBProject = {
                 archetypeGroupId: archetype.groupId,
@@ -66,14 +72,14 @@ export namespace ArchetypeModule {
                 groupId: GROUP_ID_PREFIX + projectName,
                 artifactId: projectName
             };
-
-            const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
-            if (targetLocation) {
-                await executeCommandHandler(newProject, targetLocation);
-            }
+            // Execute command handler that runs maven project generate.
+            await executeCommandHandler(newProject, targetLocation);
         }
     }
 
+    /**
+     * Get esb-project-archetype from local or remote maven repo.
+     */
     async function getESBArchetype(): Promise<Archetype | undefined> {
         const localItems: Archetype[] = await getLocalArchetypeItems();
         let archetype = undefined;
@@ -90,6 +96,9 @@ export namespace ArchetypeModule {
         return archetype;
     }
 
+    /**
+     * Get local archetype items from /.m2/repository/archetype-catalog.xml.
+     */
     async function getLocalArchetypeItems(): Promise<Archetype[]> {
         const localCatalogPath: string = path.join(os.homedir(), ".m2", "repository", "archetype-catalog.xml");
         if (await fse.pathExists(localCatalogPath)) {
@@ -100,6 +109,9 @@ export namespace ArchetypeModule {
         }
     }
 
+    /**
+     * Create Archetype object list from the ~/.m2/repository/archetype-catalog.xml.
+     */
     async function listArchetypeFromXml(xmlString: string): Promise<Archetype[]> {
         try {
             const xmlObject: any = await Utils.parseXmlContent(xmlString);
