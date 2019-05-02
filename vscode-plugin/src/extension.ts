@@ -34,11 +34,12 @@ import {
     TemplateArtifactInfo
 } from "./artifacts/artifactUtils";
 
-import {createCApp} from "./archive/archiveResolver";
+import {createDeployableArchive} from "./archive/archiveResolver";
 import {ArtifactModule} from "./artifacts/ArtifactModule";
 import { SYNAPSE_LANGUAGE_ID } from './language/languageUtils';
 
 let serverLaunched: boolean = false;
+let fileWatcherCreated: boolean = false;
 
 export function activate(context: ExtensionContext) {
 
@@ -49,6 +50,7 @@ export function activate(context: ExtensionContext) {
     if (window.activeTextEditor) {
         const currentDoc = window.activeTextEditor.document;
         setLanguageAndLaunchServer(currentDoc);
+        createFileWatcher();
     }
 
     //listen to changing event of the active text editor
@@ -64,32 +66,36 @@ export function activate(context: ExtensionContext) {
     });
 
     function setLanguageAndLaunchServer(document: TextDocument) {
-        let settedLanguage: boolean = false;
+        let setLanguage: boolean = false;
         if (document.languageId !== SYNAPSE_LANGUAGE_ID) {
-            settedLanguage = setLanguageToSynapse(document);
+            setLanguage = setLanguageToSynapse(document);
         }
-        if (settedLanguage && !serverLaunched) {
+        if (setLanguage && !serverLaunched) {
             //launch server
             serverLaunched = true;
             launchServer(context, __dirname);
         }
     }
 
-    // const uri = window.activeTextEditor!.document.uri;
-
-    // // initialization code...
-    // let watcher = workspace.createFileSystemWatcher(
-    //     new RelativePattern(
-    //         workspace.getWorkspaceFolder(uri)!,
-    //         '**/*.{xml,dmc}'
-    //     ),
-    //     true,
-    //     true,
-    //     false
-    // );
-    // watcher.onDidDelete((deletedFile: Uri)=> {
-    //     ArtifactModule.safeDeleteArtifact(deletedFile);
-    // });
+    function createFileWatcher() {
+        if (workspace.workspaceFolders && !fileWatcherCreated) {
+            const uri = workspace.workspaceFolders[0].uri;
+            // initialization code...
+            let watcher = workspace.createFileSystemWatcher(
+                new RelativePattern(
+                    workspace.getWorkspaceFolder(uri)!,
+                    '**/*.{xml,dmc}'
+                ),
+                true,
+                true,
+                false
+            );
+            fileWatcherCreated = true;
+            watcher.onDidDelete(async (deletedFile: Uri) => {
+                await ArtifactModule.safeDeleteArtifact(deletedFile);
+            });
+        }
+    }
 }
 
 function registerSynapseCommands(context: ExtensionContext) {
@@ -109,7 +115,7 @@ function registerSynapseCommands(context: ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2esb.project.build", async () => {
-        await createCApp();
+        createDeployableArchive();
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2esb.artifact.api", async () => {

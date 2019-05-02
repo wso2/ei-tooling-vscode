@@ -38,14 +38,14 @@ export async function createArtifact(artifactType: string) {
         case APIArtifactInfo.ARTIFACT_TYPE: {
             let artifactName = await showInputBox(APIArtifactInfo.PROMPT_MESSAGE);
 
-            while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+            while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                 window.showErrorMessage("Enter valid artifact name!!");
                 artifactName = await showInputBox(APIArtifactInfo.PROMPT_MESSAGE);
             }
 
             if (artifactName) {
                 ArtifactModule.createArtifact(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.API_LABEL,
-                                              artifactName, artifactType, APIArtifactInfo.TYPE);
+                                              artifactName.trim(), artifactType, APIArtifactInfo.TYPE);
             }
             break;
         }
@@ -56,14 +56,14 @@ export async function createArtifact(artifactType: string) {
             if (selectedArtifactType) {
                 let artifactName = await showInputBox(ProxyArtifactInfo.PROMPT_MESSAGE);
 
-                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                     window.showErrorMessage("Enter valid artifact name!!");
                     artifactName = await showInputBox(ProxyArtifactInfo.PROMPT_MESSAGE);
                 }
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName, artifactType, ProxyArtifactInfo.TYPE);
+                                                  artifactName.trim(), artifactType, ProxyArtifactInfo.TYPE);
                 }
             }
             break;
@@ -75,14 +75,14 @@ export async function createArtifact(artifactType: string) {
             if (selectedArtifactType) {
                 let artifactName = await showInputBox(EndpointArtifactInfo.PROMPT_MESSAGE);
 
-                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                     window.showErrorMessage("Enter valid artifact name!!");
                     artifactName = await showInputBox(EndpointArtifactInfo.PROMPT_MESSAGE);
                 }
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName, artifactType, EndpointArtifactInfo.TYPE);
+                                                  artifactName.trim(), artifactType, EndpointArtifactInfo.TYPE);
                 }
             }
             break;
@@ -94,14 +94,14 @@ export async function createArtifact(artifactType: string) {
             if (selectedArtifactType) {
                 let artifactName = await showInputBox(InboundEndpointArtifactInfo.PROMPT_MESSAGE);
 
-                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                     window.showErrorMessage("Enter valid artifact name!!");
                     artifactName = await showInputBox(InboundEndpointArtifactInfo.PROMPT_MESSAGE);
                 }
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName, artifactType, InboundEndpointArtifactInfo.TYPE);
+                                                  artifactName.trim(), artifactType, InboundEndpointArtifactInfo.TYPE);
                 }
             }
             break;
@@ -113,14 +113,14 @@ export async function createArtifact(artifactType: string) {
             if (selectedArtifactType) {
                 let artifactName = await showInputBox(LocalEntryArtifactInfo.PROMPT_MESSAGE);
 
-                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                     window.showErrorMessage("Enter valid artifact name!!");
                     artifactName = await showInputBox(LocalEntryArtifactInfo.PROMPT_MESSAGE);
                 }
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName, artifactType, LocalEntryArtifactInfo.TYPE);
+                                                  artifactName.trim(), artifactType, LocalEntryArtifactInfo.TYPE);
                 }
             }
             break;
@@ -132,14 +132,14 @@ export async function createArtifact(artifactType: string) {
             if (selectedArtifactType) {
                 let artifactName = await showInputBox(MessageStoreArtifactInfo.PROMPT_MESSAGE);
 
-                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                     window.showErrorMessage("Enter valid artifact name!!");
                     artifactName = await showInputBox(MessageStoreArtifactInfo.PROMPT_MESSAGE);
                 }
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName, artifactType, MessageStoreArtifactInfo.TYPE);
+                                                  artifactName.trim(), artifactType, MessageStoreArtifactInfo.TYPE);
                 }
             }
             break;
@@ -151,14 +151,14 @@ export async function createArtifact(artifactType: string) {
             if (selectedArtifactType) {
                 let artifactName = await showInputBox(MessageProcessorArtifactInfo.PROMPT_MESSAGE);
 
-                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                     window.showErrorMessage("Enter valid artifact name!!");
                     artifactName = await showInputBox(MessageProcessorArtifactInfo.PROMPT_MESSAGE);
                 }
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName, artifactType, MessageProcessorArtifactInfo.TYPE);
+                                                  artifactName.trim(), artifactType, MessageProcessorArtifactInfo.TYPE);
                 }
             }
             break;
@@ -170,7 +170,7 @@ export async function createArtifact(artifactType: string) {
             if (selectedArtifactType) {
                 let artifactName = await showInputBox(TemplateArtifactInfo.PROMPT_MESSAGE);
 
-                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                     window.showErrorMessage("Enter valid artifact name!!");
                     artifactName = await showInputBox(TemplateArtifactInfo.PROMPT_MESSAGE);
                 }
@@ -178,7 +178,7 @@ export async function createArtifact(artifactType: string) {
                 if (artifactName) {
                     let type = TemplateArtifactInfo.getType(selectedArtifactType);
                     ArtifactModule.createArtifact(TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName, artifactType, type);
+                                                  artifactName.trim(), artifactType, type);
                 }
             }
             break;
@@ -186,7 +186,7 @@ export async function createArtifact(artifactType: string) {
         case SequenceArtifactInfo.ARTIFACT_TYPE: {
             let artifactName = await showInputBox(SequenceArtifactInfo.PROMPT_MESSAGE);
 
-            while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+            while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                 window.showErrorMessage("Enter valid artifact name!!");
                 artifactName = await showInputBox(SequenceArtifactInfo.PROMPT_MESSAGE);
             }
@@ -194,7 +194,7 @@ export async function createArtifact(artifactType: string) {
             if (artifactName) {
                 ArtifactModule.createArtifact(SequenceArtifactInfo.DESTINATION_FOLDER,
                                               SequenceArtifactInfo.SEQUENCE_LABEL,
-                                              artifactName, artifactType, SequenceArtifactInfo.TYPE);
+                                              artifactName.trim(), artifactType, SequenceArtifactInfo.TYPE);
             }
             break;
         }
@@ -205,7 +205,7 @@ export async function createArtifact(artifactType: string) {
             if (selectedArtifactType) {
                 let artifactName = await showInputBox(RegistryResourceInfo.PROMPT_MESSAGE);
 
-                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName)) {
+                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
                     window.showErrorMessage("Enter valid artifact name!!");
                     artifactName = await showInputBox(RegistryResourceInfo.PROMPT_MESSAGE);
                 }
@@ -220,7 +220,7 @@ export async function createArtifact(artifactType: string) {
 
                 if (artifactName && registry && registryPath) {
                     ArtifactModule.createResource(RegistryResourceInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName, RegistryResourceInfo.TYPE);
+                                                  artifactName.trim(), RegistryResourceInfo.TYPE);
                 }
             }
             break;

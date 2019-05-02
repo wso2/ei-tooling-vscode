@@ -23,8 +23,10 @@ import {mavenOutputChannel} from "./mavenOutputChannel";
 export class Runner {
 
     private _process: ChildProcess | undefined;
+    private readonly CreateProject: string = "CreateProject";
+    private readonly BuildProject: string = "BuildProject";
 
-    public runCommand(command: string, args: string[], nwd?: string, cwd?: string) {
+    public runCommand(goal: string, command: string, args: string[], nwd?: string, cwd?: string) {
         mavenOutputChannel.clear();
         mavenOutputChannel.show();
 
@@ -40,13 +42,21 @@ export class Runner {
 
         this._process.on("exit", (code) => {
             if (code === 0) {
-                if (nwd) {
-                    window.showInformationMessage("maven process successfully executed");
+                window.showInformationMessage("Maven process successfully executed");
+                if (nwd && goal === this.CreateProject) {
                     commands.executeCommand('vscode.openFolder', Uri.file(nwd), true);
                 }
             } else if (code === 1) {
-                window.showInformationMessage("maven process failed.");
+                window.showInformationMessage("Maven process failed.");
             }
         });
+    }
+
+    public runProjectBuildCommand(command: string, cwd?: string) {
+        this.runCommand(this.BuildProject, command, [], undefined, cwd);
+    }
+
+    public runProjectCreateCommand(command: string, args: string[], nwd?: string, cwd?: string) {
+        this.runCommand(this.CreateProject, command, args, nwd, cwd);
     }
 }

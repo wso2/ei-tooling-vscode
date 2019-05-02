@@ -16,21 +16,44 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {mavenOutputChannel} from "./mavenOutputChannel";
-import {Settings} from "./Settings";
-import {executeCommand} from "../utils/cpUtils";
 import {ArchetypeModule} from "../archetype/ArchetypeModule";
 import {Runner} from "./mavenRunner";
 import * as path from 'path';
+import {
+    ARCHETYPE_ARTIFACT_ID,
+    ARCHETYPE_GROUP_ID,
+    ARCHETYPE_JAR,
+    ARCHETYPE_VERSION,
+    SYNAPSE_CAR_PLUGIN_ARTIFACT_ID,
+    SYNAPSE_CAR_PLUGIN_GROUP_ID,
+    SYNAPSE_CAR_PLUGIN_JAR,
+    SYNAPSE_CAR_PLUGIN_VERSION
+} from "../archetype/archetypeUtils";
 
-export async function executeCommandHandler(newProject: ArchetypeModule.ESBProject, targetLocation: string) {
+export async function executeProjectCreateCommand(newProject: ArchetypeModule.ESBProject, targetLocation: string) {
+    let cmd = getMavenArchetypeInstallCommand() + " && " + getMavenGenerateCommand(newProject);
+    const projectRootDir: string = path.join(targetLocation, newProject.artifactId);
+
     let commandRunner: Runner = new Runner();
-    await getCDCommand(targetLocation).then((cdCommand) => {
-        let cmd = cdCommand + " && " + getMavenGenerateCommand(newProject);
-        const projectRootDir: string = path.join(targetLocation, newProject.artifactId);
+    commandRunner.runProjectCreateCommand(cmd, [], projectRootDir, targetLocation);
+}
 
-        commandRunner.runCommand(cmd, [], projectRootDir, targetLocation);
-    });
+export function executeProjectBuildCommand(pathToPom: string) {
+    let cmd = createMavenBuildCommand();
+    let commandRunner: Runner = new Runner();
+    commandRunner.runProjectBuildCommand(cmd, pathToPom);
+}
+
+function getMavenArchetypeInstallCommand(): string {
+    let archetypeJar = path.join(__dirname, '..', '..', 'lib', ARCHETYPE_JAR);
+    return [
+        "mvn",
+        "install:install-file",
+        `-Dfile=${archetypeJar}`,
+        `-DgroupId=${ARCHETYPE_GROUP_ID}`,
+        `-DartifactId=${ARCHETYPE_ARTIFACT_ID}`,
+        `-Dversion=${ARCHETYPE_VERSION}`
+    ].join(" ");
 }
 
 function getMavenGenerateCommand(newProject: ArchetypeModule.ESBProject): string {
@@ -39,6 +62,7 @@ function getMavenGenerateCommand(newProject: ArchetypeModule.ESBProject): string
         "archetype:generate",
         `-DarchetypeArtifactId=${newProject.archetypeArtifactId}`,
         `-DarchetypeGroupId=${newProject.archetypeGroupId}`,
+        `-DarchetypeVersion=${newProject.archetypeVersion}`,
         `-DgroupId=${newProject.groupId}`,
         `-DartifactId=${newProject.artifactId}`,
         `-DinteractiveMode=false`,
@@ -46,64 +70,24 @@ function getMavenGenerateCommand(newProject: ArchetypeModule.ESBProject): string
     ].join(" ");
 }
 
-export async function getCDCommand(cwd: string): Promise<string> {
-    if (process.platform === "win32") {
-        switch (currentWindowsShell()) {
-            case "Git Bash":
-                return `cd "${cwd.replace(/\\+$/, "")}"`; // Git Bash: remove trailing '\'
-            case "PowerShell":
-                return `cd "${cwd}"`; // PowerShell
-            case "Command Prompt":
-                return `cd /d "${cwd}"`; // CMD
-            case "WSL Bash":
-                return `cd "${await toWslPath(cwd)}"`; // WSL
-            default:
-                return `cd "${cwd}"`; // Unknown, try using common one.
-        }
-    } else {
-        return `cd "${cwd}"`;
-    }
+function createMavenBuildCommand(): string {
+    return [
+        "mvn",
+        "clean",
+        "install"
+    ].join(" ");
 }
 
-export function currentWindowsShell(): string | undefined {
-    const currentWindowsShellPath: string | undefined = Settings.External.defaultWindowsShell();
-    if (typeof currentWindowsShellPath !== "undefined") {
-        if (currentWindowsShellPath.endsWith("cmd.exe")) {
-            return "Command Prompt";
-        } else if (currentWindowsShellPath.endsWith("powershell.exe")) {
-            return "PowerShell";
-        } else if (currentWindowsShellPath.endsWith("bash.exe") || currentWindowsShellPath.endsWith("wsl.exe")) {
-            if (currentWindowsShellPath.includes("Git")) {
-                return "Git Bash";
-            }
-            return "WSL Bash";
-        } else {
-            return "Others";
-        }
-    }
+function getSynapseCarPluginInstallCommand() {
+    let synapseCarPluginJar = path.join(__dirname, '..', '..', 'lib', SYNAPSE_CAR_PLUGIN_JAR);
+    return [
+        "mvn",
+        "install:install-file",
+        `-Dfile=${synapseCarPluginJar}`,
+        `-DgroupId=${SYNAPSE_CAR_PLUGIN_GROUP_ID}`,
+        `-DartifactId=${SYNAPSE_CAR_PLUGIN_ARTIFACT_ID}`,
+        `-Dversion=${SYNAPSE_CAR_PLUGIN_VERSION}`
+    ].join(" ");
 }
 
-function toDefaultWslPath(p: string): string {
-    const arr: string[] = p.split(":\\");
-    if (arr.length === 2) {
-        const drive: string = arr[0].toLowerCase();
-        const dir: string = arr[1].replace(/\\/g, "/");
-        return `/mnt/${drive}/${dir}`;
-    } else {
-        return p.replace(/\\/g, "/");
-    }
-}
 
-export async function toWslPath(path: string): Promise<string> {
-    try {
-        return (await executeCommand("wsl", ["wslpath", "-u", `"${path.replace(
-            /\\/g, "/")}"`])).trim();
-    } catch (error) {
-        mavenOutputChannel.appendLine(error, "WSL");
-        return toDefaultWslPath(path);
-    }
-}
-
-// export async function toWinPath(path: string): Promise<string> {
-//     return (await executeCommand("wsl", ["wslpath", "-w", `"${path}"`])).trim();
-// }

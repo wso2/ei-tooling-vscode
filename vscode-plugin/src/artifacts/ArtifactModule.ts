@@ -268,14 +268,15 @@ export namespace ArtifactModule {
                                                 resourceType, "artifact.xml");
 
             // Read related artifact.xml file, convert it to DOM Document and remove the deleted artifact info
-            fse.readFile(artifactXmlFilePath).then(buf => {
+            await fse.readFile(artifactXmlFilePath).then(buf => {
                 let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
                 let elementList = xmlDoc.getElementsByTagName("artifact");
 
                 for (let i = 0; i < elementList.length; i++) {
                     if (elementList[i].getAttribute("name") === rawArtifactName[0]) {
                         xmlDoc.removeChild(elementList[i]);
-                        fse.writeFile(artifactXmlFilePath, new XMLSerializer().serializeToString(xmlDoc))
+                        let data = new XMLSerializer().serializeToString(xmlDoc);
+                        fse.writeFile(artifactXmlFilePath, data)
                             .catch(error => console.log(error));
                         break;
                     }

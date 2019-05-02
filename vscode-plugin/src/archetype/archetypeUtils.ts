@@ -17,5 +17,14 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 */
 
 export const GROUP_ID_PREFIX: string = "com.example.";
-export const ARCHETYPE_ARTIFACT_ID: string = "wso2ei-tooling";
-export const ARCHETYPE_GROUP_ID: string = "wso2ei.vscode.tooling";
+export const SYNAPSE_CAR_PLUGIN_JAR: string = "org.wso2.carbon.extension.esb.project-archetype-2.0.7.jar";
+export const SYNAPSE_CAR_PLUGIN_ARTIFACT_ID: string = "synapse-car-plugin";
+export const SYNAPSE_CAR_PLUGIN_GROUP_ID: string = "org.wso2.maven";
+export const SYNAPSE_CAR_PLUGIN_VERSION: string = "1.0.0";
+
+
+export const ARCHETYPE_JAR: string = "org.wso2.carbon.extension.esb.project-archetype-2.0.7.jar";
+export const ARCHETYPE_POM: string = "org.wso2.carbon.extension.esb.project-archetype-2.0.7.pom";
+export const ARCHETYPE_ARTIFACT_ID: string = "org.wso2.carbon.extension.esb.project-archetype";
+export const ARCHETYPE_GROUP_ID: string = "org.wso2.carbon.extension.archetype";
+export const ARCHETYPE_VERSION: string = "2.0.7";
