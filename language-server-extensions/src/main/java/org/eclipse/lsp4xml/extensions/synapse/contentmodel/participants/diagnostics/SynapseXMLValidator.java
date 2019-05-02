@@ -39,6 +39,7 @@ import org.xml.sax.XMLReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
@@ -101,6 +102,18 @@ class SynapseXMLValidator {
             inputSource.setSystemId(uri);
 
             reader.parse(inputSource);
+
+            List<Diagnostic> newDiagnostic = new ArrayList<>();
+            int initialNoOfDiagnostics = diagnostics.size();
+            for (int i = 0; i < initialNoOfDiagnostics; i++) {
+                Diagnostic diagnostic = diagnostics.get(i);
+                String errorCode = diagnostic.getCode();
+                if (errorCode.equals("sch-props-correct.2") || errorCode.equals("cos-all-limited.1.2") ||
+                        errorCode.equals("src-resolve") || errorCode.equals("src-resolve.4.2")) {
+                    newDiagnostic.add(diagnostic);
+                }
+            }
+            diagnostics.removeAll(newDiagnostic);
         } catch (IOException e) {
             throw new SynapseDiagnosticException("Synapse Schema validation failed", e);
         } catch (ParserConfigurationException | SAXException e) {
