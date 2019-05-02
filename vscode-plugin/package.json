@@ -90,7 +90,7 @@
 			},
 			{
 				"command": "wso2esb.project.build",
-				"title": "Create Deployable Archive",
+				"title": "Build Project",
 				"category": "Synapse",
 				"icon": {
 					"light": "resources/light/add.svg",
@@ -243,15 +243,18 @@
 		"tslint": "^5.12.1",
 		"typescript": "^3.3.1",
 		"vsce": "^1.36.2",
-		"vscode": "^1.1.33"
+		"vscode": "^1.1.33",
+		"@types/md5": "^2.1.33"
 	},
 	"dependencies": {
 		"archiver": "^3.0.0",
 		"chokidar": "^2.1.5",
 		"dom-parser": "^0.1.5",
+		"md5": "^2.2.1",
 		"fs-extra": "^4.0.3",
 		"vscode-languageclient": "^4.1.4",
 		"xml2js": "^0.4.19",
-		"xmldom": "^0.1.27"
+		"xmldom": "^0.1.27",
+		"vscode-extension-telemetry-wrapper": "^0.3.9"
 	}
 }
