@@ -91,8 +91,8 @@ export function activate(context: ExtensionContext) {
                 false
             );
             fileWatcherCreated = true;
-            watcher.onDidDelete(async (deletedFile: Uri) => {
-                await ArtifactModule.safeDeleteArtifact(deletedFile);
+            watcher.onDidDelete((deletedFile: Uri) => {
+                ArtifactModule.safeDeleteArtifact(deletedFile);
             });
         }
     }

@@ -248,7 +248,7 @@ export namespace ArtifactModule {
     /**
      * Delete the artifact info of the deleted artifact from the related artifact.xml file.
      */
-    export async function safeDeleteArtifact(deletedFile: Uri) {
+    export function safeDeleteArtifact(deletedFile: Uri) {
         const filePath: string = deletedFile.fsPath;
         let array: string[] = filePath.split(path.sep);
         let deletedArtifact: string = array[array.length - 1];
@@ -266,24 +266,20 @@ export namespace ArtifactModule {
         if (workspace.workspaceFolders && resourceType) {
             let artifactXmlFilePath = path.join(workspace.workspaceFolders[0].uri.path, "src", "main",
                                                 resourceType, "artifact.xml");
+                                                
+            let buf: Buffer = fse.readFileSync(artifactXmlFilePath);
+            let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+            let elementList = xmlDoc.getElementsByTagName("artifact");
 
-            // Read related artifact.xml file, convert it to DOM Document and remove the deleted artifact info
-            await fse.readFile(artifactXmlFilePath).then(buf => {
-                let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-                let elementList = xmlDoc.getElementsByTagName("artifact");
-
-                for (let i = 0; i < elementList.length; i++) {
-                    if (elementList[i].getAttribute("name") === rawArtifactName[0]) {
-                        xmlDoc.removeChild(elementList[i]);
-                        let data = new XMLSerializer().serializeToString(xmlDoc);
-                        fse.writeFile(artifactXmlFilePath, data)
-                            .catch(error => console.log(error));
-                        break;
-                    }
+            for (let i = 0; i < elementList.length; i++) {
+                if (elementList[i].getAttribute("name") === rawArtifactName[0]) {
+                    xmlDoc.removeChild(elementList[i]);
+                    let data = new XMLSerializer().serializeToString(xmlDoc);
+                    fse.writeFileSync(artifactXmlFilePath, data);
+                    break;
                 }
-            }).catch(error => {
-                console.log(error);
-            });
+            }
+
         }
     }
 

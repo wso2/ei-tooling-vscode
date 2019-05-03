@@ -22,7 +22,7 @@ import * as path from 'path';
 import {
     ARCHETYPE_ARTIFACT_ID,
     ARCHETYPE_GROUP_ID,
-    ARCHETYPE_JAR,
+    ARCHETYPE_JAR, ARCHETYPE_PLUGIN_POM, ARCHETYPE_POM,
     ARCHETYPE_VERSION,
     SYNAPSE_CAR_PLUGIN_ARTIFACT_ID,
     SYNAPSE_CAR_PLUGIN_GROUP_ID,
@@ -39,20 +39,24 @@ export async function executeProjectCreateCommand(newProject: ArchetypeModule.ES
 }
 
 export function executeProjectBuildCommand(pathToPom: string) {
-    let cmd = createMavenBuildCommand();
+    let cmd = getSynapseCarPluginInstallCommand() + " && " + createMavenBuildCommand();
     let commandRunner: Runner = new Runner();
     commandRunner.runProjectBuildCommand(cmd, pathToPom);
 }
 
 function getMavenArchetypeInstallCommand(): string {
     let archetypeJar = path.join(__dirname, '..', '..', 'lib', ARCHETYPE_JAR);
+    let archetypePom = path.join(__dirname, '..', '..', 'lib', ARCHETYPE_POM);
     return [
         "mvn",
         "install:install-file",
         `-Dfile=${archetypeJar}`,
         `-DgroupId=${ARCHETYPE_GROUP_ID}`,
         `-DartifactId=${ARCHETYPE_ARTIFACT_ID}`,
-        `-Dversion=${ARCHETYPE_VERSION}`
+        `-Dversion=${ARCHETYPE_VERSION}`,
+        `-Dpackaging=jar`,
+        `-DpomFile=${archetypePom}`,
+        `-o`
     ].join(" ");
 }
 
@@ -80,14 +84,15 @@ function createMavenBuildCommand(): string {
 
 function getSynapseCarPluginInstallCommand() {
     let synapseCarPluginJar = path.join(__dirname, '..', '..', 'lib', SYNAPSE_CAR_PLUGIN_JAR);
+    let synapseCarPluginPom = path.join(__dirname, '..', '..', 'lib', ARCHETYPE_PLUGIN_POM);
     return [
         "mvn",
         "install:install-file",
         `-Dfile=${synapseCarPluginJar}`,
         `-DgroupId=${SYNAPSE_CAR_PLUGIN_GROUP_ID}`,
         `-DartifactId=${SYNAPSE_CAR_PLUGIN_ARTIFACT_ID}`,
-        `-Dversion=${SYNAPSE_CAR_PLUGIN_VERSION}`
+        `-Dversion=${SYNAPSE_CAR_PLUGIN_VERSION}`,
+        `-Dpackaging=maven-plugin`,
+        `-DpomFile=${synapseCarPluginPom}`
     ].join(" ");
 }
-
-
