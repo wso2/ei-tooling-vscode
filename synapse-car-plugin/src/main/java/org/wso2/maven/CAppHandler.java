@@ -33,7 +33,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
-public class CAppHandler extends AbstractXmlDoc {
+class CAppHandler extends AbstractXmlDoc {
 
     /*
      * Read /synapse-config/artifact.xml file and create corresponding files in archive directory.
