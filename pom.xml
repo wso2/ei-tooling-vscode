@@ -10,9 +10,9 @@
   <url>http://maven.apache.org</url>
 
   <scm>
-    <url>https://github.com/sajinieKavindya/vscode-synapse.git</url>
-    <developerConnection>scm:git:https://github.com/sajinieKavindya/vscode-synapse.git</developerConnection>
-    <connection>scm:git:https://github.com/sajinieKavindya/vscode-synapse.git</connection>
+    <url>https://github.com/wso2/ei-tooling-vscode.git</url>
+    <developerConnection>scm:git:https://github.com/wso2/ei-tooling-vscode.git</developerConnection>
+    <connection>scm:git:https://github.com/wso2/ei-tooling-vscode.git</connection>
     <tag>HEAD</tag>
   </scm>
 
@@ -50,6 +50,7 @@
   <modules>
     <module>language-server</module>
     <module>language-server-extensions</module>
+    <module>synapse-car-plugin</module>
     <module>vscode-plugin</module>
     <module>diagrams</module>
   </modules>
@@ -61,4 +62,3 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 </project>
-
