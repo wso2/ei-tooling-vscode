@@ -32,8 +32,8 @@ import org.eclipse.lsp4xml.services.extensions.IHoverRequest;
 import org.eclipse.lsp4xml.uriresolver.CacheResourceDownloadingException;
 
 /**
- * Extension to support XML hover based on content model (XML Schema completion,
- * etc)
+ * Extension to support XML hover based on content model (XML Schema completion etc).
+ *
  */
 public class SynapseContentModelHoverParticipant extends HoverParticipantAdapter {
     @Override

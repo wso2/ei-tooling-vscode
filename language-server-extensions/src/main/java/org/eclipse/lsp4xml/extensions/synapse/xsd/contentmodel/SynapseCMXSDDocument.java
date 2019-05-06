@@ -69,7 +69,7 @@ public class SynapseCMXSDDocument implements CMDocument {
     }
 
     /**
-     * Fill the given elements list from the given Xerces elementDeclaration
+     * Fill the given elements list from the given Xerces elementDeclaration.
      *
      * @param elementDeclaration elementDeclaration
      * @param elements           elements

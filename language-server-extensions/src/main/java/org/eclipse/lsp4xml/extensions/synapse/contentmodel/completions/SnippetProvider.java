@@ -58,7 +58,7 @@ public class SnippetProvider {
     }
 
     /**
-     * Restricted creating new SnippetProviders by making the constructor private
+     * Restricted creating new SnippetProviders by making the constructor private.
      */
     private SnippetProvider() {
     }

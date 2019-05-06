@@ -33,7 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Extension to support XML goto definition based on pre-defined reference key set in Synapse XML
+ * Extension to support XML goto definition based on pre-defined reference key set in Synapse XML.
  */
 public class SynapseReferencesDefinitionParticipant implements IDefinitionParticipant {
 

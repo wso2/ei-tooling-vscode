@@ -40,7 +40,7 @@ public class SynapseXSDURIResolverExtension implements URIResolverExtension {
     private static final Logger LOGGER = Logger.getLogger(SynapseXSDURIResolverExtension.class.getName());
 
     /**
-     * The XMLSchema namespace URI (= http://www.w3.org/2001/XMLSchema)
+     * The XMLSchema namespace URI (= http://www.w3.org/2001/XMLSchema).
      */
     private static final String SCHEMA_FOR_SCHEMA_URI_2001 = "http://www.w3.org/2001/XMLSchema"; //$NON-NLS-1$
 
@@ -50,7 +50,7 @@ public class SynapseXSDURIResolverExtension implements URIResolverExtension {
             new ResourceToDeploy("http://www.w3.org/2001/datatypes.dtd", "schemas/xsd/datatypes.dtd"));
 
     /**
-     * The Namespace namespace URI (= http://www.w3.org/XML/1998/namespace)
+     * The Namespace namespace URI (= http://www.w3.org/XML/1998/namespace).
      */
     private static final String SCHEMA_FOR_NAMESPACE_URI_1998 = "http://www.w3.org/XML/1998/namespace"; //$NON-NLS-1$
 

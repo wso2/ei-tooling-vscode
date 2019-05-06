@@ -46,7 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Extension to support XML completion based on content model (XML Schema completion, etc)
+ * Extension to support XML completion based on content model (XML Schema completion, etc).
  */
 public class SynapseContentModelCompletionParticipant extends CompletionParticipantAdapter {
 
