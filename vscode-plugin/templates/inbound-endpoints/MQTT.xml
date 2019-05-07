@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inboundEndpoint name="" onError="main" protocol="mqtt" sequence="main" suspend="false" xmlns="http://ws.apache.org/ns/synapse">
+    <parameters>
+        <parameter name="sequential">true</parameter>
+        <parameter name="mqtt.connection.factory">AMQPConnectionFactory</parameter>
+        <parameter name="mqtt.subscription.qos">0</parameter>
+        <parameter name="mqtt.session.clean">false</parameter>
+        <parameter name="mqtt.reconnection.interval">1000</parameter>
+    </parameters>
+</inboundEndpoint>
