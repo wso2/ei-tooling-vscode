@@ -41,19 +41,19 @@ Open the Command Palette ( [Command] + [Shift] + [P] on macOS and [Ctrl] + [Shif
 #### Suggestions and Auto-Completion: 
 * <kbd>CTRL</kbd> + <kbd>SPACE</kbd>
 
-![auto Completion](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/autoCompletionSnippets.gif)
+![alt text](./docs/autoCompletionSnippets.gif "Auto Completion")
 
 #### Goto Definition 
 * Jump to source: <kbd>CTRL</kbd> + <kbd>Click</kbd>    
 * Open to the side with: <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Click</kbd>
 
-![goto def](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/gotoDefinition.gif)
+![alt text](./docs/gotoDefinition.gif "Go to Definition")
 
 #### Code Diagnostics
-![diagnostics](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/diagnostic.gif)
+![alt text](./docs/diagnostic.gif "Diagnostics")
 
 #### Hover Support
-![hover](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/hover1.gif)
+![alt text](./docs/hover1.gif "Hover")
 
 <!-- #### Automatic Node Intentation
 ![indentation]()
@@ -62,7 +62,7 @@ Open the Command Palette ( [Command] + [Shift] + [P] on macOS and [Ctrl] + [Shif
 ![formatting]() -->
 
 #### Change Language to SynapseXml
-![change Language to Synapse](https://raw.githubusercontent.com/sajinieKavindya/vscode-synapse/master/vscode-plugin/docs/changeLang.gif)
+![alt text](./docs/changeLang.gif?raw=true "Change Language to Synapse")
 
 ## License:
 
