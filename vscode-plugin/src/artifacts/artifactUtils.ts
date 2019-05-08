@@ -214,6 +214,15 @@ export class SequenceArtifactInfo {
     static readonly SEQUENCE_LABEL: string = "Sequence";
 }
 
+export class TaskArtifactInfo {
+    static readonly ARTIFACT_TYPE: string = "task";
+    static readonly PROMPT_MESSAGE: string = "Enter Task artifact name...";
+    static readonly DESTINATION_FOLDER: string = "tasks";
+    static readonly TYPE: string = "synapse/task";
+
+    static readonly TASK_LABEL: string = "task";
+}
+
 export class RegistryResourceInfo {
     static readonly ARTIFACT_TYPE: string = "registry-resource";
     static readonly PLACEHOLDER: string = "Select an Message-Processor Artifact Creation Option...";

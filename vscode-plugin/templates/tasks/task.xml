@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task class="org.apache.synapse.startup.tasks.MessageInjector" group="synapse.simple.quartz" name="newTaskFile" xmlns="http://ws.apache.org/ns/synapse">
+    <property name="sequenceName" value="injecting_seq_name_here" xmlns:task="http://www.wso2.org/products/wso2commons/tasks"/>
+    <property name="injectTo" value="sequence" xmlns:task="http://www.wso2.org/products/wso2commons/tasks"/>
+    <property name="message" xmlns:task="http://www.wso2.org/products/wso2commons/tasks">
+        <message_here xmlns=""/>
+    </property>
+    <trigger once="true"/>
+</task>

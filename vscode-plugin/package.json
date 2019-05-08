@@ -1,7 +1,7 @@
 {
 	"name": "wso2ei",
 	"displayName": "WSO2 Enterprise Integrator",
-	"description": "",
+	"description": "VSCode extension for WSO2 Enterprise Integrator",
 	"publisher": "WSO2",
 	"version": "0.2.0",
 	"engines": {
@@ -15,11 +15,12 @@
 		"Snippets"
 	],
 	"keywords": [
-		"wso2"
+		"wso2ei",
+		"EnterpriseIntegrator"
 	],
 	"activationEvents": [
 		"onLanguage:xml",
-		"onCommand:extension.activateExtension"
+		"onCommand:wso2ei.extension.activate"
 	],
 	"repository": {
 		"type": "git",
@@ -141,6 +142,11 @@
 				"command": "wso2ei.artifact.sequence",
 				"title": "Create New Sequence Artifact",
 				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.artifact.task",
+				"title": "Create New Task Artifact",
+				"category": "WSO2EI"
 			}
 		],
 		"languages": [
@@ -155,16 +161,7 @@
 				"scopeName": "synapse.xml",
 				"path": "./syntaxes/xml.tmLanguage.json"
 			}
-		],
-		"menus": {
-			"explorer/context": [
-				{
-					"command": "extension.checkingRightClickFunctionality",
-					"when": "resourceLangId == xml",
-					"group": "Synapse@1"
-				}
-			]
-		}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

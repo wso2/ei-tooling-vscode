@@ -27,7 +27,7 @@ import {
     MessageStoreArtifactInfo,
     ProxyArtifactInfo,
     RegistryResourceInfo,
-    SequenceArtifactInfo,
+    SequenceArtifactInfo, TaskArtifactInfo,
     TemplateArtifactInfo
 } from "./artifactUtils";
 import {showInputBox, showQuickPick} from "../utils/uiUtils";
@@ -190,6 +190,21 @@ export async function createArtifact(artifactType: string) {
                 ArtifactModule.createArtifact(SequenceArtifactInfo.DESTINATION_FOLDER,
                                               SequenceArtifactInfo.SEQUENCE_LABEL,
                                               artifactName.trim(), artifactType, SequenceArtifactInfo.TYPE);
+            }
+            break;
+        }
+        case TaskArtifactInfo.ARTIFACT_TYPE: {
+            let artifactName = await showInputBox(TaskArtifactInfo.PROMPT_MESSAGE);
+
+            while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
+                window.showErrorMessage("Enter valid artifact name!!");
+                artifactName = await showInputBox(TaskArtifactInfo.PROMPT_MESSAGE);
+            }
+
+            if (artifactName) {
+                ArtifactModule.createArtifact(TaskArtifactInfo.DESTINATION_FOLDER,
+                                              TaskArtifactInfo.TASK_LABEL,
+                                              artifactName.trim(), artifactType, TaskArtifactInfo.TYPE);
             }
             break;
         }

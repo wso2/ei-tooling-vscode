@@ -30,7 +30,7 @@ import {
     MessageStoreArtifactInfo,
     ProxyArtifactInfo,
     RegistryResourceInfo,
-    SequenceArtifactInfo,
+    SequenceArtifactInfo, TaskArtifactInfo,
     TemplateArtifactInfo
 } from "./artifacts/artifactUtils";
 
@@ -154,6 +154,10 @@ function registerSynapseCommands(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.sequence", async () => {
         await createArtifact(SequenceArtifactInfo.ARTIFACT_TYPE);
+    }));
+
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.task", async () => {
+        await createArtifact(TaskArtifactInfo.ARTIFACT_TYPE);
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.resource.registry", async () => {
