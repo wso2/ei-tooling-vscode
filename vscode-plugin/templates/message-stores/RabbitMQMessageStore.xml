@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<messageStore class="org.apache.synapse.message.store.impl.rabbitmq.RabbitMQStore" name="" xmlns="http://ws.apache.org/ns/synapse">
+<messageStore class="org.apache.synapse.message.store.impl.rabbitmq.RabbitMQStore" name="SampleRabbitMQMessageStore" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="store.rabbitmq.host.name">localhost</parameter>
     <parameter name="store.producer.guaranteed.delivery.enable">false</parameter>
     <parameter name="store.rabbitmq.host.port">5671</parameter>
-    <parameter name="store.rabbitmq.route.key"/>
-    <parameter name="store.rabbitmq.username"/>
-    <parameter name="store.rabbitmq.virtual.host"/>
+    <parameter name="store.rabbitmq.route.key">route_key_here</parameter>
+    <parameter name="store.rabbitmq.username">username_here</parameter>
+    <parameter name="store.rabbitmq.virtual.host">virtual_host_here</parameter>
     <parameter name="rabbitmq.connection.ssl.enabled">false</parameter>
-    <parameter name="store.rabbitmq.exchange.name"/>
-    <parameter name="store.rabbitmq.queue.name"/>
-    <parameter name="store.rabbitmq.password"/>
+    <parameter name="store.rabbitmq.exchange.name">exchange_name_here</parameter>
+    <parameter name="store.rabbitmq.queue.name">queue_name_here</parameter>
+    <parameter name="store.rabbitmq.password">password_here</parameter>
 </messageStore>

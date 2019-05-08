@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<endpoint name="" xmlns="http://ws.apache.org/ns/synapse">
-    <address uri=""/>
+<endpoint name="SampleAddressEP" xmlns="http://ws.apache.org/ns/synapse">
+   <address uri="http://my.backend.service"/>
 </endpoint>

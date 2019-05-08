@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localEntry key="" src="" xmlns="http://ws.apache.org/ns/synapse"/>
+<localEntry key="SampleSourceURLEntry" src="source_url_here" xmlns="http://ws.apache.org/ns/synapse"/>

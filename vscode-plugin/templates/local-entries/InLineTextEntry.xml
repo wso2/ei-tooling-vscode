@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localEntry key="" xmlns="http://ws.apache.org/ns/synapse">
-    <![CDATA[ds]]>
+<localEntry key="SampleInlineTextEntry" xmlns="http://ws.apache.org/ns/synapse">
+    <![CDATA[sample_data]]>
 </localEntry>

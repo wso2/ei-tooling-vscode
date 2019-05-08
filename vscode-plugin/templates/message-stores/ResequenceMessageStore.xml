@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<messageStore class="org.apache.synapse.message.store.impl.resequencer.ResequenceMessageStore" name="" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="store.jdbc.driver"></parameter>
+<messageStore class="org.apache.synapse.message.store.impl.resequencer.ResequenceMessageStore" name="SampleResequenceMessageStore" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="store.jdbc.driver">driver_name_here</parameter>
     <parameter name="store.producer.guaranteed.delivery.enable">false</parameter>
-    <parameter name="store.jdbc.username"></parameter>
-    <parameter name="store.jdbc.connection.url">http://</parameter>
-    <parameter name="store.jdbc.password"/>
-    <parameter name="store.jdbc.table"></parameter>
+    <parameter name="store.jdbc.username">username_here</parameter>
+    <parameter name="store.jdbc.connection.url">connection_url_here</parameter>
+    <parameter name="store.jdbc.password">password_here</parameter>
+    <parameter name="store.jdbc.table">table_name_here</parameter>
 </messageStore>

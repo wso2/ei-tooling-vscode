@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<api context="context_here" name="SampleAPI" xmlns="http://ws.apache.org/ns/synapse">
-    <resource methods="GET">
+<proxy name="SampleProxy" startOnLoad="true" transports="http https" xmlns="http://ws.apache.org/ns/synapse">
+    <target>
         <inSequence>
             <!-- Define inflow mediation logic here -->
             <log level="custom">
-                <property name="status" value="message received" />
+                <property name="status" value="message received"/>
             </log>
-            <drop />
+            <drop/>
         </inSequence>
         <outSequence>
             <!-- Define outflow mediation logic here -->
@@ -15,5 +15,5 @@
         <faultSequence>
             <!-- Define error handling mediation logic here -->
         </faultSequence>
-    </resource>
-</api>
+    </target>
+</proxy>

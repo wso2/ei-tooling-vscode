@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<endpoint name="" template="" xmlns="http://ws.apache.org/ns/synapse">
-    <description/>
+<endpoint xmlns="http://ws.apache.org/ns/synapse" template="TEMPLATE_NAME_HERE" name="SampleTemplateEP" uri="http://localhost:9090">
+  <axis2ns9:parameter xmlns:axis2ns9="http://ws.apache.org/ns/synapse" name="param1" value="val1"/>
 </endpoint>

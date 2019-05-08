@@ -1,3 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localEntry key="" xmlns="http://ws.apache.org/ns/synapse">
-</localEntry>
+<localEntry key="SampleInlineXMLEntry" xmlns="http://ws.apache.org/ns/synapse"/>
