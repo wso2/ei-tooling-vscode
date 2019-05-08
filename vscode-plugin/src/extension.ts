@@ -99,71 +99,65 @@ export function activate(context: ExtensionContext) {
 }
 
 function registerSynapseCommands(context: ExtensionContext) {
-    context.subscriptions.push(commands.registerCommand("extension.activateExtension", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.extension.activate", async () => {
         window.showInformationMessage('Synapse Extension activated!');
     }));
 
-    context.subscriptions.push(commands.registerTextEditorCommand('extension.changeLanguage',
+    context.subscriptions.push(commands.registerTextEditorCommand('wso2ei.language.change',
                                                                   (editor, edit) => {
         if (!setLanguageToSynapse(editor.document)) {
             changeLanguageToSynapse(editor, edit);
         }
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.project.create", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.create", async () => {
         await ArchetypeModule.createESBProject();
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.project.build", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.build", async () => {
         createDeployableArchive();
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.api", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.api", async () => {
         await createArtifact(APIArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.proxy", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.proxy", async () => {
         await createArtifact(ProxyArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.endpoint", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.endpoint", async () => {
         await createArtifact(EndpointArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.inboundEndpoint",
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.inboundEndpoint",
                                                         async () => {
         await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.localEntry", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.localEntry", async () => {
         await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.messageStore", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageStore", async () => {
         await createArtifact(MessageStoreArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.messageProcessor",
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageProcessor",
                                                         async () => {
         await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.template", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.template", async () => {
         await createArtifact(TemplateArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.artifact.sequence", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.sequence", async () => {
         await createArtifact(SequenceArtifactInfo.ARTIFACT_TYPE);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2esb.resource.registry", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.resource.registry", async () => {
         await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE);
-    }));
-
-    context.subscriptions.push(commands.registerCommand('extension.checkingRightClickFunctionality',
-                                                        async (clickedFile: Uri) => {
-        console.log((clickedFile));
-
     }));
 }
 

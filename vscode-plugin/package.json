@@ -1,14 +1,21 @@
 {
-	"name": "synapse-vscode",
-	"displayName": "synapse-vscode",
+	"name": "wso2ei",
+	"displayName": "WSO2 Enterprise Integrator",
 	"description": "",
-	"publisher": "SajinieRanasinghe",
-	"version": "0.9.0",
+	"publisher": "WSO2",
+	"version": "0.2.0",
 	"engines": {
 		"vscode": "^1.31.0"
 	},
 	"categories": [
-		"Other"
+		"Extension Packs",
+		"Programming Languages",
+		"Formatters",
+		"Linters",
+		"Snippets"
+	],
+	"keywords": [
+		"wso2"
 	],
 	"activationEvents": [
 		"onLanguage:xml",
@@ -71,125 +78,69 @@
 		},
 		"commands": [
 			{
-				"command": "extension.activateExtension",
-				"title": "Activate Synapse Extension",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"command": "wso2ei.extension.activate",
+				"title": "Activate WSO2 EI Tooling",
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.project.create",
+				"command": "wso2ei.project.create",
 				"title": "Create new ESB Project",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.project.build",
+				"command": "wso2ei.project.build",
 				"title": "Build Project",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "extension.changeLanguage",
-				"title": "Change Language to Synapse",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"command": "wso2ei.language.change",
+				"title": "Change Language to SynapseXml",
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.artifact.api",
+				"command": "wso2ei.artifact.api",
 				"title": "Create New API Artifact",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.artifact.proxy",
+				"command": "wso2ei.artifact.proxy",
 				"title": "Create New Proxy Artifact",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.artifact.endpoint",
+				"command": "wso2ei.artifact.endpoint",
 				"title": "Create New Endpoint Artifact",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.artifact.inboundEndpoint",
+				"command": "wso2ei.artifact.inboundEndpoint",
 				"title": "Create New Inbound-Endpoint Artifact",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.artifact.localEntry",
+				"command": "wso2ei.artifact.localEntry",
 				"title": "Create New Local-Entry Artifact",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.artifact.messageStore",
+				"command": "wso2ei.artifact.messageStore",
 				"title": "Create New Message-Store Artifact",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.artifact.messageProcessor",
+				"command": "wso2ei.artifact.messageProcessor",
 				"title": "Create New Message-Processor Artifact",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.artifact.template",
+				"command": "wso2ei.artifact.template",
 				"title": "Create New Template Artifact",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
+				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2esb.artifact.sequence",
+				"command": "wso2ei.artifact.sequence",
 				"title": "Create New Sequence Artifact",
-				"category": "Synapse",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
-			},
-			{
-				"command": "extension.checkingRightClickFunctionality",
-				"title": "Check"
+				"category": "WSO2EI"
 			}
 		],
 		"languages": [
@@ -205,14 +156,6 @@
 				"path": "./syntaxes/xml.tmLanguage.json"
 			}
 		],
-		"views": {
-			"explorer": [
-				{
-					"id": "SynapseConfigProjects",
-					"name": "Synapse Config Projects"
-				}
-			]
-		},
 		"menus": {
 			"explorer/context": [
 				{
