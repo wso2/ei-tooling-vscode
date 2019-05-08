@@ -19,7 +19,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import {ServerRoleInfo} from "./artifactUtils";
+import {LocalEntryArtifactInfo, ServerRoleInfo} from "./artifactUtils";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
 
 let DOM = require('xmldom').DOMParser;
@@ -46,13 +46,13 @@ export namespace ArtifactModule {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
             // Create target folder path where the new config artifact is going to be added in the project.
-            const pathToTargetFolder = path.join(synapseWorkspace.uri.path, "src", "main", "synapse-config",
-                                               targetFolder);
+            const pathToTargetFolder = path.join(synapseWorkspace.uri.fsPath, "src", "main", "synapse-config",
+                                                 targetFolder);
 
             // Check if the path really exists. If not exists, the project is not a standard Synapse ESB Project
             checkPathExistence(pathToTargetFolder).then(exists => {
                 if (exists) {
-                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, type,
+                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, artifactType, type,
                                                pathToTargetFolder, "synapse-config");
                 }
             });
@@ -63,17 +63,17 @@ export namespace ArtifactModule {
      * Create new resource in Synapse ESB project.
      */
     export function createResource(targetFolder: string, templateFileName: string, targetArtifactName: string,
-                                   type: string) {
+                                   artifactType: string, type: string) {
         if (workspace.workspaceFolders) {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
-            const targetFolderPath = path.join(synapseWorkspace.uri.path, "src", "main", "registry-resources");
+            const targetFolderPath = path.join(synapseWorkspace.uri.fsPath, "src", "main", "registry-resources");
 
             // Check if the path really exists. If not exists, the project is not a standard Synapse ESB Project
             checkPathExistence(targetFolderPath).then(exists => {
                 if (exists) {
-                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, type, targetFolderPath,
-                                   "registry-resources");
+                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, artifactType, type,
+                                               targetFolderPath, "registry-resources");
                 }
             });
         }
@@ -94,7 +94,8 @@ export namespace ArtifactModule {
      * Create artifact from template.
      */
     function createArtifactFromTemplate(targetFolder: string, templateFileName: string, targetArtifactName: string,
-                                        type: string, pathToTargetFolder: string, resourceType: string) {
+                                        artifactType: string, type: string, pathToTargetFolder: string,
+                                        resourceType: string) {
 
         let targetFile = path.join("src", "main", "**", "**", targetArtifactName + ".xml");
 
@@ -105,10 +106,10 @@ export namespace ArtifactModule {
                 const targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + ".xml");
                 const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
                 const templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
-                                             templateFileName + '.xml');
+                                                           templateFileName + '.xml');
 
                 await createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
-                                                       templateArtifactFilePath);
+                                                       templateArtifactFilePath, artifactType);
 
                 if (resourceType === "synapse-config") {
                     await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
@@ -126,7 +127,7 @@ export namespace ArtifactModule {
      * Create the artifact from template.
      */
     async function createTargetArtifactFromTemplate(targetArtifactFileUri: Uri, targetArtifactName: string,
-                                                    templateArtifactFilePath: string) {
+                                                    templateArtifactFilePath: string, artifactType: string) {
         let edit = new WorkspaceEdit();
         edit.createFile(targetArtifactFileUri);
         workspace.applyEdit(edit);
@@ -136,10 +137,14 @@ export namespace ArtifactModule {
         await timeout(200);
 
         // Update the name attribute of the buffered artifact to comply with the new artifact.
-        let updatedBody = updateNameAttribute(buf, targetArtifactName);
-
+        let updatedBody = "";
+        if (artifactType !== LocalEntryArtifactInfo.ARTIFACT_TYPE) {
+            updatedBody = updateAttribute(buf, "name", targetArtifactName);
+        } else {
+            updatedBody = updateAttribute(buf, "key", targetArtifactName);
+        }
         // Write the updated template content to the target file.
-        await fse.writeFile(targetArtifactFileUri.path, updatedBody);
+        await fse.writeFile(targetArtifactFileUri.fsPath, updatedBody);
         await timeout(200);
 
         // Open and show newly created artifact document in the editor.
@@ -152,11 +157,11 @@ export namespace ArtifactModule {
     async function addNewArtifactToConfigArtifactXMLFile(artifactName: string, targetFolder: string, type: string) {
         if (workspace.workspaceFolders) {
             // read pom and get project group_id and version
-            const pomFile: string = path.join(workspace.workspaceFolders[0].uri.path, "pom.xml");
+            const pomFile: string = path.join(workspace.workspaceFolders[0].uri.fsPath, "pom.xml");
             let project: Project = await getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
 
-            const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.path,
+            const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.fsPath,
                                                                     "src", "main", "synapse-config", "artifact.xml");
             // Read and buffer synapse-config artifact.xml file
             const buf: Buffer = await fse.readFile(configArtifactXmlFileLocation);
@@ -188,7 +193,7 @@ export namespace ArtifactModule {
      */
     async function addNewArtifactToRegistryArtifactXMLFile(artifactName: string, type: string) {
         if (workspace.workspaceFolders) {
-            const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.path,
+            const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.fsPath,
                                                           "src", "main", "registry-resources", "artifact.xml");
             const buf: Buffer = await fse.readFile(registryArtifactXML);
 
@@ -235,9 +240,9 @@ export namespace ArtifactModule {
     /**
      * Update the name attribute value in the buffered content.
      */
-    function updateNameAttribute(buf: Buffer, name: string): string {
+    function updateAttribute(buf: Buffer, attributeName: string, attributeValue: string): string {
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-        xmlDoc.lastChild.setAttribute("name", name);
+        xmlDoc.lastChild.setAttribute(attributeName, attributeValue);
         return new XMLSerializer().serializeToString(xmlDoc);
     }
 
@@ -264,9 +269,9 @@ export namespace ArtifactModule {
         }
 
         if (workspace.workspaceFolders && resourceType) {
-            let artifactXmlFilePath = path.join(workspace.workspaceFolders[0].uri.path, "src", "main",
+            let artifactXmlFilePath = path.join(workspace.workspaceFolders[0].uri.fsPath, "src", "main",
                                                 resourceType, "artifact.xml");
-                                                
+
             let buf: Buffer = fse.readFileSync(artifactXmlFilePath);
             let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
             let elementList = xmlDoc.getElementsByTagName("artifact");

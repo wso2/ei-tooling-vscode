@@ -40,19 +40,7 @@ export class ProxyArtifactInfo {
     static readonly TYPE: string = "synapse/proxy-service";
     static readonly PROXY_DESTINATION_FOLDER: string = "proxy-services";
 
-    static readonly PASS_THROUGH_PROXY: string = "PassThroughProxy";
-    static readonly CUSTOM_PROXY: string = "CustomProxy";
-    static readonly TRANSFORMER_PROXY: string = "TransformerProxy";
-    static readonly LOGGING_PROXY: string = "LoggingProxy";
-    static readonly WSDL_BASED_PROXY: string = "WSDLBasedProxy";
-    static readonly SECURE_PROXY: string = "SecureProxy";
-
-    static readonly PASS_THROUGH_PROXY_LABEL: string = "Pass Through Proxy";
-    static readonly CUSTOM_PROXY_LABEL: string = "Custom Proxy";
-    static readonly TRANSFORMER_PROXY_LABEL: string = "Transformer Proxy";
-    static readonly LOGGING_PROXY_LABEL: string = "Logging Proxy";
-    static readonly WSDL_BASED_PROXY_LABEL: string = "WSDL Based roxy";
-    static readonly SECURE_PROXY_LABEL: string = "Secure Proxy";
+    static readonly PROXY_LABEL: string = "Proxy";
 }
 
 export class EndpointArtifactInfo {
