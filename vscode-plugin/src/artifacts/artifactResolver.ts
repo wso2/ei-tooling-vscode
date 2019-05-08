@@ -27,7 +27,7 @@ import {
     MessageStoreArtifactInfo,
     ProxyArtifactInfo,
     RegistryResourceInfo,
-    SequenceArtifactInfo,
+    SequenceArtifactInfo, TaskArtifactInfo,
     TemplateArtifactInfo
 } from "./artifactUtils";
 import {showInputBox, showQuickPick} from "../utils/uiUtils";
@@ -50,21 +50,16 @@ export async function createArtifact(artifactType: string) {
             break;
         }
         case ProxyArtifactInfo.ARTIFACT_TYPE: {
-            const proxyTypes = createProxyServiceArray();
-            const selectedArtifactType = await showQuickPick(proxyTypes);
+            let artifactName = await showInputBox(ProxyArtifactInfo.PROMPT_MESSAGE);
 
-            if (selectedArtifactType) {
-                let artifactName = await showInputBox(ProxyArtifactInfo.PROMPT_MESSAGE);
+            while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
+                window.showErrorMessage("Enter valid artifact name!!");
+                artifactName = await showInputBox(ProxyArtifactInfo.PROMPT_MESSAGE);
+            }
 
-                while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
-                    window.showErrorMessage("Enter valid artifact name!!");
-                    artifactName = await showInputBox(ProxyArtifactInfo.PROMPT_MESSAGE);
-                }
-
-                if (artifactName) {
-                    ArtifactModule.createArtifact(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, ProxyArtifactInfo.TYPE);
-                }
+            if (artifactName) {
+                ArtifactModule.createArtifact(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_LABEL,
+                                              artifactName.trim(), artifactType, ProxyArtifactInfo.TYPE);
             }
             break;
         }
@@ -198,6 +193,21 @@ export async function createArtifact(artifactType: string) {
             }
             break;
         }
+        case TaskArtifactInfo.ARTIFACT_TYPE: {
+            let artifactName = await showInputBox(TaskArtifactInfo.PROMPT_MESSAGE);
+
+            while (typeof artifactName !== "undefined" && !Utils.validate(artifactName.trim())) {
+                window.showErrorMessage("Enter valid artifact name!!");
+                artifactName = await showInputBox(TaskArtifactInfo.PROMPT_MESSAGE);
+            }
+
+            if (artifactName) {
+                ArtifactModule.createArtifact(TaskArtifactInfo.DESTINATION_FOLDER,
+                                              TaskArtifactInfo.TASK_LABEL,
+                                              artifactName.trim(), artifactType, TaskArtifactInfo.TYPE);
+            }
+            break;
+        }
         case RegistryResourceInfo.ARTIFACT_TYPE: {
             const messageProcessorTypes = createRegistryResourceTemplateArray();
             const selectedArtifactType = await showQuickPick(messageProcessorTypes);
@@ -220,41 +230,12 @@ export async function createArtifact(artifactType: string) {
 
                 if (artifactName && registry && registryPath) {
                     ArtifactModule.createResource(RegistryResourceInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), RegistryResourceInfo.TYPE);
+                                                  artifactName.trim(), artifactType, RegistryResourceInfo.TYPE);
                 }
             }
             break;
         }
     }
-}
-
-function createProxyServiceArray(): QuickPickItem[] {
-    return [
-        {
-            "description": ProxyArtifactInfo.PASS_THROUGH_PROXY,
-            "label": ProxyArtifactInfo.PASS_THROUGH_PROXY_LABEL
-        },
-        {
-            "description": ProxyArtifactInfo.CUSTOM_PROXY,
-            "label": ProxyArtifactInfo.CUSTOM_PROXY_LABEL
-        },
-        {
-            "description": ProxyArtifactInfo.TRANSFORMER_PROXY,
-            "label": ProxyArtifactInfo.TRANSFORMER_PROXY_LABEL
-        },
-        {
-            "description": ProxyArtifactInfo.LOGGING_PROXY,
-            "label": ProxyArtifactInfo.LOGGING_PROXY_LABEL
-        },
-        {
-            "description": ProxyArtifactInfo.WSDL_BASED_PROXY,
-            "label": ProxyArtifactInfo.WSDL_BASED_PROXY_LABEL
-        },
-        {
-            "description": ProxyArtifactInfo.SECURE_PROXY,
-            "label": ProxyArtifactInfo.SECURE_PROXY_LABEL
-        }
-    ];
 }
 
 function createEndpointServiceArray(): QuickPickItem[] {

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<messageProcessor class="org.apache.synapse.message.processor.impl.failover.FailoverScheduledMessageForwardingProcessor" messageStore="" name="" xmlns="http://ws.apache.org/ns/synapse">
+<messageProcessor class="org.apache.synapse.message.processor.impl.failover.FailoverScheduledMessageForwardingProcessor" messageStore="source_store_here" name="SampleFailoverScheduledMessageForwardingProcessor" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="client.retry.interval">1000</parameter>
     <parameter name="max.delivery.attempts">4</parameter>
     <parameter name="member.count">1</parameter>
     <parameter name="max.delivery.drop">Disabled</parameter>
     <parameter name="interval">1000</parameter>
     <parameter name="is.active">true</parameter>
-    <parameter name="message.target.store.name">{Enter store name here}</parameter>
+    <parameter name="message.target.store.name">target_store_name_here</parameter>
 </messageProcessor>

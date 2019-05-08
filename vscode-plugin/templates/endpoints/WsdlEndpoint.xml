@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<endpoint name="" xmlns="http://ws.apache.org/ns/synapse">
-    <wsdl port="" service="" uri=""/>
+<endpoint name="SampleWsdlEP" xmlns="http://ws.apache.org/ns/synapse">
+    <!-- Fill port, service, and uri here -->
+   <wsdl port="" service="" uri=""/>
 </endpoint>

@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<messageStore class="" name="" xmlns="http://ws.apache.org/ns/synapse"/>
+<messageStore class="full_qualified_class_name_here" name="SampleCustomMessageStore" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="parameter1">value</parameter>
+</messageStore>

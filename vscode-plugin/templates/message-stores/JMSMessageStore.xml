@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<messageStore class="org.apache.synapse.message.store.impl.jms.JmsStore" name="" xmlns="http://ws.apache.org/ns/synapse">
+<messageStore class="org.apache.synapse.message.store.impl.jms.JmsStore" name="SampleJMSMessageStore" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="store.producer.guaranteed.delivery.enable">false</parameter>
     <parameter name="store.jms.cache.connection">false</parameter>
-    <parameter name="java.naming.factory.initial">fafa</parameter>
-    <parameter name="java.naming.provider.url">http://</parameter>
+    <parameter name="java.naming.factory.initial">initial_context_factory_here</parameter>
+    <parameter name="java.naming.provider.url">provider_url_here</parameter>
     <parameter name="store.jms.JMSSpecVersion">1.1</parameter>
 </messageStore>

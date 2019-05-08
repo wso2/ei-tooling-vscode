@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<endpoint name="" xmlns="http://ws.apache.org/ns/synapse">
-    <loadbalance algorithm="org.apache.synapse.endpoints.algorithms.RoundRobin">
-        <endpoint name="endpoint_urn_uuid_6179155B57847314A657084710149040-304004407">
-            <address uri="http://localhost"/>
-        </endpoint>
-    </loadbalance>
+<endpoint xmlns="http://ws.apache.org/ns/synapse" name="SampleLoadbalanceEP">
+  <loadbalance algorithm="org.apache.synapse.endpoints.algorithms.RoundRobin">
+      <endpoint name="child1">
+          <address uri="http://localhost:9090"/>
+      </endpoint>
+      <endpoint name="child2">
+          <address uri="http://localhost:9091"/>
+      </endpoint>
+  </loadbalance>
 </endpoint>

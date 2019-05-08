@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<proxy name="SampleProxy" startOnLoad="true" transports="http https" xmlns="http://ws.apache.org/ns/synapse">
+    <target>
+        <inSequence>
+            <!-- Define inflow mediation logic here -->
+            <log level="custom">
+                <property name="status" value="message received"/>
+            </log>
+            <drop/>
+        </inSequence>
+        <outSequence>
+            <!-- Define outflow mediation logic here -->
+        </outSequence>
+        <faultSequence>
+            <!-- Define error handling mediation logic here -->
+        </faultSequence>
+    </target>
+</proxy>

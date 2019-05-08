@@ -25,7 +25,7 @@ import {executeProjectBuildCommand} from "../mavenInternals/commandHandler";
 * */
 export function createDeployableArchive() {
     if (workspace.workspaceFolders) {
-        let pathToPomXml: string = path.join(workspace.workspaceFolders[0].uri.path);
+        let pathToPomXml: string = path.join(workspace.workspaceFolders[0].uri.fsPath);
 
         workspace.findFiles("pom.xml").then(result => {
             if (result.length === 1) {

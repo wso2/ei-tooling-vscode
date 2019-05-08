@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<endpoint name="" xmlns="http://ws.apache.org/ns/synapse">
-    <default/>
+<endpoint name="SampleDefaultEP" xmlns="http://ws.apache.org/ns/synapse">
+   <default/>
 </endpoint>

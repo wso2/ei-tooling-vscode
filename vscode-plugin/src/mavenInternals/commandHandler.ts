@@ -55,8 +55,7 @@ function getMavenArchetypeInstallCommand(): string {
         `-DartifactId=${ARCHETYPE_ARTIFACT_ID}`,
         `-Dversion=${ARCHETYPE_VERSION}`,
         `-Dpackaging=jar`,
-        `-DpomFile=${archetypePom}`,
-        `-o`
+        `-DpomFile=${archetypePom}`
     ].join(" ");
 }
 
