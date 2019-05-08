@@ -98,7 +98,7 @@ public class SynapseContentModelCompletionParticipant extends CompletionParticip
             String documentation = child.getDocumentation();
             String name = child.getName();
 
-            if (name != null && "sequence".equals(name) || "endpoint".equals(name) && rootElement) {
+            if ("sequence".equals(name) || "endpoint".equals(name) && rootElement) {
                 name += ".parent";
             }
 
