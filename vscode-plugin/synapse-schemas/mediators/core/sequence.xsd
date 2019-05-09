@@ -19,15 +19,15 @@
            targetNamespace="http://ws.apache.org/ns/synapse"
            xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:element name="sequence">
-        <xs:annotation>
-            <xs:documentation source="description">
-                Sequence mediator of the synapse configuration
-            </xs:documentation>
-        </xs:annotation>
-        <xs:complexType>
-            <xs:attribute name="key" type="xs:string" use="required"/>
-        </xs:complexType>
-    </xs:element>
+    <!--<xs:element name="sequence">-->
+        <!--<xs:annotation>-->
+            <!--<xs:documentation source="description">-->
+                <!--Sequence mediator of the synapse configuration-->
+            <!--</xs:documentation>-->
+        <!--</xs:annotation>-->
+        <!--<xs:complexType>-->
+            <!--<xs:attribute name="key" type="xs:string" use="required"/>-->
+        <!--</xs:complexType>-->
+    <!--</xs:element>-->
 
 </xs:schema>
