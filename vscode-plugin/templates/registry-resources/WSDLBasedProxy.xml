@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="SampleWSDLBasedProxy"
+       transports="<proxy.transports>" statistics="disable" trace="disable"
+       startOnLoad="true">
+    <target>
+        <outSequence>
+            <send />
+        </outSequence>
+        <endpoint
+                name="endpoint_urn_uuid_1FF78996948B9A0B6E14565751214774-1218279313">
+            <wsdl service="SimpleStockQuoteService" port="SimpleStockQuoteServiceHttpSoap11Endpoint"
+                  uri="http://localhost:9000/services/SimpleStockQuoteService?wsdl" />
+        </endpoint>
+    </target>
+</proxy>

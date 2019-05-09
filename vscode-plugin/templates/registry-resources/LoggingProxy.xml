@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="SampleLoggingProxy"
+       transports="<proxy.transports>" statistics="disable" trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <log level="full" />
+        </inSequence>
+        <outSequence>
+            <log level="full" />
+            <send />
+        </outSequence>
+        <endpoint
+                name="endpoint_urn_uuid_caff2a2b-9c94-48a7-91be-29704f4dc83b">
+            <address uri="https://localhost" />
+        </endpoint>
+    </target>
+</proxy>

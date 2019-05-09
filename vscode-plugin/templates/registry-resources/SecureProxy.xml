@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="SampleSecureProxy"
+       transports="<proxy.transports>" statistics="disable" trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <header
+                    name="wsse:Security" action="remove" />
+        </inSequence>
+        <outSequence>
+            <send />
+        </outSequence>
+        <endpoint
+                name="endpoint_urn_uuid_07ad16ed-2981-4f99-a0e9-8a0c93dc34a6">
+            <address uri="https://localhost" />
+        </endpoint>
+    </target>
+    <enableSec />
+    <policy key="" />
+</proxy>

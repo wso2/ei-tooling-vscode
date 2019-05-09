@@ -242,7 +242,7 @@ export async function createArtifact(artifactType: string) {
                     mediaType: "application/xml"
                 };
 
-                if (artifactName && registry && registryPath) {
+                if (artifactName && registry) {
                     ArtifactModule.createResource(RegistryResourceInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName.trim(), artifactType, RegistryResourceInfo.TYPE, registryResource);
                 }
@@ -455,10 +455,6 @@ function createTemplateServiceArray(): QuickPickItem[] {
 
 function createRegistryResourceTemplateArray(): QuickPickItem[] {
     return [
-        // {
-        //     "description": RegistryResourceInfo.DATA_MAPPER,
-        //     "label": RegistryResourceInfo.DATA_MAPPER_LABEL
-        // },
         {
             "description": RegistryResourceInfo.SEQUENCE,
             "label": RegistryResourceInfo.SEQUENCE_LABEL
@@ -495,62 +491,34 @@ function createRegistryResourceTemplateArray(): QuickPickItem[] {
             "description": RegistryResourceInfo.TEMPLATE_ENDPOINT,
             "label": RegistryResourceInfo.TEMPLATE_ENDPOINT_LABEL
         },
-        // {
-        //     "description": RegistryResourceInfo.SMOOKS_CONFIGURATION,
-        //     "label": RegistryResourceInfo.SMOOKS_CONFIGURATION_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.PASS_THROUGH_PROXY,
-        //     "label": RegistryResourceInfo.PASS_THROUGH_PROXY_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.CUSTOM_PROXY,
-        //     "label": RegistryResourceInfo.CUSTOM_PROXY_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.TRANSFORMER_PROXY,
-        //     "label": RegistryResourceInfo.TRANSFORMER_PROXY_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.LOGGING_PROXY,
-        //     "label": RegistryResourceInfo.LOGGING_PROXY_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.WSDL_BASED_PROXY,
-        //     "label": RegistryResourceInfo.WSDL_BASED_PROXY_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.LOCAL_ENTRY,
-        //     "label": RegistryResourceInfo.LOCAL_ENTRY_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.CSS_FILE,
-        //     "label": RegistryResourceInfo.CSS_FILE_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.HTML_FILE,
-        //     "label": RegistryResourceInfo.HTML_FILE_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.JS_FILE,
-        //     "label": RegistryResourceInfo.JS_FILE_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.SQL_SCRIPT_FILE,
-        //     "label": RegistryResourceInfo.SQL_SCRIPT_FILE_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.XSL_FILE,
-        //     "label": RegistryResourceInfo.XSL_FILE_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.XSLT_FILE,
-        //     "label": RegistryResourceInfo.XSLT_FILE_LABEL
-        // },
-        // {
-        //     "description": RegistryResourceInfo.WSDL_FILE,
-        //     "label": RegistryResourceInfo.WSDL_FILE_LABEL
-        // }
+        {
+            "description": RegistryResourceInfo.SMOOKS_CONFIGURATION,
+            "label": RegistryResourceInfo.SMOOKS_CONFIGURATION_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.PASS_THROUGH_PROXY,
+            "label": RegistryResourceInfo.PASS_THROUGH_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.CUSTOM_PROXY,
+            "label": RegistryResourceInfo.CUSTOM_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.TRANSFORMER_PROXY,
+            "label": RegistryResourceInfo.TRANSFORMER_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.LOGGING_PROXY,
+            "label": RegistryResourceInfo.LOGGING_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.WSDL_BASED_PROXY,
+            "label": RegistryResourceInfo.WSDL_BASED_PROXY_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.LOCAL_ENTRY,
+            "label": RegistryResourceInfo.LOCAL_ENTRY_LABEL
+        },
         {
             "description": RegistryResourceInfo.SEQUENCE_TEMPLATE,
             "label": RegistryResourceInfo.SEQUENCE_TEMPLATE_LABEL
