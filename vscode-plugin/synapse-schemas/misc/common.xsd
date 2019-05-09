@@ -42,7 +42,7 @@
         <xs:annotation>
             <xs:documentation source="description">
                 These are the parameters for various elements in the Synapse Configuration,
-                for example, for proxy services, for registry nad so forth
+                for example, for proxy services, for registry and so forth
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>

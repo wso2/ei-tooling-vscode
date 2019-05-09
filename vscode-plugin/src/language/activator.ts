@@ -71,9 +71,19 @@ export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit
     } else {
         let endCharPosition = editor.document.positionAt(0);
         const {rootElementTagName, fileName} = Object.assign(getRootElementTagName(editor.document.uri.fsPath));
-        edit.insert(endCharPosition, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
-                                     "<" + rootElementTagName + " name=\"" + fileName + "\" " +
-                                     "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">");
+
+        let completionItem: string = "";
+        if (rootElementTagName !== "localEntry") {
+            completionItem = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
+                                         "<" + rootElementTagName + " name=\"" + fileName + "\" " +
+                                         "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
+        } else {
+            completionItem = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
+                                         "<" + rootElementTagName + " key=\"" + fileName + "\" " +
+                                         "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
+        }
+
+        edit.insert(endCharPosition, completionItem);
         languages.setTextDocumentLanguage(editor.document, "SynapseXml");
     }
 }
@@ -102,7 +112,7 @@ function getRootElementTagName(filePath: string): FileInfo {
     } else if (new RegExp(path.join("synapse-config", "sequences", "[a-zA-Z ]+.xml$")).test(filePath)) {
         fileInfo.rootElementTagName = "sequence";
     } else if (new RegExp(path.join("synapse-config", "tasks", "[a-zA-Z ]+.xml$")).test(filePath)) {
-        fileInfo.rootElementTagName = "";
+        fileInfo.rootElementTagName = "task";
     } else if (new RegExp(path.join("synapse-config", "templates", "[a-zA-Z ]+.xml$")).test(filePath)) {
         fileInfo.rootElementTagName = "template";
     }
