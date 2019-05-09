@@ -147,6 +147,11 @@
 				"command": "wso2ei.artifact.task",
 				"title": "Create New Task Artifact",
 				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.resource.registry",
+				"title": "Create Registry Resource",
+				"category": "WSO2EI"
 			}
 		],
 		"languages": [

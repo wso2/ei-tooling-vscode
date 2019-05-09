@@ -27,7 +27,8 @@ import {
     MessageStoreArtifactInfo,
     ProxyArtifactInfo,
     RegistryResourceInfo,
-    SequenceArtifactInfo, TaskArtifactInfo,
+    SequenceArtifactInfo,
+    TaskArtifactInfo,
     TemplateArtifactInfo
 } from "./artifactUtils";
 import {showInputBox, showQuickPick} from "../utils/uiUtils";
@@ -222,20 +223,39 @@ export async function createArtifact(artifactType: string) {
 
                 const registry = await window.showQuickPick(['conf', 'gov'],
                                                             {placeHolder: 'Select the registry type.'});
+                let path;
+                if (registry) {
+                    if (registry === "conf") {
+                        path = "/_system/configuration";
+                    } else {
+                        path = "/_system/governance";
+                    }
+                }
 
                 const registryPath = await window.showInputBox({
                                                                    prompt: "Enter valid registry path here",
                                                                    placeHolder: "eg: Datamapper/example"
                                                                }).then(text => text);
+                let registryResource: RegistryResource = {
+                    file: artifactName + ".xml",
+                    path: path + "/" + registryPath,
+                    mediaType: RegistryResourceInfo.mediaTypes.get(selectedArtifactType)
+                };
 
-                if (artifactName && registry && registryPath) {
+                if (artifactName && registry) {
                     ArtifactModule.createResource(RegistryResourceInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, RegistryResourceInfo.TYPE);
+                                                  artifactName.trim(), artifactType, RegistryResourceInfo.TYPE, registryResource);
                 }
             }
             break;
         }
     }
+}
+
+export interface RegistryResource {
+    file?: string;
+    path?: string;
+    mediaType?: any;
 }
 
 function createEndpointServiceArray(): QuickPickItem[] {
@@ -436,10 +456,6 @@ function createTemplateServiceArray(): QuickPickItem[] {
 function createRegistryResourceTemplateArray(): QuickPickItem[] {
     return [
         {
-            "description": RegistryResourceInfo.DATA_MAPPER,
-            "label": RegistryResourceInfo.DATA_MAPPER_LABEL
-        },
-        {
             "description": RegistryResourceInfo.SEQUENCE,
             "label": RegistryResourceInfo.SEQUENCE_LABEL
         },
@@ -504,32 +520,24 @@ function createRegistryResourceTemplateArray(): QuickPickItem[] {
             "label": RegistryResourceInfo.LOCAL_ENTRY_LABEL
         },
         {
-            "description": RegistryResourceInfo.CSS_FILE,
-            "label": RegistryResourceInfo.CSS_FILE_LABEL
+            "description": RegistryResourceInfo.SEQUENCE_TEMPLATE,
+            "label": RegistryResourceInfo.SEQUENCE_TEMPLATE_LABEL
         },
         {
-            "description": RegistryResourceInfo.HTML_FILE,
-            "label": RegistryResourceInfo.HTML_FILE_LABEL
+            "description": RegistryResourceInfo.ADDRESS_ENDPOINT_TEMPLATE,
+            "label": RegistryResourceInfo.ADDRESS_ENDPOINT_TEMPLATE_LABEL
         },
         {
-            "description": RegistryResourceInfo.JS_FILE,
-            "label": RegistryResourceInfo.JS_FILE_LABEL
+            "description": RegistryResourceInfo.DEFAULT_ENDPOINT_TEMPLATE,
+            "label": RegistryResourceInfo.DEFAULT_ENDPOINT_TEMPLATE_LABEL
         },
         {
-            "description": RegistryResourceInfo.SQL_SCRIPT_FILE,
-            "label": RegistryResourceInfo.SQL_SCRIPT_FILE_LABEL
+            "description": RegistryResourceInfo.WSDL_ENDPOINT_TEMPLATE,
+            "label": RegistryResourceInfo.WSDL_ENDPOINT_TEMPLATE_LABEL
         },
         {
-            "description": RegistryResourceInfo.XSL_FILE,
-            "label": RegistryResourceInfo.XSL_FILE_LABEL
-        },
-        {
-            "description": RegistryResourceInfo.XSLT_FILE,
-            "label": RegistryResourceInfo.XSLT_FILE_LABEL
-        },
-        {
-            "description": RegistryResourceInfo.WSDL_FILE,
-            "label": RegistryResourceInfo.WSDL_FILE_LABEL
+            "description": RegistryResourceInfo.HTTP_ENDPOINT_TEMPLATE,
+            "label": RegistryResourceInfo.HTTP_ENDPOINT_TEMPLATE_LABEL
         }
     ];
 }

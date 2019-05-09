@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint xmlns="http://ws.apache.org/ns/synapse" name="SampleRecipientListEP">
+  <recipientlist>
+     <endpoint name="child1">
+         <address uri="http://localhost:9090"/>
+     </endpoint>
+     <endpoint name="child2">
+         <address uri="http://localhost:9091"/>
+     </endpoint>
+  </recipientlist>
+</endpoint>
