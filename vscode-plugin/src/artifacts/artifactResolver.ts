@@ -239,7 +239,7 @@ export async function createArtifact(artifactType: string) {
                 let registryResource: RegistryResource = {
                     file: artifactName + ".xml",
                     path: path + "/" + registryPath,
-                    mediaType: "application/xml"
+                    mediaType: RegistryResourceInfo.mediaTypes.get(selectedArtifactType)
                 };
 
                 if (artifactName && registry) {
@@ -255,7 +255,7 @@ export async function createArtifact(artifactType: string) {
 export interface RegistryResource {
     file?: string;
     path?: string;
-    mediaType?: string;
+    mediaType?: any;
 }
 
 function createEndpointServiceArray(): QuickPickItem[] {

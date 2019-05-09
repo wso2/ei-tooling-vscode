@@ -247,7 +247,6 @@ export class RegistryResourceInfo {
     static readonly WSDL_BASED_PROXY: string = "WSDLBasedProxy";
     static readonly SECURE_PROXY: string = "SecureProxy";
     static readonly LOCAL_ENTRY: string = "LocalEntry";
-
     static readonly SEQUENCE_TEMPLATE: string = "SequenceTemplate";
     static readonly ADDRESS_ENDPOINT_TEMPLATE: string = "AddressEndpointTemplate";
     static readonly DEFAULT_ENDPOINT_TEMPLATE: string = "DefaultEndpointTemplate";
@@ -271,11 +270,38 @@ export class RegistryResourceInfo {
     static readonly WSDL_BASED_PROXY_LABEL: string = "WSDL Based Proxy";
     static readonly SECURE_PROXY_LABEL: string = "Secure Proxy";
     static readonly LOCAL_ENTRY_LABEL: string = "Local Entry";
-
     static readonly SEQUENCE_TEMPLATE_LABEL: string = "Sequence Template";
     static readonly ADDRESS_ENDPOINT_TEMPLATE_LABEL: string = "Address Endpoint Template";
     static readonly DEFAULT_ENDPOINT_TEMPLATE_LABEL: string = "Default Endpoint Template";
     static readonly WSDL_ENDPOINT_TEMPLATE_LABEL: string = "WSDL Endpoint Template";
     static readonly HTTP_ENDPOINT_TEMPLATE_LABEL: string = "HTTP Endpoint Template";
 
+    static mediaTypes: Map<string, string> = new Map();
+
+    static initialize() {
+        this.mediaTypes.set("Sequence", "application/vnd.wso2.sequence");
+        this.mediaTypes.set("AddressEndpoint", "application/vnd.wso2.esb.endpoint");
+        this.mediaTypes.set("HttpEndpoint", "application/vnd.wso2.esb.endpoint");
+        this.mediaTypes.set("DefaultEndpoint", "application/vnd.wso2.esb.endpoint");
+        this.mediaTypes.set("WsdlEndpoint", "application/vnd.wso2.esb.endpoint");
+        this.mediaTypes.set("FailOverEndpoint", "application/vnd.wso2.esb.endpoint");
+        this.mediaTypes.set("LoadBalanceEndpoint", "application/vnd.wso2.esb.endpoint");
+        this.mediaTypes.set("RecipientListEndpoint", "application/vnd.wso2.esb.endpoint");
+        this.mediaTypes.set("TemplateEndpoint", "application/vnd.wso2.esb.endpoint");
+        this.mediaTypes.set("SmooksConfiguration", "application/vnd+wso2.smooks");
+        this.mediaTypes.set("PassThroughProxy", "application/xml");
+        this.mediaTypes.set("CustomProxy", "application/xml");
+        this.mediaTypes.set("TransformerProxy", "application/xml");
+        this.mediaTypes.set("LoggingProxy", "application/xml");
+        this.mediaTypes.set("WSDLBasedProxy", "application/xml");
+        this.mediaTypes.set("SecureProxy", "application/xml");
+        this.mediaTypes.set("LocalEntry", "application/vnd.wso2.esb.localentry");
+        this.mediaTypes.set("SequenceTemplate", "application/vnd.wso2.template.endpoint");
+        this.mediaTypes.set("AddressEndpointTemplate", "application/vnd.wso2.template.endpoint");
+        this.mediaTypes.set("DefaultEndpointTemplate", "application/vnd.wso2.template.endpoint");
+        this.mediaTypes.set("WSDLEndpointTemplate", "application/vnd.wso2.template.endpoint");
+        this.mediaTypes.set("HTTPEndpointTemplate", "application/vnd.wso2.template.endpoint");
+    }
 }
+
+RegistryResourceInfo.initialize();
