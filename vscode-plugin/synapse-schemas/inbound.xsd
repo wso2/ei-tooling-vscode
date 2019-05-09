@@ -32,11 +32,11 @@
                              xmlns:sch="http://purl.oclc.org/dsdl/schematron">
                     <sch:rule context="inboundEndpoint">
                         <sch:assert test="@protocol and @class">
-                            On a inboundEndpoint element only one of the attributes protocol and class are allowed, not
+                            On an inboundEndpoint element only one of the attributes protocol and class are allowed, not
                             both.
                         </sch:assert>
                         <sch:assert test="@protocol | @class">
-                        One of the attributes protocol or class must be present on the socket element
+                            One of the attributes protocol or class must be present on the socket element
                         </sch:assert>
                     </sch:rule>
                 </sch:pattern>
