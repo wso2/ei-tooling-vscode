@@ -135,7 +135,6 @@ export namespace ArtifactModule {
 
         // Read and buffer artifact template file.
         const buf: Buffer = fse.readFileSync(templateArtifactFilePath);
-        // await timeout(200);
 
         // Update the name attribute of the buffered artifact to comply with the new artifact.
         let updatedBody = "";
@@ -146,7 +145,6 @@ export namespace ArtifactModule {
         }
         // Write the updated template content to the target file.
         fse.writeFileSync(targetArtifactFileUri.fsPath, updatedBody);
-        // await timeout(200);
 
         // Open and show newly created artifact document in the editor.
         workspace.openTextDocument(targetArtifactFileUri).then(doc => window.showTextDocument(doc));
