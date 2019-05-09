@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {commands, ExtensionContext, Uri, window, workspace, RelativePattern, TextDocument} from 'vscode';
+import {commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace} from 'vscode';
 import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
@@ -30,13 +30,14 @@ import {
     MessageStoreArtifactInfo,
     ProxyArtifactInfo,
     RegistryResourceInfo,
-    SequenceArtifactInfo, TaskArtifactInfo,
+    SequenceArtifactInfo,
+    TaskArtifactInfo,
     TemplateArtifactInfo
 } from "./artifacts/artifactUtils";
 
 import {createDeployableArchive} from "./archive/archiveResolver";
 import {ArtifactModule} from "./artifacts/ArtifactModule";
-import { SYNAPSE_LANGUAGE_ID } from './language/languageUtils';
+import {SYNAPSE_LANGUAGE_ID} from './language/languageUtils';
 
 let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
@@ -105,10 +106,10 @@ function registerSynapseCommands(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerTextEditorCommand('wso2ei.language.change',
                                                                   (editor, edit) => {
-        if (!setLanguageToSynapse(editor.document)) {
-            changeLanguageToSynapse(editor, edit);
-        }
-    }));
+                                                                      if (!setLanguageToSynapse(editor.document)) {
+                                                                          changeLanguageToSynapse(editor, edit);
+                                                                      }
+                                                                  }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.project.create", async () => {
         await ArchetypeModule.createESBProject();
@@ -132,8 +133,8 @@ function registerSynapseCommands(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.inboundEndpoint",
                                                         async () => {
-        await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE);
-    }));
+                                                            await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE);
+                                                        }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.localEntry", async () => {
         await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE);
@@ -145,8 +146,8 @@ function registerSynapseCommands(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageProcessor",
                                                         async () => {
-        await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE);
-    }));
+                                                            await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE);
+                                                        }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.template", async () => {
         await createArtifact(TemplateArtifactInfo.ARTIFACT_TYPE);

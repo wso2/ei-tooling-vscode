@@ -115,7 +115,7 @@ export namespace ArtifactModule {
                 if (resourceType === "synapse-config") {
                     await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
                 } else {
-                    await addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type, registryResource);
+                    addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type, registryResource);
                 }
             } else {
                 window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact! \nFile already "
@@ -163,8 +163,7 @@ export namespace ArtifactModule {
             const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.fsPath,
                                                                     "src", "main", "synapse-config", "artifact.xml");
             // Read and buffer synapse-config artifact.xml file
-            const buf: Buffer = await fse.readFile(configArtifactXmlFileLocation);
-            await timeout(200);
+            const buf: Buffer = fse.readFileSync(configArtifactXmlFileLocation);
 
             // Parse the artifact.xml file content to a DOM document.
             // Create new artifact DOM Element info to represent the newly created artifact.
@@ -183,20 +182,19 @@ export namespace ArtifactModule {
             child.appendChild(fileTag);
 
             // Update the synapse-config artifact.xml file.
-            await fse.writeFile(configArtifactXmlFileLocation, new XMLSerializer().serializeToString(xmlDoc));
+            fse.writeFileSync(configArtifactXmlFileLocation, new XMLSerializer().serializeToString(xmlDoc));
         }
     }
 
     /**
      * Add artifact info of the newly created artifact to registry-resource artifact.xml file.
      */
-    async function addNewArtifactToRegistryArtifactXMLFile(artifactName: string, type: string,
-                                                           registryResource: RegistryResource | undefined) {
+    function addNewArtifactToRegistryArtifactXMLFile(artifactName: string, type: string,
+                                                     registryResource: RegistryResource | undefined) {
         if (workspace.workspaceFolders) {
             const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.fsPath,
                                                           "src", "main", "registry-resources", "artifact.xml");
             const buf: Buffer = fse.readFileSync(registryArtifactXML);
-            await timeout(200);
 
             let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
             let parent = xmlDoc.getElementsByTagName("artifacts");
@@ -220,7 +218,6 @@ export namespace ArtifactModule {
             item.appendChild(mediaType);
             child.appendChild(item);
 
-            //TODO: complete the code
             fse.writeFileSync(registryArtifactXML, new XMLSerializer().serializeToString(xmlDoc));
         }
     }
@@ -245,10 +242,6 @@ export namespace ArtifactModule {
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
         xmlDoc.lastChild.setAttribute(attributeName, attributeValue);
         return new XMLSerializer().serializeToString(xmlDoc);
-    }
-
-    function timeout(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     /**
