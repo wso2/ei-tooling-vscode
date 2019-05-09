@@ -102,7 +102,7 @@ function getRootElementTagName(filePath: string): FileInfo {
     } else if (new RegExp(path.join("synapse-config", "sequences", "[a-zA-Z ]+.xml$")).test(filePath)) {
         fileInfo.rootElementTagName = "sequence";
     } else if (new RegExp(path.join("synapse-config", "tasks", "[a-zA-Z ]+.xml$")).test(filePath)) {
-        fileInfo.rootElementTagName = "";
+        fileInfo.rootElementTagName = "task";
     } else if (new RegExp(path.join("synapse-config", "templates", "[a-zA-Z ]+.xml$")).test(filePath)) {
         fileInfo.rootElementTagName = "template";
     }
