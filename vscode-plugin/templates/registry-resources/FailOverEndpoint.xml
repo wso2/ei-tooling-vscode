@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint name="SampleFailoverEP" xmlns="http://ws.apache.org/ns/synapse">
+   <failover>
+       <endpoint name="child1">
+           <address uri="http://localhost:9090"/>
+       </endpoint>
+       <endpoint name="child2">
+           <address uri="http://localhost:9091"/>
+       </endpoint>
+   </failover>
+</endpoint>

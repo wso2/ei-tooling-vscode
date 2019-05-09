@@ -21,6 +21,7 @@ import * as fse from "fs-extra";
 import * as path from 'path';
 import {LocalEntryArtifactInfo, ServerRoleInfo} from "./artifactUtils";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
+import {RegistryResource} from "./artifactResolver";
 
 let DOM = require('xmldom').DOMParser;
 
@@ -53,7 +54,7 @@ export namespace ArtifactModule {
             checkPathExistence(pathToTargetFolder).then(exists => {
                 if (exists) {
                     createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, artifactType, type,
-                                               pathToTargetFolder, "synapse-config");
+                                               pathToTargetFolder, "synapse-config", undefined);
                 }
             });
         }
@@ -63,7 +64,7 @@ export namespace ArtifactModule {
      * Create new resource in Synapse ESB project.
      */
     export function createResource(targetFolder: string, templateFileName: string, targetArtifactName: string,
-                                   artifactType: string, type: string) {
+                                   artifactType: string, type: string, registryResource: RegistryResource) {
         if (workspace.workspaceFolders) {
             const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
@@ -73,7 +74,7 @@ export namespace ArtifactModule {
             checkPathExistence(targetFolderPath).then(exists => {
                 if (exists) {
                     createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, artifactType, type,
-                                               targetFolderPath, "registry-resources");
+                                               targetFolderPath, "registry-resources", registryResource);
                 }
             });
         }
@@ -95,7 +96,7 @@ export namespace ArtifactModule {
      */
     function createArtifactFromTemplate(targetFolder: string, templateFileName: string, targetArtifactName: string,
                                         artifactType: string, type: string, pathToTargetFolder: string,
-                                        resourceType: string) {
+                                        resourceType: string, registryResource: RegistryResource | undefined) {
 
         let targetFile = path.join("src", "main", "**", "**", targetArtifactName + ".xml");
 
@@ -108,13 +109,13 @@ export namespace ArtifactModule {
                 const templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
                                                            templateFileName + '.xml');
 
-                await createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
-                                                       templateArtifactFilePath, artifactType);
+                createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
+                                                 templateArtifactFilePath, artifactType);
 
                 if (resourceType === "synapse-config") {
                     await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
                 } else {
-                    await addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type);
+                    await addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type, registryResource);
                 }
             } else {
                 window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact! \nFile already "
@@ -126,15 +127,15 @@ export namespace ArtifactModule {
     /**
      * Create the artifact from template.
      */
-    async function createTargetArtifactFromTemplate(targetArtifactFileUri: Uri, targetArtifactName: string,
-                                                    templateArtifactFilePath: string, artifactType: string) {
+    function createTargetArtifactFromTemplate(targetArtifactFileUri: Uri, targetArtifactName: string,
+                                              templateArtifactFilePath: string, artifactType: string) {
         let edit = new WorkspaceEdit();
         edit.createFile(targetArtifactFileUri);
         workspace.applyEdit(edit);
 
         // Read and buffer artifact template file.
-        const buf: Buffer = await fse.readFile(templateArtifactFilePath);
-        await timeout(200);
+        const buf: Buffer = fse.readFileSync(templateArtifactFilePath);
+        // await timeout(200);
 
         // Update the name attribute of the buffered artifact to comply with the new artifact.
         let updatedBody = "";
@@ -144,8 +145,8 @@ export namespace ArtifactModule {
             updatedBody = updateAttribute(buf, "key", targetArtifactName);
         }
         // Write the updated template content to the target file.
-        await fse.writeFile(targetArtifactFileUri.fsPath, updatedBody);
-        await timeout(200);
+        fse.writeFileSync(targetArtifactFileUri.fsPath, updatedBody);
+        // await timeout(200);
 
         // Open and show newly created artifact document in the editor.
         workspace.openTextDocument(targetArtifactFileUri).then(doc => window.showTextDocument(doc));
@@ -191,11 +192,13 @@ export namespace ArtifactModule {
     /**
      * Add artifact info of the newly created artifact to registry-resource artifact.xml file.
      */
-    async function addNewArtifactToRegistryArtifactXMLFile(artifactName: string, type: string) {
+    async function addNewArtifactToRegistryArtifactXMLFile(artifactName: string, type: string,
+                                                           registryResource: RegistryResource | undefined) {
         if (workspace.workspaceFolders) {
             const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.fsPath,
                                                           "src", "main", "registry-resources", "artifact.xml");
-            const buf: Buffer = await fse.readFile(registryArtifactXML);
+            const buf: Buffer = fse.readFileSync(registryArtifactXML);
+            await timeout(200);
 
             let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
             let parent = xmlDoc.getElementsByTagName("artifacts");
@@ -206,13 +209,13 @@ export namespace ArtifactModule {
 
             let item = xmlDoc.createElement("item");
             let file = xmlDoc.createElement("file");
-            file.textContent = "file";
+            file.textContent = registryResource!.file;
 
             let filePath = xmlDoc.createElement("path");
-            filePath.textContent = "path";
+            filePath.textContent = registryResource!.path;
 
             let mediaType = xmlDoc.createElement("mediaType");
-            mediaType.textContent = "mediaType";
+            mediaType.textContent = registryResource!.mediaType;
 
             item.appendChild(file);
             item.appendChild(filePath);
@@ -220,7 +223,7 @@ export namespace ArtifactModule {
             child.appendChild(item);
 
             //TODO: complete the code
-            await fse.writeFile(registryArtifactXML, new XMLSerializer().serializeToString(xmlDoc));
+            fse.writeFileSync(registryArtifactXML, new XMLSerializer().serializeToString(xmlDoc));
         }
     }
 

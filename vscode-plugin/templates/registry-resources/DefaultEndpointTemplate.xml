@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="SampleDefaultTemplate" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="parameter1">value</parameter>
+    <endpoint name="$name">
+        <default/>
+    </endpoint>
+</template>
