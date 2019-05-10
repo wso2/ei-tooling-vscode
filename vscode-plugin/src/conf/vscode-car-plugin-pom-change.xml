@@ -1,0 +1,6 @@
+<processor>
+    <!-- Remove parent element -->
+    <remove>
+        <name>//project/parent</name>
+    </remove>
+</processor>
