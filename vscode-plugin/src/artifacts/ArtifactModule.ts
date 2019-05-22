@@ -24,6 +24,7 @@ import {XMLSerializer as XMLSerializer} from 'xmldom';
 import {RegistryResource} from "./artifactResolver";
 
 let DOM = require('xmldom').DOMParser;
+let glob = require("glob");
 
 export namespace ArtifactModule {
 
@@ -98,30 +99,34 @@ export namespace ArtifactModule {
                                         artifactType: string, type: string, pathToTargetFolder: string,
                                         resourceType: string, registryResource: RegistryResource | undefined) {
 
-        let targetFile = path.join("src", "main", "**", "**", targetArtifactName + ".xml");
-
-        // Check whether the file already exists in project. Find files with similar name in the workspace.
-        workspace.findFiles(targetFile).then(async result => {
-            if (result.length === 0) { //no matching files found
-
-                const targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + ".xml");
-                const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
-                const templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
-                                                           templateFileName + '.xml');
-
-                createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
-                                                 templateArtifactFilePath, artifactType);
-
-                if (resourceType === "synapse-config") {
-                    await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
-                } else {
-                    addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type, registryResource);
+        if (workspace.workspaceFolders) {
+            let pattern = path.join("*", targetArtifactName + ".xml");
+            let cwd = path.join(workspace.workspaceFolders[0].uri.fsPath, "src", "main", resourceType);
+            let newGlob = new glob(pattern, {cwd: cwd}, async function (err: any, files: any) {
+                if (err) {
+                    window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact!. ERROR: " + err);
+                    return;
                 }
-            } else {
-                window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact! \nFile already "
-                                        + "exists in ." + result.join(","));
-            }
-        });
+                if (files.length > 0) {
+                    // file name already exists in the project.
+                    window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact!");
+                } else {
+                    const targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + ".xml");
+                    const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
+                    const templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
+                                                               templateFileName + '.xml');
+
+                    createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
+                                                     templateArtifactFilePath, artifactType);
+
+                    if (resourceType === "synapse-config") {
+                        await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
+                    } else {
+                        addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type, registryResource);
+                    }
+                }
+            });
+        }
     }
 
     /**
