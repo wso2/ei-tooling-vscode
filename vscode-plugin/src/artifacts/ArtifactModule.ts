@@ -125,7 +125,6 @@ export namespace ArtifactModule {
                         addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type, registryResource);
                     }
                 }
-                console.log(files);
             });
         }
     }
