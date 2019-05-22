@@ -62,10 +62,6 @@
                                       todir="${project.basedir}/lib" />
                                 <copy file="../language-server-extensions/target/org.eclipse.lsp4xml.extensions.synapse-${project.version}.jar"
                                       todir="${project.basedir}/lib" />
-                                <copy file="../synapse-car-plugin/target/synapse-car-plugin-${project.version}.jar"
-                                      todir="${project.basedir}/lib" />
-                                <copy file="../synapse-car-plugin/pom.xml"
-                                      tofile="${project.basedir}/lib/synapse-car-plugin.pom" />
                             </target>
                         </configuration>
                         <goals>
@@ -78,7 +74,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.3.2</version>
-
                 <executions>
                     <execution>
                         <id>npm install</id>
@@ -94,7 +89,6 @@
                             </arguments>
                         </configuration>
                     </execution>
-
                     <execution>
                         <id>npm-vsix-package</id>
                         <goals>

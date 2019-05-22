@@ -50,7 +50,6 @@
   <modules>
     <module>language-server</module>
     <module>language-server-extensions</module>
-    <module>synapse-car-plugin</module>
     <module>vscode-plugin</module>
     <module>diagrams</module>
   </modules>
