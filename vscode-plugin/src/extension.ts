@@ -54,16 +54,10 @@ export function activate(context: ExtensionContext) {
         createFileWatcher();
     }
 
-    //listen to changing event of the active text editor
-    window.onDidChangeActiveTextEditor(editor => {
-        if (editor) {
-            setLanguageAndLaunchServer(editor.document);
-        }
-    });
-
     //listen to newly opened text documents
     workspace.onDidOpenTextDocument((document) => {
         setLanguageAndLaunchServer(document);
+        createFileWatcher();
     });
 
     function setLanguageAndLaunchServer(document: TextDocument) {
