@@ -39,7 +39,7 @@ import {createDeployableArchive} from "./archive/archiveResolver";
 import {ArtifactModule} from "./artifacts/ArtifactModule";
 import {SYNAPSE_LANGUAGE_ID} from './language/languageUtils';
 
-let serverLaunched: boolean = false;
+export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
 
 export function activate(context: ExtensionContext) {
@@ -101,7 +101,7 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerTextEditorCommand('wso2ei.language.change',
                                                                   (editor, edit) => {
                                                                       if (!setLanguageToSynapse(editor.document)) {
-                                                                          changeLanguageToSynapse(editor, edit);
+                                                                          changeLanguageToSynapse(editor, edit, context, __dirname);
                                                                       }
                                                                   }));
 
