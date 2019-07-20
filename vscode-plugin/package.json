@@ -28,7 +28,7 @@
 		"type": "git",
 		"url": "https://github.com/wso2/ei-tooling-vscode.git"
 	},
-	"icon": "resources/images/wso2ei-vscode.png",
+	"icon": "resources/images/vscode-marketplace-ei-icon.png",
 	"main": "./out/extension.js",
 	"contributes": {
 		"configuration": [
