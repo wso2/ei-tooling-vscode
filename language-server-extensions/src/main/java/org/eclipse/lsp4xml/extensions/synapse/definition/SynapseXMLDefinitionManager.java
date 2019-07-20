@@ -202,7 +202,7 @@ public class SynapseXMLDefinitionManager {
                 path = Paths.get(path.toString(), Constants.SEQUENCE_FOLDER_NAME);
                 break;
             case Constants.ENDPOINT:
-                path = Paths.get(path.toString(), Constants.INBOUND_ENDPOINT_FOLDER_NAME);
+                path = Paths.get(path.toString(), Constants.ENDPOINT_FOLDER_NAME);
                 break;
             default:
         }

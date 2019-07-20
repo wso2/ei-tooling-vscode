@@ -38,11 +38,6 @@ public class Constants {
     public static final String CONFIG_FILE = "configuration.properties";
 
     /**
-     * Synapse directory path.
-     */
-    public static final String SYNAPSE_CONFIG_PROJECT_PATH = "/src/main/synapse-config/";
-
-    /**
      * Synapse sequence element tag value.
      */
     public static final String SEQUENCE = "sequence";
@@ -60,7 +55,7 @@ public class Constants {
     /**
      * endpoint folder name in Synapse project.
      */
-    public static final String INBOUND_ENDPOINT_FOLDER_NAME = "inbound-endpoints";
+    public static final String ENDPOINT_FOLDER_NAME = "endpoints";
 
     private Constants() {
     }
