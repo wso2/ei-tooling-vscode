@@ -33,11 +33,21 @@ export async function openDialogForFolder(customOptions: OpenDialogOptions): Pro
     }
 }
 
-export async function showInputBoxForProjectName(): Promise<string | undefined> {
+// Input project ArtifactID
+export async function showInputBoxForArtifactId(): Promise<string | undefined> {
     return await window.showInputBox({
                                          value: "",
-                                         prompt: "Enter ESB Project Name",
-                                         placeHolder: "Enter project name here"
+                                         prompt: "Enter ArtifactId",
+                                         placeHolder: "Enter ArtifactId here"
+                                     }).then(text => text);
+}
+
+// Input project GroupID
+export async function showInputBoxForGroupId(): Promise<string | undefined> {
+    return await window.showInputBox({
+                                         value: "",
+                                         prompt: "Enter GroupId",
+                                         placeHolder: "Enter GroupId here"
                                      }).then(text => text);
 }
 
