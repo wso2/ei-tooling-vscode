@@ -17,7 +17,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 */
 
 import {Uri, window} from "vscode";
-import {chooseTargetFolder, showInputBoxForProjectName} from "../utils/uiUtils";
+import {chooseTargetFolder, showInputBoxForArtifactId,showInputBoxForGroupId} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 import {executeProjectCreateCommand} from "../mavenInternals/commandHandler";
 import {ARCHETYPE_ARTIFACT_ID, ARCHETYPE_GROUP_ID, ARCHETYPE_VERSION, GROUP_ID_PREFIX} from "./archetypeUtils";
@@ -37,31 +37,40 @@ export namespace ArchetypeModule {
      * Create new ESB Project from esb-project-archetype.
      */
     export async function createESBProject(): Promise<void> {
-        let projectName: string | undefined = await showInputBoxForProjectName();
+        let artifactID: string | undefined = await showInputBoxForArtifactId();
+        let groupID: string | undefined = await showInputBoxForGroupId();
 
-        // Make sure the project name is valid.
-        while (typeof projectName !== "undefined" && !Utils.validate(projectName)) {
-            window.showErrorMessage("Enter valid ESB Project name!!");
-            projectName = await showInputBoxForProjectName();
+          // Ensure that artifactID name is valid.
+        while (typeof artifactID !== "undefined" && !Utils.validate(artifactID)) {
+            window.showErrorMessage("Enter valid ArtifactId name!!");
+            artifactID = await showInputBoxForArtifactId();
         }
 
-        if (typeof projectName === "undefined") {
+        // Ensure that groupID name is valid.
+        while (typeof groupID !== "undefined" && !Utils.validate(groupID)) {
+            window.showErrorMessage("Enter valid GroupId name!!");
+            groupID = await showInputBoxForGroupId();
+        }
+
+        if (typeof artifactID === "undefined" || groupID === "undefined") {
             return;
         }
+
+        
 
         // Set home dir as the target folder hint.
         const homedir: string = require('os').homedir();
         const targetFolderHint = Uri.file(homedir);
         const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
 
-        if (projectName && projectName.length > 0 && targetLocation) {
+        if (artifactID && artifactID.length > 0 && targetLocation) {
 
             const newProject: ESBProject = {
                 archetypeGroupId: ARCHETYPE_GROUP_ID,
                 archetypeArtifactId: ARCHETYPE_ARTIFACT_ID,
                 archetypeVersion: ARCHETYPE_VERSION,
-                groupId: GROUP_ID_PREFIX + projectName,
-                artifactId: projectName
+                groupId: GROUP_ID_PREFIX + artifactID,
+                artifactId: artifactID
             };
             // Execute command handler that runs maven project generate.
             await executeProjectCreateCommand(newProject, targetLocation);
