@@ -17,7 +17,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 */
 
 import {Uri, window} from "vscode";
-import {chooseTargetFolder, showInputBoxForArtifactId,showInputBoxForGroupId} from "../utils/uiUtils";
+import {chooseTargetFolder, showInputBoxForArtifactId, showInputBoxForGroupId} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 import {executeProjectCreateCommand} from "../mavenInternals/commandHandler";
 import {ARCHETYPE_ARTIFACT_ID, ARCHETYPE_GROUP_ID, ARCHETYPE_VERSION, GROUP_ID_PREFIX} from "./archetypeUtils";
