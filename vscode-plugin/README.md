@@ -50,10 +50,10 @@ Open the Command Palette ( [Command] + [Shift] + [P] on macOS and [Ctrl] + [Shif
 ![alt text](https://raw.githubusercontent.com/wso2/ei-tooling-vscode/master/vscode-plugin/docs/GotoDef.gif "Go to Definition")
 
 #### Code Diagnostics
-![alt text](https://raw.githubusercontent.com/wso2/ei-tooling-vscode/master/vscode-plugin/docs/Diagnostic.gif "Diagnostics")
+![alt text](https://raw.githubusercontent.com/wso2/ei-tooling-vscode/master/vscode-plugin/docs/Diagnostics.gif "Diagnostics")
 
 #### Hover Support
-![alt text](https://raw.githubusercontent.com/wso2/ei-tooling-vscode/master/vscode-plugin/docs/Hover.gif "Hover")
+![alt text](https://raw.githubusercontent.com/wso2/ei-tooling-vscode/master/vscode-plugin/docs/HoverGif.gif "Hover")
 
 #### Change Language to SynapseXml
 ![alt text](https://raw.githubusercontent.com/wso2/ei-tooling-vscode/master/vscode-plugin/docs/ChangeLangtoSynapse.gif "Change Language to Synapse")

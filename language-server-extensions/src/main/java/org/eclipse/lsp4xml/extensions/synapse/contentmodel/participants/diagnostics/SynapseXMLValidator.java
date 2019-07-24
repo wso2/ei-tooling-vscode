@@ -80,6 +80,7 @@ class SynapseXMLValidator {
                               true /* document.hasNamespaces() */); //$NON-NLS-1$
             reader.setFeature("http://xml.org/sax/features/namespaces",
                               true /* document.hasNamespaces() */); //$NON-NLS-1$
+            reader.setFeature("http://apache.org/xml/features/validate-annotations", true);
 
             reader.setContentHandler(new LSPContentHandler(monitor));
 

@@ -18,9 +18,11 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 'use strict';
 
-import {languages, TextEditor, TextEditorEdit} from 'vscode';
+import {ExtensionContext, languages, TextEditor, TextEditorEdit} from 'vscode';
 import {SYNAPSE_LANGUAGE_ID, SYNAPSE_NAMESPACE} from "./languageUtils";
 import * as path from "path";
+import extension = require("../extension");
+import {launch as launchServer} from "../server";
 
 /**
  * Set language-id to SynapseXml if Synapse namespace exists in the file.
@@ -36,11 +38,13 @@ export function setLanguageToSynapse(document: any): boolean {
     return false;
 }
 
-export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit) {
+export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit, context: ExtensionContext,
+                                        directoryName: string) {
 
     let lineCount = editor.document.lineCount;
     let num = 0;
     let column;
+    let changedLangToSynapse: boolean = false;
 
     if (lineCount > 0 && !editor.document.lineAt(0).isEmptyOrWhitespace) {
         let stack1: any[] = [];
@@ -54,7 +58,8 @@ export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit
             if (typeof column === "number") {
                 let endCharPosition = currLine.range.end.with(num, column - 1);
                 edit.insert(endCharPosition, " " + SYNAPSE_NAMESPACE);
-                languages.setTextDocumentLanguage(editor.document, "SynapseXml");
+                languages.setTextDocumentLanguage(editor.document, SYNAPSE_LANGUAGE_ID);
+                changedLangToSynapse = true;
                 break;
             }
             num++;
@@ -67,6 +72,7 @@ export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit
                                          "\" xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName +
                                          ">");
             languages.setTextDocumentLanguage(editor.document, SYNAPSE_LANGUAGE_ID);
+            changedLangToSynapse = true;
         }
     } else {
         let endCharPosition = editor.document.positionAt(0);
@@ -75,16 +81,21 @@ export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit
         let completionItem: string = "";
         if (rootElementTagName !== "localEntry") {
             completionItem = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
-                                         "<" + rootElementTagName + " name=\"" + fileName + "\" " +
-                                         "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
+                             "<" + rootElementTagName + " name=\"" + fileName + "\" " +
+                             "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
         } else {
             completionItem = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
-                                         "<" + rootElementTagName + " key=\"" + fileName + "\" " +
-                                         "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
+                             "<" + rootElementTagName + " key=\"" + fileName + "\" " +
+                             "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
         }
 
         edit.insert(endCharPosition, completionItem);
-        languages.setTextDocumentLanguage(editor.document, "SynapseXml");
+        languages.setTextDocumentLanguage(editor.document, SYNAPSE_LANGUAGE_ID);
+        changedLangToSynapse = true;
+    }
+    if (changedLangToSynapse && !extension.serverLaunched) {
+        extension.serverLaunched = true;
+        launchServer(context, directoryName);
     }
 }
 
@@ -120,7 +131,7 @@ function getRootElementTagName(filePath: string): FileInfo {
     let fileName: string = array1[array1.length - 1];
     let array2: string[] = fileName.split(".");
     fileInfo.fileName = array2[0];
-    
+
     return fileInfo;
 }
 

@@ -273,11 +273,12 @@ export namespace ArtifactModule {
 
             let buf: Buffer = fse.readFileSync(artifactXmlFilePath);
             let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-            let elementList = xmlDoc.getElementsByTagName("artifact");
+            let artifacts = xmlDoc.getElementsByTagName("artifacts");
+            let elementList = artifacts[0].getElementsByTagName("artifact");
 
             for (let i = 0; i < elementList.length; i++) {
                 if (elementList[i].getAttribute("name") === rawArtifactName[0]) {
-                    xmlDoc.removeChild(elementList[i]);
+                    artifacts[0].removeChild(elementList[i]);
                     let data = new XMLSerializer().serializeToString(xmlDoc);
                     fse.writeFileSync(artifactXmlFilePath, data);
                     break;
