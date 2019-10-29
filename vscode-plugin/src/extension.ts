@@ -79,7 +79,7 @@ export function activate(context: ExtensionContext) {
             let watcher = workspace.createFileSystemWatcher(
                 new RelativePattern(
                     workspace.getWorkspaceFolder(uri)!,
-                    '**/*.{xml,dmc}'
+                    '**/*.{xml,dmc,xslt}'
                 ),
                 true,
                 true,

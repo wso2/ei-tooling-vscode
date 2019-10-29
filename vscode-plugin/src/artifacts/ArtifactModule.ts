@@ -19,7 +19,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import {LocalEntryArtifactInfo, ServerRoleInfo} from "./artifactUtils";
+import {LocalEntryArtifactInfo, ServerRoleInfo, RegistryResourceInfo} from "./artifactUtils";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
 import {RegistryResource} from "./artifactResolver";
 
@@ -100,21 +100,27 @@ export namespace ArtifactModule {
                                         resourceType: string, registryResource: RegistryResource | undefined) {
 
         if (workspace.workspaceFolders) {
-            let pattern = path.join("*", targetArtifactName + ".xml");
+            let extension: string;
+            if (templateFileName === RegistryResourceInfo.XSLT) {
+                extension = ".xslt";
+            } else {
+                extension = ".xml";
+            }
+            let pattern = path.join("*", targetArtifactName + extension);
             let cwd = path.join(workspace.workspaceFolders[0].uri.fsPath, "src", "main", resourceType);
             let newGlob = new glob(pattern, {cwd: cwd}, async function (err: any, files: any) {
                 if (err) {
-                    window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact!. ERROR: " + err);
+                    window.showErrorMessage("Error creating " + targetArtifactName + extension + " artifact!. ERROR: " + err);
                     return;
                 }
                 if (files.length > 0) {
                     // file name already exists in the project.
-                    window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact!");
+                    window.showErrorMessage("Error creating " + targetArtifactName + extension + " artifact!");
                 } else {
-                    const targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + ".xml");
+                    const targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + extension);
                     const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
                     const templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
-                                                               templateFileName + '.xml');
+                                                               templateFileName + extension);
 
                     createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
                                                      templateArtifactFilePath, artifactType);
@@ -143,10 +149,12 @@ export namespace ArtifactModule {
 
         // Update the name attribute of the buffered artifact to comply with the new artifact.
         let updatedBody = "";
-        if (artifactType !== LocalEntryArtifactInfo.ARTIFACT_TYPE) {
-            updatedBody = updateAttribute(buf, "name", targetArtifactName);
-        } else {
+        if (artifactType === LocalEntryArtifactInfo.ARTIFACT_TYPE) {
             updatedBody = updateAttribute(buf, "key", targetArtifactName);
+        } else if (templateArtifactFilePath.endsWith(".xslt")) {
+            updatedBody = buf.toString();
+        } else {
+            updatedBody = updateAttribute(buf, "name", targetArtifactName);
         }
         // Write the updated template content to the target file.
         fse.writeFileSync(targetArtifactFileUri.fsPath, updatedBody);

@@ -236,8 +236,16 @@ export async function createArtifact(artifactType: string) {
                                                                    prompt: "Enter valid registry path here",
                                                                    placeHolder: "eg: Datamapper/example"
                                                                }).then(text => text);
+
+                let extension: string;
+                if (RegistryResourceInfo.mediaTypes.get(selectedArtifactType) === RegistryResourceInfo.mediaTypes.get(RegistryResourceInfo.XSLT)) {
+                    extension = ".xslt";
+                } else {
+                    extension = ".xml";
+                }
+
                 let registryResource: RegistryResource = {
-                    file: artifactName + ".xml",
+                    file: artifactName + extension,
                     path: path + "/" + registryPath,
                     mediaType: RegistryResourceInfo.mediaTypes.get(selectedArtifactType)
                 };
@@ -538,6 +546,10 @@ function createRegistryResourceTemplateArray(): QuickPickItem[] {
         {
             "description": RegistryResourceInfo.HTTP_ENDPOINT_TEMPLATE,
             "label": RegistryResourceInfo.HTTP_ENDPOINT_TEMPLATE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.XSLT,
+            "label": RegistryResourceInfo.XSLT_LABEL
         }
     ];
 }
