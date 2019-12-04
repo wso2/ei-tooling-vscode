@@ -3,7 +3,7 @@
 	"displayName": "WSO2 Enterprise Integrator",
 	"description": "VSCode extension for WSO2 Enterprise Integrator",
 	"publisher": "WSO2",
-	"version": "0.5.8",
+	"version": "0.6.0",
 	"engines": {
 		"vscode": "^1.31.0"
 	},
