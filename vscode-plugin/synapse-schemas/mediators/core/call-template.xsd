@@ -28,7 +28,7 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="with-param" type="WithParam" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element name="with-param" type="WithParam" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="target" type="xs:string" use="required"/>
         </xs:complexType>
