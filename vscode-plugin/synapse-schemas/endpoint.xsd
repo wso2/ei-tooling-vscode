@@ -71,6 +71,9 @@
                     </xs:documentation>
                 </xs:annotation>
                 <xs:complexType>
+                    <xs:sequence>
+                        <xs:group ref="commonEndpointTags" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>
                     <xs:attribute name="uri-template" type="xs:string" use="required"/>
                     <xs:attribute name="method">
                         <xs:simpleType>
@@ -377,7 +380,7 @@
                 <xs:complexType>
                     <xs:all>
                         <xs:element name="duration" minOccurs="0" maxOccurs="1" type="xs:long"/>
-                        <xs:element name="action" minOccurs="0" maxOccurs="1" default="discard">
+                        <xs:element name="responseAction" minOccurs="0" maxOccurs="1" default="discard">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
                                     <xs:enumeration value="discard"/>
