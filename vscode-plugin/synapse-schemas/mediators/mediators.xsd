@@ -28,6 +28,7 @@
     <xs:include schemaLocation="core/log.xsd"/>
     <xs:include schemaLocation="core/loopback.xsd"/>
     <xs:include schemaLocation="core/property.xsd"/>
+    <xs:include schemaLocation="core/property-group.xsd"/>
     <xs:include schemaLocation="core/respond.xsd"/>
     <xs:include schemaLocation="core/send.xsd"/>
     <xs:include schemaLocation="core/store.xsd"/>
@@ -82,6 +83,7 @@
             <xs:element ref="log"/>
             <xs:element ref="loopback"/>
             <xs:element ref="property"/>
+            <xs:element ref="propertyGroup"/>
             <xs:element ref="respond"/>
             <xs:element ref="send"/>
             <xs:element name="sequence">
@@ -92,6 +94,7 @@
                 </xs:annotation>
                 <xs:complexType>
                     <xs:attribute name="key" type="xs:string" use="required"/>
+                    <xs:attribute name="description" type="xs:string" use="optional"/>
                 </xs:complexType>
             </xs:element>
             <xs:element ref="store"/>
