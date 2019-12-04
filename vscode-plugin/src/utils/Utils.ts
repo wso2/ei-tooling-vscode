@@ -39,7 +39,7 @@ export namespace Utils {
         if (!str.replace(/\s/g, '').length) {
             return false;
         }
-        let regex = /^[a-zA-Z][a-zA-Z0-9._\- ]{1,30}$/;
+        let regex = /^[a-zA-Z][a-zA-Z0-9_\-\. ]+$/;
         return regex.test(str);
     }
 }
