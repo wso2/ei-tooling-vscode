@@ -63,13 +63,13 @@ export namespace ArchetypeModule {
         const targetFolderHint = Uri.file(homedir);
         const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
 
-        if (artifactID && artifactID.length > 0 && targetLocation) {
+        if (artifactID && artifactID.length > 0 && groupID && groupID.length > 0 && targetLocation) {
 
             const newProject: ESBProject = {
                 archetypeGroupId: ARCHETYPE_GROUP_ID,
                 archetypeArtifactId: ARCHETYPE_ARTIFACT_ID,
                 archetypeVersion: ARCHETYPE_VERSION,
-                groupId: GROUP_ID_PREFIX + artifactID,
+                groupId: groupID,
                 artifactId: artifactID
             };
             // Execute command handler that runs maven project generate.
