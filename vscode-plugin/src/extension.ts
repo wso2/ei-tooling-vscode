@@ -21,6 +21,7 @@ import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
 import {createArtifact} from "./artifacts/artifactResolver";
+import {showDiagram} from "./diagram/activator";
 import {
     APIArtifactInfo,
     EndpointArtifactInfo,
@@ -157,6 +158,10 @@ function registerSynapseCommands(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand("wso2ei.resource.registry", async () => {
         await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE);
+    }));
+
+    context.subscriptions.push(commands.registerCommand("wso2apim.webview.show", async () => {
+        await showDiagram(context);
     }));
 }
 

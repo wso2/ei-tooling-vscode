@@ -23,6 +23,8 @@
 		"onCommand:wso2ei.extension.activate",
 		"onCommand:wso2ei.project.create",
 		"onCommand:wso2ei.project.build",
+		"onLanguage:SynapseXml",
+		"onCommand:wso2apim.webview.show",
 		"onCommand:wso2ei.language.change",
 		"onCommand:wso2ei.artifact.api",
 		"onCommand:wso2ei.artifact.proxy",
@@ -36,7 +38,8 @@
 		"onCommand:wso2ei.artifact.task",
 		"onCommand:wso2ei.resource.registry",
 		"workspaceContains:src/main/synapse-config",
-		"workspaceContains:src/main/registry-resources"
+		"workspaceContains:src/main/registry-resources",
+		"*"
 	],
 	"repository": {
 		"type": "git",
@@ -169,6 +172,15 @@
 				"command": "wso2ei.resource.registry",
 				"title": "Create Registry Resource",
 				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2apim.webview.show",
+				"title": "Show Diagram",
+				"icon": {
+					"dark": "resources/images/icons/design-view-inverse.svg",
+					"light": "resources/images/icons/design-view.svg"
+				},
+				"category": "WSO2APIM"
 			}
 		],
 		"languages": [
@@ -185,6 +197,13 @@
 			}
 		],
 		"menus": {
+			"editor/title": [
+				{
+					"command": "wso2apim.webview.show",
+					"group": "navigation",
+					"when": "resourceLangId == xml"
+				}
+			],
 			"explorer/context": [
 				{
 					"command": "wso2ei.artifact.api",
@@ -276,6 +295,7 @@
 		"md5": "^2.2.1",
 		"vscode-extension-telemetry-wrapper": "^0.3.9",
 		"vscode-languageclient": "^4.1.4",
+		"xml-js": "^1.6.11",
 		"xml2js": "^0.4.19",
 		"xmldom": "^0.1.27"
 	}
