@@ -39,11 +39,16 @@ import {
 import {createDeployableArchive} from "./archive/archiveResolver";
 import {ArtifactModule} from "./artifacts/ArtifactModule";
 import {SYNAPSE_LANGUAGE_ID} from './language/languageUtils';
+import { renderer } from './diagram/renderer';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
 
+let seqContext: ExtensionContext;
+
 export function activate(context: ExtensionContext) {
+
+    seqContext = context;
 
     // register commands
     registerSynapseCommands(context);
@@ -163,6 +168,9 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2apim.webview.show", async () => {
         await showDiagram(context);
     }));
+    // context.subscriptions.push(commands.registerCommand("catCoding.start", async () => {
+    //     await renderer(context);
+    // })); 
 }
 
 // this method is called when your extension is deactivated

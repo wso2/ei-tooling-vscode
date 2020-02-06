@@ -38,8 +38,7 @@
 		"onCommand:wso2ei.artifact.task",
 		"onCommand:wso2ei.resource.registry",
 		"workspaceContains:src/main/synapse-config",
-		"workspaceContains:src/main/registry-resources",
-		"*"
+		"workspaceContains:src/main/registry-resources"
 	],
 	"repository": {
 		"type": "git",
@@ -181,6 +180,11 @@
 					"light": "resources/images/icons/design-view.svg"
 				},
 				"category": "WSO2APIM"
+			},
+			{
+				"command": "catCoding.doRefactor",
+				"title": "Do something",
+				"category": "WSO2APIM"
 			}
 		],
 		"languages": [
@@ -201,7 +205,7 @@
 				{
 					"command": "wso2apim.webview.show",
 					"group": "navigation",
-					"when": "resourceLangId == xml"
+					"when": "resourceLangId == SynapseXml"
 				}
 			],
 			"explorer/context": [
@@ -276,6 +280,8 @@
 	"devDependencies": {
 		"@types/archiver": "^2.1.3",
 		"@types/fs-extra": "^4.0.8",
+		"@types/lodash": "^4.14.149",
+		"@types/md5": "^2.1.33",
 		"@types/mocha": "^2.2.42",
 		"@types/node": "^8.10.25",
 		"@types/xml2js": "^0.4.3",
@@ -283,8 +289,7 @@
 		"tslint": "^5.12.1",
 		"typescript": "^3.3.1",
 		"vsce": "^1.36.2",
-		"vscode": "^1.1.33",
-		"@types/md5": "^2.1.33"
+		"vscode": "^1.1.33"
 	},
 	"dependencies": {
 		"archiver": "^3.0.0",
@@ -292,6 +297,7 @@
 		"dom-parser": "^0.1.5",
 		"fs-extra": "^4.0.3",
 		"glob": "^7.1.4",
+		"lodash": "^4.17.15",
 		"md5": "^2.2.1",
 		"vscode-extension-telemetry-wrapper": "^0.3.9",
 		"vscode-languageclient": "^4.1.4",
