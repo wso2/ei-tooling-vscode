@@ -180,11 +180,6 @@
 					"light": "resources/images/icons/design-view.svg"
 				},
 				"category": "WSO2APIM"
-			},
-			{
-				"command": "catCoding.doRefactor",
-				"title": "Do something",
-				"category": "WSO2APIM"
 			}
 		],
 		"languages": [
