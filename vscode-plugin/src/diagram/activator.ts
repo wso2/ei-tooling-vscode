@@ -50,9 +50,8 @@ function getXMLText() {
 
 function getJSONObject() {
     let xml = getXMLText();
-    return jsonObject = convertToJson.xml2json(xml, { compact: false, spaces: 4 });
+    return jsonObject = convertToJson.xml2json(xml, { compact: false, spaces: 4 });    
 }
-
 function updateWebView(context: ExtensionContext, json: JSON): void {
     if (diagramViewPanel) {
         render(context, json);
@@ -126,7 +125,7 @@ export function getVSCodeResourceURI(filePath: string): string {
 function getWebviewContent(context: ExtensionContext, json: JSON) {
     const resourceRoot = getVSCodeResourceURI(getWebViewResourceRoot(context));
     const stringifiedJson = JSON.stringify(json);
-
+    
     return `<!DOCTYPE html>
     <html lang="en">
         <head>
