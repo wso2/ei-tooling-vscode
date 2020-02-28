@@ -19,6 +19,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import { workspace, commands, window, Uri, ViewColumn, ExtensionContext, TextEditor, WebviewPanel, TextDocumentChangeEvent } from 'vscode';
 import { join } from "path";
 import * as _ from 'lodash';
+import { CodeLensResolveRequest } from 'vscode-languageclient';
 
 const DEBOUNCE_WAIT = 500;
 let diagramViewPanel: WebviewPanel | undefined;
@@ -125,7 +126,7 @@ export function getVSCodeResourceURI(filePath: string): string {
 function getWebviewContent(context: ExtensionContext, json: JSON) {
     const resourceRoot = getVSCodeResourceURI(getWebViewResourceRoot(context));
     const stringifiedJson = JSON.stringify(json);
-    
+    console.log(jsonObject);
     return `<!DOCTYPE html>
     <html lang="en">
         <head>
