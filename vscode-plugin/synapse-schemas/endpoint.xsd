@@ -285,7 +285,7 @@
                 <xs:complexType>
                     <xs:all>
                         <xs:element name="duration" minOccurs="0" maxOccurs="1" type="xs:long"/>
-                        <xs:element name="action" minOccurs="0" maxOccurs="1">
+                        <xs:element name="responseAction" minOccurs="0" maxOccurs="1" default="discard">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
                                     <xs:enumeration value="discard"/>
