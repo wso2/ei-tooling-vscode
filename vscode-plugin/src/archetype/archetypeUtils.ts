@@ -20,4 +20,4 @@ export const GROUP_ID_PREFIX: string = "com.example.";
 
 export const ARCHETYPE_ARTIFACT_ID: string = "org.wso2.carbon.extension.esb.project-archetype";
 export const ARCHETYPE_GROUP_ID: string = "org.wso2.carbon.extension.archetype";
-export const ARCHETYPE_VERSION: string = "2.0.11";
+export const ARCHETYPE_VERSION: string = "2.0.13";
