@@ -172,9 +172,8 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    let type = TemplateArtifactInfo.getType(selectedArtifactType);
                     ArtifactModule.createArtifact(TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, type);
+                                                  artifactName.trim(), artifactType, TemplateArtifactInfo.TYPE);
                 }
             }
             break;
