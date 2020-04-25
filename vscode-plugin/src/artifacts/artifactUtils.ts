@@ -170,6 +170,7 @@ export class TemplateArtifactInfo {
     static readonly PLACEHOLDER: string = "Select an Template Artifact Creation Option...";
     static readonly PROMPT_MESSAGE: string = "Enter Template artifact name...";
     static readonly DESTINATION_FOLDER: string = "templates";
+    static readonly TYPE: string = "synapse/template";
 
     static readonly SEQUENCE: string = "SequenceTemplate";
     static readonly ADDRESS_ENDPOINT: string = "AddressEndpointTemplate";
@@ -182,26 +183,6 @@ export class TemplateArtifactInfo {
     static readonly DEFAULT_ENDPOINT_LABEL: string = "Default Endpoint Template";
     static readonly WSDL_ENDPOINT_LABEL: string = "WSDL Endpoint Template";
     static readonly HTTP_ENDPOINT_LABEL: string = "HTTP Endpoint Template";
-
-    static readonly SEQUENCE_TYPE: string = "synapse/sequenceTemplate";
-    static readonly ADDRESS_ENDPOINT_TYPE: string = "synapse/endpointTemplate";
-    static readonly DEFAULT_ENDPOINT_TYPE: string = "synapse/endpointTemplate";
-    static readonly WSDL_ENDPOINT_TYPE: string = "synapse/sequenceTemplate";
-    static readonly HTTP_ENDPOINT_TYPE: string = "synapse/sequenceTemplate";
-
-    public static getType(templateType: string): string {
-        switch (templateType) {
-            case TemplateArtifactInfo.ADDRESS_ENDPOINT: {
-                return TemplateArtifactInfo.ADDRESS_ENDPOINT_TYPE;
-            }
-            case TemplateArtifactInfo.DEFAULT_ENDPOINT: {
-                return TemplateArtifactInfo.DEFAULT_ENDPOINT_TYPE;
-            }
-            default: {
-                return TemplateArtifactInfo.SEQUENCE_TYPE;
-            }
-        }
-    }
 }
 
 export class SequenceArtifactInfo {
