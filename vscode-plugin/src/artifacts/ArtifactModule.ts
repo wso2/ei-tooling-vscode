@@ -100,24 +100,34 @@ export namespace ArtifactModule {
                                         resourceType: string, registryResource: RegistryResource | undefined) {
 
         if (workspace.workspaceFolders) {
-            let pattern = path.join("*", targetArtifactName + ".xml");
+            let isJSONArtifact: boolean = registryResource!.mediaType === "application/json";
+            let pattern = path.join("*", targetArtifactName + getFileExtension(registryResource));
+
             let cwd = path.join(workspace.workspaceFolders[0].uri.fsPath, "src", "main", resourceType);
             let newGlob = new glob(pattern, {cwd: cwd}, async function (err: any, files: any) {
                 if (err) {
-                    window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact!. ERROR: " + err);
+                    window.showErrorMessage("Error creating " + targetArtifactName + " artifact!. ERROR: " + err);
                     return;
                 }
                 if (files.length > 0) {
                     // file name already exists in the project.
-                    window.showErrorMessage("Error creating " + targetArtifactName + ".xml artifact!");
+                    window.showErrorMessage("Error creating " + targetArtifactName + " artifact!");
                 } else {
-                    const targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + ".xml");
-                    const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
-                    const templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
-                                                               templateFileName + '.xml');
+                    let targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName +
+                        getFileExtension(registryResource));
 
-                    createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
-                                                     templateArtifactFilePath, artifactType);
+                    const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
+                    let templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
+                                                               templateFileName + getFileExtension(registryResource));
+
+                    // Check for JSON
+                    if (isJSONArtifact) {
+                        createTargetJSONArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
+                                templateArtifactFilePath, artifactType);
+                    } else {
+                        createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
+                            templateArtifactFilePath, artifactType);
+                    }
 
                     if (resourceType === "synapse-config") {
                         await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
@@ -150,6 +160,25 @@ export namespace ArtifactModule {
         }
         // Write the updated template content to the target file.
         fse.writeFileSync(targetArtifactFileUri.fsPath, updatedBody);
+
+        // Open and show newly created artifact document in the editor.
+        workspace.openTextDocument(targetArtifactFileUri).then(doc => window.showTextDocument(doc));
+    }
+
+    /**
+     * Create a JSON artifact from template.
+     */
+    function createTargetJSONArtifactFromTemplate(targetArtifactFileUri: Uri, targetArtifactName: string,
+                                              templateArtifactFilePath: string, artifactType: string) {
+        let edit = new WorkspaceEdit();
+        edit.createFile(targetArtifactFileUri);
+        workspace.applyEdit(edit);
+
+        // Read and buffer artifact template file.
+        const buf: Buffer = fse.readFileSync(templateArtifactFilePath);
+
+        // Write the content to the target file.
+        fse.writeFileSync(targetArtifactFileUri.fsPath, buf.toString());
 
         // Open and show newly created artifact document in the editor.
         workspace.openTextDocument(targetArtifactFileUri).then(doc => window.showTextDocument(doc));
@@ -286,6 +315,28 @@ export namespace ArtifactModule {
             }
 
         }
+    }
+
+    /**
+     * Returns the suitable file extension based on the artifact mediatype.
+     *
+     * @param registryResource Registry Resource object.
+     */
+    function getFileExtension(registryResource: RegistryResource | undefined) {
+        let extension;
+        switch(registryResource!.mediaType) {
+            case "application/json": {
+                extension = ".json";
+                break;
+            }
+            default: {
+                // Setting .xml as the default extension
+                extension = ".xml";
+                break;
+            }
+        }
+
+        return extension;
     }
 
     function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {

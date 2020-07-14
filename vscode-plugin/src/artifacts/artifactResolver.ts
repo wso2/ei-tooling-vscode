@@ -235,8 +235,15 @@ export async function createArtifact(artifactType: string) {
                                                                    prompt: "Enter valid registry path here",
                                                                    placeHolder: "eg: Datamapper/example"
                                                                }).then(text => text);
+
+                let fileName = artifactName + ".xml";
+                
+                if (selectedArtifactType === "JSONSchemaTemplate") {
+                    fileName = artifactName + ".json";
+                }
+
                 let registryResource: RegistryResource = {
-                    file: artifactName + ".xml",
+                    file: fileName,
                     path: path + "/" + registryPath,
                     mediaType: RegistryResourceInfo.mediaTypes.get(selectedArtifactType)
                 };
@@ -537,6 +544,10 @@ function createRegistryResourceTemplateArray(): QuickPickItem[] {
         {
             "description": RegistryResourceInfo.HTTP_ENDPOINT_TEMPLATE,
             "label": RegistryResourceInfo.HTTP_ENDPOINT_TEMPLATE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.JSON_SCHEMA_TEMPLATE,
+            "label": RegistryResourceInfo.JSON_SCHEMA_TEMPLATE_LABEL
         }
     ];
 }
