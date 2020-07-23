@@ -233,6 +233,7 @@ export class RegistryResourceInfo {
     static readonly DEFAULT_ENDPOINT_TEMPLATE: string = "DefaultEndpointTemplate";
     static readonly WSDL_ENDPOINT_TEMPLATE: string = "WSDLEndpointTemplate";
     static readonly HTTP_ENDPOINT_TEMPLATE: string = "HTTPEndpointTemplate";
+    static readonly JSON_SCHEMA_TEMPLATE: string = "JSONSchemaTemplate";
 
     static readonly SEQUENCE_LABEL: string = "Sequence";
     static readonly ADDRESS_ENDPOINT_LABEL: string = "Address Endpoint";
@@ -256,6 +257,7 @@ export class RegistryResourceInfo {
     static readonly DEFAULT_ENDPOINT_TEMPLATE_LABEL: string = "Default Endpoint Template";
     static readonly WSDL_ENDPOINT_TEMPLATE_LABEL: string = "WSDL Endpoint Template";
     static readonly HTTP_ENDPOINT_TEMPLATE_LABEL: string = "HTTP Endpoint Template";
+    static readonly JSON_SCHEMA_TEMPLATE_LABEL: string = "JSON Schema Template";
 
     static mediaTypes: Map<string, string> = new Map();
 
@@ -282,6 +284,7 @@ export class RegistryResourceInfo {
         this.mediaTypes.set("DefaultEndpointTemplate", "application/vnd.wso2.template.endpoint");
         this.mediaTypes.set("WSDLEndpointTemplate", "application/vnd.wso2.template.endpoint");
         this.mediaTypes.set("HTTPEndpointTemplate", "application/vnd.wso2.template.endpoint");
+        this.mediaTypes.set("JSONSchemaTemplate", "application/json");
     }
 }
 
