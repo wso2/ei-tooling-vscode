@@ -100,7 +100,6 @@ export namespace ArtifactModule {
                                         resourceType: string, registryResource: RegistryResource | undefined) {
 
         if (workspace.workspaceFolders) {
-            let isJSONArtifact: boolean = registryResource!.mediaType === "application/json";
             let pattern = path.join("*", targetArtifactName + getFileExtension(registryResource));
 
             let cwd = path.join(workspace.workspaceFolders[0].uri.fsPath, "src", "main", resourceType);
@@ -120,14 +119,8 @@ export namespace ArtifactModule {
                     let templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
                                                                templateFileName + getFileExtension(registryResource));
 
-                    // Check for JSON
-                    if (isJSONArtifact) {
-                        createTargetJSONArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
-                                templateArtifactFilePath, artifactType);
-                    } else {
-                        createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
-                            templateArtifactFilePath, artifactType);
-                    }
+                    createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
+                                                     templateArtifactFilePath, artifactType, registryResource);
 
                     if (resourceType === "synapse-config") {
                         await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
@@ -143,45 +136,49 @@ export namespace ArtifactModule {
      * Create the artifact from template.
      */
     function createTargetArtifactFromTemplate(targetArtifactFileUri: Uri, targetArtifactName: string,
-                                              templateArtifactFilePath: string, artifactType: string) {
+                                              templateArtifactFilePath: string, artifactType: string,
+                                              registryResource: RegistryResource | undefined) {
         let edit = new WorkspaceEdit();
         edit.createFile(targetArtifactFileUri);
         workspace.applyEdit(edit);
 
         // Read and buffer artifact template file.
         const buf: Buffer = fse.readFileSync(templateArtifactFilePath);
-
-        // Update the name attribute of the buffered artifact to comply with the new artifact.
-        let updatedBody = "";
-        if (artifactType !== LocalEntryArtifactInfo.ARTIFACT_TYPE) {
-            updatedBody = updateAttribute(buf, "name", targetArtifactName);
-        } else {
-            updatedBody = updateAttribute(buf, "key", targetArtifactName);
+        let data = "";
+        if (registryResource !== undefined) {
+            switch(registryResource!.mediaType) {
+                case "application/json": {
+                    data = buf.toString();
+                    break;
+                }
+                case "application/vnd.wso2.esb.localentry": {
+                    data = updateSynapseArtifactTemplate("local-entry", buf, targetArtifactName);
+                    break;
+                }
+                default: {
+                    data = updateSynapseArtifactTemplate(artifactType, buf, targetArtifactName);
+                    break;
+                }
+            }
+        } else  {
+            data = updateSynapseArtifactTemplate(artifactType, buf, targetArtifactName);
         }
         // Write the updated template content to the target file.
-        fse.writeFileSync(targetArtifactFileUri.fsPath, updatedBody);
+        fse.writeFileSync(targetArtifactFileUri.fsPath, data);
 
         // Open and show newly created artifact document in the editor.
         workspace.openTextDocument(targetArtifactFileUri).then(doc => window.showTextDocument(doc));
     }
-
+    
     /**
-     * Create a JSON artifact from template.
+     * Update the name/key attribute with the new artifact name.
      */
-    function createTargetJSONArtifactFromTemplate(targetArtifactFileUri: Uri, targetArtifactName: string,
-                                              templateArtifactFilePath: string, artifactType: string) {
-        let edit = new WorkspaceEdit();
-        edit.createFile(targetArtifactFileUri);
-        workspace.applyEdit(edit);
-
-        // Read and buffer artifact template file.
-        const buf: Buffer = fse.readFileSync(templateArtifactFilePath);
-
-        // Write the content to the target file.
-        fse.writeFileSync(targetArtifactFileUri.fsPath, buf.toString());
-
-        // Open and show newly created artifact document in the editor.
-        workspace.openTextDocument(targetArtifactFileUri).then(doc => window.showTextDocument(doc));
+    function updateSynapseArtifactTemplate(artifactType: string, buf: Buffer, targetArtifactName: string): string {
+        if (artifactType !== LocalEntryArtifactInfo.ARTIFACT_TYPE) {
+            return updateAttribute(buf, "name", targetArtifactName);
+        } else {
+            return updateAttribute(buf, "key", targetArtifactName);
+        }
     }
 
     /**
@@ -323,19 +320,20 @@ export namespace ArtifactModule {
      * @param registryResource Registry Resource object.
      */
     function getFileExtension(registryResource: RegistryResource | undefined) {
-        let extension;
-        switch(registryResource!.mediaType) {
-            case "application/json": {
-                extension = ".json";
-                break;
-            }
-            default: {
-                // Setting .xml as the default extension
-                extension = ".xml";
-                break;
+        let extension = ".xml";
+        if (registryResource !==  undefined) {
+            switch(registryResource!.mediaType) {
+                case "application/json": {
+                    extension = ".json";
+                    break;
+                }
+                default: {
+                    // Setting .xml as the default extension
+                    extension = ".xml";
+                    break;
+                }
             }
         }
-
         return extension;
     }
 
