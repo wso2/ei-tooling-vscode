@@ -548,6 +548,10 @@ function createRegistryResourceTemplateArray(): QuickPickItem[] {
         {
             "description": RegistryResourceInfo.JSON_SCHEMA_TEMPLATE,
             "label": RegistryResourceInfo.JSON_SCHEMA_TEMPLATE_LABEL
+        },
+        {
+            "description": RegistryResourceInfo.WS_POLICY,
+            "label": RegistryResourceInfo.WS_POLICY_LABEL
         }
     ];
 }
