@@ -3,7 +3,7 @@
 	"displayName": "WSO2 Enterprise Integrator",
 	"description": "VSCode extension for WSO2 Enterprise Integrator",
 	"publisher": "WSO2",
-	"version": "0.7.1",
+	"version": "0.7.5",
 	"engines": {
 		"vscode": "^1.31.0"
 	},
@@ -257,6 +257,7 @@
 	"devDependencies": {
 		"@types/archiver": "^2.1.3",
 		"@types/fs-extra": "^4.0.8",
+		"@types/md5": "^2.1.33",
 		"@types/mocha": "^2.2.42",
 		"@types/node": "^8.10.25",
 		"@types/xml2js": "^0.4.3",
@@ -264,8 +265,7 @@
 		"tslint": "^5.12.1",
 		"typescript": "^3.3.1",
 		"vsce": "^1.36.2",
-		"vscode": "^1.1.33",
-		"@types/md5": "^2.1.33"
+		"vscode": "^1.1.37"
 	},
 	"dependencies": {
 		"archiver": "^3.0.0",
