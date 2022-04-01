@@ -31,6 +31,14 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element name="include" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="key" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:any processContents="skip" minOccurs="0"/>
+            </xs:sequence>
             <xs:attribute name="language" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">

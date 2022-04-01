@@ -32,7 +32,7 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="code" minOccurs="0" maxOccurs="1">
+                <xs:element name="code" minOccurs="1" maxOccurs="1">
                     <xs:annotation>
                         <xs:documentation source="description">
                             The fault code
@@ -42,7 +42,7 @@
                         <xs:attributeGroup ref="valueOrExpression"/>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="reason" minOccurs="0" maxOccurs="1">
+                <xs:element name="reason" minOccurs="1" maxOccurs="1">
                     <xs:annotation>
                         <xs:documentation source="description">
                             The fault reason
@@ -54,7 +54,11 @@
                 </xs:element>
                 <xs:element name="node" minOccurs="0" maxOccurs="1" type="xs:anyType"/>
                 <xs:element name="role" minOccurs="0" maxOccurs="1" type="xs:anyType"/>
-                <xs:element name="detail" minOccurs="0" maxOccurs="1" type="xs:anyType"/>
+                <xs:element name="detail" minOccurs="0" maxOccurs="1" >
+                      <xs:complexType mixed="true">
+                        <xs:attribute name="expression" type="xs:string" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
             <xs:attribute name="version" use="optional" default="soap12">
                 <xs:simpleType>
@@ -65,6 +69,7 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+            <xs:attribute name="response" type="xs:boolean" use="optional"/>
             <xs:attribute name="description" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>

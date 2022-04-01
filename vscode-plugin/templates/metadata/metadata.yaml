@@ -1,0 +1,10 @@
+---
+key: "HealthcareAPI-1.0.0"
+name : "HealthcareAPI"
+displayName : "HealthcareAPI"
+description: "Sample API"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/context_here"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

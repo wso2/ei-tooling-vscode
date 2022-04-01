@@ -35,9 +35,10 @@ import {
     TemplateArtifactInfo
 } from "./artifacts/artifactUtils";
 
-import {createDeployableArchive} from "./archive/archiveResolver";
+import {createDeployableArchive, createZipArchive, unzipArchive} from "./archive/archiveResolver";
 import {ArtifactModule} from "./artifacts/ArtifactModule";
 import {SYNAPSE_LANGUAGE_ID} from './language/languageUtils';
+import * as path from 'path';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
@@ -82,13 +83,38 @@ export function activate(context: ExtensionContext) {
                     '**/*.{xml,dmc}'
                 ),
                 true,
-                true,
+                false,
                 false
             );
             fileWatcherCreated = true;
+
+            
+            watcher.onDidChange((changedFile: Uri) => {
+               
+                if (workspace.workspaceFolders) {
+                    const subDir: string = workspace.workspaceFolders[0].name+"Configs";
+                    const directoryPattern: string = path.join(workspace.workspaceFolders[0].uri.fsPath, subDir, "src", "main", "synapse-config", "api");
+
+                    //check whether an api resource file is changed
+                    if(isExistDirectoryPattern(changedFile.fsPath, directoryPattern)){
+                        ArtifactModule.updateMetadataforApi(changedFile.fsPath);
+                    }
+
+                }
+            });
+
+            
+
             watcher.onDidDelete((deletedFile: Uri) => {
+              
                 ArtifactModule.safeDeleteArtifact(deletedFile);
             });
+        }
+
+        
+        function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
+            let regExpForDirPattern = new RegExp(dirPattern);
+            return regExpForDirPattern.test(filePath);
         }
     }
 }
@@ -111,6 +137,14 @@ function registerSynapseCommands(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand("wso2ei.project.build", async () => {
         createDeployableArchive();
+    }));
+
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.zip", async () => {
+        createZipArchive();
+    }));
+
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.unzip", async () => {
+        unzipArchive();
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.api", async () => {

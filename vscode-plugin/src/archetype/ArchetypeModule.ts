@@ -37,7 +37,7 @@ export namespace ArchetypeModule {
      * Create new ESB Project from esb-project-archetype.
      */
     export async function createESBProject(): Promise<void> {
-        let artifactID: string | undefined = await showInputBoxForArtifactId();
+        let artifactID : string | undefined   = await showInputBoxForArtifactId();
         let groupID: string | undefined = await showInputBoxForGroupId();
 
           // Ensure that artifactID name is valid.
@@ -63,6 +63,7 @@ export namespace ArchetypeModule {
         const targetFolderHint = Uri.file(homedir);
         const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
 
+
         if (artifactID && artifactID.length > 0 && groupID && groupID.length > 0 && targetLocation) {
 
             const newProject: ESBProject = {
@@ -72,9 +73,13 @@ export namespace ArchetypeModule {
                 groupId: groupID,
                 artifactId: artifactID
             };
+
+            
             // Execute command handler that runs maven project generate.
             await executeProjectCreateCommand(newProject, targetLocation);
         }
     }
 }
+
+
 

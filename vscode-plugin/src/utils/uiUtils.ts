@@ -21,9 +21,8 @@ import {OpenDialogOptions, QuickPickItem, Uri, window} from "vscode";
 // file chooser dialog
 export async function openDialogForFolder(customOptions: OpenDialogOptions): Promise<Uri | null> {
     const options: OpenDialogOptions = {
-        canSelectFiles: false,
-        canSelectFolders: true,
         canSelectMany: false
+        
     };
     const result: Uri[] | undefined = await window.showOpenDialog(Object.assign(options, customOptions));
     if (result && result.length > 0) {
@@ -69,7 +68,9 @@ export async function showInputBox(promptMsg: string) {
 export async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
     const result: Uri | null = await openDialogForFolder({
                                                              defaultUri: entry,
-                                                             openLabel: "Select Destination Folder"
+                                                             openLabel: "Select Destination Folder",
+                                                             canSelectFiles: false,
+                                                             canSelectFolders: true,
                                                          });
     const targetLocation: string | null = result && result.fsPath;
     if (!targetLocation) {
@@ -78,3 +79,19 @@ export async function chooseTargetFolder(entry: Uri | undefined): Promise<string
     return targetLocation;
 }
 
+export async function chooseTargetFile(entry: Uri | undefined): Promise<string | null> {
+    const result: Uri | null = await openDialogForFolder({
+                                                             defaultUri: entry,
+                                                             openLabel: "Select Target Zip",
+                                                             canSelectFiles: true,
+                                                             canSelectFolders: false,
+                                                             filters: {
+                                                                'Zip files': ['zip']
+                                                           }
+                                                         });
+    const targetLocation: string | null = result && result.fsPath;
+    if (!targetLocation) {
+        window.showErrorMessage("Target file not selected. Operation aborted!");
+    }
+    return targetLocation;
+}

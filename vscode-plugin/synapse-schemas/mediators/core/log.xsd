@@ -36,7 +36,7 @@
             <xs:sequence>
                 <xs:element name="property" type="mediatorProperty" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="level" type="logLevel" use="required"/>
+            <xs:attribute name="level" type="logLevel" use="optional" default="simple"/>
             <xs:attribute name="separator" type="xs:string" use="optional" default=", "/>
             <xs:attribute name="category" type="logCategory" use="optional" default="INFO"/>
             <xs:attribute name="description" type="xs:string" use="optional"/>
@@ -66,10 +66,10 @@
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
+            <xs:enumeration value="INFO"/>
             <xs:enumeration value="FATAL"/>
             <xs:enumeration value="ERROR"/>
             <xs:enumeration value="WARN"/>
-            <xs:enumeration value="INFO"/>
             <xs:enumeration value="DEBUG"/>
             <xs:enumeration value="TRACE"/>
         </xs:restriction>

@@ -29,13 +29,13 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
-            <xs:sequence>
-                <xs:element name="onAccept" minOccurs="0" maxOccurs="1">
+            <xs:all>
+                <xs:element name="onReject" minOccurs="0" maxOccurs="1">
                     <xs:complexType>
                         <xs:group ref="mediatorList" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="onReject" minOccurs="0" maxOccurs="1">
+                <xs:element name="onAccept" minOccurs="0" maxOccurs="1">
                     <xs:complexType>
                         <xs:group ref="mediatorList" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:complexType>
@@ -54,24 +54,12 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-            </xs:sequence>
+            </xs:all>
+
             <xs:attribute name="remoteServiceUrl" type="xs:string" use="required"/>
-            <xs:attribute name="remoteServiceUserName" type="xs:string" use="optional"/>
-            <xs:attribute name="remoteServicePassword" type="xs:string" use="optional"/>
-            <xs:attribute name="callbackClass" use="required">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:enumeration
-                                value="org.wso2.carbon.identity.entitlement.mediator.callback.UTEntitlementCallbackHandler"/>
-                        <xs:enumeration
-                                value="org.wso2.carbon.identity.entitlement.mediator.callback.X509EntitlementCallbackHandler"/>
-                        <xs:enumeration
-                                value="org.wso2.carbon.identity.entitlement.mediator.callback.SAMLEntitlementCallbackHandler"/>
-                        <xs:enumeration
-                                value="org.wso2.carbon.identity.entitlement.mediator.callback.KerberosEntitlementCallbackHandler"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:attribute>
+            <xs:attribute name="remoteServiceUserName" type="xs:string" use="required"/>
+            <xs:attribute name="remoteServicePassword" type="xs:string" use="required"/>
+            <xs:attribute name="callbackClass" type="xs:string" use="required"/>
             <xs:attribute name="client" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
@@ -82,6 +70,12 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+            <xs:attribute name="thriftHost" type="xs:string" use="optional"/>
+            <xs:attribute name="thriftPort" type="xs:string" use="optional"/>
+            <xs:attribute name="onReject" type="xs:string" use="optional"/>
+            <xs:attribute name="onAccept" type="xs:string" use="optional"/>
+            <xs:attribute name="advice" type="xs:string" use="optional"/>
+            <xs:attribute name="obligations" type="xs:string" use="optional"/>
             <xs:attribute name="description" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>

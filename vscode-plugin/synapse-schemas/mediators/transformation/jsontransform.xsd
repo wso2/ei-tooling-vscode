@@ -19,18 +19,19 @@
            targetNamespace="http://ws.apache.org/ns/synapse"
            xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:element name="oauthService">
+    <xs:include schemaLocation="../../misc/common.xsd"/>
+
+    <xs:element name="jsontransform">
         <xs:annotation>
             <xs:documentation source="description">
-                Uses an OAuth application registered in WSO2 Identity Server to validate the credentials of a client
-                invoking a RESTful service.
+                Used for controlling XML to JSON transformations (possibly with a JSON Schema) inside a mediation.
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
-            <xs:attribute name="remoteServiceUrl" type="xs:string" use="required"/>
-            <xs:attribute name="username" type="xs:string" use="required"/>
-            <xs:attribute name="password" type="xs:string" use="required"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:sequence>
+                <xs:element name="property" type="mediatorProperty" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="schema" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>
 

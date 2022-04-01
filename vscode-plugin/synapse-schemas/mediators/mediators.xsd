@@ -52,10 +52,12 @@
     <xs:include schemaLocation="transformation/xslt.xsd"/>
     <xs:include schemaLocation="transformation/datamapper.xsd"/>
     <xs:include schemaLocation="transformation/fastXSLT.xsd"/>
+    <xs:include schemaLocation="transformation/jsontransform.xsd"/>
     <xs:include schemaLocation="advanced/cache.xsd"/>
     <xs:include schemaLocation="advanced/db_mediators.xsd"/>
     <xs:include schemaLocation="advanced/enqueue.xsd"/>
     <xs:include schemaLocation="advanced/event.xsd"/>
+    <xs:include schemaLocation="advanced/dataServiceCall.xsd"/>
     <xs:include schemaLocation="filter/throttle.xsd"/>
     <xs:include schemaLocation="advanced/transaction.xsd"/>
     <xs:include schemaLocation="eip/aggregate.xsd"/>
@@ -93,7 +95,9 @@
                     </xs:documentation>
                 </xs:annotation>
                 <xs:complexType>
-                    <xs:attribute name="key" type="xs:string" use="required"/>
+                    <xs:group ref="mediatorList" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:attribute name="key" type="xs:string" use="optional"/>
+                    <xs:attribute name="name" type="xs:string" use="optional"/>
                     <xs:attribute name="description" type="xs:string" use="optional"/>
                 </xs:complexType>
             </xs:element>
@@ -118,11 +122,13 @@
             <xs:element ref="xslt"/>
             <xs:element ref="datamapper"/>
             <xs:element ref="fastXSLT"/>
+            <xs:element ref="jsontransform"/>
             <xs:element ref="cache"/>
             <xs:element ref="dblookup"/>
             <xs:element ref="dbreport"/>
             <xs:element ref="enqueue"/>
             <xs:element ref="event"/>
+            <xs:element ref="dataServiceCall"/>
             <xs:element ref="throttle"/>
             <xs:element ref="transaction"/>
             <xs:element ref="aggregate"/>
