@@ -16,13 +16,16 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Uri, window} from "vscode";
+import {Uri, window, commands, workspace, WorkspaceEdit} from "vscode";
 import {chooseTargetFolder, showInputBoxForArtifactId, showInputBoxForGroupId} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 import {executeProjectCreateCommand} from "../mavenInternals/commandHandler";
 import {ARCHETYPE_ARTIFACT_ID, ARCHETYPE_GROUP_ID, ARCHETYPE_VERSION, GROUP_ID_PREFIX} from "./archetypeUtils";
+import * as fse from "fs-extra";
+import * as path from 'path';
 
 export namespace ArchetypeModule {
+    const dirName = __dirname;
 
     export interface ESBProject {
         archetypeGroupId: string;
@@ -37,7 +40,7 @@ export namespace ArchetypeModule {
      * Create new ESB Project from esb-project-archetype.
      */
     export async function createESBProject(): Promise<void> {
-        let artifactID: string | undefined = await showInputBoxForArtifactId();
+        let artifactID : string | undefined   = await showInputBoxForArtifactId();
         let groupID: string | undefined = await showInputBoxForGroupId();
 
           // Ensure that artifactID name is valid.
@@ -63,6 +66,7 @@ export namespace ArchetypeModule {
         const targetFolderHint = Uri.file(homedir);
         const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
 
+
         if (artifactID && artifactID.length > 0 && groupID && groupID.length > 0 && targetLocation) {
 
             const newProject: ESBProject = {
@@ -72,9 +76,58 @@ export namespace ArchetypeModule {
                 groupId: groupID,
                 artifactId: artifactID
             };
+
+            
             // Execute command handler that runs maven project generate.
             await executeProjectCreateCommand(newProject, targetLocation);
         }
     }
+
+    export async function importProject(){
+        const homedir: string = require('os').homedir();
+        const targetFolderHint = Uri.file(homedir);
+
+        //get the target folder
+        const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
+        
+        if(targetLocation){
+
+
+                let templateSettingsFilePath: string = path.join(dirName, '..', '..', 'templates', 'Conf', "settings.json");
+
+                let targetSettingsFilePath: string = path.join(targetLocation, ".vscode", "settings.json");
+                let targetSettingsDirectory: string = path.join(targetLocation, ".vscode") ;
+                
+                //create .vscode directory, if there are no
+                if(!fse.existsSync(targetSettingsDirectory)) fse.mkdirSync(targetSettingsDirectory);
+                
+                let edit = new WorkspaceEdit();
+                let targetSettingsFilePatUri = Uri.file(targetSettingsFilePath);
+
+                /*if(fse.existsSync(targetSettingsFilePath)){
+                    fse.readJson(targetSettingsFilePath).then(
+                        jsonObject => {
+                            let serverMode: string = "java.server.launchMode";
+                            console.log(jsonObject.get(serverMode))
+                        }
+                    );
+               
+                }*/
+
+                edit.createFile(targetSettingsFilePatUri);
+                workspace.applyEdit(edit);
+                let settings: Buffer = fse.readFileSync(templateSettingsFilePath);
+                fse.writeFileSync(targetSettingsFilePatUri.fsPath, settings);
+                
+                commands.executeCommand('vscode.openFolder', Uri.file(targetLocation), true);
+                window.showInformationMessage("Project Imported Successfully");
+
+            }
+
+    }
 }
+
+
+
+
 

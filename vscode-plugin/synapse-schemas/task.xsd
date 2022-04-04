@@ -36,8 +36,8 @@
         <xs:annotation>
             <xs:documentation>Task description configuration element</xs:documentation>
         </xs:annotation>
-        <xs:all>
-            <xs:element name="property" type="mediatorProperty" minOccurs="0"/>
+        <xs:sequence>
+            
             <xs:element name="trigger" minOccurs="1" maxOccurs="1">
                 <xs:complexType>
                     <xs:attribute name="interval" type="xs:string" use="optional"/>
@@ -46,10 +46,11 @@
                     <xs:attribute name="cron" type="xs:string" use="optional"/>
                 </xs:complexType>
             </xs:element>
-        </xs:all>
+            <xs:element name="property" type="mediatorProperty" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
         <xs:attribute name="class" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="group" type="xs:string" use="optional"/>
+        <xs:attribute name="group" type="xs:string" use="required"/>
         <xs:attribute name="pinnedServers" type="xs:string" use="optional"/>
     </xs:complexType>
 

@@ -41,8 +41,10 @@
             <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
         </xs:sequence>
         <xs:attribute name="clone" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="xpath" type="xs:string" use="optional"/>
+         <xs:attribute name="key" type="xs:string" use="optional"/>
         <xs:attribute name="type" use="optional" default="custom">
-            <xs:simpleType>
+            <xs:simpleType >
                 <xs:restriction base="xs:string">
                     <xs:enumeration value="custom"/>
                     <xs:enumeration value="envelope"/>
@@ -52,18 +54,17 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="xpath" type="xs:string" use="optional"/>
         <xs:attribute name="property" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="TargetEnrich">
-        <xs:attribute name="action" use="optional" default="custom">
+        <xs:attribute name="action" use="optional" default="replace">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
                     <xs:enumeration value="replace"/>
                     <xs:enumeration value="child"/>
                     <xs:enumeration value="sibling"/>
-                    <xs:enumeration value="custom"/>
+                    <xs:enumeration value="remove"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
@@ -74,6 +75,7 @@
                     <xs:enumeration value="envelope"/>
                     <xs:enumeration value="body"/>
                     <xs:enumeration value="property"/>
+                    <xs:enumeration value="key"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>

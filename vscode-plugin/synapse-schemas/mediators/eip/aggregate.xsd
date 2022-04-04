@@ -41,10 +41,10 @@
                 <xs:element name="completeCondition" minOccurs="0" maxOccurs="1">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="messageCount" minOccurs="1" maxOccurs="1">
+                            <xs:element name="messageCount" minOccurs="0" maxOccurs="1">
                                 <xs:complexType>
-                                    <xs:attribute name="min" type="xs:int" use="optional"/>
-                                    <xs:attribute name="max" type="xs:int" use="optional"/>
+                                    <xs:attribute name="min" type="xs:string" use="optional"/>
+                                    <xs:attribute name="max" type="xs:string" use="optional"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
@@ -53,13 +53,23 @@
                 </xs:element>
                 <xs:element name="onComplete" minOccurs="1" maxOccurs="1">
                     <xs:complexType>
-                        <xs:group ref="mediatorList"/>
-                        <xs:attribute name="expression" type="xs:string" use="optional"/>
+                        <xs:group ref="mediatorList" minOccurs="0"/>
+                        <xs:attribute name="expression" type="xs:string" use="required"/>
                         <xs:attribute name="sequence" type="xs:string" use="optional"/>
+                        <xs:attribute name="enclosingElementProperty" type="xs:string" use="optional"/>
+                        <xs:attribute name="aggregateElementType" use="optional">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="root"/>
+                                    <xs:enumeration value="child"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
                     </xs:complexType>
                 </xs:element>
             </xs:choice>
             <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="id" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>
 

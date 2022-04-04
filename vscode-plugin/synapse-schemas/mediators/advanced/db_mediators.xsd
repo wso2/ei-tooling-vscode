@@ -43,29 +43,53 @@
     </xs:element>
 
     <xs:complexType name="db-mediator">
-        <xs:all>
+        <xs:sequence>
             <xs:element name="connection" minOccurs="1" maxOccurs="1">
                 <xs:complexType>
                     <xs:all>
                         <xs:element name="pool" minOccurs="1" maxOccurs="1">
                             <xs:complexType>
-                                <xs:choice maxOccurs="1" minOccurs="1">
-                                    <xs:group ref="defined-db-connection"/>
-                                    <xs:element name="dsName" type="xs:string" minOccurs="0" maxOccurs="1"/>
-                                    <xs:element name="icClass" type="xs:string" minOccurs="0" maxOccurs="1"/>
-                                    <xs:element name="property" type="mediatorProperty" minOccurs="0"
-                                                maxOccurs="unbounded"/>
-                                </xs:choice>
+                                <xs:sequence>
+                                    <xs:element name="dsName" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element name="icClass" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element name="driver" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element name="url" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element name="user" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element name="password" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:attribute name="name" use="required">
+                                                <xs:simpleType>
+                                                    <xs:restriction base="xs:string">
+                                                        <xs:enumeration value="autocommit"/>
+                                                        <xs:enumeration value="isolation"/>
+                                                        <xs:enumeration value="initialsize"/>
+                                                        <xs:enumeration value="maxactive"/>
+                                                        <xs:enumeration value="maxidle"/>
+                                                        <xs:enumeration value="maxopenstatements"/>
+                                                        <xs:enumeration value="maxwait"/>
+                                                        <xs:enumeration value="minidle"/>
+                                                        <xs:enumeration value="poolstatements"/>
+                                                        <xs:enumeration value="testonborrow"/>
+                                                        <xs:enumeration value="testwhileidle"/>
+                                                        <xs:enumeration value="validationquery"/>
+                                                    </xs:restriction>
+                                                </xs:simpleType>
+                                            </xs:attribute>
+                                            <xs:attribute name="value" type="xs:string" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
                             </xs:complexType>
                         </xs:element>
                     </xs:all>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="statement" minOccurs="1" maxOccurs="1">
+            <xs:element name="statement" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
-                    <xs:all>
+                    <xs:sequence>
                         <xs:element name="sql" minOccurs="1" maxOccurs="1" type="xs:string"/>
-                        <xs:element name="parameter" minOccurs="0" maxOccurs="1">
+                        <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:attributeGroup ref="valueOrExpression"/>
                                 <xs:attribute name="type" use="required">
@@ -92,26 +116,21 @@
                                 </xs:attribute>
                             </xs:complexType>
                         </xs:element>
-                        <xs:element name="result" minOccurs="0" maxOccurs="1">
+                        <xs:element name="result" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:attribute name="name" type="xs:string" use="required"/>
                                 <xs:attribute name="column" type="xs:string" use="required"/>
                             </xs:complexType>
                         </xs:element>
-                    </xs:all>
+                    </xs:sequence>
                 </xs:complexType>
             </xs:element>
-        </xs:all>
+        </xs:sequence>
+        <xs:attribute name="useTransaction" type="xs:boolean" use="optional"/>
         <xs:attribute name="description" type="xs:string" use="optional"/>
     </xs:complexType>
-
-    <xs:group name="defined-db-connection">
-        <xs:all>
-            <xs:element name="driver" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="url" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="user" minOccurs="1" maxOccurs="1" type="xs:string"/>
-            <xs:element name="password" minOccurs="1" maxOccurs="1" type="xs:string"/>
-        </xs:all>
-    </xs:group>
+    <xs:complexType name="keyAttribute" mixed="true">
+        <xs:attribute name="key" type="xs:string" use="optional"/>
+    </xs:complexType>
 
 </xs:schema>

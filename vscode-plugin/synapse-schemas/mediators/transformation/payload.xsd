@@ -34,16 +34,25 @@
                         <xs:sequence>
                             <xs:any minOccurs="0" maxOccurs="1" processContents="skip"/>
                         </xs:sequence>
+                        <xs:attribute name="key" type="xs:string" use="optional"/>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="args">
+                <xs:element name="args" minOccurs="1" maxOccurs="1">
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="arg" minOccurs="0" maxOccurs="unbounded">
-                                <xs:complexType>
-                                    <xs:attribute name="values" type="xs:string" use="optional"/>
-                                    <xs:attribute name="evaluator" type="xs:string" use="optional"/>
+                                <xs:complexType mixed="true">
+                                    <xs:attribute name="value" type="xs:string" use="optional"/>
+                                    <xs:attribute name="evaluator" use="optional">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="xml"/>
+                                                <xs:enumeration value="json"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:attribute>
                                     <xs:attribute name="expression" type="xs:string" use="optional"/>
+                                    <xs:attribute name="literal" type="xs:boolean" use="optional"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
@@ -59,8 +68,17 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+            <xs:attribute name="template-type" use="optional">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="default"/>
+                        <xs:enumeration value="freemarker"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
             <xs:attribute name="description" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>
+
 
 </xs:schema>

@@ -47,7 +47,9 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
+
             <xs:element name="target" type="ProxyTarget" minOccurs="1" maxOccurs="1"/>
+
             <xs:element name="publishWSDL" minOccurs="0" maxOccurs="1">
                 <xs:annotation>
                     <xs:documentation source="description">
@@ -61,23 +63,29 @@
                         <xs:element ref="resource" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                     <xs:attribute name="uri" type="xs:anyURI" use="optional"/>
-                    <xs:attribute name="key" type="xs:string" use="required"/>
+                    <xs:attribute name="key" type="xs:string" use="optional"/>
+                    <xs:attribute name="endpoint" type="xs:string" use="optional"/>
+                    <xs:attribute name="preservePolicy" type="xs:boolean" use="required"/>
                 </xs:complexType>
             </xs:element>
             <xs:element name="enableAddressing" minOccurs="0" maxOccurs="1"/>
+
             <xs:element name="enableSec" minOccurs="0" maxOccurs="1"/>
             <xs:element name="enableRM" minOccurs="0" maxOccurs="1"/>
+
             <xs:element name="policy" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:attribute name="key" type="xs:string" use="required"/>
                     <xs:attribute name="type" type="policyType" use="optional" default="in"/>
                 </xs:complexType>
             </xs:element>
+
             <xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
         </xs:choice>
+
         <xs:attributeGroup ref="monitoringAspect"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="transports" type="xs:string" use="optional"/>
+        <xs:attribute name="transports" type="xs:string" use="required"/>
         <xs:attribute name="pinnedServers" type="xs:string" use="optional"/>
         <xs:attribute name="serviceGroup" type="xs:string" use="optional"/>
         <xs:attribute name="startOnLoad" type="xs:boolean" use="optional"/>

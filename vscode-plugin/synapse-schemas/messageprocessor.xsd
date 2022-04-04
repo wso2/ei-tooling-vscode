@@ -41,7 +41,7 @@
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="class" type="xs:string" use="required"/>
         <xs:attribute name="messageStore" type="xs:string" use="required"/>
-        <xs:attribute name="targetEndpoint" type="xs:string" use="optional"/>
+        <xs:attribute name="targetEndpoint" type="xs:string" use="optional"/>        
     </xs:complexType>
 
 </xs:schema>

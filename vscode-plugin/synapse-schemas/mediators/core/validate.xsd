@@ -34,7 +34,13 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="schema" minOccurs="1" maxOccurs="1">
+                <xs:element name="property"  minOccurs="0" maxOccurs="unbounded">
+                     <xs:complexType>
+                        <xs:attribute name="name" type="xs:string" use="required"/>
+                        <xs:attribute name="value" type="xs:boolean" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="schema" minOccurs="1" maxOccurs="unbounded">
                     <xs:annotation>
                         <xs:documentation>
                             The schema configuration over which the message is validated
@@ -44,7 +50,7 @@
                         <xs:attribute name="key" type="xs:string" use="required"/>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="on-fail" minOccurs="0" maxOccurs="1">
+                <xs:element name="on-fail" minOccurs="1" maxOccurs="1">
                     <xs:annotation>
                         <xs:documentation>
                             When the schema validation fail the validate mediator executes the
@@ -56,10 +62,17 @@
                     </xs:complexType>
                 </xs:element>
                 <xs:element ref="feature" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="property" type="mediatorProperty" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="resource" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="key" type="xs:string" use="required"/>
+                        <xs:attribute name="location" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
+            <xs:attribute name="cache-schema" type="xs:boolean" use="optional" />
             <xs:attribute name="source" type="xs:string" use="optional"/>
             <xs:attribute name="description" type="xs:string" use="optional"/>
+
         </xs:complexType>
     </xs:element>
 

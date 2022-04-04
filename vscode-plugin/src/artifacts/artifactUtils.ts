@@ -20,7 +20,22 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 export class ServerRoleInfo {
     static readonly ENTERPRISE_SERVICE_BUS: string = "EnterpriseServiceBus";
-    static readonly ENTERPRISE_INTEGRATOR: string = "EnterpriseIntegrator.";
+    static readonly ENTERPRISE_INTEGRATOR: string = "EnterpriseIntegrator";
+}
+
+export class SubDirectories {
+    static readonly COMPOSITE_EXPORTER: string = "CompositeExporter";
+    static readonly CONFIGS: string = "Configs";
+    static readonly CONNECTOR_EXPORTER: string = "ConnectorExporter";
+    static readonly REGISTRY_RESOURCES: string = "RegistryResources";
+}
+
+export class ProjectNatures {
+    static readonly MULTI_MODULE: string = "org.wso2.developerstudio.eclipse.mavenmultimodule.project.nature";
+    static readonly COMPOSITE_EXPORTER: string = "org.wso2.developerstudio.eclipse.distribution.project.nature";
+    static readonly CONFIGS: string = "org.wso2.developerstudio.eclipse.esb.project.nature";
+    static readonly CONNECTOR_EXPORTER: string = "org.wso2.developerstudio.eclipse.artifact.connector.project.nature";
+    static readonly REGISTRY_RESOURCES: string = "org.wso2.developerstudio.eclipse.general.project.nature";
 }
 
 export class APIArtifactInfo {
@@ -234,7 +249,7 @@ export class RegistryResourceInfo {
     static readonly WSDL_ENDPOINT_TEMPLATE: string = "WSDLEndpointTemplate";
     static readonly HTTP_ENDPOINT_TEMPLATE: string = "HTTPEndpointTemplate";
     static readonly JSON_SCHEMA_TEMPLATE: string = "JSONSchemaTemplate";
-    static readonly WS_POLICY: string = "WSPolicy";
+    static readonly WS_POLICY: string = "WSPolicyTemplate";
 
     static readonly SEQUENCE_LABEL: string = "Sequence";
     static readonly ADDRESS_ENDPOINT_LABEL: string = "Address Endpoint";
@@ -287,7 +302,7 @@ export class RegistryResourceInfo {
         this.mediaTypes.set("WSDLEndpointTemplate", "application/vnd.wso2.template.endpoint");
         this.mediaTypes.set("HTTPEndpointTemplate", "application/vnd.wso2.template.endpoint");
         this.mediaTypes.set("JSONSchemaTemplate", "application/json");
-        this.mediaTypes.set("WSPolicy", "application/wspolicy+xml");
+        this.mediaTypes.set("WSPolicyTemplate", "application/wspolicy+xml");
     }
 }
 

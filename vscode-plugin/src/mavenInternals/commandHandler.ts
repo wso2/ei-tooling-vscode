@@ -43,6 +43,7 @@ function getMavenGenerateCommand(newProject: ArchetypeModule.ESBProject): string
         `-DarchetypeVersion=${newProject.archetypeVersion}`,
         `-DgroupId=${newProject.groupId}`,
         `-DartifactId=${newProject.artifactId}`,
+        "-Dversion=1.0.0-SNAPSHOT",
         `-DinteractiveMode=false`,
         `-DarchetypeCatalog=internal`
     ].join(" ");
@@ -52,6 +53,7 @@ function createMavenBuildCommand(): string {
     return [
         "mvn",
         "clean",
-        "install"
+        "install",
+        "-Dmaven.test.skip"
     ].join(" ");
 }

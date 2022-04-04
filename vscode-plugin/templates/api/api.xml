@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<api context="context_here" name="SampleAPI" xmlns="http://ws.apache.org/ns/synapse">
+<api context="/context_here" name="SampleAPI" xmlns="http://ws.apache.org/ns/synapse">
     <resource methods="GET">
         <inSequence>
             <!-- Define inflow mediation logic here -->

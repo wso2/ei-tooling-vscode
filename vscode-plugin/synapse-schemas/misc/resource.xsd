@@ -29,7 +29,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:all>
-            <xs:element name="inSequence" minOccurs="1" maxOccurs="1">
+            <xs:element name="inSequence" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:group ref="mediatorList" minOccurs="0" maxOccurs="unbounded"/>
@@ -63,8 +63,20 @@
                     <xs:enumeration value="PATCH"/>
                 </xs:restriction>
             </xs:simpleType>
+
+        </xs:attribute>
+         <xs:attribute name="protocol" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="http"/>
+                    <xs:enumeration value="https"/>
+                </xs:restriction>
+            </xs:simpleType>
         </xs:attribute>
 
+        <xs:attribute name="inSequence" type="xs:string" use="optional"/>
+        <xs:attribute name="outSequence" type="xs:string" use="optional"/>
+        <xs:attribute name="faultSequence" type="xs:string" use="optional"/>
 
         <xs:attributeGroup ref="templateOrMapping"/>
     </xs:complexType>
