@@ -20,7 +20,9 @@ import {commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, 
 import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
+import { DataServiceModule } from './dataService/DataServiceModule';
 import {createArtifact} from "./artifacts/artifactResolver";
+import {createDataServiceProject} from "./dataService/dataServiceResolver";
 import {
     APIArtifactInfo,
     EndpointArtifactInfo,
@@ -28,9 +30,11 @@ import {
     LocalEntryArtifactInfo,
     MessageProcessorArtifactInfo,
     MessageStoreArtifactInfo,
+    ProjectNatures,
     ProxyArtifactInfo,
     RegistryResourceInfo,
     SequenceArtifactInfo,
+    SubDirectories,
     TaskArtifactInfo,
     TemplateArtifactInfo
 } from "./artifacts/artifactUtils";
@@ -42,6 +46,7 @@ import * as path from 'path';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
+var file_system = require('fs');
 
 export function activate(context: ExtensionContext) {
 
@@ -80,7 +85,7 @@ export function activate(context: ExtensionContext) {
             let watcher = workspace.createFileSystemWatcher(
                 new RelativePattern(
                     workspace.getWorkspaceFolder(uri)!,
-                    '**/*.{xml,dmc}'
+                    '**/*'
                 ),
                 true,
                 false,
@@ -92,8 +97,8 @@ export function activate(context: ExtensionContext) {
             watcher.onDidChange((changedFile: Uri) => {
                
                 if (workspace.workspaceFolders) {
-                    const subDir: string = workspace.workspaceFolders[0].name+"Configs";
-                    const directoryPattern: string = path.join(workspace.workspaceFolders[0].uri.fsPath, subDir, "src", "main", "synapse-config", "api");
+                    const subDir: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONFIGS);
+                    const directoryPattern: string = path.join(subDir, "src", "main", "synapse-config", "api");
 
                     //check whether an api resource file is changed
                     if(isExistDirectoryPattern(changedFile.fsPath, directoryPattern)){
@@ -106,9 +111,13 @@ export function activate(context: ExtensionContext) {
             
 
             watcher.onDidDelete((deletedFile: Uri) => {
-              
+
                 ArtifactModule.safeDeleteArtifact(deletedFile);
+                DataServiceModule.safeDeteteDataService(deletedFile.fsPath);
+
             });
+
+            
         }
 
         
@@ -195,6 +204,9 @@ function registerSynapseCommands(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand("wso2ei.resource.registry", async () => {
         await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE);
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.dataservice.create.project", async () => {
+        await createDataServiceProject();
     }));
 }
 

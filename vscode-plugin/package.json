@@ -38,6 +38,8 @@
 		"onCommand:wso2ei.artifact.sequence",
 		"onCommand:wso2ei.artifact.task",
 		"onCommand:wso2ei.resource.registry",
+		"onCommand:wso2ei.dataservice.create.project",
+		"onCommand:wso2ei.dataservice.create.service",
 		"workspaceContains:src/main/synapse-config",
 		"workspaceContains:**/.classpath"
 	],
@@ -188,6 +190,12 @@
 				"title": "Create Registry Resource",
 				"category": "WSO2EI"
 			}
+			,
+			{
+				"command": "wso2ei.dataservice.create.project",
+				"title": "Create Data Service Project",
+				"category": "WSO2EI"
+			}
 		],
 		"languages": [
 			{
@@ -252,6 +260,12 @@
 				{
 					"command": "wso2ei.artifact.template",
 					"when": "resourceFilename =~ /^templates$/",
+					"group": "2_workspace"
+				}
+				,
+				{
+					"command": "wso2ei.dataservice.create.service",
+					"when": "resourceFilename =~ /^dataservice$/",
 					"group": "2_workspace"
 				}
 				

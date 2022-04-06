@@ -104,16 +104,6 @@ export namespace ArchetypeModule {
                 let edit = new WorkspaceEdit();
                 let targetSettingsFilePatUri = Uri.file(targetSettingsFilePath);
 
-                /*if(fse.existsSync(targetSettingsFilePath)){
-                    fse.readJson(targetSettingsFilePath).then(
-                        jsonObject => {
-                            let serverMode: string = "java.server.launchMode";
-                            console.log(jsonObject.get(serverMode))
-                        }
-                    );
-               
-                }*/
-
                 edit.createFile(targetSettingsFilePatUri);
                 workspace.applyEdit(edit);
                 let settings: Buffer = fse.readFileSync(templateSettingsFilePath);

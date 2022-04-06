@@ -737,10 +737,10 @@ export namespace ArtifactModule {
                 let nature: string = "unidentified";
 
                 let projectNatureArray: string[] = [ProjectNatures.COMPOSITE_EXPORTER, ProjectNatures.CONFIGS, ProjectNatures.CONNECTOR_EXPORTER, 
-                    ProjectNatures.REGISTRY_RESOURCES];
+                    ProjectNatures.REGISTRY_RESOURCES, ProjectNatures.DATA_SERVICE];
 
                 let subDirectoryArray: string[] = [SubDirectories.COMPOSITE_EXPORTER, SubDirectories.CONFIGS, SubDirectories.CONNECTOR_EXPORTER, 
-                    SubDirectories.REGISTRY_RESOURCES];
+                    SubDirectories.REGISTRY_RESOURCES,SubDirectories.DATA_SERVICE];
                 
                 for(let i=0; i<projectNatures.length; i++){
 
@@ -755,7 +755,7 @@ export namespace ArtifactModule {
 
     }
 
-    function getDirectoryFromProjectNature(projectNature: SubDirectories): string{
+    export function getDirectoryFromProjectNature(projectNature: SubDirectories): string{
         
         let requiredDirectory: string = "unidentified";
         if(workspace.workspaceFolders){
@@ -765,10 +765,9 @@ export namespace ArtifactModule {
             filenames.forEach( (file: any) => {
                 let projConfigFilePath: string = path.join(rootProjectDirectory, file, ".project");
                 if (file_system.existsSync(projConfigFilePath)) {
-                    let nature: string = ArtifactModule.getProjectNature(projConfigFilePath);
+                    let nature: string = getProjectNature(projConfigFilePath);
                         if(nature === projectNature){
                             requiredDirectory = path.join(rootProjectDirectory, file);
-                            //console.log(requiredDirectory);
                             return requiredDirectory;
                         }
                 }

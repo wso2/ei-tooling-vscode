@@ -35,7 +35,8 @@ var AdmZip = require('adm-zip');
 * */
 export function createDeployableArchive() {
 
-    let projectNatures: string[] = [SubDirectories.COMPOSITE_EXPORTER, SubDirectories.CONFIGS, SubDirectories.CONNECTOR_EXPORTER, SubDirectories.REGISTRY_RESOURCES];
+    let projectNatures: string[] = [SubDirectories.COMPOSITE_EXPORTER, SubDirectories.CONFIGS, SubDirectories.CONNECTOR_EXPORTER,
+         SubDirectories.REGISTRY_RESOURCES, SubDirectories.DATA_SERVICE];
     
 
     if (workspace.workspaceFolders) {

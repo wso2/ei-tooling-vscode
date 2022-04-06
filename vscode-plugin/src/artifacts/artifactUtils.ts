@@ -28,6 +28,7 @@ export class SubDirectories {
     static readonly CONFIGS: string = "Configs";
     static readonly CONNECTOR_EXPORTER: string = "ConnectorExporter";
     static readonly REGISTRY_RESOURCES: string = "RegistryResources";
+    static readonly DATA_SERVICE: string = "DataServiceConfigs";
 }
 
 export class ProjectNatures {
@@ -36,6 +37,7 @@ export class ProjectNatures {
     static readonly CONFIGS: string = "org.wso2.developerstudio.eclipse.esb.project.nature";
     static readonly CONNECTOR_EXPORTER: string = "org.wso2.developerstudio.eclipse.artifact.connector.project.nature";
     static readonly REGISTRY_RESOURCES: string = "org.wso2.developerstudio.eclipse.general.project.nature";
+    static readonly DATA_SERVICE: string = "org.wso2.developerstudio.eclipse.ds.project.nature";
 }
 
 export class APIArtifactInfo {
