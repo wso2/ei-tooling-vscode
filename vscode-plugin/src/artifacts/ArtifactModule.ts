@@ -492,34 +492,38 @@ export namespace ArtifactModule {
             if (isExistDirectoryPattern(filePath, path.join(syapseSubDirectory, "src", "main", "synapse-config"))) {
                 artifactXmlFilePath = path.join(syapseSubDirectory, "artifact.xml");
 
-                deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0], artifactFolder);
+                deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
                 deleteArtifactFromPomXml(rawArtifactName[0], artifactFolder);
                 
             //resource
             } else if (isExistDirectoryPattern(filePath, resourceSubDirectory)) {
                 artifactXmlFilePath = path.join(resourceSubDirectory, "artifact.xml");
 
-                deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0], artifactFolder);
+                deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
                 deleteArtifactFromPomXml(rawArtifactName[0], artifactFolder);
         
         }
     }
     }
 
-    function deletefromArtifactXml(artifactXmlFilePath: string, artifactName: string, artifactFolder: string){
+    export function deletefromArtifactXml(artifactXmlFilePath: string, artifactName: string){
 
         let buf: Buffer = fse.readFileSync(artifactXmlFilePath);
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
 
         let artifacts = xmlDoc.getElementsByTagName("artifacts");
-        let elementList = artifacts[0].getElementsByTagName("artifact");
+        let elementList = xmlDoc.getElementsByTagName("artifact");
         let listLength: number = elementList.length;
 
+        
+
         for (let i = 0; i < listLength; i++) {
-            if ((elementList[i].getAttribute("name") === artifactName) || (elementList[i].getAttribute("name") === (artifactName + "_metadata")) ||
-                (elementList[i].getAttribute("name") === (artifactName + "_swagger")) || 
-                (elementList[i].getAttribute("name") === (artifactName + "_proxy_metadata"))) {
+            let name: string = elementList[i].getAttribute("name").trim();
+            if ((name === artifactName) || (name === (artifactName + "_metadata")) ||
+                (name === (artifactName + "_swagger")) || 
+                (name === (artifactName + "_proxy_metadata"))) {
                 artifacts[0].removeChild(elementList[i]);
+                
             }
         }
         let data = new XMLSerializer().serializeToString(xmlDoc);
@@ -528,7 +532,7 @@ export namespace ArtifactModule {
     }
 
     //delete artifact related information from pom.xml
-    function deleteArtifactFromPomXml(artifactName: string, artifactFolder: string){
+    export function deleteArtifactFromPomXml(artifactName: string, artifactFolder: string){
 
         //const pomSubdirectory: string = workspaceFolder.name + SubDirectories.COMPOSITE_EXPORTER;
         const pathToPomXml:string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
@@ -666,7 +670,7 @@ export namespace ArtifactModule {
     }
 
     //add artifact element to artifact.xml
-    function addSynapseArtifactData(parent: any, xmlDoc: any, artifactName: string, groupId: string, type: string, version: string, serverRole: string,
+    export function addSynapseArtifactData(parent: any, xmlDoc: any, artifactName: string, groupId: string, type: string, version: string, serverRole: string,
                                                                                     filePath: string, targetFolder: string){
 
         let child = xmlDoc.createElement("artifact");
@@ -690,21 +694,23 @@ export namespace ArtifactModule {
     }
 
     //add new property
-    function addNewProperty(xmlDoc: any, tagName: string, properties: any, serverRole: string){
+    export function addNewProperty(xmlDoc: any, tagName: string, properties: any, serverRole: string){
         let pomChild = xmlDoc.createElement(tagName);
         properties[0].appendChild(pomChild);
         pomChild.textContent = path.join("capp", serverRole);
     }
 
     //add new dependancy
-    function addNewDependancy(xmlDoc: any, dependencies: any, artifactName: string, groupId: string, type: string){
+    export function addNewDependancy(xmlDoc: any, dependencies: any, artifactName: string, groupId: string, type?: string){
         let dependancy = xmlDoc.createElement("dependency");
         dependencies[0].appendChild(dependancy);
         createAndAppendElement(xmlDoc, dependancy,"groupId", groupId);
         createAndAppendElement(xmlDoc, dependancy,"artifactId", artifactName);
         createAndAppendElement(xmlDoc, dependancy,"version","1.0.0");
-        createAndAppendElement(xmlDoc, dependancy,"type",type);
-
+        if(type){
+            createAndAppendElement(xmlDoc, dependancy,"type",type);
+        }
+        
     }
 
     function createAndAppendElement(xmlDoc: any, parent: any, childName: string, content: string){

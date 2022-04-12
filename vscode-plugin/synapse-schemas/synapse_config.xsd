@@ -33,6 +33,9 @@
     <xs:include schemaLocation="task.xsd" />
     <xs:include schemaLocation="template.xsd" />
     <xs:include schemaLocation="registry.xsd" />
+    <xs:include schemaLocation="data_service.xsd" />
+
+
 
     <xs:element name="definitions" type="Definition">
         <xs:annotation>
@@ -63,6 +66,8 @@
             <xs:element ref="sequence" minOccurs="0" maxOccurs="unbounded" />
             <xs:element ref="task" minOccurs="0" maxOccurs="unbounded" />
             <xs:element ref="template" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="data" minOccurs="0" maxOccurs="unbounded" />
         </xs:choice>
     </xs:complexType>
 </xs:schema>
+

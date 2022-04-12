@@ -127,6 +127,9 @@ function getRootElementTagName(filePath: string): FileInfo {
     } else if (new RegExp(path.join("synapse-config", "templates", "[a-zA-Z ]+.xml$")).test(filePath)) {
         fileInfo.rootElementTagName = "template";
     }
+    else if (new RegExp(path.join("dataservice", "[a-zA-Z ]+.dbs$")).test(filePath)) {
+        fileInfo.rootElementTagName = "data";
+    }
     let array1: string[] = filePath.split(path.sep);
     let fileName: string = array1[array1.length - 1];
     let array2: string[] = fileName.split(".");

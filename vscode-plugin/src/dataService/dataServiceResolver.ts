@@ -16,25 +16,39 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {QuickPickItem, window} from "vscode";
+import {QuickPickItem, window, workspace} from "vscode";
 import {DataServiceModule} from "./DataServiceModule";
 import {
     DataServiceProjectInfo,
-    DataServicetInfo
+    DataServiceInfo
 } from "./dataServiceUtils";
 import {showInputBox, showQuickPick} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 
 export async function createDataServiceProject() {
         
-            let projectName = await showInputBox(DataServiceProjectInfo.PROMPT_MESSAGE);
+    let projectName = await showInputBox(DataServiceProjectInfo.PROMPT_MESSAGE);
 
-            while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
-                window.showErrorMessage("Enter valid Data Service Project name!!");
-                projectName = await showInputBox(DataServiceProjectInfo.PROMPT_MESSAGE);
-            }
+    while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
+        window.showErrorMessage("Enter valid Data Service Project name!!");
+        projectName = await showInputBox(DataServiceProjectInfo.PROMPT_MESSAGE);
+    }
 
-            if (projectName) {
-                DataServiceModule.createProject(projectName.trim());
-            }
+    if (projectName) {
+        DataServiceModule.createProject(projectName.trim());
+    }
+}
+
+export async function createNewDataService(filePath: string){
+
+    let dataServiceName = await showInputBox(DataServiceInfo.PROMPT_MESSAGE);
+
+    while (typeof dataServiceName !== "undefined" && !Utils.validate(dataServiceName.trim())) {
+        window.showErrorMessage("Enter valid Data Service name!!");
+        dataServiceName = await showInputBox(DataServiceInfo.PROMPT_MESSAGE);
+    }
+
+    if (dataServiceName) {
+        DataServiceModule.createService(filePath, dataServiceName);
+    }
 }

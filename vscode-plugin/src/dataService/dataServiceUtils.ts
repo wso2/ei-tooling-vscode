@@ -28,11 +28,11 @@ export class DataServiceProjectInfo {
     static readonly PROMPT_MESSAGE: string = "Enter Data Service Project name...";
 }
 
-export class DataServicetInfo {
+export class DataServiceInfo {
     static readonly DESTINATION_FOLDER: string = "dataservice";
     static readonly PROMPT_MESSAGE: string = "Enter Data Service name...";
     static readonly TYPE: string = "service/dataservice";
 
-    static readonly API_LABEL: string = "dataservice";
+    static readonly DATA_SERVICE_LABEL: string = "dataservice";
 }
 
