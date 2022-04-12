@@ -16,13 +16,14 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace} from 'vscode';
+import {commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace, languages} from 'vscode';
 import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
-import { DataServiceModule } from './dataService/DataServiceModule';
+import {DataServiceModule } from './dataService/DataServiceModule';
 import {createArtifact} from "./artifacts/artifactResolver";
-import {createDataServiceProject} from "./dataService/dataServiceResolver";
+import {createDataServiceProject, createNewDataService} from "./dataService/dataServiceResolver";
+import { createMediatorProject } from './mediatorProject/mediatorProjectResolver';
 import {
     APIArtifactInfo,
     EndpointArtifactInfo,
@@ -41,12 +42,14 @@ import {
 
 import {createDeployableArchive, createZipArchive, unzipArchive} from "./archive/archiveResolver";
 import {ArtifactModule} from "./artifacts/ArtifactModule";
-import {SYNAPSE_LANGUAGE_ID} from './language/languageUtils';
+import {SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
 var file_system = require('fs');
+const chokidar = require('chokidar');
+
 
 export function activate(context: ExtensionContext) {
 
@@ -58,12 +61,26 @@ export function activate(context: ExtensionContext) {
         const currentDoc = window.activeTextEditor.document;
         setLanguageAndLaunchServer(currentDoc);
         createFileWatcher();
+
+        chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
+            console.log(path);
+            DataServiceModule.safeDeleteDataService(path);
+          });
+
     }
 
     //listen to newly opened text documents
     workspace.onDidOpenTextDocument((document) => {
         setLanguageAndLaunchServer(document);
         createFileWatcher();
+
+        chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
+            console.log(path);
+            DataServiceModule.safeDeleteDataService(path);
+          });
+
+
+
     });
 
     function setLanguageAndLaunchServer(document: TextDocument) {
@@ -79,12 +96,14 @@ export function activate(context: ExtensionContext) {
     }
 
     function createFileWatcher() {
+
+        console.log("created");
         if (workspace.workspaceFolders && !fileWatcherCreated) {
-            const uri = workspace.workspaceFolders[0].uri;
+            //let uri = workspace.workspaceFolders[0].uri;
             // initialization code...
             let watcher = workspace.createFileSystemWatcher(
                 new RelativePattern(
-                    workspace.getWorkspaceFolder(uri)!,
+                    workspace.workspaceFolders[0],
                     '**/*'
                 ),
                 true,
@@ -111,9 +130,12 @@ export function activate(context: ExtensionContext) {
             
 
             watcher.onDidDelete((deletedFile: Uri) => {
+                
+                console.log("triggered");
 
                 ArtifactModule.safeDeleteArtifact(deletedFile);
-                DataServiceModule.safeDeteteDataService(deletedFile.fsPath);
+                DataServiceModule.safeDeteteProject(deletedFile.path);
+                //DataServiceModule.safeDeleteDataService(deletedFile.fsPath);
 
             });
 
@@ -208,6 +230,13 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2ei.dataservice.create.project", async () => {
         await createDataServiceProject();
     }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.dataservice.create.service", async (uri: Uri) => {
+        await createNewDataService(uri.fsPath);
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.mediatorproject.create.project", async () => {
+        createMediatorProject();
+    }));
+
 }
 
 // this method is called when your extension is deactivated

@@ -40,6 +40,7 @@
 		"onCommand:wso2ei.resource.registry",
 		"onCommand:wso2ei.dataservice.create.project",
 		"onCommand:wso2ei.dataservice.create.service",
+		"onCommand:wso2ei.mediatorproject.create.project",
 		"workspaceContains:src/main/synapse-config",
 		"workspaceContains:**/.classpath"
 	],
@@ -189,18 +190,29 @@
 				"command": "wso2ei.resource.registry",
 				"title": "Create Registry Resource",
 				"category": "WSO2EI"
-			}
-			,
+			},
 			{
 				"command": "wso2ei.dataservice.create.project",
 				"title": "Create Data Service Project",
+				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.dataservice.create.service",
+				"title": "Create New Data Service",
+				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.mediatorproject.create.project",
+				"title": "Create New Mediator project",
 				"category": "WSO2EI"
 			}
 		],
 		"languages": [
 			{
 				"id": "SynapseXml",
-				"extensions": []
+				"extensions": [
+					".dbs"
+				]
 			}
 		],
 		"grammars": [
@@ -261,15 +273,18 @@
 					"command": "wso2ei.artifact.template",
 					"when": "resourceFilename =~ /^templates$/",
 					"group": "2_workspace"
-				}
-				,
+				},
 				{
 					"command": "wso2ei.dataservice.create.service",
 					"when": "resourceFilename =~ /^dataservice$/",
 					"group": "2_workspace"
 				}
-				
-				
+			],
+			"commandPalette": [
+				{
+					"command": "wso2ei.dataservice.create.service",
+					"when": "false"
+				}
 			]
 		}
 	},
@@ -302,6 +317,7 @@
 		"chokidar": "^2.1.5",
 		"dom-parser": "^0.1.5",
 		"extract-zip": "^2.0.1",
+		"filewatcher": "^3.0.1",
 		"fs-extra": "^4.0.3",
 		"glob": "^7.1.4",
 		"js-yaml": "^4.1.0",
