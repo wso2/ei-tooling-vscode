@@ -135,7 +135,7 @@ export function activate(context: ExtensionContext) {
 
                 ArtifactModule.safeDeleteArtifact(deletedFile);
                 DataServiceModule.safeDeteteProject(deletedFile.path);
-                //DataServiceModule.safeDeleteDataService(deletedFile.fsPath);
+                DataServiceModule.safeDeleteDataService(deletedFile.fsPath);
 
             });
 

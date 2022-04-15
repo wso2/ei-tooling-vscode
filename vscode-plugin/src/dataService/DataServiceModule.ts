@@ -168,38 +168,6 @@ export namespace DataServiceModule {
             }
 
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
-
-
-
-            //delete child project data, if there are any
-            const pathToPomXml:string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
-            let buff: Buffer = fse.readFileSync(pathToPomXml);
-            let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml")
-            let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
-            let dependencyList = dependencies[0].getElementsByTagName("dependency");
-            let listLength: number = dependencyList.length;
-            for(let i=0; i<listLength; i++){
-                
-                if(dependencyList[i].getElementsByTagName("type")[0].textContent.trim() === "dbs"){
-
-                    let artifactName: string = dependencyList[i].getElementsByTagName("artifact")[0].textContent.trim();
-
-                    let pattern = path.join("dataservice", artifactName + ".dbs");
-
-                    let cwd: string = workspace.workspaceFolders[0].uri.fsPath;
-
-                    let newGlob = new glob(pattern, {cwd: cwd}, async function (err: any, files: any) {
-                
-                        if (files.length > 0) {
-                            // file name already exists in the project.
-                            //remove from dependencies
-                            dependencies.removeChild(dependencyList[i]);
-                        } 
-                    });
-                    }
-            
-            
-        }
     }
     }
 
@@ -256,10 +224,6 @@ export namespace DataServiceModule {
             ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, dataServiceName, finalGroupId, "dbs");
             fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
 
-            
-            
-               
-
         }
     }
 
@@ -276,7 +240,9 @@ export namespace DataServiceModule {
             // Check if the deleted file is a .dbs file
             if(rawDataServiceName[1].trim() === "dbs"){
                 let artifactXmlFilePath: string = path.join(deletedFile, "..", "..", "artifact.xml");
-                ArtifactModule.deletefromArtifactXml(artifactXmlFilePath, rawDataServiceName[0].trim());
+                if(file_system.existsSync(artifactXmlFilePath)){
+                    ArtifactModule.deletefromArtifactXml(artifactXmlFilePath, rawDataServiceName[0].trim());
+                }
                 ArtifactModule.deleteArtifactFromPomXml(rawDataServiceName[0].trim(), dataServiceFolder);
 
             }
