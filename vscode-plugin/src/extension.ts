@@ -23,7 +23,8 @@ import {ArchetypeModule} from "./archetype/ArchetypeModule";
 import {DataServiceModule } from './dataService/DataServiceModule';
 import {createArtifact} from "./artifacts/artifactResolver";
 import {createDataServiceProject, createNewDataService} from "./dataService/dataServiceResolver";
-import { createMediatorProject } from './mediatorProject/mediatorProjectResolver';
+import {createMediatorProject} from './mediatorProject/mediatorProjectResolver';
+import { addNewConnector } from './connector/connectorResolver';
 import {
     APIArtifactInfo,
     EndpointArtifactInfo,
@@ -234,7 +235,10 @@ function registerSynapseCommands(context: ExtensionContext) {
         await createNewDataService(uri.fsPath);
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.mediatorproject.create.project", async () => {
-        createMediatorProject();
+        await createMediatorProject();
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.connector.add", async () => {
+        await addNewConnector();
     }));
 
 }

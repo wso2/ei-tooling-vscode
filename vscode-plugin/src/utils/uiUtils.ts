@@ -56,6 +56,7 @@ export async function showQuickPick(quickPickItems: QuickPickItem[]): Promise<st
         {matchOnDescription: true, placeHolder: "Select type..."}
     ).then(selected => (
         selected && selected.description
+
     ));
 }
 

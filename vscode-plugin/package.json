@@ -41,6 +41,7 @@
 		"onCommand:wso2ei.dataservice.create.project",
 		"onCommand:wso2ei.dataservice.create.service",
 		"onCommand:wso2ei.mediatorproject.create.project",
+		"onCommand:wso2ei.connector.add",
 		"workspaceContains:src/main/synapse-config",
 		"workspaceContains:**/.classpath"
 	],
@@ -205,6 +206,11 @@
 				"command": "wso2ei.mediatorproject.create.project",
 				"title": "Create New Mediator project",
 				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.connector.add",
+				"title": "Add New Connector",
+				"category": "WSO2EI"
 			}
 		],
 		"languages": [
@@ -314,6 +320,7 @@
 	"dependencies": {
 		"adm-zip": "^0.5.9",
 		"archiver": "^3.0.0",
+		"axios": "^0.26.1",
 		"chokidar": "^2.1.5",
 		"dom-parser": "^0.1.5",
 		"extract-zip": "^2.0.1",
@@ -322,6 +329,7 @@
 		"glob": "^7.1.4",
 		"js-yaml": "^4.1.0",
 		"md5": "^2.2.1",
+		"node-downloader-helper": "^2.1.1",
 		"vscode-extension-telemetry-wrapper": "^0.3.9",
 		"vscode-languageclient": "^4.1.4",
 		"xml2js": "^0.4.19",

@@ -701,12 +701,18 @@ export namespace ArtifactModule {
     }
 
     //add new dependancy
-    export function addNewDependancy(xmlDoc: any, dependencies: any, artifactName: string, groupId: string, type?: string){
+    export function addNewDependancy(xmlDoc: any, dependencies: any, artifactName: string, groupId: string, type?: string, version?: string){
         let dependancy = xmlDoc.createElement("dependency");
         dependencies[0].appendChild(dependancy);
         createAndAppendElement(xmlDoc, dependancy,"groupId", groupId);
         createAndAppendElement(xmlDoc, dependancy,"artifactId", artifactName);
-        createAndAppendElement(xmlDoc, dependancy,"version","1.0.0");
+        if(version){
+            createAndAppendElement(xmlDoc, dependancy,"version",version);
+        }
+        else{
+            createAndAppendElement(xmlDoc, dependancy,"version","1.0.0");
+        }
+        
         if(type){
             createAndAppendElement(xmlDoc, dependancy,"type",type);
         }
