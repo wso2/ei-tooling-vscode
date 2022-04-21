@@ -24,7 +24,7 @@ import {XMLSerializer as XMLSerializer} from 'xmldom';
 import {ArtifactModule} from "../artifacts/ArtifactModule";
 import { dir } from "console";
 import { version } from "process";
-import { SubDirectories } from "../artifacts/artifactUtils";
+import { ProjectNatures, SubDirectories } from "../artifacts/artifactUtils";
 import {SYNAPSE_LANGUAGE_ID, SYNAPSE_NAMESPACE} from "../language/languageUtils";
 
 let DOM = require('xmldom').DOMParser;
@@ -151,6 +151,7 @@ export namespace DataServiceModule {
     export function safeDeteteProject(subDirectory: string){
         if(workspace.workspaceFolders){
             let rootPomFilePath: string = path.join(workspace.workspaceFolders[0].uri.fsPath, "pom.xml");
+            if(!fse.existsSync(rootPomFilePath)) return;
             const buffer: Buffer = fse.readFileSync(rootPomFilePath);
             let rootPomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
 
@@ -227,26 +228,22 @@ export namespace DataServiceModule {
         }
     }
 
-    export function safeDeleteDataService(deletedFile: string){
-
-        
-        let array: string[] = deletedFile.split(path.sep);
-        let deletedDataService: string = array[array.length - 1];
-        let dataServiceFolder: string = array[array.length - 2];
-        let rawDataServiceName: string[] = deletedDataService.split(".");
+    export function safeDeleteDataService(deletedFile: string){ 
 
         if (workspace.workspaceFolders) {
 
-            // Check if the deleted file is a .dbs file
-            if(rawDataServiceName[1].trim() === "dbs"){
-                let artifactXmlFilePath: string = path.join(deletedFile, "..", "..", "artifact.xml");
-                if(file_system.existsSync(artifactXmlFilePath)){
-                    ArtifactModule.deletefromArtifactXml(artifactXmlFilePath, rawDataServiceName[0].trim());
-                }
+            let array: string[] = deletedFile.split(path.sep);
+            let deletedDataService: string = array[array.length - 1];
+            let fileExtension: string = deletedDataService[1];
+            let dataServiceFolder: string = array[array.length - 2];
+            let rawDataServiceName: string[] = deletedDataService.split(".");
+            let artifactXmlFilePath: string = path.join(deletedFile, "..", "..", "artifact.xml");
+
+            //check whether a .dbs file was deleted
+            if((dataServiceFolder === DataServiceInfo.DESTINATION_FOLDER) && (fileExtension === "dbs")){
+                ArtifactModule.deletefromArtifactXml(artifactXmlFilePath, rawDataServiceName[0].trim());
                 ArtifactModule.deleteArtifactFromPomXml(rawDataServiceName[0].trim(), dataServiceFolder);
-
             }
-
 
         }
     }

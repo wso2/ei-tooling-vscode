@@ -19,7 +19,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import {LocalEntryArtifactInfo, ServerRoleInfo, SubDirectories, ProjectNatures} from "./artifactUtils";
+import {LocalEntryArtifactInfo, ServerRoleInfo, SubDirectories, ProjectNatures, APIArtifactInfo, ProxyArtifactInfo, ArtifactInfo, RegistryResourceInfo } from "./artifactUtils";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
 import {RegistryResource} from "./artifactResolver";
 import { dir } from "console";
@@ -447,8 +447,8 @@ export namespace ArtifactModule {
     /**
      * Read pom.xml file and abstract project related info.
      */
-    export async function getProjectInfoFromPOM(pomFilePath: string): Promise<Project> {
-        const buf: Buffer = await fse.readFile(pomFilePath);
+    export function getProjectInfoFromPOM(pomFilePath: string): Project {
+        const buf: Buffer = fse.readFileSync(pomFilePath);
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
         return {
             groupId: xmlDoc.getElementsByTagName("groupId")[0].textContent,
@@ -493,14 +493,16 @@ export namespace ArtifactModule {
                 artifactXmlFilePath = path.join(syapseSubDirectory, "artifact.xml");
 
                 deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
-                deleteArtifactFromPomXml(rawArtifactName[0], artifactFolder);
+                let artifactType = ArtifactInfo.artifactTypes.get(artifactFolder);
+                if(artifactType !== undefined) deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1]);
+                
                 
             //resource
             } else if (isExistDirectoryPattern(filePath, resourceSubDirectory)) {
                 artifactXmlFilePath = path.join(resourceSubDirectory, "artifact.xml");
 
                 deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
-                deleteArtifactFromPomXml(rawArtifactName[0], artifactFolder);
+                deleteArtifactFromPomXml(rawArtifactName[0], RegistryResourceInfo.TYPE.split("/")[1]);
         
         }
     }
@@ -508,14 +510,14 @@ export namespace ArtifactModule {
 
     export function deletefromArtifactXml(artifactXmlFilePath: string, artifactName: string){
 
+        if(!fse.existsSync(artifactXmlFilePath)) return;
+
         let buf: Buffer = fse.readFileSync(artifactXmlFilePath);
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
 
         let artifacts = xmlDoc.getElementsByTagName("artifacts");
         let elementList = xmlDoc.getElementsByTagName("artifact");
         let listLength: number = elementList.length;
-
-        
 
         for (let i = 0; i < listLength; i++) {
             let name: string = elementList[i].getAttribute("name").trim();
@@ -531,46 +533,84 @@ export namespace ArtifactModule {
 
     }
 
-    //delete artifact related information from pom.xml
-    export function deleteArtifactFromPomXml(artifactName: string, artifactFolder: string){
+    //delete artifact related information from composite pom.xml
+    export function deleteArtifactFromPomXml(artifactName: string, artifactType: string){
 
         //const pomSubdirectory: string = workspaceFolder.name + SubDirectories.COMPOSITE_EXPORTER;
         const pathToPomXml:string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+
+        console.log("call");
+
+        if(!fse.existsSync(pathToPomXml)) return;
+        console.log(`artifactName: ${artifactName}, type: ${artifactType}`);
+
+        let rootPomXmlFilePath: string = path.join(workspace.workspaceFolders![0].uri.fsPath, "pom.xml");
+        let project: Project = getProjectInfoFromPOM(rootPomXmlFilePath);
+        const {groupId, version} = Object.assign(project);
+
         let buffer: Buffer = fse.readFileSync(pathToPomXml);
         let pomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml")
         let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
         let dependencyList = dependencies[0].getElementsByTagName("dependency");
         let listLength: number = dependencyList.length;
 
-        //delete metadata dependencies and properties in pom.xml
-        let dependancy:string;
-        for (let i = 0; i < listLength; i++) {
-            dependancy = dependencyList[i].getElementsByTagName("artifactId")[0].textContent;
-            if ((dependancy === artifactName) || (dependancy=== (artifactName + "_metadata")) || (dependancy === (artifactName + "_swagger"))
-            || (dependancy === (artifactName + "_proxy_metadata"))) {
-                let tagName: string = dependencyList[i].getElementsByTagName("groupId")[0].textContent + "_._" + dependencyList[i].getElementsByTagName("artifactId")[0].textContent;
-                dependencies[0].removeChild(dependencyList[i]);
-                let properties = pomXmlDoc.getElementsByTagName("properties");
-                let property = pomXmlDoc.getElementsByTagName(tagName);
-                properties[0].removeChild(property[0]);
-            }
-        }
-        let data = new XMLSerializer().serializeToString(pomXmlDoc);
-        fse.writeFileSync(pathToPomXml, data);
+        let artifactGroupId: string = `${groupId}.${artifactType}`;
+        //console.log(`artfifactGroupId: ${artifactGroupId}`);
 
-        //remove metadata files for api resource and proxy service
-        if(artifactFolder === "api"){
-            let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS); 
-            let metaDataDirectory: string = path.join(syapseSubDirectory, "src", "main", "resources", "metadata");
-            fse.remove(path.join(metaDataDirectory, artifactName + "_metadata.yaml"));
-            fse.remove(path.join(metaDataDirectory, artifactName + "_swagger.yaml"));
-        }
-        else if(artifactFolder === "proxy-services"){
-            let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS);
-            let metaDataDirectory: string = path.join(syapseSubDirectory, "src", "main", "resources", "metadata");
-            fse.remove(path.join(metaDataDirectory, artifactName + "_proxy_metadata.yaml"));
+        //delete metadata dependencies and properties in pom.xml
+        for (let i = 0; i < listLength; i++) {
+
+            let id: string = dependencyList[i].getElementsByTagName("artifactId")[0].textContent.trim();
+            let groupId: string = dependencyList[i].getElementsByTagName("groupId")[0].textContent.trim();
+
+            if((id === artifactName) && (groupId === artifactGroupId)){
+            
+                //remove dependancy
+                let propertyTagName: string = `${groupId}_._${artifactName}`;
+                dependencies[0].removeChild(dependencyList[i]);
+               
+                //remove property
+                let properties = pomXmlDoc.getElementsByTagName("properties")[0];
+                let property = properties.getElementsByTagName(propertyTagName);
+                if(property.length > 0) properties.removeChild(property[0]);
+
+                let data = new XMLSerializer().serializeToString(pomXmlDoc);
+                fse.writeFileSync(pathToPomXml, data);
+
+                //for api resource and proxy service
+                let apiType: string = APIArtifactInfo.TYPE.split("/")[1];
+                let proxyServiceType: string = ProxyArtifactInfo.TYPE.split("/")[1];
+                //console.log(`artifactType: ${artifactType}, apiType: ${apiType}`);
+                if(artifactType === apiType){
+
+                    //delete swagger related information
+                    let swaggerArtifactName: string = `${artifactName}_swagger`;
+                    deleteArtifactFromPomXml(swaggerArtifactName, "metadata");
+
+                    //delete metadata related imformation
+                    let metadataArtifactName: string = `${artifactName}_metadata`;
+                    deleteArtifactFromPomXml(metadataArtifactName, "metadata");
+
+                    //delete swagger and metadata files
+                    let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS); 
+                    let metaDataDirectory: string = path.join(syapseSubDirectory, "src", "main", "resources", "metadata");
+                    fse.remove(path.join(metaDataDirectory, artifactName + "_metadata.yaml"));
+                    fse.remove(path.join(metaDataDirectory, artifactName + "_swagger.yaml"));
+                }
+                else if(artifactType === proxyServiceType){
+
+                    //delete metadata related imformation
+                    let metadataArtifactName: string = `${artifactName}"_proxy_metadata`;
+                    deleteArtifactFromPomXml(metadataArtifactName, "proxy-service.metadata");
+
+                    let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS);
+                    let metaDataDirectory: string = path.join(syapseSubDirectory, "src", "main", "resources", "metadata");
+                    fse.remove(path.join(metaDataDirectory, artifactName + "_proxy_metadata.yaml"));
+                }
+                return;
         }
     }
+}
 
     /**
      * Returns the suitable file extension based on the artifact mediatype.
@@ -595,7 +635,7 @@ export namespace ArtifactModule {
         return extension;
     }
 
-    function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
+    export function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
         let regExpForDirPattern = new RegExp(dirPattern);
         return regExpForDirPattern.test(filePath);
     }
@@ -788,6 +828,4 @@ export namespace ArtifactModule {
             return requiredDirectory;
     }
         
-
-
 }

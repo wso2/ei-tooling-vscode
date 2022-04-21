@@ -279,6 +279,7 @@ export class RegistryResourceInfo {
     static readonly WS_POLICY_LABEL: string = "WS Policy";
 
     static mediaTypes: Map<string, string> = new Map();
+    
 
     static initialize() {
         this.mediaTypes.set("Sequence", "application/vnd.wso2.sequence");
@@ -305,7 +306,28 @@ export class RegistryResourceInfo {
         this.mediaTypes.set("HTTPEndpointTemplate", "application/vnd.wso2.template.endpoint");
         this.mediaTypes.set("JSONSchemaTemplate", "application/json");
         this.mediaTypes.set("WSPolicyTemplate", "application/wspolicy+xml");
+
+       
     }
 }
 
+export class ArtifactInfo{
+    static artifactTypes: Map<string, string> = new Map();
+    static setTypes(){
+        this.artifactTypes.set(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.TYPE);
+        this.artifactTypes.set(EndpointArtifactInfo.DESTINATION_FOLDER, EndpointArtifactInfo.TYPE);
+        this.artifactTypes.set(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, ProxyArtifactInfo.TYPE);
+        this.artifactTypes.set(InboundEndpointArtifactInfo.DESTINATION_FOLDER, InboundEndpointArtifactInfo.TYPE);
+        this.artifactTypes.set(LocalEntryArtifactInfo.DESTINATION_FOLDER, LocalEntryArtifactInfo.TYPE);
+        this.artifactTypes.set(MessageStoreArtifactInfo.DESTINATION_FOLDER, MessageStoreArtifactInfo.TYPE);
+        this.artifactTypes.set(MessageProcessorArtifactInfo.DESTINATION_FOLDER, MessageProcessorArtifactInfo.TYPE);
+        this.artifactTypes.set(TemplateArtifactInfo.DESTINATION_FOLDER, TemplateArtifactInfo.TYPE);
+        this.artifactTypes.set(SequenceArtifactInfo.DESTINATION_FOLDER, SequenceArtifactInfo.TYPE);
+        this.artifactTypes.set(TaskArtifactInfo.DESTINATION_FOLDER, TaskArtifactInfo.TYPE);
+        this.artifactTypes.set(RegistryResourceInfo.DESTINATION_FOLDER, RegistryResourceInfo.TYPE);
+    
+}
+}
+
+ArtifactInfo.setTypes();
 RegistryResourceInfo.initialize();

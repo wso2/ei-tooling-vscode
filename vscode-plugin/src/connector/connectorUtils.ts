@@ -28,7 +28,7 @@ export class ConnectorInfo {
     static readonly CONNECTOR_ASSETS_ES210: string = "/store/apis/assets?type=esbconnector";
     static readonly CONNECTOR_ASSETS_ES210_ASC: string = ConnectorInfo.CONNECTOR_ASSETS_ES210 + "&sort=+overview_name";
     static readonly CONNECTOR_ASSETS_ES210_SEARCH: string = ConnectorInfo.CONNECTOR_ASSETS_ES210_ASC + "&q=";
-    static readonly DESTINATION_FOLDER: string = "connector";
+    static readonly DESTINATION_FOLDER: string = "lib";
     static readonly TYPE: string = "synapse/lib";
     static readonly DATA_SERVICE_LABEL: string = "lib";
 }

@@ -21,6 +21,7 @@ import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
 import {DataServiceModule } from './dataService/DataServiceModule';
+import { ConnectorModule } from './connector/ConnectorModule';
 import {createArtifact} from "./artifacts/artifactResolver";
 import {createDataServiceProject, createNewDataService} from "./dataService/dataServiceResolver";
 import {createMediatorProject} from './mediatorProject/mediatorProjectResolver';
@@ -65,7 +66,9 @@ export function activate(context: ExtensionContext) {
 
         chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
             console.log(path);
+
             DataServiceModule.safeDeleteDataService(path);
+            DataServiceModule.safeDeteteProject(path);
           });
 
     }
@@ -78,6 +81,7 @@ export function activate(context: ExtensionContext) {
         chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
             console.log(path);
             DataServiceModule.safeDeleteDataService(path);
+            DataServiceModule.safeDeteteProject(path);
           });
 
 
@@ -137,6 +141,7 @@ export function activate(context: ExtensionContext) {
                 ArtifactModule.safeDeleteArtifact(deletedFile);
                 DataServiceModule.safeDeteteProject(deletedFile.path);
                 DataServiceModule.safeDeleteDataService(deletedFile.fsPath);
+                ConnectorModule.safeDeleteConnector(deletedFile.fsPath);
 
             });
 

@@ -28,6 +28,7 @@ import {XMLSerializer as XMLSerializer} from 'xmldom';
 const axios = require('axios').default;
 const { DownloaderHelper } = require('node-downloader-helper');
 let DOM = require('xmldom').DOMParser;
+var file_system = require('fs');
 
 export namespace ConnectorModule {
 
@@ -114,13 +115,14 @@ export namespace ConnectorModule {
         
    }
 
-   async function updateConfigurationFiles(connectorFileName: string, version: string){
+   function updateConfigurationFiles(connectorFileName: string, version: string){
 
         if(workspace.workspaceFolders){
 
-            let tmp = connectorFileName.split("-", 2);
+            let tmp = connectorFileName.split("-");
+            tmp.pop();
             let connectorName: string = tmp.join("-");
-            console.log(connectorName);
+            console.log(`downloadingConnector: ${connectorName}`);
 
             const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER);
             //update artifact.xml
@@ -132,7 +134,7 @@ export namespace ConnectorModule {
 
             let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
-            let project: ArtifactModule.Project = await ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);
+            let project: ArtifactModule.Project = ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);
             let groupId: string = project.groupId!;
 
             ArtifactModule.addSynapseArtifactData(artifacts, artifactXmlDoc, connectorName, groupId, ConnectorInfo.TYPE, version, 
@@ -154,6 +156,31 @@ export namespace ConnectorModule {
             let finalGroupId: string = groupId + "." + ConnectorInfo.DATA_SERVICE_LABEL;
             ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, connectorName, finalGroupId, "zip", version);
             fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
+
+        }
+   }
+
+   export function safeDeleteConnector(deletedFile: string){
+       
+        let array: string[] = deletedFile.split(path.sep);
+        let deletedConnectorFileName: string = array[array.length - 1];
+        
+        let fileNameSplit: string[] = deletedConnectorFileName.split(".");
+        let length: number = fileNameSplit.length;
+        let fileExtension: string = fileNameSplit[length - 1];
+        console.log(`file extension: ${fileExtension}`);
+        let tmp = deletedConnectorFileName.split("-");
+        tmp.pop();
+        let connectorName: string = tmp.join("-");
+        console.log(`connector name ${connectorName}`);
+
+        if (workspace.workspaceFolders && (fileExtension === "zip")) {
+
+            let artifactXmlFilePath: string = path.join(deletedFile, "..", "artifact.xml");
+            console.log(`filePath: ${artifactXmlFilePath}`);
+            
+            ArtifactModule.deletefromArtifactXml(artifactXmlFilePath, connectorName.trim());
+            ArtifactModule.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER);
 
         }
    }
