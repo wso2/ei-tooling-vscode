@@ -23,6 +23,7 @@ import {showQuickPick} from "../utils/uiUtils";
 import { ArtifactModule } from "../artifacts/ArtifactModule";
 import { SubDirectories } from "../artifacts/artifactUtils";
 import { ServerRoleInfo, ConnectorInfo } from "./connectorUtils";
+import { DataServiceModule } from "../dataService/DataServiceModule";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
 
 const axios = require('axios').default;
@@ -34,6 +35,77 @@ export namespace ConnectorModule {
 
    const dirName = __dirname;
    
+   export function createProject(projectName: string){
+        if(workspace.workspaceFolders){
+            const currentConnectorExporterDirectory: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER).trim();
+            if(currentConnectorExporterDirectory !== "unidentified"){
+                window.showInformationMessage("Can not add more than one connector exporter!");
+                return;
+            }
+            
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            let connectorexporterDirectory: string = path.join(rootDirectory, projectName);
+            if(fse.existsSync(connectorexporterDirectory)){
+                window.showErrorMessage("Connector exporter name already exists!");
+                return;
+            }
+
+            fse.mkdirSync(connectorexporterDirectory);
+            
+            //add artifact.xml, pom.xml and .project
+            let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConnectorExporterPom.xml");
+            let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "connectorExporter.xml")
+            DataServiceModule.createConfigurationFiles(projectName, connectorexporterDirectory, templateProjNatureFilePath, templatePomFilePath);
+
+            //add ConnectorExporter module to root pom
+            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
+            if(!fse.existsSync(rootPomFilePath)){
+                window.showErrorMessage("No root pom.xml found...!");
+                return;
+            }
+            const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
+            let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
+            let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
+            let subModules = rootPomXmlDoc.getElementsByTagName("module");
+            let totalSubModules: number = subModules.length;
+            let connectorModule = rootPomXmlDoc.createElement("module");
+            connectorModule.textContent = projectName.trim();
+
+            let append: boolean = false;
+           
+            for(let i=0; i<totalSubModules; i++){
+                let configurationFilePath: string = path.join(rootDirectory, subModules[i].textContent.trim(), '.project');
+                let projectNature: string = ArtifactModule.getProjectNature(configurationFilePath).trim();
+
+                if(projectNature === SubDirectories.DATA_SOURCE){
+                    rootPomXmlDoc.insertBefore(connectorModule, subModules[i]);
+                    append = true;
+                    break;
+                }
+                else if(projectNature === SubDirectories.DATA_SERVICE){
+                    rootPomXmlDoc.insertBefore(connectorModule, subModules[i]);
+                    append = true;
+                    break;
+                }
+                else if(projectNature === SubDirectories.CONFIGS){
+                    rootPomXmlDoc.insertBefore(connectorModule, subModules[i]);
+                    append = true;
+                    break;
+                }
+                else if(projectNature === SubDirectories.COMPOSITE_EXPORTER){
+                    rootPomXmlDoc.insertBefore(connectorModule, subModules[i]);
+                    append = true;
+                    break;
+                }          
+            }
+
+            if(!append) modules.appendChild(connectorModule);
+
+            fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc)); 
+
+        }
+
+   }
 
    export async function getSuggestedConnectors(keyWord: string){
 
@@ -94,7 +166,7 @@ export namespace ConnectorModule {
    }
 
    function downloadConnector(downloadLink: string, connectorName: string, version: string){
-        const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER);
+        const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER).trim();
         if(connectorExporterFilePath.trim() !== "unidentified"){
             let urlSplit: string[] = downloadLink.split("/");
             let connectorFileName: string = urlSplit[urlSplit.length - 1].trim();

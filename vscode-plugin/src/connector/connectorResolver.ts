@@ -22,6 +22,19 @@ import {Utils} from "../utils/Utils";
 import { ConnectorInfo } from "./connectorUtils";
 import { ConnectorModule } from "./ConnectorModule";
 
+export async function addNewConnectorExporter(){
+    let projectName = await showInputBox(ConnectorInfo.CONNECTOR_EXPORTER_PROMPT_MESSAGE);
+
+    while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
+        window.showErrorMessage("Enter valid Connector Exporter Name!!");
+        projectName = await showInputBox(ConnectorInfo.CONNECTOR_EXPORTER_PROMPT_MESSAGE);
+    }
+
+    if (projectName) {
+        ConnectorModule.createProject(projectName.trim());
+    }
+}
+
 export async function addNewConnector() {
 
     let connectorName = await showInputBox(ConnectorInfo.CONNECTOR_PROMPT_MESSAGE);

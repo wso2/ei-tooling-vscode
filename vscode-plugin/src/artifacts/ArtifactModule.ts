@@ -474,8 +474,7 @@ export namespace ArtifactModule {
      * -metadata.yaml file
      * -swagger.yaml file
      */
-    export function safeDeleteArtifact(deletedFile: Uri) {
-        const filePath: string = deletedFile.fsPath;
+    export function safeDeleteArtifact(filePath: string) {
         let array: string[] = filePath.split(path.sep);
         let deletedArtifact: string = array[array.length - 1];
         let artifactFolder: string = array[array.length - 2];
@@ -789,10 +788,10 @@ export namespace ArtifactModule {
                 let nature: string = "unidentified";
 
                 let projectNatureArray: string[] = [ProjectNatures.COMPOSITE_EXPORTER, ProjectNatures.CONFIGS, ProjectNatures.CONNECTOR_EXPORTER, 
-                    ProjectNatures.REGISTRY_RESOURCES, ProjectNatures.DATA_SERVICE];
+                    ProjectNatures.REGISTRY_RESOURCES, ProjectNatures.DATA_SERVICE, ProjectNatures.DATA_SOURCE, ProjectNatures.MEDIATOR_PROJECT];
 
                 let subDirectoryArray: string[] = [SubDirectories.COMPOSITE_EXPORTER, SubDirectories.CONFIGS, SubDirectories.CONNECTOR_EXPORTER, 
-                    SubDirectories.REGISTRY_RESOURCES,SubDirectories.DATA_SERVICE];
+                    SubDirectories.REGISTRY_RESOURCES, SubDirectories.DATA_SERVICE, SubDirectories.DATA_SOURCE, SubDirectories.MEDIATOR_PROJECT];
                 
                 for(let i=0; i<projectNatures.length; i++){
 
@@ -817,7 +816,7 @@ export namespace ArtifactModule {
             filenames.forEach( (file: any) => {
                 let projConfigFilePath: string = path.join(rootProjectDirectory, file, ".project");
                 if (file_system.existsSync(projConfigFilePath)) {
-                    let nature: string = getProjectNature(projConfigFilePath);
+                    let nature: string = getProjectNature(projConfigFilePath).trim();
                         if(nature === projectNature){
                             requiredDirectory = path.join(rootProjectDirectory, file);
                             return requiredDirectory;

@@ -49,60 +49,19 @@ export namespace DataServiceModule {
             }
             
             let dSConfigsSubDirectory: string = path.join(dSConfigsDirectory, "dataservice");
-            fse.mkdirSync(dSConfigsDirectory);
-            fse.mkdirSync(dSConfigsSubDirectory);
+            file_system.mkdirSync(dSConfigsSubDirectory, {recursive: true});
 
-            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
-            let dsPomFilePath: string = path.join(dSConfigsDirectory, "pom.xml");
-            let project: ArtifactModule.Project = await ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);
-
-            //add new pom.xml
+            //create artifact.xml, pom.xml and .project
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "DataServiceConfigsPom.xml");
-            const buff: Buffer = fse.readFileSync(templatePomFilePath);
-            let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
-
-            let artifactIds =pomXmlDoc.getElementsByTagName("artifactId");
-            let groupIds =pomXmlDoc.getElementsByTagName("groupId");
-            let versions =pomXmlDoc.getElementsByTagName("version");
-            let childProjectName = pomXmlDoc.getElementsByTagName("name")[0];
-            let childProjectDescription = pomXmlDoc.getElementsByTagName("description")[0];
-
-            //parent
-            artifactIds[0].textContent = project.artifactId;
-            groupIds[0].textContent = project.groupId;
-            versions[0].textContent = project.version;
-
-            //child
-            artifactIds[1].textContent = projectName.trim();
-            groupIds[1].textContent = project.groupId;
-            versions[1].textContent = project.version;
-            childProjectName.textContent = projectName.trim();
-            childProjectDescription.textContent = projectName.trim();
-
-            createFile(dsPomFilePath, pomXmlDoc);
-
-            //add new .project file
-            //read template file
-            let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "dataService.xml");
-            const buf: Buffer = fse.readFileSync(templateProjNatureFilePath);
-            let projectNature  = new DOM().parseFromString(buf.toString(), "text/xml");
-
-            let name = projectNature.getElementsByTagName("name")[0];
-            name.textContent = projectName.trim(); 
-
-            let projectNatureFilePath: string = path.join(dSConfigsDirectory, ".project");
-            createFile(projectNatureFilePath,projectNature);
-
-            //create new artifact.xml
-            //read template file
-            let templateArtifactFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "artifact.xml");
-            const buffer: Buffer = fse.readFileSync(templateArtifactFilePath);
-            let artifacts  = new DOM().parseFromString(buffer.toString(), "text/xml");
-
-            let artifactFilePath: string = path.join(dSConfigsDirectory, "artifact.xml");
-            createFile(artifactFilePath,artifacts);
+            let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "dataService.xml")
+            createConfigurationFiles(projectName, dSConfigsDirectory, templateProjNatureFilePath, templatePomFilePath);
 
             //add dataservice module to root pom
+            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
+            if(!fse.existsSync(rootPomFilePath)){
+                window.showErrorMessage("No root pom.xml found...!");
+                return;
+            }
             const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
             let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
             let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
@@ -148,10 +107,71 @@ export namespace DataServiceModule {
 
     }
 
+    export function createConfigurationFiles(projectName: string, directory: string,
+                             templateProjectNaturePath: string, templatePomXmlPath: string){
+
+        if(workspace.workspaceFolders){
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
+            let pomFilePath: string = path.join(directory, "pom.xml");
+            let project: ArtifactModule.Project = ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);
+
+            //add new pom.xml
+            const buff: Buffer = fse.readFileSync(templatePomXmlPath);
+            let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
+
+            let artifactIds =pomXmlDoc.getElementsByTagName("artifactId");
+            let groupIds =pomXmlDoc.getElementsByTagName("groupId");
+            let versions =pomXmlDoc.getElementsByTagName("version");
+            let childProjectName = pomXmlDoc.getElementsByTagName("name")[0];
+            let childProjectDescription = pomXmlDoc.getElementsByTagName("description")[0];
+
+            //parent
+            artifactIds[0].textContent = project.artifactId;
+            groupIds[0].textContent = project.groupId;
+            versions[0].textContent = project.version;
+
+            //child
+            artifactIds[1].textContent = projectName.trim();
+            groupIds[1].textContent = project.groupId;
+            versions[1].textContent = project.version;
+            childProjectName.textContent = projectName.trim();
+            childProjectDescription.textContent = projectName.trim();
+
+            createFile(pomFilePath, pomXmlDoc);
+
+            //add new .project file
+            //read template file
+            const buf: Buffer = fse.readFileSync(templateProjectNaturePath);
+            let projectNature  = new DOM().parseFromString(buf.toString(), "text/xml");
+
+            let name = projectNature.getElementsByTagName("name")[0];
+            name.textContent = projectName.trim(); 
+
+            let projectNatureFilePath: string = path.join(directory, ".project");
+            createFile(projectNatureFilePath,projectNature);
+
+            //create new artifact.xml
+            //read template file
+            let templateArtifactFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "artifact.xml");
+            const buffer: Buffer = fse.readFileSync(templateArtifactFilePath);
+            let artifacts  = new DOM().parseFromString(buffer.toString(), "text/xml");
+
+            let artifactFilePath: string = path.join(directory, "artifact.xml");
+            createFile(artifactFilePath,artifacts);
+        }
+    }
+
     export function safeDeteteProject(subDirectory: string){
         if(workspace.workspaceFolders){
-            let rootPomFilePath: string = path.join(workspace.workspaceFolders[0].uri.fsPath, "pom.xml");
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
             if(!fse.existsSync(rootPomFilePath)) return;
+
+            //check wheher a top level module was deleted
+            let parentDirectory: string = path.join(subDirectory, "..");
+            if(rootDirectory.trim() !== parentDirectory.trim()) return;
+
             const buffer: Buffer = fse.readFileSync(rootPomFilePath);
             let rootPomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
 
@@ -161,6 +181,7 @@ export namespace DataServiceModule {
             let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
             let subModules = rootPomXmlDoc.getElementsByTagName("module");
             let length = subModules.length;
+            console.log("sd");
             for(let i=0; i<length; i++){
                 if(subModules[i].textContent.trim() === projectName){
                     modules.removeChild(subModules[i]);

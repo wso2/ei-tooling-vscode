@@ -58,7 +58,7 @@ export namespace MediatorProjectModule {
 
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
             let mediatorProjectPomFilePath: string = path.join(rootDirectory, projectName, "pom.xml");
-            let project: ArtifactModule.Project = await ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);
+            let project: ArtifactModule.Project = ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);
 
             //add new pom.xml
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "MediatorProjectPom.xml");
@@ -111,14 +111,23 @@ export namespace MediatorProjectModule {
             DataServiceModule.createFile(classPathFilePath, classPath);
 
             //add mediatorProject module to root pom
+            if(!fse.existsSync(rootPomFilePath)){
+                window.showErrorMessage("No root pom.xml found...!");
+                return;
+            }
             const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
             let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
             let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
-            let firstModule = modules.getElementsByTagName("module")[0];
+            let firstModule = modules.getElementsByTagName("module");
             let mediatorProjectChild = rootPomXmlDoc.createElement("module");
             mediatorProjectChild.textContent = projectName;
-            rootPomXmlDoc.insertBefore(mediatorProjectChild, firstModule);
 
+            if(firstModule.length === 0){
+                modules.appendChild(mediatorProjectChild);
+            }
+            else if(firstModule.length > 0){
+                rootPomXmlDoc.insertBefore(mediatorProjectChild, firstModule[0]);
+            }
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
 
             //update composite pom
@@ -173,6 +182,55 @@ export namespace MediatorProjectModule {
     
 
             
+        }
+    }
+
+    export function safeDeleteMediatorProjectDetails(filePath: string){
+
+        if(workspace.workspaceFolders){
+            let extensionSplit: string[] = filePath.split(".");
+            let fileExtension: string = extensionSplit[extensionSplit.length - 1].trim();
+
+            //chech whether a java file was deleted
+            if(fileExtension === "java"){
+                //detele project related details if there are any
+                let parentDirectory: string = path.join(filePath, "..");
+                let splitRegex: string = `java${path.sep}`;
+                let tmp1: string[] = parentDirectory.split(splitRegex);
+                let tmp2: string = tmp1[tmp1.length - 1];
+                let tmp3: string[] = tmp2.split(path.sep);
+                let packageName: string = tmp3.join(".");
+                
+                splitRegex = `${path.sep}src`;
+                let tmp4: string = filePath.split(splitRegex)[0];
+                let tmp5: string[] = tmp4.split(path.sep);
+                let projectName: string = tmp5[tmp5.length - 1].trim();
+                
+                let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+                const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
+                let pomXml = new DOM().parseFromString(pomBuff.toString(), "text/xml");
+                let properties = pomXml.getElementsByTagName("properties")[0];
+
+                //delete property
+                let propertyTagName: string = `${packageName}_._${projectName}`;
+                let propertyList = properties.getElementsByTagName(propertyTagName);
+                if(propertyList.length > 0){
+                    properties.removeChild(propertyList[0]);
+                    //delete dependency
+                    let dependencies = pomXml.getElementsByTagName("dependencies")[0];
+                    let dependencyList = dependencies.getElementsByTagName("dependency");
+                    let dependancyCount: number = dependencyList.length;
+                    for(let i=0; i<dependancyCount; i++){
+                        let groupId: string = dependencyList[i].getElementsByTagName("groupId")[0].textContent.trim();
+                        let artifactId: string = dependencyList[i].getElementsByTagName("artifactId")[0].textContent.trim();
+                        if((groupId === packageName) && (artifactId === projectName)){
+                            dependencies.removeChild(dependencyList[i]);
+                            break;
+                        }
+                    }
+                }
+                fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXml));
+            }
         }
     }
     

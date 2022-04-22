@@ -21,11 +21,12 @@ import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
 import {DataServiceModule } from './dataService/DataServiceModule';
+import { MediatorProjectModule } from './mediatorProject/MediatorProjectModule';
 import { ConnectorModule } from './connector/ConnectorModule';
 import {createArtifact} from "./artifacts/artifactResolver";
 import {createDataServiceProject, createNewDataService} from "./dataService/dataServiceResolver";
 import {createMediatorProject} from './mediatorProject/mediatorProjectResolver';
-import { addNewConnector } from './connector/connectorResolver';
+import { addNewConnector, addNewConnectorExporter } from './connector/connectorResolver';
 import {
     APIArtifactInfo,
     EndpointArtifactInfo,
@@ -65,10 +66,12 @@ export function activate(context: ExtensionContext) {
         createFileWatcher();
 
         chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
-            console.log(path);
-
+            //console.log(path);
+            ArtifactModule.safeDeleteArtifact(path);
+            //DataServiceModule.safeDeteteProject(path);
             DataServiceModule.safeDeleteDataService(path);
-            DataServiceModule.safeDeteteProject(path);
+            ConnectorModule.safeDeleteConnector(path);
+            MediatorProjectModule.safeDeleteMediatorProjectDetails(path);
           });
 
     }
@@ -79,9 +82,12 @@ export function activate(context: ExtensionContext) {
         createFileWatcher();
 
         chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
-            console.log(path);
+            //console.log(path);
+            ArtifactModule.safeDeleteArtifact(path);
+            //DataServiceModule.safeDeteteProject(path);
             DataServiceModule.safeDeleteDataService(path);
-            DataServiceModule.safeDeteteProject(path);
+            ConnectorModule.safeDeleteConnector(path);
+            MediatorProjectModule.safeDeleteMediatorProjectDetails(path);
           });
 
 
@@ -136,12 +142,13 @@ export function activate(context: ExtensionContext) {
 
             watcher.onDidDelete((deletedFile: Uri) => {
                 
-                console.log("triggered");
+                /*console.log("triggered");
 
-                ArtifactModule.safeDeleteArtifact(deletedFile);
+                ArtifactModule.safeDeleteArtifact(deletedFile);*/
                 DataServiceModule.safeDeteteProject(deletedFile.path);
-                DataServiceModule.safeDeleteDataService(deletedFile.fsPath);
+                /*DataServiceModule.safeDeleteDataService(deletedFile.fsPath);
                 ConnectorModule.safeDeleteConnector(deletedFile.fsPath);
+                MediatorProjectModule.safeDeleteMediatorProjectDetails(deletedFile.fsPath);*/
 
             });
 
@@ -229,7 +236,6 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.task", async () => {
         await createArtifact(TaskArtifactInfo.ARTIFACT_TYPE);
     }));
-
     context.subscriptions.push(commands.registerCommand("wso2ei.resource.registry", async () => {
         await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE);
     }));
@@ -244,6 +250,9 @@ function registerSynapseCommands(context: ExtensionContext) {
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.connector.add", async () => {
         await addNewConnector();
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.connector.create.project", async () => {
+        await addNewConnectorExporter();
     }));
 
 }

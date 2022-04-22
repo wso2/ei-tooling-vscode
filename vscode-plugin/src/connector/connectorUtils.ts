@@ -23,7 +23,8 @@ export class ServerRoleInfo {
 }
 
 export class ConnectorInfo {
-    static readonly CONNECTOR_PROMPT_MESSAGE: string = "Enter Connector name...";
+    static readonly CONNECTOR_EXPORTER_PROMPT_MESSAGE: string = "Enter Connector Exporter Name...";
+    static readonly CONNECTOR_PROMPT_MESSAGE: string = "Enter Connector Name...";
     static readonly CONNECTOR_SERVER_URL: string = "https://store.wso2.com";
     static readonly CONNECTOR_ASSETS_ES210: string = "/store/apis/assets?type=esbconnector";
     static readonly CONNECTOR_ASSETS_ES210_ASC: string = ConnectorInfo.CONNECTOR_ASSETS_ES210 + "&sort=+overview_name";

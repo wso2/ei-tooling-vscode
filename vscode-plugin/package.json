@@ -42,6 +42,7 @@
 		"onCommand:wso2ei.dataservice.create.service",
 		"onCommand:wso2ei.mediatorproject.create.project",
 		"onCommand:wso2ei.connector.add",
+		"onCommand:wso2ei.connector.create.project",
 		"workspaceContains:src/main/synapse-config",
 		"workspaceContains:**/.classpath"
 	],
@@ -210,6 +211,11 @@
 			{
 				"command": "wso2ei.connector.add",
 				"title": "Add New Connector",
+				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.connector.create.project",
+				"title": "Add New Connector Exporter",
 				"category": "WSO2EI"
 			}
 		],
