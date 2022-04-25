@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder, languages, QuickPickItem} from "vscode";
+import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder, languages, QuickPickItem, ProgressLocation} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
 import {showQuickPick} from "../utils/uiUtils";
@@ -131,7 +131,6 @@ export namespace ConnectorModule {
             ).then(selected => {
                 if(selected && downloadLinkMap.has(selected.label.trim())) {
                     let downloadLink: string =  downloadLinkMap.get(selected.label.trim())!;
-                    console.log(downloadLink);
                     downloadConnector(downloadLink, selected.label.trim(), selected.description!.trim());
                 }
                 else{
@@ -178,11 +177,21 @@ export namespace ConnectorModule {
 
             const downloadHelper = new DownloaderHelper(downloadLink, connectorExporterFilePath);
             downloadHelper.on('end', () => {
-                window.showInformationMessage(`${connectorName} downloaded Successfully`);
                 //update artifact.xml and composite pom.xml
                 updateConfigurationFiles(connectorFileName, version);
-            })
-            downloadHelper.start();
+                window.showInformationMessage(`${connectorName} downloaded Successfully`);
+            });
+
+            window.withProgress({
+                location: ProgressLocation.Notification,
+                title: "Downloading the Connector..",
+                cancellable: true
+                }, async (progress) => {
+                    progress.report({  increment: 0 });
+                    await downloadHelper.start();
+                    progress.report({ increment: 100 });
+                }
+            );
         } 
         
    }
@@ -191,10 +200,9 @@ export namespace ConnectorModule {
 
         if(workspace.workspaceFolders){
 
-            let tmp = connectorFileName.split("-");
-            tmp.pop();
-            let connectorName: string = tmp.join("-");
-            console.log(`downloadingConnector: ${connectorName}`);
+            let nameSplit = connectorFileName.split("-");
+            nameSplit.pop();
+            let connectorName: string = nameSplit.join("-");
 
             const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER);
             //update artifact.xml
@@ -240,17 +248,13 @@ export namespace ConnectorModule {
         let fileNameSplit: string[] = deletedConnectorFileName.split(".");
         let length: number = fileNameSplit.length;
         let fileExtension: string = fileNameSplit[length - 1];
-        console.log(`file extension: ${fileExtension}`);
-        let tmp = deletedConnectorFileName.split("-");
-        tmp.pop();
-        let connectorName: string = tmp.join("-");
-        console.log(`connector name ${connectorName}`);
+        let nameSplit = deletedConnectorFileName.split("-");
+        nameSplit.pop();
+        let connectorName: string = nameSplit.join("-");
 
         if (workspace.workspaceFolders && (fileExtension === "zip")) {
 
             let artifactXmlFilePath: string = path.join(deletedFile, "..", "artifact.xml");
-            console.log(`filePath: ${artifactXmlFilePath}`);
-            
             ArtifactModule.deletefromArtifactXml(artifactXmlFilePath, connectorName.trim());
             ArtifactModule.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER);
 

@@ -63,35 +63,16 @@ export function activate(context: ExtensionContext) {
     if (window.activeTextEditor) {
         const currentDoc = window.activeTextEditor.document;
         setLanguageAndLaunchServer(currentDoc);
+        createDirectoryWatcher();
         createFileWatcher();
-
-        chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
-            //console.log(path);
-            ArtifactModule.safeDeleteArtifact(path);
-            //DataServiceModule.safeDeteteProject(path);
-            DataServiceModule.safeDeleteDataService(path);
-            ConnectorModule.safeDeleteConnector(path);
-            MediatorProjectModule.safeDeleteMediatorProjectDetails(path);
-          });
 
     }
 
     //listen to newly opened text documents
     workspace.onDidOpenTextDocument((document) => {
         setLanguageAndLaunchServer(document);
+        createDirectoryWatcher();
         createFileWatcher();
-
-        chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
-            //console.log(path);
-            ArtifactModule.safeDeleteArtifact(path);
-            //DataServiceModule.safeDeteteProject(path);
-            DataServiceModule.safeDeleteDataService(path);
-            ConnectorModule.safeDeleteConnector(path);
-            MediatorProjectModule.safeDeleteMediatorProjectDetails(path);
-          });
-
-
-
     });
 
     function setLanguageAndLaunchServer(document: TextDocument) {
@@ -106,9 +87,8 @@ export function activate(context: ExtensionContext) {
         }
     }
 
-    function createFileWatcher() {
+    function createDirectoryWatcher() {
 
-        console.log("created");
         if (workspace.workspaceFolders && !fileWatcherCreated) {
             //let uri = workspace.workspaceFolders[0].uri;
             // initialization code...
@@ -141,25 +121,25 @@ export function activate(context: ExtensionContext) {
             
 
             watcher.onDidDelete((deletedFile: Uri) => {
-                
-                /*console.log("triggered");
-
-                ArtifactModule.safeDeleteArtifact(deletedFile);*/
                 DataServiceModule.safeDeteteProject(deletedFile.path);
-                /*DataServiceModule.safeDeleteDataService(deletedFile.fsPath);
-                ConnectorModule.safeDeleteConnector(deletedFile.fsPath);
-                MediatorProjectModule.safeDeleteMediatorProjectDetails(deletedFile.fsPath);*/
-
             });
 
             
         }
+    }
 
-        
-        function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
-            let regExpForDirPattern = new RegExp(dirPattern);
-            return regExpForDirPattern.test(filePath);
-        }
+    function createFileWatcher(){
+        chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
+            ArtifactModule.safeDeleteArtifact(path);
+            DataServiceModule.safeDeleteDataService(path);
+            ConnectorModule.safeDeleteConnector(path);
+            MediatorProjectModule.safeDeleteMediatorProjectDetails(path);
+          });
+    }
+
+    function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
+        let regExpForDirPattern = new RegExp(dirPattern);
+        return regExpForDirPattern.test(filePath);
     }
 }
 

@@ -538,10 +538,7 @@ export namespace ArtifactModule {
         //const pomSubdirectory: string = workspaceFolder.name + SubDirectories.COMPOSITE_EXPORTER;
         const pathToPomXml:string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
 
-        console.log("call");
-
         if(!fse.existsSync(pathToPomXml)) return;
-        console.log(`artifactName: ${artifactName}, type: ${artifactType}`);
 
         let rootPomXmlFilePath: string = path.join(workspace.workspaceFolders![0].uri.fsPath, "pom.xml");
         let project: Project = getProjectInfoFromPOM(rootPomXmlFilePath);
@@ -554,7 +551,6 @@ export namespace ArtifactModule {
         let listLength: number = dependencyList.length;
 
         let artifactGroupId: string = `${groupId}.${artifactType}`;
-        //console.log(`artfifactGroupId: ${artifactGroupId}`);
 
         //delete metadata dependencies and properties in pom.xml
         for (let i = 0; i < listLength; i++) {
@@ -579,7 +575,6 @@ export namespace ArtifactModule {
                 //for api resource and proxy service
                 let apiType: string = APIArtifactInfo.TYPE.split("/")[1];
                 let proxyServiceType: string = ProxyArtifactInfo.TYPE.split("/")[1];
-                //console.log(`artifactType: ${artifactType}, apiType: ${apiType}`);
                 if(artifactType === apiType){
 
                     //delete swagger related information
