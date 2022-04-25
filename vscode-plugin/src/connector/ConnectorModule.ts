@@ -16,10 +16,9 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder, languages, QuickPickItem, ProgressLocation} from "vscode";
+import {Uri, window, workspace, QuickPickItem, ProgressLocation} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import {showQuickPick} from "../utils/uiUtils";
 import { ArtifactModule } from "../artifacts/ArtifactModule";
 import { SubDirectories } from "../artifacts/artifactUtils";
 import { ServerRoleInfo, ConnectorInfo } from "./connectorUtils";
@@ -29,7 +28,6 @@ import {XMLSerializer as XMLSerializer} from 'xmldom';
 const axios = require('axios').default;
 const { DownloaderHelper } = require('node-downloader-helper');
 let DOM = require('xmldom').DOMParser;
-var file_system = require('fs');
 
 export namespace ConnectorModule {
 

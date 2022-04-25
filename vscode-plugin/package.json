@@ -205,7 +205,7 @@
 			},
 			{
 				"command": "wso2ei.mediatorproject.create.project",
-				"title": "Create New Mediator project",
+				"title": "Create New Mediator Project",
 				"category": "WSO2EI"
 			},
 			{
