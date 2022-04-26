@@ -16,16 +16,18 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {workspace, Uri, window, commands} from "vscode";
+import {workspace, Uri, window, commands, WorkspaceEdit} from "vscode";
 import * as path from 'path';
-import {executeProjectBuildCommand} from "../mavenInternals/commandHandler";
-import {ArchetypeModule} from "../archetype/ArchetypeModule";
-import { ArtifactModule } from "../artifacts/ArtifactModule";
-import {ProjectNatures, SubDirectories} from "../artifacts/artifactUtils";
-import {chooseTargetFolder, chooseTargetFile, showInputBox} from "../utils/uiUtils";
 import * as fse from "fs-extra";
+import {executeProjectBuildCommand} from "../mavenInternals/commandHandler";
+import { ArtifactModule } from "../artifacts/ArtifactModule";
+import { DataServiceModule } from "../dataService/DataServiceModule";
+import {ProjectNatures, SubDirectories} from "../artifacts/artifactUtils";
+import {chooseTargetFolder, chooseTargetFile, showInputBox, showInputBoxForArtifactId, showInputBoxForGroupId} from "../utils/uiUtils";
+import {Utils} from "../utils/Utils";
 
-var file_system = require('fs');
+let DOM = require('xmldom').DOMParser;
+var fileSystem = require('fs');
 var archiver = require('archiver');
 const extract = require('extract-zip');
 var AdmZip = require('adm-zip');
@@ -41,7 +43,7 @@ export function createDeployableArchive() {
 
     if (workspace.workspaceFolders) {
         let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-        file_system.readdir(rootDirectory, (err: any, files: any) => {
+        fileSystem.readdir(rootDirectory, (err: any, files: any) => {
             if (err)
               console.log(err);
             else {
@@ -85,7 +87,7 @@ export async function createZipArchive(){
         let projectName: string = workspace.workspaceFolders[0].name;
 
         let zipFilePath: string = path.join(targetLocation, zipFileName+".zip");
-        let output = file_system.createWriteStream(zipFilePath);
+        let output = fileSystem.createWriteStream(zipFilePath);
         let archive = archiver('zip');
 
         archive.on('error', function(err: any){
@@ -116,7 +118,7 @@ export async function unzipArchive(){
         const targetFolderHint = Uri.file(homedir);
 
         //get the target folder
-        const targetLocation: string | null = await chooseTargetFile(targetFolderHint);
+        const targetLocation: string | null = await chooseTargetFile(targetFolderHint, "Select ZIP Archive...", {'ZIP files': ['zip']});
 
         var zip = new AdmZip(targetLocation);
         var zipEntries = zip.getEntries(); // an array of ZipEntry records
@@ -142,4 +144,135 @@ export async function unzipArchive(){
       } catch (err) {
             window.showErrorMessage("Zip Archive Extraction Failed");
       }
+}
+
+export async function createProjectFromCar(){
+
+    const dirName = __dirname;
+
+    try {
+        // Set home dir as the target folder hint.
+        const homedir: string = require('os').homedir();
+        const targetFolderHint = Uri.file(homedir);
+
+        //get the target folder
+        const targetLocation: string | null = await chooseTargetFile(targetFolderHint, "Select CAR Archive...", {'car files': ['car']});
+        
+        if(targetLocation){
+
+            let pathSplit: string[] = targetLocation.split(".car")
+            let newFilePath: string = pathSplit[0] + ".zip";
+
+            fileSystem.renameSync(targetLocation, newFilePath);
+
+            var zip = new AdmZip(newFilePath);
+            var zipEntries = zip.getEntries(); // an array of ZipEntry records
+            zipEntries.forEach( (entry: any) => {
+                console.log(entry.entryName);
+            });
+
+            let artifactID: string | undefined = await showInputBoxForArtifactId();
+            let groupID: string | undefined = await showInputBoxForGroupId();
+
+            // Ensure that artifactID name is valid.
+            while (typeof artifactID !== "undefined" && !Utils.validate(artifactID)) {
+                window.showErrorMessage("Enter valid ArtifactId name!!");
+                artifactID = await showInputBoxForArtifactId();
+            }
+
+            // Ensure that groupID name is valid.
+            while (typeof groupID !== "undefined" && !Utils.validate(groupID)) {
+                window.showErrorMessage("Enter valid GroupId name!!");
+                groupID = await showInputBoxForGroupId();
+            }
+
+            if (typeof artifactID === "undefined" || typeof groupID === "undefined") {
+                return;
+            }
+
+            //get the destination directory
+            const destinationLocation: string | null = await chooseTargetFolder(targetFolderHint);
+
+            if(destinationLocation){
+
+                //create new project directory
+                let newProjectDirectory: string = path.join(destinationLocation, artifactID);
+                fileSystem.mkdirSync(newProjectDirectory);
+
+                //extract zip archive
+                let tmpDirectory: string = path.join(newProjectDirectory, "tmp");
+                fse.mkdirSync(tmpDirectory);
+                await extract(newFilePath, { dir: tmpDirectory });
+
+                //read root metadata file
+                let rootMetaDataPath: string = path.join(tmpDirectory, "metadata.xml");
+                if(!fse.existsSync(rootMetaDataPath)){
+                    window.showErrorMessage("Can not find root metadata file.New project creation failed...!");
+                    return;
+                }
+                const buffer: Buffer = fse.readFileSync(rootMetaDataPath);
+                let medatadaXml = new DOM().parseFromString(buffer.toString(), "text/xml");
+                let artifacts = medatadaXml.getElementsByTagName("artifact");
+                if(artifacts.length > 0){
+                    let name: string = artifacts[0].getAttribute("name");
+                    let version: string = artifacts[0].getAttribute("version");
+                    let dependencies = artifacts[0].getElementsByTagName("dependency");
+                    createRootPomXml(destinationLocation, groupID, artifactID, version);
+                    //create settings.json
+                    let settingsDirectory: string = path.join(newProjectDirectory,".vscode");
+                    let settingsFilePath: string = path.join(settingsDirectory, "settings.json");
+                    let templateSettingsFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "settings.json");
+                    fse.mkdirSync(settingsDirectory);
+
+                    let edit = new WorkspaceEdit();
+                    edit.createFile(Uri.file(settingsFilePath));
+                    workspace.applyEdit(edit);
+                    let settings: Buffer = fse.readFileSync(templateSettingsFilePath);
+                    fse.writeFileSync(settingsFilePath, settings);
+                    
+                    await commands.executeCommand('vscode.openFolder', Uri.file(newProjectDirectory), true);
+
+                    //create composite exporter
+                    ArtifactModule.CreateNewCompositeExporterProject(name.trim());
+                    if(dependencies.length === 0){
+                        window.showInformationMessage("No dependencies for the project...!");
+                        return;
+                    }
+                    
+                }
+
+                
+
+                //window.showInformationMessage("Zip Archive Imported Successfully");
+    
+                //let projectName: string = zipEntries[0].entryName.split(path.sep)[0].trim();
+                //let projectFilePath: string = path.join(destinationLocation, projectName);
+                //commands.executeCommand('vscode.openFolder', Uri.file(projectFilePath), true);
+
+            }
+           
+        }
+        
+      } catch (err) {
+            window.showErrorMessage("Project Creation Failed");
+      }
+
+}
+
+function createRootPomXml(directory: string,groupID: string, artifactID: string, version: string){
+    let templatePomFilePath: string = path.join(__dirname, "..", "..", "templates", "pom", "rootPom.xml");
+    let pomFilePath: string = path.join(directory, artifactID, "pom.xml");
+    const rootPomBuffer: Buffer = fse.readFileSync(templatePomFilePath);
+    let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
+    let rootGroupId = rootPomXmlDoc.getElementsByTagName("groupId")[0];
+    let rootArtifactId = rootPomXmlDoc.getElementsByTagName("artifactId")[0];
+    let rootVersion = rootPomXmlDoc.getElementsByTagName("version")[0];
+    let name = rootPomXmlDoc.getElementsByTagName("name")[0];
+    let description = rootPomXmlDoc.getElementsByTagName("description")[0];
+    rootGroupId.textContent = groupID;
+    rootArtifactId.textContent = artifactID;
+    rootVersion.textContent = version;
+    name.textContent = artifactID;
+    description.textContent = artifactID;
+    DataServiceModule.createFile(pomFilePath, rootPomXmlDoc);
 }

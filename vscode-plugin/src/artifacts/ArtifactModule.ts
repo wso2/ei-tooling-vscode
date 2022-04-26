@@ -19,10 +19,12 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import {LocalEntryArtifactInfo, ServerRoleInfo, SubDirectories, ProjectNatures, APIArtifactInfo, ProxyArtifactInfo, ArtifactInfo, RegistryResourceInfo } from "./artifactUtils";
+import {LocalEntryArtifactInfo, ServerRoleInfo, SubDirectories, ProjectNatures, APIArtifactInfo, ProxyArtifactInfo, ArtifactInfo, RegistryResourceInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, MessageProcessorArtifactInfo, MessageStoreArtifactInfo, SequenceArtifactInfo, TaskArtifactInfo, TemplateArtifactInfo } from "./artifactUtils";
+import { ConnectorModule } from "../connector/ConnectorModule";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
 import {RegistryResource} from "./artifactResolver";
 import { dir } from "console";
+import { DataServiceModule } from "../dataService/DataServiceModule";
 
 let DOM = require('xmldom').DOMParser;
 let glob = require("glob");
@@ -821,5 +823,169 @@ export namespace ArtifactModule {
         }
             return requiredDirectory;
     }
+
+    export function CreateNewESBConfigProject(projectName: string){
+
+        if(workspace.workspaceFolders){
+        
+            //create new sub-directory
+            //create pom.xml, artifact.xml and .project files
+            let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConfigsPom.xml");
+            let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "esbConfigs.xml")
+            let status: boolean =ConnectorModule.createProject(projectName, "ESB Config Project", templatePomFilePath, 
+                                templateProjNatureFilePath, SubDirectories.CONFIGS, true);
+            if(!status) return;
+
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            //create additional sub-directories
+            let metadataPath: string = path.join(rootDirectory, projectName, "src", "main", "resources", "metadata");
+            file_system.mkdirSync(metadataPath, {recursive: true});
+
+            let artifactSubFolders: string[] = [APIArtifactInfo.DESTINATION_FOLDER, EndpointArtifactInfo.DESTINATION_FOLDER, InboundEndpointArtifactInfo.DESTINATION_FOLDER,
+                LocalEntryArtifactInfo.DESTINATION_FOLDER, MessageProcessorArtifactInfo.DESTINATION_FOLDER, MessageStoreArtifactInfo.DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER,
+                SequenceArtifactInfo.DESTINATION_FOLDER, TaskArtifactInfo.DESTINATION_FOLDER, TemplateArtifactInfo.DESTINATION_FOLDER];
+
+            for(let i=0; i< artifactSubFolders.length; i++){
+                let subFolderPath: string = path.join(rootDirectory, projectName, "src", "main", "synapse-config", artifactSubFolders[i].trim());
+                file_system.mkdirSync(subFolderPath, {recursive: true});
+            }
+
+            //add to root pom
+            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
+            if(!fse.existsSync(rootPomFilePath)){
+                window.showErrorMessage("No root pom.xml found...!");
+                return;
+            }
+            const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
+            let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
+            let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
+            let subModules = rootPomXmlDoc.getElementsByTagName("module");
+            let totalSubModules: number = subModules.length;
+            let ESBModule = rootPomXmlDoc.createElement("module");
+            ESBModule.textContent = projectName.trim();
+
+            let append: boolean = false;
+            
+            for(let i=0; i<totalSubModules; i++){
+                let configurationFilePath: string = path.join(rootDirectory, subModules[i].textContent.trim(), '.project');
+                let projectNature: string = ArtifactModule.getProjectNature(configurationFilePath).trim();
+
+                if(projectNature === SubDirectories.COMPOSITE_EXPORTER){
+                    rootPomXmlDoc.insertBefore(ESBModule, subModules[i]);
+                    append = true;
+                    break;
+                }          
+            }
+
+            if(!append) modules.appendChild(ESBModule);
+
+            fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
+        }
+    }
+
+    export function CreateNewCompositeExporterProject(projectName: string){
+
+        if(workspace.workspaceFolders){
+        
+            //create new sub-directory
+            //create pom.xml, artifact.xml and .project files
+            let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "CompositeExporterPom.xml");
+            let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "compositeExporter.xml")
+            let status: boolean = ConnectorModule.createProject(projectName, "Composite Exporter Project", templatePomFilePath, 
+                                templateProjNatureFilePath, SubDirectories.COMPOSITE_EXPORTER, false);
+            if(!status) return;
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+        
+            //add to root pom
+            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
+            if(!fse.existsSync(rootPomFilePath)){
+                window.showErrorMessage("No root pom.xml found...!");
+                return;
+            }
+            const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
+            let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
+            let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
+            let connectorModule = rootPomXmlDoc.createElement("module");
+            connectorModule.textContent = projectName.trim();
+
+            modules.appendChild(connectorModule);
+
+            fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
+        }
+    }
+
+    export function CreateNewRegistryResourcesProject(projectName: string){
+
+        if(workspace.workspaceFolders){
+        
+            //create new sub-directory
+            //create pom.xml, artifact.xml and .project files
+            let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "RegistryResourcesPom.xml");
+            let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "registryResources.xml");
+            let status: boolean = ConnectorModule.createProject(projectName, "Registry Resources Project", templatePomFilePath, 
+                                    templateProjNatureFilePath, SubDirectories.REGISTRY_RESOURCES, true);
+            if(!status) return;
+            //create .classpath file
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            let templateConfigFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "registryClassPath.xml")
+            const buf: Buffer = fse.readFileSync(templateConfigFilePath);
+            let classPath  = new DOM().parseFromString(buf.toString(), "text/xml");
+            let configFilePath: string = path.join(rootDirectory, projectName, ".classpath");
+            DataServiceModule.createFile(configFilePath,classPath);
+
+            //add to root pom
+            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
+            if(!fse.existsSync(rootPomFilePath)){
+                window.showErrorMessage("No root pom.xml found...!");
+                return;
+            }
+            const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
+            let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
+            let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
+            let subModules = rootPomXmlDoc.getElementsByTagName("module");
+            let totalSubModules: number = subModules.length;
+            let registryModule = rootPomXmlDoc.createElement("module");
+            registryModule.textContent = projectName.trim();
+
+            let append: boolean = false;
+            
+            for(let i=0; i<totalSubModules; i++){
+                let configurationFilePath: string = path.join(rootDirectory, subModules[i].textContent.trim(), '.project');
+                let projectNature: string = ArtifactModule.getProjectNature(configurationFilePath).trim();
+
+                if(projectNature === SubDirectories.CONNECTOR_EXPORTER){
+                    rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                    append = true;
+                    break;
+                }
+                else if(projectNature === SubDirectories.DATA_SOURCE){
+                    rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                    append = true;
+                    break;
+                }
+                else if(projectNature === SubDirectories.DATA_SERVICE){
+                    rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                    append = true;
+                    break;
+                }
+                else if(projectNature === SubDirectories.CONFIGS){
+                    rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                    append = true;
+                    break;
+                }
+                else if(projectNature === SubDirectories.COMPOSITE_EXPORTER){
+                    rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                    append = true;
+                    break;
+                }                             
+            }
+
+            if(!append) modules.appendChild(registryModule);
+
+            fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
+        }
+    }
+
+
         
 }

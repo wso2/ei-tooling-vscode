@@ -23,7 +23,7 @@ import {ArchetypeModule} from "./archetype/ArchetypeModule";
 import {DataServiceModule } from './dataService/DataServiceModule';
 import { MediatorProjectModule } from './mediatorProject/MediatorProjectModule';
 import { ConnectorModule } from './connector/ConnectorModule';
-import {createArtifact} from "./artifacts/artifactResolver";
+import {createArtifact, createESBProject, createCompositeProject, createRegistryResourcesProject} from "./artifacts/artifactResolver";
 import {createDataServiceProject, createNewDataService} from "./dataService/dataServiceResolver";
 import {createMediatorProject} from './mediatorProject/mediatorProjectResolver';
 import { addNewConnector, addNewConnectorExporter } from './connector/connectorResolver';
@@ -43,7 +43,7 @@ import {
     TemplateArtifactInfo
 } from "./artifacts/artifactUtils";
 
-import {createDeployableArchive, createZipArchive, unzipArchive} from "./archive/archiveResolver";
+import {createDeployableArchive, createZipArchive, unzipArchive, createProjectFromCar} from "./archive/archiveResolver";
 import {ArtifactModule} from "./artifacts/ArtifactModule";
 import {SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
@@ -158,15 +158,21 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2ei.project.create", async () => {
         await ArchetypeModule.createESBProject();
     }));
-
     context.subscriptions.push(commands.registerCommand("wso2ei.project.build", async () => {
         createDeployableArchive();
     }));
-
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.create.esb", async () => {
+        await createESBProject();
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.create.composite", async () => {
+        await createCompositeProject();
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.create.registry", async () => {
+        await createRegistryResourcesProject();
+    }));
     context.subscriptions.push(commands.registerCommand("wso2ei.project.import", async () => {
         ArchetypeModule.importProject();
     }));
-
     context.subscriptions.push(commands.registerCommand("wso2ei.project.zip", async () => {
         createZipArchive();
     }));
@@ -234,7 +240,9 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2ei.connector.create.project", async () => {
         await addNewConnectorExporter();
     }));
-
+    context.subscriptions.push(commands.registerCommand("wso2ei.car.create.zip", async () => {
+        await createProjectFromCar();
+    }));
 }
 
 // this method is called when your extension is deactivated

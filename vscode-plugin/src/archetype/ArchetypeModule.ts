@@ -55,7 +55,7 @@ export namespace ArchetypeModule {
             groupID = await showInputBoxForGroupId();
         }
 
-        if (typeof artifactID === "undefined" || groupID === "undefined") {
+        if (typeof artifactID === "undefined" || typeof groupID === "undefined") {
             return;
         }
 

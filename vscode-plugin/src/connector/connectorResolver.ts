@@ -21,8 +21,13 @@ import {showInputBox, showQuickPick} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 import { ConnectorInfo } from "./connectorUtils";
 import { ConnectorModule } from "./ConnectorModule";
+import { SubDirectories } from "../artifacts/artifactUtils";
+import * as path from 'path';
 
 export async function addNewConnectorExporter(){
+
+    const dirName = __dirname;
+
     let projectName = await showInputBox(ConnectorInfo.CONNECTOR_EXPORTER_PROMPT_MESSAGE);
 
     while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
@@ -31,7 +36,11 @@ export async function addNewConnectorExporter(){
     }
 
     if (projectName) {
-        ConnectorModule.createProject(projectName.trim());
+        let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConnectorExporterPom.xml");
+        let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "connectorExporter.xml")
+        let status: boolean = ConnectorModule.createProject(projectName.trim(), "connector exporter", templatePomFilePath,
+                         templateProjNatureFilePath, SubDirectories.CONNECTOR_EXPORTER,true);
+        if(status) ConnectorModule.addProjectToRootPom(projectName.trim());
     }
 }
 

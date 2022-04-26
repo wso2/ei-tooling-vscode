@@ -316,6 +316,10 @@ export class RegistryResourceInfo {
 }
 
 export class ArtifactInfo{
+    static readonly ESB_PROMPT_MESSAGE: string = "Enter New ESB Project Name...";
+    static readonly COMPOSITE_EXPORTER_PROMPT_MESSAGE: string = "Enter New Composite Expoeter Project Name...";
+    static readonly REGISTRY_RESOURCES_PROMPT_MESSAGE: string = "Enter New Registry Resources Project Name...";
+
     static artifactTypes: Map<string, string> = new Map();
     static setTypes(){
         this.artifactTypes.set(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.TYPE);

@@ -29,7 +29,8 @@ import {
     RegistryResourceInfo,
     SequenceArtifactInfo,
     TaskArtifactInfo,
-    TemplateArtifactInfo
+    TemplateArtifactInfo,
+    ArtifactInfo
 } from "./artifactUtils";
 import {showInputBox, showQuickPick} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
@@ -262,6 +263,48 @@ export interface RegistryResource {
     file?: string;
     path?: string;
     mediaType?: any;
+}
+
+export async function createESBProject() {
+    let projectName = await showInputBox(ArtifactInfo.ESB_PROMPT_MESSAGE);
+
+    while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
+        window.showErrorMessage("Enter valid ESB Project Name!!");
+        projectName = await showInputBox(ArtifactInfo.ESB_PROMPT_MESSAGE);
+    }
+
+    if (projectName) {
+       ArtifactModule.CreateNewESBConfigProject(projectName.trim());
+    }
+    
+}
+
+export async function createCompositeProject() {
+    let projectName = await showInputBox(ArtifactInfo.COMPOSITE_EXPORTER_PROMPT_MESSAGE);
+
+    while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
+        window.showErrorMessage("Enter valid Composite Exporter Project Name!!");
+        projectName = await showInputBox(ArtifactInfo.COMPOSITE_EXPORTER_PROMPT_MESSAGE);
+    }
+
+    if (projectName) {
+       ArtifactModule.CreateNewCompositeExporterProject(projectName.trim());
+    }
+    
+}
+
+export async function createRegistryResourcesProject() {
+    let projectName = await showInputBox(ArtifactInfo.REGISTRY_RESOURCES_PROMPT_MESSAGE);
+
+    while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
+        window.showErrorMessage("Enter valid Registry Resources Project Name!!");
+        projectName = await showInputBox(ArtifactInfo.REGISTRY_RESOURCES_PROMPT_MESSAGE);
+    }
+
+    if (projectName) {
+       ArtifactModule.CreateNewRegistryResourcesProject(projectName.trim());
+    }
+    
 }
 
 function createEndpointServiceArray(): QuickPickItem[] {

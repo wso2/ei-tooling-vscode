@@ -54,7 +54,7 @@ export namespace DataServiceModule {
             //create artifact.xml, pom.xml and .project
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "DataServiceConfigsPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "dataService.xml")
-            createConfigurationFiles(projectName, dSConfigsDirectory, templateProjNatureFilePath, templatePomFilePath);
+            createConfigurationFiles(projectName, dSConfigsDirectory, templateProjNatureFilePath, templatePomFilePath, true);
 
             //add dataservice module to root pom
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
@@ -108,7 +108,7 @@ export namespace DataServiceModule {
     }
 
     export function createConfigurationFiles(projectName: string, directory: string,
-                             templateProjectNaturePath: string, templatePomXmlPath: string){
+                             templateProjectNaturePath: string, templatePomXmlPath: string, createArtifactXml: boolean){
 
         if(workspace.workspaceFolders){
             let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
@@ -151,14 +151,16 @@ export namespace DataServiceModule {
             let projectNatureFilePath: string = path.join(directory, ".project");
             createFile(projectNatureFilePath,projectNature);
 
-            //create new artifact.xml
-            //read template file
-            let templateArtifactFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "artifact.xml");
-            const buffer: Buffer = fse.readFileSync(templateArtifactFilePath);
-            let artifacts  = new DOM().parseFromString(buffer.toString(), "text/xml");
+            if(createArtifactXml){
+                //create new artifact.xml
+                //read template file
+                let templateArtifactFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "artifact.xml");
+                const buffer: Buffer = fse.readFileSync(templateArtifactFilePath);
+                let artifacts  = new DOM().parseFromString(buffer.toString(), "text/xml");
 
-            let artifactFilePath: string = path.join(directory, "artifact.xml");
-            createFile(artifactFilePath,artifacts);
+                let artifactFilePath: string = path.join(directory, "artifact.xml");
+                createFile(artifactFilePath,artifacts);
+            }
         }
     }
 
@@ -181,7 +183,6 @@ export namespace DataServiceModule {
             let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
             let subModules = rootPomXmlDoc.getElementsByTagName("module");
             let length = subModules.length;
-            console.log("sd");
             for(let i=0; i<length; i++){
                 if(subModules[i].textContent.trim() === projectName){
                     modules.removeChild(subModules[i]);
@@ -210,7 +211,7 @@ export namespace DataServiceModule {
             data.setAttribute("name", dataServiceName);
             let fileUri: Uri=  createFile(dSFilePath, dataService);
 
-             // Open and show newly created artifact document in the editor.
+            // Open and show newly created artifact document in the editor.
             workspace.openTextDocument(fileUri).then(doc => window.showTextDocument(doc));
 
             //update artifact.xml
