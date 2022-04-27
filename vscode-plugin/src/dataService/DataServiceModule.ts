@@ -111,7 +111,7 @@ export namespace DataServiceModule {
                              templateProjectNaturePath: string, templatePomXmlPath: string, createArtifactXml: boolean){
 
         if(workspace.workspaceFolders){
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            let rootDirectory: string = path.join(directory, "..");
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
             let pomFilePath: string = path.join(directory, "pom.xml");
             let project: ArtifactModule.Project = ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);

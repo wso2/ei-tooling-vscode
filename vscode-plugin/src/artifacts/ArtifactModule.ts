@@ -824,7 +824,7 @@ export namespace ArtifactModule {
             return requiredDirectory;
     }
 
-    export function CreateNewESBConfigProject(projectName: string){
+    export function CreateNewESBConfigProject(projectName: string, directory?: string){
 
         if(workspace.workspaceFolders){
         
@@ -833,10 +833,13 @@ export namespace ArtifactModule {
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConfigsPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "esbConfigs.xml")
             let status: boolean =ConnectorModule.createProject(projectName, "ESB Config Project", templatePomFilePath, 
-                                templateProjNatureFilePath, SubDirectories.CONFIGS, true);
+                                templateProjNatureFilePath, SubDirectories.CONFIGS, true, directory);
             if(!status) return;
 
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            let rootDirectory: string;
+            if(directory) rootDirectory = directory;
+            else rootDirectory = workspace.workspaceFolders[0].uri.fsPath;
+
             //create additional sub-directories
             let metadataPath: string = path.join(rootDirectory, projectName, "src", "main", "resources", "metadata");
             file_system.mkdirSync(metadataPath, {recursive: true});
@@ -883,7 +886,7 @@ export namespace ArtifactModule {
         }
     }
 
-    export function CreateNewCompositeExporterProject(projectName: string){
+    export function CreateNewCompositeExporterProject(projectName: string, directory?: string){
 
         if(workspace.workspaceFolders){
         
@@ -892,10 +895,12 @@ export namespace ArtifactModule {
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "CompositeExporterPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "compositeExporter.xml")
             let status: boolean = ConnectorModule.createProject(projectName, "Composite Exporter Project", templatePomFilePath, 
-                                templateProjNatureFilePath, SubDirectories.COMPOSITE_EXPORTER, false);
+                                templateProjNatureFilePath, SubDirectories.COMPOSITE_EXPORTER, false, directory);
             if(!status) return;
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-        
+            let rootDirectory: string;
+            if(directory) rootDirectory = directory;
+            else rootDirectory = workspace.workspaceFolders[0].uri.fsPath;
+            
             //add to root pom
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
             if(!fse.existsSync(rootPomFilePath)){
@@ -914,7 +919,7 @@ export namespace ArtifactModule {
         }
     }
 
-    export function CreateNewRegistryResourcesProject(projectName: string){
+    export function CreateNewRegistryResourcesProject(projectName: string, directory?: string){
 
         if(workspace.workspaceFolders){
         
@@ -923,10 +928,14 @@ export namespace ArtifactModule {
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "RegistryResourcesPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "registryResources.xml");
             let status: boolean = ConnectorModule.createProject(projectName, "Registry Resources Project", templatePomFilePath, 
-                                    templateProjNatureFilePath, SubDirectories.REGISTRY_RESOURCES, true);
+                                    templateProjNatureFilePath, SubDirectories.REGISTRY_RESOURCES, true, directory);
             if(!status) return;
+
+            let rootDirectory: string;
+            if(directory) rootDirectory = directory;
+            else rootDirectory = workspace.workspaceFolders[0].uri.fsPath;
+            
             //create .classpath file
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             let templateConfigFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "registryClassPath.xml")
             const buf: Buffer = fse.readFileSync(templateConfigFilePath);
             let classPath  = new DOM().parseFromString(buf.toString(), "text/xml");

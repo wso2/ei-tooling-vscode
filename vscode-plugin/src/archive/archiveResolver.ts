@@ -16,15 +16,16 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {workspace, Uri, window, commands, WorkspaceEdit} from "vscode";
+import {workspace, Uri, window, commands, WorkspaceEdit, Task} from "vscode";
 import * as path from 'path';
 import * as fse from "fs-extra";
 import {executeProjectBuildCommand} from "../mavenInternals/commandHandler";
 import { ArtifactModule } from "../artifacts/ArtifactModule";
 import { DataServiceModule } from "../dataService/DataServiceModule";
-import {ProjectNatures, SubDirectories} from "../artifacts/artifactUtils";
+import {APIArtifactInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, LocalEntryArtifactInfo, MessageProcessorArtifactInfo, MessageStoreArtifactInfo, ProjectNatures, ProxyArtifactInfo, SequenceArtifactInfo, SubDirectories, TaskArtifactInfo, TemplateArtifactInfo} from "../artifacts/artifactUtils";
 import {chooseTargetFolder, chooseTargetFile, showInputBox, showInputBoxForArtifactId, showInputBoxForGroupId} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
+import { type } from "os";
 
 let DOM = require('xmldom').DOMParser;
 var fileSystem = require('fs');
@@ -205,9 +206,9 @@ export async function createProjectFromCar(){
                 await extract(newFilePath, { dir: tmpDirectory });
 
                 //read root metadata file
-                let rootMetaDataPath: string = path.join(tmpDirectory, "metadata.xml");
+                let rootMetaDataPath: string = path.join(tmpDirectory, "artifacts.xml");
                 if(!fse.existsSync(rootMetaDataPath)){
-                    window.showErrorMessage("Can not find root metadata file.New project creation failed...!");
+                    window.showErrorMessage("Can not find root artifacts file.New project creation failed...!");
                     return;
                 }
                 const buffer: Buffer = fse.readFileSync(rootMetaDataPath);
@@ -230,15 +231,33 @@ export async function createProjectFromCar(){
                     let settings: Buffer = fse.readFileSync(templateSettingsFilePath);
                     fse.writeFileSync(settingsFilePath, settings);
                     
-                    await commands.executeCommand('vscode.openFolder', Uri.file(newProjectDirectory), true);
-
                     //create composite exporter
-                    ArtifactModule.CreateNewCompositeExporterProject(name.trim());
+                    ArtifactModule.CreateNewCompositeExporterProject(name.trim(), newProjectDirectory);
+                    //create configs
+                    let esbConfigsName: string = `${artifactID}Configs`;
+                    ArtifactModule.CreateNewESBConfigProject(esbConfigsName, newProjectDirectory);
+
                     if(dependencies.length === 0){
                         window.showInformationMessage("No dependencies for the project...!");
                         return;
                     }
+
+                    for(let i=0; i<dependencies.length; i++){
+                        let artifactName: string = dependencies[i].getAttribute("artifact");
+                        let version: string = dependencies[i].getAttribute("version");
+                        let include: boolean = dependencies[i].getAttribute("include");
+                        if(include){
+                            let artifactXmlFilePath: string = path.join(tmpDirectory, `${artifactName}_${version}`, "artifact.xml");
+                            if(fse.existsSync(artifactXmlFilePath)){
+                                //create synapse artifacts
+                                let ESBConfigseDirctory: string = path.join(newProjectDirectory, esbConfigsName);
+                                copySynapseArtifact(ESBConfigseDirctory, artifactXmlFilePath);
+
+                            }
+                        }
+                    }
                     
+                    commands.executeCommand('vscode.openFolder', Uri.file(newProjectDirectory), true);
                 }
 
                 
@@ -275,4 +294,61 @@ function createRootPomXml(directory: string,groupID: string, artifactID: string,
     name.textContent = artifactID;
     description.textContent = artifactID;
     DataServiceModule.createFile(pomFilePath, rootPomXmlDoc);
+}
+
+function copySynapseArtifact(ConfigsDirecrory: string, artifactXmlFilePath: string){
+
+    console.log("copying files");
+
+    const buffer: Buffer = fse.readFileSync(artifactXmlFilePath);
+    let xmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
+    let artifact = xmlDoc.getElementsByTagName("artifact");
+    if(artifact.length > 0){
+        console.log("h1");
+        
+        let type: string = artifact[0].getAttribute("type").trim();
+    
+        let artifactTypes: string[] = [APIArtifactInfo.TYPE, ProxyArtifactInfo.TYPE, EndpointArtifactInfo.TYPE, InboundEndpointArtifactInfo.TYPE,
+            LocalEntryArtifactInfo.TYPE, MessageStoreArtifactInfo.TYPE, MessageProcessorArtifactInfo.TYPE, TemplateArtifactInfo.TYPE, 
+            SequenceArtifactInfo.TYPE, TaskArtifactInfo.TYPE];
+    
+        let index: number = artifactTypes.indexOf(type);
+        if(index === -1) return;//not a synapse artifact
+        console.log("h2");
+
+        let name: string = artifact[0].getAttribute("name").trim();
+        let version: string = artifact[0].getAttribute("version").trim();
+        let serverRole: string = artifact[0].getAttribute("serverRole").trim();
+        let fileName: string = artifact[0].getElementsByTagName("file")[0].textContent.trim();
+        let newFileName: string = `${name}.xml`;
+
+        let artifcatFolders: string[] = [APIArtifactInfo.DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, EndpointArtifactInfo.DESTINATION_FOLDER,
+        InboundEndpointArtifactInfo.DESTINATION_FOLDER, LocalEntryArtifactInfo.DESTINATION_FOLDER, MessageStoreArtifactInfo.DESTINATION_FOLDER,
+        MessageProcessorArtifactInfo.DESTINATION_FOLDER, TemplateArtifactInfo.DESTINATION_FOLDER, SequenceArtifactInfo.DESTINATION_FOLDER,
+        TaskArtifactInfo.DESTINATION_FOLDER];
+
+        let destinationFolder: string = artifcatFolders[index];
+        let destinationFilePath: string = path.join(ConfigsDirecrory, "src", "main", "synapse-config", destinationFolder, newFileName);
+        console.log(destinationFilePath);
+        
+        let curruntArtifactPath: string = path.join(artifactXmlFilePath, "..", fileName);
+        console.log(curruntArtifactPath);
+        
+        console.log("h3");
+
+        let edit = new WorkspaceEdit();
+        edit.createFile(Uri.file(destinationFilePath));
+        workspace.applyEdit(edit);
+
+        fse.copySync(curruntArtifactPath, destinationFilePath);
+        
+        console.log("h4");
+
+        //update artifact.xml
+    
+        
+    }
+
+    
+
 }

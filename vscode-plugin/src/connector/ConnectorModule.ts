@@ -34,14 +34,21 @@ export namespace ConnectorModule {
    const dirName = __dirname;
    
    export function createProject(projectName: string, type: string, templatePomFilePath: string, templateProjNatureFilePath: string,
-                                            directoryType: string, createArtifactXml: boolean): boolean{
+                                            directoryType: string, createArtifactXml: boolean, directory?: string): boolean{
         if(workspace.workspaceFolders){
-            const currentDirectory: string = ArtifactModule.getDirectoryFromProjectNature(directoryType).trim();
-            if(currentDirectory !== "unidentified"){
-                window.showInformationMessage(`Can not add more than one ${type}!`);
-                return false;
+            let rootDirectory: string;
+            if(directory){
+                rootDirectory = directory;
             }
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            else{
+                const currentDirectory: string = ArtifactModule.getDirectoryFromProjectNature(directoryType).trim();
+                if(currentDirectory !== "unidentified"){
+                    window.showInformationMessage(`Can not add more than one ${type}!`);
+                    return false;
+                }
+                rootDirectory = workspace.workspaceFolders[0].uri.fsPath;
+            }
+            
             let newDirectory: string = path.join(rootDirectory, projectName);
             if(fse.existsSync(newDirectory)){
                 window.showErrorMessage(`${type} name already exists!`);
