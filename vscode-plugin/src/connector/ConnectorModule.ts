@@ -34,21 +34,14 @@ export namespace ConnectorModule {
    const dirName = __dirname;
    
    export function createProject(projectName: string, type: string, templatePomFilePath: string, templateProjNatureFilePath: string,
-                                            directoryType: string, createArtifactXml: boolean, directory?: string): boolean{
-        if(workspace.workspaceFolders){
-            let rootDirectory: string;
-            if(directory){
-                rootDirectory = directory;
+                                            directoryType: string, createArtifactXml: boolean, rootDirectory: string): boolean{
+        
+            const currentDirectory: string = ArtifactModule.getDirectoryFromProjectNature(directoryType, rootDirectory).trim();
+            if(currentDirectory !== "unidentified"){
+                window.showInformationMessage(`Can not add more than one ${type}!`);
+                return false;
             }
-            else{
-                const currentDirectory: string = ArtifactModule.getDirectoryFromProjectNature(directoryType).trim();
-                if(currentDirectory !== "unidentified"){
-                    window.showInformationMessage(`Can not add more than one ${type}!`);
-                    return false;
-                }
-                rootDirectory = workspace.workspaceFolders[0].uri.fsPath;
-            }
-            
+                
             let newDirectory: string = path.join(rootDirectory, projectName);
             if(fse.existsSync(newDirectory)){
                 window.showErrorMessage(`${type} name already exists!`);
@@ -59,17 +52,10 @@ export namespace ConnectorModule {
             DataServiceModule.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
 
             return true;
-        }
-        return false;
-
    }
 
    //add ConnectorExporter module to root pom
-   export function addProjectToRootPom(projectName: string){
-
-    if(workspace.workspaceFolders){
-
-       let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+   export function addProjectToRootPom(projectName: string, rootDirectory: string){
        
        let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
        if(!fse.existsSync(rootPomFilePath)){
@@ -115,11 +101,9 @@ export namespace ConnectorModule {
        if(!append) modules.appendChild(connectorModule);
 
        fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
-    }
-
    }
 
-   export async function getSuggestedConnectors(keyWord: string){
+   export async function getSuggestedConnectors(keyWord: string, rootDirectory: string){
 
     let suggestions;
     let tmp: QuickPickItem[];
@@ -143,7 +127,7 @@ export namespace ConnectorModule {
             ).then(selected => {
                 if(selected && downloadLinkMap.has(selected.label.trim())) {
                     let downloadLink: string =  downloadLinkMap.get(selected.label.trim())!;
-                    downloadConnector(downloadLink, selected.label.trim(), selected.description!.trim());
+                    downloadConnector(downloadLink, selected.label.trim(), selected.description!.trim(), rootDirectory);
                 }
                 else{
                     window.showErrorMessage("Can not download the connector...!");
@@ -176,8 +160,8 @@ export namespace ConnectorModule {
         return [suggestedConnectors, downloadLinkMap];
    }
 
-   function downloadConnector(downloadLink: string, connectorName: string, version: string){
-        const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER).trim();
+   function downloadConnector(downloadLink: string, connectorName: string, version: string, rootDirectory: string){
+        const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER, rootDirectory).trim();
         if(connectorExporterFilePath.trim() !== "unidentified"){
             let urlSplit: string[] = downloadLink.split("/");
             let connectorFileName: string = urlSplit[urlSplit.length - 1].trim();
@@ -190,7 +174,7 @@ export namespace ConnectorModule {
             const downloadHelper = new DownloaderHelper(downloadLink, connectorExporterFilePath);
             downloadHelper.on('end', () => {
                 //update artifact.xml and composite pom.xml
-                updateConfigurationFiles(connectorFileName, version);
+                updateConfigurationFiles(connectorFileName, version, rootDirectory);
                 window.showInformationMessage(`${connectorName} downloaded Successfully`);
             });
 
@@ -208,15 +192,13 @@ export namespace ConnectorModule {
         
    }
 
-   function updateConfigurationFiles(connectorFileName: string, version: string){
-
-        if(workspace.workspaceFolders){
+   function updateConfigurationFiles(connectorFileName: string, version: string, rootDirectory: string){
 
             let nameSplit = connectorFileName.split("-");
             nameSplit.pop();
             let connectorName: string = nameSplit.join("-");
 
-            const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER);
+            const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER, rootDirectory);
             //update artifact.xml
             let artifactXmlFilePath: string = path.join(connectorExporterFilePath, "artifact.xml");
                     
@@ -224,7 +206,6 @@ export namespace ConnectorModule {
             let artifactXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
             let artifacts = artifactXmlDoc.getElementsByTagName("artifacts");
 
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
             let project: ArtifactModule.Project = ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);
             let groupId: string = project.groupId!;
@@ -234,7 +215,8 @@ export namespace ConnectorModule {
             fse.writeFileSync(artifactXmlFilePath, new XMLSerializer().serializeToString(artifactXmlDoc));
 
             //update composite pom
-            let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+            let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER,
+                 rootDirectory), "pom.xml");
             const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
             let pomXmlDoc = new DOM().parseFromString(pomBuff.toString(), "text/xml");
 
@@ -248,11 +230,9 @@ export namespace ConnectorModule {
             let finalGroupId: string = groupId + "." + ConnectorInfo.DATA_SERVICE_LABEL;
             ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, connectorName, finalGroupId, "zip", version);
             fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
-
-        }
    }
 
-   export function safeDeleteConnector(deletedFile: string){
+   export function safeDeleteConnector(deletedFile: string, rootDirectory: string){
        
         let array: string[] = deletedFile.split(path.sep);
         let deletedConnectorFileName: string = array[array.length - 1];
@@ -264,11 +244,11 @@ export namespace ConnectorModule {
         nameSplit.pop();
         let connectorName: string = nameSplit.join("-");
 
-        if (workspace.workspaceFolders && (fileExtension === "zip")) {
+        if (fileExtension === "zip") {
 
             let artifactXmlFilePath: string = path.join(deletedFile, "..", "artifact.xml");
             ArtifactModule.deletefromArtifactXml(artifactXmlFilePath, connectorName.trim());
-            ArtifactModule.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER);
+            ArtifactModule.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER, rootDirectory);
 
         }
    }

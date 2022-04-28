@@ -45,8 +45,9 @@ export async function createMediatorProject() {
         className = await showInputBox(MediatorProjectInfo.CLASS_PROMPT_MESSAGE);
     }
 
-    if (projectName && packageName && className) {
-        MediatorProjectModule.createProject(projectName.trim(), packageName.trim(), className.trim());
+    if (projectName && packageName && className && workspace.workspaceFolders) {
+        let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+        MediatorProjectModule.createProject(projectName.trim(), packageName.trim(), className.trim(), rootDirectory);
     }
 }
 

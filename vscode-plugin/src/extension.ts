@@ -107,7 +107,8 @@ export function activate(context: ExtensionContext) {
             watcher.onDidChange((changedFile: Uri) => {
                
                 if (workspace.workspaceFolders) {
-                    const subDir: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONFIGS);
+                    let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+                    const subDir: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONFIGS, rootDirectory);
                     const directoryPattern: string = path.join(subDir, "src", "main", "synapse-config", "api");
 
                     //check whether an api resource file is changed
@@ -129,12 +130,15 @@ export function activate(context: ExtensionContext) {
     }
 
     function createFileWatcher(){
-        chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
-            ArtifactModule.safeDeleteArtifact(path);
-            DataServiceModule.safeDeleteDataService(path);
-            ConnectorModule.safeDeleteConnector(path);
-            MediatorProjectModule.safeDeleteMediatorProjectDetails(path);
-          });
+        if(workspace.workspaceFolders){
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            chokidar.watch(rootDirectory).on('unlink', (path: string) => {
+                ArtifactModule.safeDeleteArtifact(path);
+                DataServiceModule.safeDeleteDataService(path, rootDirectory);
+                ConnectorModule.safeDeleteConnector(path, rootDirectory);
+                MediatorProjectModule.safeDeleteMediatorProjectDetails(path, rootDirectory);
+            });
+    }
     }
 
     function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {

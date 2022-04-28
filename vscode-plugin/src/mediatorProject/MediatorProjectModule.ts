@@ -39,11 +39,9 @@ export namespace MediatorProjectModule {
 
     const dirName = __dirname;
 
-    export async function createProject(projectName: string, packageName: string, className: string) {
-        if (workspace.workspaceFolders) {
-
+    export async function createProject(rootDirectory: string, projectName: string, packageName: string, className: string) {
+       
             //check whether project name already exists
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             let mediatorProjectDirectory: string = path.join(rootDirectory, projectName);
             if(fse.existsSync(mediatorProjectDirectory)){
                 window.showErrorMessage("Mediator project name already exists!");
@@ -131,7 +129,7 @@ export namespace MediatorProjectModule {
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
 
             //update composite pom
-            let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+            let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
             const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
             let pomXml = new DOM().parseFromString(pomBuff.toString(), "text/xml");
 
@@ -180,14 +178,10 @@ export namespace MediatorProjectModule {
             // Open and show newly created java file in the editor.
             workspace.openTextDocument(fileUri).then(doc => window.showTextDocument(doc));
     
-
-            
-        }
     }
 
-    export function safeDeleteMediatorProjectDetails(filePath: string){
+    export function safeDeleteMediatorProjectDetails(filePath: string, rootDirectory: string){
 
-        if(workspace.workspaceFolders){
             let extensionSplit: string[] = filePath.split(".");
             let fileExtension: string = extensionSplit[extensionSplit.length - 1].trim();
 
@@ -206,7 +200,8 @@ export namespace MediatorProjectModule {
                 let tmp5: string[] = tmp4.split(path.sep);
                 let projectName: string = tmp5[tmp5.length - 1].trim();
                 
-                let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+                let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER,
+                     rootDirectory), "pom.xml");
                 const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
                 let pomXml = new DOM().parseFromString(pomBuff.toString(), "text/xml");
                 let properties = pomXml.getElementsByTagName("properties")[0];
@@ -232,6 +227,4 @@ export namespace MediatorProjectModule {
                 fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXml));
             }
         }
-    }
-    
 }

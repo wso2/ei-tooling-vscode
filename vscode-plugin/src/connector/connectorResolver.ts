@@ -35,12 +35,13 @@ export async function addNewConnectorExporter(){
         projectName = await showInputBox(ConnectorInfo.CONNECTOR_EXPORTER_PROMPT_MESSAGE);
     }
 
-    if (projectName) {
+    if (projectName && workspace.workspaceFolders) {
         let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConnectorExporterPom.xml");
         let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "connectorExporter.xml")
+        let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
         let status: boolean = ConnectorModule.createProject(projectName.trim(), "connector exporter", templatePomFilePath,
-                         templateProjNatureFilePath, SubDirectories.CONNECTOR_EXPORTER,true);
-        if(status) ConnectorModule.addProjectToRootPom(projectName.trim());
+                         templateProjNatureFilePath, SubDirectories.CONNECTOR_EXPORTER,true, rootDirectory);
+        if(status) ConnectorModule.addProjectToRootPom(projectName.trim(), rootDirectory);
     }
 }
 
@@ -53,8 +54,8 @@ export async function addNewConnector() {
         connectorName = await showInputBox(ConnectorInfo.CONNECTOR_PROMPT_MESSAGE);
     }
 
-    if (connectorName) {
-        ConnectorModule.getSuggestedConnectors(connectorName.trim());
+    if (connectorName && workspace.workspaceFolders) {
+        ConnectorModule.getSuggestedConnectors(connectorName.trim(), workspace.workspaceFolders[0].uri.fsPath);
     }
 
 }

@@ -44,6 +44,10 @@ export class ProjectNatures {
     static readonly MEDIATOR_PROJECT: string = "org.wso2.developerstudio.eclipse.artifact.mediator.project.nature";
 }
 
+export class MetadataInfo {
+    static readonly SYNAPSE_MEATADATA_TYPE: string = "synapse/metadata";
+}
+
 export class APIArtifactInfo {
     static readonly ARTIFACT_TYPE: string = "api";
     static readonly PLACEHOLDER: string = "Select an API Artifact Creation Option...";

@@ -52,7 +52,7 @@ export namespace ArtifactModule {
         if (workspace.workspaceFolders) {
 
             // Create target folder path where the new config artifact is going to be added in the project.
-            const subFolder: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS);
+            const subFolder: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, workspace.workspaceFolders[0].uri.fsPath);
             const pathToTargetFolder = path.join(subFolder, "src", "main", "synapse-config",
                                                  targetFolder);
 
@@ -72,7 +72,8 @@ export namespace ArtifactModule {
     export function createResource(targetFolder: string, templateFileName: string, targetArtifactName: string,
                                    artifactType: string, type: string, registryResource: RegistryResource) {
         if (workspace.workspaceFolders) {
-            const registryResourceSubDirectory:string = getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES);;
+            const registryResourceSubDirectory:string = getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES, 
+                workspace.workspaceFolders[0].uri.fsPath);
             // Check if the path really exists. If not exists, the project is not a standard Synapse muilti-module Project
             checkPathExistence(registryResourceSubDirectory).then(exists => {
                 if (exists) {
@@ -108,7 +109,7 @@ export namespace ArtifactModule {
             let pattern = path.join("*", targetArtifactName + getFileExtension(registryResource));
 
             //let subDirectory: string = workspace.workspaceFolders[0].name + SubDirectories.CONFIGS;
-            let subDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS);
+            let subDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, workspace.workspaceFolders[0].uri.fsPath);
             let cwd = path.join(subDirectory, "src", "main", resourceType);
 
              //target metadata.yaml and swagger.yaml folder
@@ -197,7 +198,7 @@ export namespace ArtifactModule {
 
             let pattern = path.join(targetArtifactName + getFileExtension(registryResource));
 
-            let cwd: string = getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES);
+            let cwd: string = getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES, workspace.workspaceFolders[0].uri.fsPath);
 
              //target metadata.yaml and swagger.yaml folder
 
@@ -286,11 +287,12 @@ export namespace ArtifactModule {
      */
     async function addNewArtifactToConfigArtifactXMLFile(artifactName: string, targetFolder: string, type: string) {
         if (workspace.workspaceFolders) {
-            const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
             // read pom and get project group_id and version
             let project: Project = getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
-            const configArtifactXmlFileLocation: string = path.join(getDirectoryFromProjectNature(SubDirectories.CONFIGS), "artifact.xml");
+            const configArtifactXmlFileLocation: string = path.join(getDirectoryFromProjectNature(SubDirectories.CONFIGS, rootDirectory), "artifact.xml");
             // Read and buffer synapse-config artifact.xml file
             const buf: Buffer = fse.readFileSync(configArtifactXmlFileLocation);
 
@@ -332,11 +334,12 @@ export namespace ArtifactModule {
                                                      registryResource: RegistryResource | undefined) {
 
         if (workspace.workspaceFolders) {
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath
 
-            const registryArtifactXML: string = path.join(getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES), "artifact.xml");
+            const registryArtifactXML: string = path.join(getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES, rootDirectory), "artifact.xml");
 
             // read pom and get project group_id and version
-            const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+            const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
             let project: Project = await getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
 
@@ -375,8 +378,9 @@ export namespace ArtifactModule {
 
     function updateCompositePomXmlFile(artifactName: string, targetFolder: string, type: string) {
         if (workspace.workspaceFolders) {
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath
             // read pom and get project group_id and version
-            const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+            const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
             let project: Project = getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
             // Read and buffer Composite Exporter pom.xml file
@@ -486,8 +490,10 @@ export namespace ArtifactModule {
         let artifactXmlFilePath: string;
         if (workspace.workspaceFolders) {
 
-            let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS);
-            let resourceSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES);
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+
+            let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, rootDirectory);
+            let resourceSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES, rootDirectory);
 
             //artifact
             if (isExistDirectoryPattern(filePath, path.join(syapseSubDirectory, "src", "main", "synapse-config"))) {
@@ -495,7 +501,7 @@ export namespace ArtifactModule {
 
                 deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
                 let artifactType = ArtifactInfo.artifactTypes.get(artifactFolder);
-                if(artifactType !== undefined) deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1]);
+                if(artifactType !== undefined) deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1], rootDirectory);
                 
                 
             //resource
@@ -503,7 +509,7 @@ export namespace ArtifactModule {
                 artifactXmlFilePath = path.join(resourceSubDirectory, "artifact.xml");
 
                 deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
-                deleteArtifactFromPomXml(rawArtifactName[0], RegistryResourceInfo.TYPE.split("/")[1]);
+                deleteArtifactFromPomXml(rawArtifactName[0], RegistryResourceInfo.TYPE.split("/")[1], rootDirectory);
         
         }
     }
@@ -535,10 +541,10 @@ export namespace ArtifactModule {
     }
 
     //delete artifact related information from composite pom.xml
-    export function deleteArtifactFromPomXml(artifactName: string, artifactType: string){
+    export function deleteArtifactFromPomXml(artifactName: string, artifactType: string, rootDirectory: string){
 
         //const pomSubdirectory: string = workspaceFolder.name + SubDirectories.COMPOSITE_EXPORTER;
-        const pathToPomXml:string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+        const pathToPomXml:string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
 
         if(!fse.existsSync(pathToPomXml)) return;
 
@@ -581,14 +587,14 @@ export namespace ArtifactModule {
 
                     //delete swagger related information
                     let swaggerArtifactName: string = `${artifactName}_swagger`;
-                    deleteArtifactFromPomXml(swaggerArtifactName, "metadata");
+                    deleteArtifactFromPomXml(swaggerArtifactName, "metadata", rootDirectory);
 
                     //delete metadata related imformation
                     let metadataArtifactName: string = `${artifactName}_metadata`;
-                    deleteArtifactFromPomXml(metadataArtifactName, "metadata");
+                    deleteArtifactFromPomXml(metadataArtifactName, "metadata", rootDirectory);
 
                     //delete swagger and metadata files
-                    let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS); 
+                    let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, rootDirectory); 
                     let metaDataDirectory: string = path.join(syapseSubDirectory, "src", "main", "resources", "metadata");
                     fse.remove(path.join(metaDataDirectory, artifactName + "_metadata.yaml"));
                     fse.remove(path.join(metaDataDirectory, artifactName + "_swagger.yaml"));
@@ -597,9 +603,9 @@ export namespace ArtifactModule {
 
                     //delete metadata related imformation
                     let metadataArtifactName: string = `${artifactName}"_proxy_metadata`;
-                    deleteArtifactFromPomXml(metadataArtifactName, "proxy-service.metadata");
+                    deleteArtifactFromPomXml(metadataArtifactName, "proxy-service.metadata", rootDirectory);
 
-                    let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS);
+                    let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, rootDirectory);
                     let metaDataDirectory: string = path.join(syapseSubDirectory, "src", "main", "resources", "metadata");
                     fse.remove(path.join(metaDataDirectory, artifactName + "_proxy_metadata.yaml"));
                 }
@@ -640,7 +646,7 @@ export namespace ArtifactModule {
 
     export function updateMetadataforApi(filePath: string){
         if(workspace.workspaceFolders){
-            const metadataSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS);
+            const metadataSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, workspace.workspaceFolders[0].uri.fsPath);
             let array: string[] = filePath.split(path.sep);
             let rawFileName: string = array[array.length -1];
             let rawArtifactName: string = rawFileName.split(".")[0];
@@ -803,42 +809,33 @@ export namespace ArtifactModule {
 
     }
 
-    export function getDirectoryFromProjectNature(projectNature: SubDirectories): string{
+    export function getDirectoryFromProjectNature(projectNature: SubDirectories, rootDirectory: string): string{
         
         let requiredDirectory: string = "unidentified";
-        if(workspace.workspaceFolders){
-            let rootProjectDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-            let filenames: string[] = file_system.readdirSync(rootProjectDirectory);
+            let fileNames: string[] = file_system.readdirSync(rootDirectory);
 
-            filenames.forEach( (file: any) => {
-                let projConfigFilePath: string = path.join(rootProjectDirectory, file, ".project");
+            fileNames.forEach( (file: any) => {
+                let projConfigFilePath: string = path.join(rootDirectory, file, ".project");
                 if (file_system.existsSync(projConfigFilePath)) {
                     let nature: string = getProjectNature(projConfigFilePath).trim();
                         if(nature === projectNature){
-                            requiredDirectory = path.join(rootProjectDirectory, file);
+                            requiredDirectory = path.join(rootDirectory, file);
                             return requiredDirectory;
                         }
                 }
             });
-        }
             return requiredDirectory;
     }
 
-    export function CreateNewESBConfigProject(projectName: string, directory?: string){
-
-        if(workspace.workspaceFolders){
+    export function CreateNewESBConfigProject(projectName: string, rootDirectory: string){
         
             //create new sub-directory
             //create pom.xml, artifact.xml and .project files
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConfigsPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "esbConfigs.xml")
             let status: boolean =ConnectorModule.createProject(projectName, "ESB Config Project", templatePomFilePath, 
-                                templateProjNatureFilePath, SubDirectories.CONFIGS, true, directory);
+                                templateProjNatureFilePath, SubDirectories.CONFIGS, true, rootDirectory);
             if(!status) return;
-
-            let rootDirectory: string;
-            if(directory) rootDirectory = directory;
-            else rootDirectory = workspace.workspaceFolders[0].uri.fsPath;
 
             //create additional sub-directories
             let metadataPath: string = path.join(rootDirectory, projectName, "src", "main", "resources", "metadata");
@@ -883,23 +880,17 @@ export namespace ArtifactModule {
             if(!append) modules.appendChild(ESBModule);
 
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
-        }
     }
 
-    export function CreateNewCompositeExporterProject(projectName: string, directory?: string){
-
-        if(workspace.workspaceFolders){
-        
+    export function CreateNewCompositeExporterProject(projectName: string, rootDirectory: string){
+ 
             //create new sub-directory
             //create pom.xml, artifact.xml and .project files
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "CompositeExporterPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "compositeExporter.xml")
             let status: boolean = ConnectorModule.createProject(projectName, "Composite Exporter Project", templatePomFilePath, 
-                                templateProjNatureFilePath, SubDirectories.COMPOSITE_EXPORTER, false, directory);
+                                templateProjNatureFilePath, SubDirectories.COMPOSITE_EXPORTER, false, rootDirectory);
             if(!status) return;
-            let rootDirectory: string;
-            if(directory) rootDirectory = directory;
-            else rootDirectory = workspace.workspaceFolders[0].uri.fsPath;
             
             //add to root pom
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
@@ -916,24 +907,17 @@ export namespace ArtifactModule {
             modules.appendChild(connectorModule);
 
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
-        }
     }
 
-    export function CreateNewRegistryResourcesProject(projectName: string, directory?: string){
-
-        if(workspace.workspaceFolders){
-        
+    export function CreateNewRegistryResourcesProject(projectName: string, rootDirectory: string){
+    
             //create new sub-directory
             //create pom.xml, artifact.xml and .project files
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "RegistryResourcesPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "registryResources.xml");
             let status: boolean = ConnectorModule.createProject(projectName, "Registry Resources Project", templatePomFilePath, 
-                                    templateProjNatureFilePath, SubDirectories.REGISTRY_RESOURCES, true, directory);
+                                    templateProjNatureFilePath, SubDirectories.REGISTRY_RESOURCES, true, rootDirectory);
             if(!status) return;
-
-            let rootDirectory: string;
-            if(directory) rootDirectory = directory;
-            else rootDirectory = workspace.workspaceFolders[0].uri.fsPath;
             
             //create .classpath file
             let templateConfigFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "registryClassPath.xml")
@@ -992,7 +976,6 @@ export namespace ArtifactModule {
             if(!append) modules.appendChild(registryModule);
 
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
-        }
     }
 
 

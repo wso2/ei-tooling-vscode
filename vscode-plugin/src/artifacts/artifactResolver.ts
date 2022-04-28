@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {QuickPickItem, window} from "vscode";
+import {QuickPickItem, window, workspace} from "vscode";
 import {ArtifactModule} from "./ArtifactModule";
 import {
     APIArtifactInfo,
@@ -273,8 +273,8 @@ export async function createESBProject() {
         projectName = await showInputBox(ArtifactInfo.ESB_PROMPT_MESSAGE);
     }
 
-    if (projectName) {
-       ArtifactModule.CreateNewESBConfigProject(projectName.trim());
+    if (projectName && workspace.workspaceFolders) {
+       ArtifactModule.CreateNewESBConfigProject(projectName.trim(), workspace.workspaceFolders[0].uri.fsPath);
     }
     
 }
@@ -287,8 +287,8 @@ export async function createCompositeProject() {
         projectName = await showInputBox(ArtifactInfo.COMPOSITE_EXPORTER_PROMPT_MESSAGE);
     }
 
-    if (projectName) {
-       ArtifactModule.CreateNewCompositeExporterProject(projectName.trim());
+    if (projectName && workspace.workspaceFolders) {
+       ArtifactModule.CreateNewCompositeExporterProject(projectName.trim(), workspace.workspaceFolders[0].uri.fsPath);
     }
     
 }
@@ -301,8 +301,8 @@ export async function createRegistryResourcesProject() {
         projectName = await showInputBox(ArtifactInfo.REGISTRY_RESOURCES_PROMPT_MESSAGE);
     }
 
-    if (projectName) {
-       ArtifactModule.CreateNewRegistryResourcesProject(projectName.trim());
+    if (projectName && workspace.workspaceFolders) {
+       ArtifactModule.CreateNewRegistryResourcesProject(projectName.trim(), workspace.workspaceFolders[0].uri.fsPath);
     }
     
 }

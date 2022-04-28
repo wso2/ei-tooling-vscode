@@ -110,7 +110,6 @@ export namespace DataServiceModule {
     export function createConfigurationFiles(projectName: string, directory: string,
                              templateProjectNaturePath: string, templatePomXmlPath: string, createArtifactXml: boolean){
 
-        if(workspace.workspaceFolders){
             let rootDirectory: string = path.join(directory, "..");
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
             let pomFilePath: string = path.join(directory, "pom.xml");
@@ -161,7 +160,6 @@ export namespace DataServiceModule {
                 let artifactFilePath: string = path.join(directory, "artifact.xml");
                 createFile(artifactFilePath,artifacts);
             }
-        }
     }
 
     export function safeDeteteProject(subDirectory: string){
@@ -232,7 +230,8 @@ export namespace DataServiceModule {
             fse.writeFileSync(artifactXmlFilePath, new XMLSerializer().serializeToString(artifactXmlDoc));
 
             //update composite pom
-            let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
+            let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER,
+                 rootDirectory), "pom.xml");
             const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
             let pomXmlDoc = new DOM().parseFromString(pomBuff.toString(), "text/xml");
 
@@ -250,9 +249,7 @@ export namespace DataServiceModule {
         }
     }
 
-    export function safeDeleteDataService(deletedFile: string){ 
-
-        if (workspace.workspaceFolders) {
+    export function safeDeleteDataService(deletedFile: string, rootDirectory: string){ 
 
             let array: string[] = deletedFile.split(path.sep);
             let deletedDataService: string = array[array.length - 1];
@@ -264,11 +261,8 @@ export namespace DataServiceModule {
             //check whether a .dbs file was deleted
             if((dataServiceFolder === DataServiceInfo.DESTINATION_FOLDER) && (fileExtension === "dbs")){
                 ArtifactModule.deletefromArtifactXml(artifactXmlFilePath, rawDataServiceName[0].trim());
-                ArtifactModule.deleteArtifactFromPomXml(rawDataServiceName[0].trim(), dataServiceFolder);
+                ArtifactModule.deleteArtifactFromPomXml(rawDataServiceName[0].trim(), dataServiceFolder, rootDirectory);
             }
 
         }
-    }
-
-    
 }
