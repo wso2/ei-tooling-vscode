@@ -25,7 +25,7 @@ import { DataServiceModule } from "../dataService/DataServiceModule";
 import {APIArtifactInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, LocalEntryArtifactInfo, MessageProcessorArtifactInfo, MessageStoreArtifactInfo, ProjectNatures, ProxyArtifactInfo, SequenceArtifactInfo, SubDirectories, TaskArtifactInfo, TemplateArtifactInfo} from "../artifacts/artifactUtils";
 import {chooseTargetFolder, chooseTargetFile, showInputBox, showInputBoxForArtifactId, showInputBoxForGroupId} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
-import { type } from "os";
+import {XMLSerializer as XMLSerializer} from 'xmldom';
 
 let DOM = require('xmldom').DOMParser;
 var fileSystem = require('fs');
@@ -250,8 +250,9 @@ export async function createProjectFromCar(){
                             let artifactXmlFilePath: string = path.join(tmpDirectory, `${artifactName}_${version}`, "artifact.xml");
                             if(fse.existsSync(artifactXmlFilePath)){
                                 //create synapse artifacts
-                                let ESBConfigseDirctory: string = path.join(newProjectDirectory, esbConfigsName);
-                                copySynapseArtifact(ESBConfigseDirctory, artifactXmlFilePath);
+                                let esbConfigseDirctory: string = path.join(newProjectDirectory, esbConfigsName);
+                                let compositeDirectory: string = path.join(newProjectDirectory, name.trim());
+                                copySynapseArtifact(esbConfigseDirctory, compositeDirectory, artifactXmlFilePath, groupID);
 
                             }
                         }
@@ -296,15 +297,12 @@ function createRootPomXml(directory: string,groupID: string, artifactID: string,
     DataServiceModule.createFile(pomFilePath, rootPomXmlDoc);
 }
 
-function copySynapseArtifact(ConfigsDirecrory: string, artifactXmlFilePath: string){
-
-    console.log("copying files");
+function copySynapseArtifact(configsDirecrory: string, compositeDirectory: string, artifactXmlFilePath: string, groupId: string){
 
     const buffer: Buffer = fse.readFileSync(artifactXmlFilePath);
     let xmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
     let artifact = xmlDoc.getElementsByTagName("artifact");
     if(artifact.length > 0){
-        console.log("h1");
         
         let type: string = artifact[0].getAttribute("type").trim();
     
@@ -314,7 +312,6 @@ function copySynapseArtifact(ConfigsDirecrory: string, artifactXmlFilePath: stri
     
         let index: number = artifactTypes.indexOf(type);
         if(index === -1) return;//not a synapse artifact
-        console.log("h2");
 
         let name: string = artifact[0].getAttribute("name").trim();
         let version: string = artifact[0].getAttribute("version").trim();
@@ -328,23 +325,56 @@ function copySynapseArtifact(ConfigsDirecrory: string, artifactXmlFilePath: stri
         TaskArtifactInfo.DESTINATION_FOLDER];
 
         let destinationFolder: string = artifcatFolders[index];
-        let destinationFilePath: string = path.join(ConfigsDirecrory, "src", "main", "synapse-config", destinationFolder, newFileName);
-        console.log(destinationFilePath);
-        
+        let destinationFilePath: string = path.join(configsDirecrory, "src", "main", "synapse-config", destinationFolder, newFileName);
+       
         let curruntArtifactPath: string = path.join(artifactXmlFilePath, "..", fileName);
-        console.log(curruntArtifactPath);
-        
-        console.log("h3");
 
         let edit = new WorkspaceEdit();
         edit.createFile(Uri.file(destinationFilePath));
         workspace.applyEdit(edit);
 
         fse.copySync(curruntArtifactPath, destinationFilePath);
-        
-        console.log("h4");
 
         //update artifact.xml
+        let configsArtifactfilePath: string = path.join(configsDirecrory, "artifact.xml");
+        const buf: Buffer = fse.readFileSync(configsArtifactfilePath);
+        let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+        let parent = xmlDoc.getElementsByTagName("artifacts");
+        let filePath: string = path.join("src", "main", "synapse-config", destinationFolder, newFileName);
+        ArtifactModule.addSynapseArtifactData(parent, xmlDoc, name, groupId, type, version, serverRole, filePath, destinationFolder);
+        fse.writeFileSync(configsArtifactfilePath, new XMLSerializer().serializeToString(xmlDoc));
+
+        //update composite pom.xml
+        //add entry to properties
+        let compositePomFilePath : string = path.join(compositeDirectory, "pom.xml");
+        const buff: Buffer = fse.readFileSync(compositePomFilePath);
+        let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
+        let properties = pomXmlDoc.getElementsByTagName("properties");
+        let artifatTagName:string = `${groupId}.${type.split("/")[1]}_._${name}`;
+        ArtifactModule.addNewProperty(pomXmlDoc, artifatTagName, properties, serverRole);
+
+        //add new dependency
+        let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
+        let nextNode = properties[0].nextSibling;
+        while (nextNode.nodeType != 1) {
+            nextNode = nextNode.nextSibling;
+        }
+
+        //create dependencies tags if there are no
+        if(nextNode.tagName.trim() !== "dependencies"){
+            
+            let repositories = pomXmlDoc.getElementsByTagName("repositories");
+            let newDependancies = pomXmlDoc.createElement("dependencies");
+            pomXmlDoc.insertBefore(newDependancies, repositories[0]);
+            dependencies[0] = newDependancies;
+        }
+
+        let finalGroupId = groupId + "." + type.split("/")[1];
+
+        ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, "xml");
+        fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
+
+
     
         
     }
@@ -352,3 +382,4 @@ function copySynapseArtifact(ConfigsDirecrory: string, artifactXmlFilePath: stri
     
 
 }
+

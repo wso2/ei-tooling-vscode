@@ -288,7 +288,7 @@ export namespace ArtifactModule {
         if (workspace.workspaceFolders) {
             const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
             // read pom and get project group_id and version
-            let project: Project = await getProjectInfoFromPOM(pomFile);
+            let project: Project = getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
             const configArtifactXmlFileLocation: string = path.join(getDirectoryFromProjectNature(SubDirectories.CONFIGS), "artifact.xml");
             // Read and buffer synapse-config artifact.xml file
@@ -373,11 +373,11 @@ export namespace ArtifactModule {
         }
     }
 
-    async function updateCompositePomXmlFile(artifactName: string, targetFolder: string, type: string) {
+    function updateCompositePomXmlFile(artifactName: string, targetFolder: string, type: string) {
         if (workspace.workspaceFolders) {
             // read pom and get project group_id and version
             const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER), "pom.xml");
-            let project: Project = await getProjectInfoFromPOM(pomFile);
+            let project: Project = getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
             // Read and buffer Composite Exporter pom.xml file
             const buff: Buffer = fse.readFileSync(pomFile);
