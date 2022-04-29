@@ -36,12 +36,7 @@ export async function addNewConnectorExporter(){
     }
 
     if (projectName && workspace.workspaceFolders) {
-        let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConnectorExporterPom.xml");
-        let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "connectorExporter.xml")
-        let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-        let status: boolean = ConnectorModule.createProject(projectName.trim(), "connector exporter", templatePomFilePath,
-                         templateProjNatureFilePath, SubDirectories.CONNECTOR_EXPORTER,true, rootDirectory);
-        if(status) ConnectorModule.addProjectToRootPom(projectName.trim(), rootDirectory);
+        ConnectorModule.createNewConnectorExporter(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
     }
 }
 

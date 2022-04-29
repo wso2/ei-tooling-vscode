@@ -54,6 +54,14 @@ export namespace ConnectorModule {
             return true;
    }
 
+   export function createNewConnectorExporter(rootDirectory: string, projectName: string){
+            let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConnectorExporterPom.xml");
+            let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "connectorExporter.xml")
+            let status: boolean = ConnectorModule.createProject(projectName.trim(), "connector exporter", templatePomFilePath,
+                            templateProjNatureFilePath, SubDirectories.CONNECTOR_EXPORTER,true, rootDirectory);
+            if(status) ConnectorModule.addProjectToRootPom(projectName.trim(), rootDirectory);
+   }
+
    //add ConnectorExporter module to root pom
    export function addProjectToRootPom(projectName: string, rootDirectory: string){
        
