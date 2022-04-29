@@ -230,7 +230,7 @@ export async function createProjectFromCar(){
                     let settings: Buffer = fse.readFileSync(templateSettingsFilePath);
                     fse.writeFileSync(settingsFilePath, settings);
                     
-                    //create composite exporter
+                    //create composite exporter project
                     ArtifactModule.CreateNewCompositeExporterProject(name.trim(), newProjectDirectory);
 
                     if(dependencies.length === 0){
@@ -238,9 +238,13 @@ export async function createProjectFromCar(){
                         return;
                     }
 
-                    //create esb configs
+                    //create esb configs project
                     let esbConfigsName: string = `${artifactID}Configs`;
                     ArtifactModule.CreateNewESBConfigProject(esbConfigsName, newProjectDirectory);
+
+                    //create registry resouces project
+                    let registryResourcesName: string = `${artifactID}RegistryResources`;
+                    ArtifactModule.CreateNewRegistryResourcesProject(registryResourcesName, newProjectDirectory);
 
                     for(let i=0; i<dependencies.length; i++){
                         let artifactName: string = dependencies[i].getAttribute("artifact");
@@ -249,12 +253,13 @@ export async function createProjectFromCar(){
                         if(include){
                             let artifactXmlFilePath: string = path.join(tmpDirectory, `${artifactName}_${version}`, "artifact.xml");
                             if(fse.existsSync(artifactXmlFilePath)){
-                                //create synapse artifacts
+                                //create artifacts
                                 let esbConfigseDirctory: string = path.join(newProjectDirectory, esbConfigsName);
                                 let compositeDirectory: string = path.join(newProjectDirectory, name.trim());
+                                let registryResourcesDirectory: string = path.join(newProjectDirectory, registryResourcesName);
                                 let metadataDirectory: string = path.join(tmpDirectory, "metadata");
                                 let rootMetadataFilePath: string = path.join(tmpDirectory, "metadata.xml");
-                                copySynapseArtifactFile(esbConfigseDirctory, compositeDirectory, metadataDirectory, 
+                                copyArtifactFile(esbConfigseDirctory, compositeDirectory, registryResourcesDirectory, metadataDirectory, 
                                     rootMetadataFilePath, artifactXmlFilePath, groupID);
                                 
                             }
@@ -310,7 +315,7 @@ function createProjectNatureFile(directory: string, artifactId: string){
     DataServiceModule.createFile(newFilePath, xmlDoc);
 }
 
-function copySynapseArtifactFile(configsDirecrory: string, compositeDirectory: string, metadataDirectory: string,
+function copyArtifactFile(configsDirecrory: string, compositeDirectory: string, registryResourcesDirectory: string, metadataDirectory: string,
      metadataFilePath: string, artifactXmlFilePath: string, groupId: string){
 
     const buffer: Buffer = fse.readFileSync(artifactXmlFilePath);
@@ -325,71 +330,144 @@ function copySynapseArtifactFile(configsDirecrory: string, compositeDirectory: s
             SequenceArtifactInfo.TYPE, TaskArtifactInfo.TYPE];
     
         let index: number = artifactTypes.indexOf(type);
-        if(index === -1) return;//not a synapse artifact
 
         let name: string = artifact[0].getAttribute("name").trim();
         let version: string = artifact[0].getAttribute("version").trim();
         let serverRole: string = artifact[0].getAttribute("serverRole").trim();
         let fileName: string = artifact[0].getElementsByTagName("file")[0].textContent.trim();
-        let newFileName: string = `${name}.xml`;
 
-        let artifcatFolders: string[] = [APIArtifactInfo.DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, EndpointArtifactInfo.DESTINATION_FOLDER,
-        InboundEndpointArtifactInfo.DESTINATION_FOLDER, LocalEntryArtifactInfo.DESTINATION_FOLDER, MessageStoreArtifactInfo.DESTINATION_FOLDER,
-        MessageProcessorArtifactInfo.DESTINATION_FOLDER, TemplateArtifactInfo.DESTINATION_FOLDER, SequenceArtifactInfo.DESTINATION_FOLDER,
-        TaskArtifactInfo.DESTINATION_FOLDER];
+        if(index !== -1){//synapse artifact
 
-        let destinationFolder: string = artifcatFolders[index];
-        let destinationFilePath: string = path.join(configsDirecrory, "src", "main", "synapse-config", destinationFolder, newFileName);
-       
-        let curruntArtifactPath: string = path.join(artifactXmlFilePath, "..", fileName);
+            let newFileName: string = `${name}.xml`;
 
-        let edit = new WorkspaceEdit();
-        edit.createFile(Uri.file(destinationFilePath));
-        workspace.applyEdit(edit);
+            let artifcatFolders: string[] = [APIArtifactInfo.DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, EndpointArtifactInfo.DESTINATION_FOLDER,
+            InboundEndpointArtifactInfo.DESTINATION_FOLDER, LocalEntryArtifactInfo.DESTINATION_FOLDER, MessageStoreArtifactInfo.DESTINATION_FOLDER,
+            MessageProcessorArtifactInfo.DESTINATION_FOLDER, TemplateArtifactInfo.DESTINATION_FOLDER, SequenceArtifactInfo.DESTINATION_FOLDER,
+            TaskArtifactInfo.DESTINATION_FOLDER];
 
-        fse.copySync(curruntArtifactPath, destinationFilePath);
+            let destinationFolder: string = artifcatFolders[index];
+            let destinationFilePath: string = path.join(configsDirecrory, "src", "main", "synapse-config", destinationFolder, newFileName);
+        
+            let curruntArtifactPath: string = path.join(artifactXmlFilePath, "..", fileName);
 
-        //update artifact.xml
-        let configsArtifactfilePath: string = path.join(configsDirecrory, "artifact.xml");
-        const buf: Buffer = fse.readFileSync(configsArtifactfilePath);
-        let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-        let parent = xmlDoc.getElementsByTagName("artifacts");
-        let filePath: string = path.join("src", "main", "synapse-config", destinationFolder, newFileName);
-        ArtifactModule.addSynapseArtifactData(parent, xmlDoc, name, groupId, type, version, serverRole, filePath, destinationFolder);
-        fse.writeFileSync(configsArtifactfilePath, new XMLSerializer().serializeToString(xmlDoc));
+            let edit = new WorkspaceEdit();
+            edit.createFile(Uri.file(destinationFilePath));
+            workspace.applyEdit(edit);
 
-        //update composite pom.xml
-        //add entry to properties
-        let compositePomFilePath : string = path.join(compositeDirectory, "pom.xml");
-        const buff: Buffer = fse.readFileSync(compositePomFilePath);
-        let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
-        let properties = pomXmlDoc.getElementsByTagName("properties");
-        let artifatTagName:string = `${groupId}.${type.split("/")[1]}_._${name}`;
-        ArtifactModule.addNewProperty(pomXmlDoc, artifatTagName, properties, serverRole);
+            fse.copySync(curruntArtifactPath, destinationFilePath);
 
-        //add new dependency
-        let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
-        let nextNode = properties[0].nextSibling;
-        while (nextNode.nodeType != 1) {
-            nextNode = nextNode.nextSibling;
+            //update artifact.xml
+            let configsArtifactfilePath: string = path.join(configsDirecrory, "artifact.xml");
+            const buf: Buffer = fse.readFileSync(configsArtifactfilePath);
+            let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+            let parent = xmlDoc.getElementsByTagName("artifacts");
+            let filePath: string = path.join("src", "main", "synapse-config", destinationFolder, newFileName);
+            ArtifactModule.addSynapseArtifactData(parent, xmlDoc, name, groupId, type, version, serverRole, filePath, destinationFolder);
+            fse.writeFileSync(configsArtifactfilePath, new XMLSerializer().serializeToString(xmlDoc));
+
+            //update composite pom.xml
+            //add entry to properties
+            let compositePomFilePath : string = path.join(compositeDirectory, "pom.xml");
+            const buff: Buffer = fse.readFileSync(compositePomFilePath);
+            let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
+            let properties = pomXmlDoc.getElementsByTagName("properties");
+            let artifatTagName:string = `${groupId}.${type.split("/")[1]}_._${name}`;
+            ArtifactModule.addNewProperty(pomXmlDoc, artifatTagName, properties, serverRole);
+
+            //add new dependency
+            let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
+            let nextNode = properties[0].nextSibling;
+            while (nextNode.nodeType != 1) {
+                nextNode = nextNode.nextSibling;
+            }
+
+            //create dependencies tags if there are no
+            if(nextNode.tagName.trim() !== "dependencies"){
+                
+                let repositories = pomXmlDoc.getElementsByTagName("repositories");
+                let newDependancies = pomXmlDoc.createElement("dependencies");
+                pomXmlDoc.insertBefore(newDependancies, repositories[0]);
+                dependencies[0] = newDependancies;
+            }
+
+            let finalGroupId = groupId + "." + type.split("/")[1];
+
+            ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, "xml");
+            fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
+
+            copySynapseMetadataFiles(metadataDirectory, metadataFilePath, name, configsDirecrory, compositeDirectory, 
+                groupId, destinationFolder);
         }
+        else if(type === RegistryResourceInfo.TYPE){//registry resource
 
-        //create dependencies tags if there are no
-        if(nextNode.tagName.trim() !== "dependencies"){
+            let registryInfoFilePath: string = path.join(artifactXmlFilePath, "..", fileName);
+            const buff: Buffer = fse.readFileSync(registryInfoFilePath);
+            let xmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
+            let items = xmlDoc.getElementsByTagName("item");
+            if(items.length>0){
+                let resourceFileName: string = items[0].getElementsByTagName("file")[0].textContent.trim();
+                let resouceFilePath: string = path.join(artifactXmlFilePath, "..", "resources", resourceFileName);
+                let destinationFilePath: string = path.join(registryResourcesDirectory, resourceFileName);
+
+                let edit = new WorkspaceEdit();
+                edit.createFile(Uri.file(destinationFilePath));
+                workspace.applyEdit(edit);
+
+                fse.copySync(resouceFilePath, destinationFilePath);
+
+                //update artifact.xml
+                let artifactfilePath: string = path.join(registryResourcesDirectory, "artifact.xml");
+                const buf: Buffer = fse.readFileSync(artifactfilePath);
+                let artifactXmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+                let artifacts = artifactXmlDoc.getElementsByTagName("artifacts")[0];
+                let artifact = artifactXmlDoc.createElement("artifact");
+                artifacts.appendChild(artifact);
+                artifact.setAttribute("name", name);
+                let finalGroupId: string = `${groupId}.${type.split("/")[1]}`;
+                artifact.setAttribute("groupId", finalGroupId);
+                artifact.setAttribute("version", version);
+                artifact.setAttribute("type", type);
+                artifact.setAttribute("serverRole", serverRole);
+                artifact.appendChild(items[0]);
+
+                fse.writeFileSync(artifactfilePath, new XMLSerializer().serializeToString(artifactXmlDoc));
+
+                //update composite pom.xml
+                //add entry to properties
+                let compositePomFilePath : string = path.join(compositeDirectory, "pom.xml");
+                const buffer: Buffer = fse.readFileSync(compositePomFilePath);
+                let pomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
+                let properties = pomXmlDoc.getElementsByTagName("properties");
+                let artifatTagName:string = `${groupId}.${type.split("/")[1]}_._${name}`;
+                ArtifactModule.addNewProperty(pomXmlDoc, artifatTagName, properties, serverRole);
+
+                //add new dependency
+                let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
+                let nextNode = properties[0].nextSibling;
+                while (nextNode.nodeType != 1) {
+                    nextNode = nextNode.nextSibling;
+                }
+
+                //create dependencies tags if there are no
+                if(nextNode.tagName.trim() !== "dependencies"){
+                    
+                    let repositories = pomXmlDoc.getElementsByTagName("repositories");
+                    let newDependancies = pomXmlDoc.createElement("dependencies");
+                    pomXmlDoc.insertBefore(newDependancies, repositories[0]);
+                    dependencies[0] = newDependancies;
+                }
+
+                ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, "zip");
+                fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
+                }
+
             
-            let repositories = pomXmlDoc.getElementsByTagName("repositories");
-            let newDependancies = pomXmlDoc.createElement("dependencies");
-            pomXmlDoc.insertBefore(newDependancies, repositories[0]);
-            dependencies[0] = newDependancies;
+            
+
+            
+
+
         }
-
-        let finalGroupId = groupId + "." + type.split("/")[1];
-
-        ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, "xml");
-        fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
-
-        copySynapseMetadataFiles(metadataDirectory, metadataFilePath, name, configsDirecrory, compositeDirectory, 
-            groupId, destinationFolder);
     }
 }
 
