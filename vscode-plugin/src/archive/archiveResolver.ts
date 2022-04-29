@@ -192,6 +192,10 @@ export async function createProjectFromCar(){
 
                 //create new project directory
                 let newProjectDirectory: string = path.join(destinationLocation, artifactID);
+                if(fse.existsSync(newProjectDirectory)){
+                    window.showErrorMessage("Project directory already exists...!");
+                    return;
+                }
                 fileSystem.mkdirSync(newProjectDirectory);
 
                 //extract zip archive
@@ -212,6 +216,7 @@ export async function createProjectFromCar(){
                     let name: string = artifacts[0].getAttribute("name");
                     let version: string = artifacts[0].getAttribute("version");
                     let dependencies = artifacts[0].getElementsByTagName("dependency");
+                    createProjectNatureFile(destinationLocation, artifactID);
                     createRootPomXml(destinationLocation, groupID, artifactID, version);
                     //create settings.json
                     let settingsDirectory: string = path.join(newProjectDirectory,".vscode");
@@ -293,6 +298,16 @@ function createRootPomXml(directory: string,groupID: string, artifactID: string,
     name.textContent = artifactID;
     description.textContent = artifactID;
     DataServiceModule.createFile(pomFilePath, rootPomXmlDoc);
+}
+
+function createProjectNatureFile(directory: string, artifactId: string){
+    let templateFilePath: string = path.join(__dirname, "..", "..", "templates", "Conf", "multiModuleProject.xml");
+    let newFilePath: string = path.join(directory, artifactId, ".project");
+    const buffer: Buffer = fse.readFileSync(templateFilePath);
+    let xmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
+    let name = xmlDoc.getElementsByTagName("name")[0];
+    name.textContent = artifactId;
+    DataServiceModule.createFile(newFilePath, xmlDoc);
 }
 
 function copySynapseArtifactFile(configsDirecrory: string, compositeDirectory: string, metadataDirectory: string,
