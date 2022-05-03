@@ -827,31 +827,34 @@ export namespace ArtifactModule {
             return requiredDirectory;
     }
 
-    export function CreateNewESBConfigProject(projectName: string, rootDirectory: string){
+    export function CreateNewESBConfigProject(rootDirectory: string, projectName: string){
         
             //create new sub-directory
             //create pom.xml, artifact.xml and .project files
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConfigsPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "esbConfigs.xml")
-            let status: boolean =ConnectorModule.createProject(projectName, "ESB Config Project", templatePomFilePath, 
-                                templateProjNatureFilePath, SubDirectories.CONFIGS, true, rootDirectory);
-            if(!status) return;
+            ConnectorModule.createProject(projectName, "ESB Configs Project", templatePomFilePath, 
+                                templateProjNatureFilePath, SubDirectories.CONFIGS, true, rootDirectory, ProjectNatures.CONFIGS);
+           
+            
+    }
 
-            //create additional sub-directories
-            let metadataPath: string = path.join(rootDirectory, projectName, "src", "main", "resources", "metadata");
-            file_system.mkdirSync(metadataPath, {recursive: true});
+    export function addESBConfigsToRootPom(rootDirectory: string, projectName: string){
 
-            let artifactSubFolders: string[] = [APIArtifactInfo.DESTINATION_FOLDER, EndpointArtifactInfo.DESTINATION_FOLDER, InboundEndpointArtifactInfo.DESTINATION_FOLDER,
-                LocalEntryArtifactInfo.DESTINATION_FOLDER, MessageProcessorArtifactInfo.DESTINATION_FOLDER, MessageStoreArtifactInfo.DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER,
-                SequenceArtifactInfo.DESTINATION_FOLDER, TaskArtifactInfo.DESTINATION_FOLDER, TemplateArtifactInfo.DESTINATION_FOLDER];
+        //create additional sub-directories
+        let metadataPath: string = path.join(rootDirectory, projectName, "src", "main", "resources", "metadata");
+        file_system.mkdirSync(metadataPath, {recursive: true});
 
-            for(let i=0; i< artifactSubFolders.length; i++){
-                let subFolderPath: string = path.join(rootDirectory, projectName, "src", "main", "synapse-config", artifactSubFolders[i].trim());
-                file_system.mkdirSync(subFolderPath, {recursive: true});
-            }
+        let artifactSubFolders: string[] = [APIArtifactInfo.DESTINATION_FOLDER, EndpointArtifactInfo.DESTINATION_FOLDER, InboundEndpointArtifactInfo.DESTINATION_FOLDER,
+            LocalEntryArtifactInfo.DESTINATION_FOLDER, MessageProcessorArtifactInfo.DESTINATION_FOLDER, MessageStoreArtifactInfo.DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER,
+            SequenceArtifactInfo.DESTINATION_FOLDER, TaskArtifactInfo.DESTINATION_FOLDER, TemplateArtifactInfo.DESTINATION_FOLDER];
 
-            //add to root pom
-            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
+        for(let i=0; i< artifactSubFolders.length; i++){
+            let subFolderPath: string = path.join(rootDirectory, projectName, "src", "main", "synapse-config", artifactSubFolders[i].trim());
+            file_system.mkdirSync(subFolderPath, {recursive: true});
+        }
+
+        let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
             if(!fse.existsSync(rootPomFilePath)){
                 window.showErrorMessage("No root pom.xml found...!");
                 return;
@@ -880,54 +883,57 @@ export namespace ArtifactModule {
             if(!append) modules.appendChild(ESBModule);
 
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
+
     }
 
-    export function CreateNewCompositeExporterProject(projectName: string, rootDirectory: string){
+    export function CreateNewCompositeExporterProject(rootDirectory: string, projectName: string){
  
             //create new sub-directory
             //create pom.xml, artifact.xml and .project files
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "CompositeExporterPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "compositeExporter.xml")
-            let status: boolean = ConnectorModule.createProject(projectName, "Composite Exporter Project", templatePomFilePath, 
-                                templateProjNatureFilePath, SubDirectories.COMPOSITE_EXPORTER, false, rootDirectory);
-            if(!status) return;
+            ConnectorModule.createProject(projectName, "Composite Exporter Project", templatePomFilePath, 
+                                templateProjNatureFilePath, SubDirectories.COMPOSITE_EXPORTER, false, rootDirectory, ProjectNatures.COMPOSITE_EXPORTER);
             
-            //add to root pom
-            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
-            if(!fse.existsSync(rootPomFilePath)){
-                window.showErrorMessage("No root pom.xml found...!");
-                return;
-            }
-            const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
-            let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
-            let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
-            let connectorModule = rootPomXmlDoc.createElement("module");
-            connectorModule.textContent = projectName.trim();
-
-            modules.appendChild(connectorModule);
-
-            fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
     }
 
-    export function CreateNewRegistryResourcesProject(projectName: string, rootDirectory: string){
+    export function addCompositeExporterToRootPom(rootDirectory: string, projectName: string){
+        let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
+        if(!fse.existsSync(rootPomFilePath)){
+            window.showErrorMessage("No root pom.xml found...!");
+            return;
+        }
+        const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
+        let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
+        let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
+        let connectorModule = rootPomXmlDoc.createElement("module");
+        connectorModule.textContent = projectName.trim();
+
+        modules.appendChild(connectorModule);
+
+        fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
+    }
+
+    export function CreateNewRegistryResourcesProject(rootDirectory: string, projectName: string){
     
             //create new sub-directory
             //create pom.xml, artifact.xml and .project files
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "RegistryResourcesPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "registryResources.xml");
-            let status: boolean = ConnectorModule.createProject(projectName, "Registry Resources Project", templatePomFilePath, 
-                                    templateProjNatureFilePath, SubDirectories.REGISTRY_RESOURCES, true, rootDirectory);
-            if(!status) return;
-            
-            //create .classpath file
-            let templateConfigFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "registryClassPath.xml")
-            const buf: Buffer = fse.readFileSync(templateConfigFilePath);
-            let classPath  = new DOM().parseFromString(buf.toString(), "text/xml");
-            let configFilePath: string = path.join(rootDirectory, projectName, ".classpath");
-            DataServiceModule.createFile(configFilePath,classPath);
+            ConnectorModule.createProject(projectName, "Registry Resources Project", templatePomFilePath, 
+                                    templateProjNatureFilePath, SubDirectories.REGISTRY_RESOURCES, true, rootDirectory, ProjectNatures.REGISTRY_RESOURCES);
+    }
 
-            //add to root pom
-            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
+    export function addRegistryResourcesToRootPom(rootDirectory: string, projectName: string){
+
+        //create .classpath file
+        let templateConfigFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "registryClassPath.xml")
+        const buf: Buffer = fse.readFileSync(templateConfigFilePath);
+        let classPath  = new DOM().parseFromString(buf.toString(), "text/xml");
+        let configFilePath: string = path.join(rootDirectory, projectName, ".classpath");
+        DataServiceModule.createFile(configFilePath,classPath);
+
+        let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
             if(!fse.existsSync(rootPomFilePath)){
                 window.showErrorMessage("No root pom.xml found...!");
                 return;
@@ -978,6 +984,4 @@ export namespace ArtifactModule {
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
     }
 
-
-        
 }

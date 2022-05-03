@@ -26,6 +26,7 @@ export class MediatorProjectInfo {
     static readonly PROJECT_PROMPT_MESSAGE: string = "Enter Mediator Project name...";
     static readonly PACKAGE_PROMPT_MESSAGE: string = "Enter Package name...";
     static readonly CLASS_PROMPT_MESSAGE: string = "Enter Class name...";
+    static readonly TYPE: string = "lib/synapse/mediator";
 }
 
 

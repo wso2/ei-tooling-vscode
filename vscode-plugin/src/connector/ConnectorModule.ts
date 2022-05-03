@@ -20,7 +20,7 @@ import {window, workspace, QuickPickItem, ProgressLocation} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
 import { ArtifactModule } from "../artifacts/ArtifactModule";
-import { SubDirectories } from "../artifacts/artifactUtils";
+import { ProjectNatures, SubDirectories } from "../artifacts/artifactUtils";
 import { ServerRoleInfo, ConnectorInfo } from "./connectorUtils";
 import { DataServiceModule } from "../dataService/DataServiceModule";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
@@ -33,37 +33,65 @@ export namespace ConnectorModule {
 
    const dirName = __dirname;
    
-   export function createProject(projectName: string, type: string, templatePomFilePath: string, templateProjNatureFilePath: string,
-                                            directoryType: string, createArtifactXml: boolean, rootDirectory: string): boolean{
+   export async function createProject(projectName: string, type: string, templatePomFilePath: string, templateProjNatureFilePath: string,
+                                            directoryType: string, createArtifactXml: boolean, rootDirectory: string, projectNature: ProjectNatures){
         
             const currentDirectory: string = ArtifactModule.getDirectoryFromProjectNature(directoryType, rootDirectory).trim();
             if(currentDirectory !== "unidentified"){
-                window.showInformationMessage(`Can not add more than one ${type}!`);
-                return false;
-            }
-                
-            let newDirectory: string = path.join(rootDirectory, projectName);
-            if(fse.existsSync(newDirectory)){
-                window.showErrorMessage(`${type} name already exists!`);
-                return false;
-            }
-            fse.mkdirSync(newDirectory);
-            //add artifact.xml, pom.xml and .project
-            DataServiceModule.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
+                window.showWarningMessage(`WSO2 Enterprise Integrator Extension can not handle more than one ${type} &
+                    Handling more than one ${type} is under user's control, Do you want to continue?`, "Yes", "No").then(decision => {
+                    if(decision && (decision.trim() === "Yes")){
 
-            return true;
+                        let newDirectory: string = path.join(rootDirectory, projectName);
+                        if(fse.existsSync(newDirectory)){
+                            window.showErrorMessage(`${type} name already exists!`);
+                            return;
+                        }
+                        fse.mkdirSync(newDirectory);
+                        //add artifact.xml, pom.xml and .project
+                        DataServiceModule.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
+                        addProjectToRootPom(projectName, projectNature, rootDirectory);
+                    }
+                });
+            }
+            else{
+
+                let newDirectory: string = path.join(rootDirectory, projectName);
+                if(fse.existsSync(newDirectory)){
+                    window.showErrorMessage(`${type} name already exists!`);
+                    return;
+                }
+                fse.mkdirSync(newDirectory);
+                //add artifact.xml, pom.xml and .project
+                DataServiceModule.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
+                addProjectToRootPom(projectName, projectNature, rootDirectory);
+            }
    }
 
    export function createNewConnectorExporter(rootDirectory: string, projectName: string){
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "ConnectorExporterPom.xml");
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "connectorExporter.xml")
-            let status: boolean = ConnectorModule.createProject(projectName.trim(), "connector exporter", templatePomFilePath,
-                            templateProjNatureFilePath, SubDirectories.CONNECTOR_EXPORTER,true, rootDirectory);
-            if(status) ConnectorModule.addProjectToRootPom(projectName.trim(), rootDirectory);
+            ConnectorModule.createProject(projectName.trim(), "connector exporter", templatePomFilePath,
+                            templateProjNatureFilePath, SubDirectories.CONNECTOR_EXPORTER,true, rootDirectory, ProjectNatures.CONNECTOR_EXPORTER);
+   }
+
+   function addProjectToRootPom(projectName: string, projectNature: ProjectNatures, rootDirectory: string){
+        if(projectNature === ProjectNatures.COMPOSITE_EXPORTER){
+            ArtifactModule.addCompositeExporterToRootPom(rootDirectory, projectName);
+        }
+        else if(projectNature === ProjectNatures.CONFIGS){
+            ArtifactModule.addESBConfigsToRootPom(rootDirectory, projectName);
+        }
+        else if(projectNature === ProjectNatures.REGISTRY_RESOURCES){
+            ArtifactModule.addRegistryResourcesToRootPom(rootDirectory, projectName);
+        }
+        else if(projectNature === ProjectNatures.CONNECTOR_EXPORTER){
+            addConnectorExporterToRootPom(rootDirectory, projectName);
+        }
    }
 
    //add ConnectorExporter module to root pom
-   export function addProjectToRootPom(projectName: string, rootDirectory: string){
+   function addConnectorExporterToRootPom(rootDirectory: string, projectName: string){
        
        let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
        if(!fse.existsSync(rootPomFilePath)){

@@ -274,7 +274,7 @@ export async function createESBProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-       ArtifactModule.CreateNewESBConfigProject(projectName.trim(), workspace.workspaceFolders[0].uri.fsPath);
+       ArtifactModule.CreateNewESBConfigProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
     }
     
 }
@@ -288,7 +288,7 @@ export async function createCompositeProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-       ArtifactModule.CreateNewCompositeExporterProject(projectName.trim(), workspace.workspaceFolders[0].uri.fsPath);
+       ArtifactModule.CreateNewCompositeExporterProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
     }
     
 }
@@ -302,7 +302,7 @@ export async function createRegistryResourcesProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-       ArtifactModule.CreateNewRegistryResourcesProject(projectName.trim(), workspace.workspaceFolders[0].uri.fsPath);
+       ArtifactModule.CreateNewRegistryResourcesProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
     }
     
 }

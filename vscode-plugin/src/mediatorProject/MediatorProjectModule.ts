@@ -39,7 +39,7 @@ export namespace MediatorProjectModule {
 
     const dirName = __dirname;
 
-    export async function createProject(rootDirectory: string, projectName: string, packageName: string, className: string) {
+    export async function createProject(rootDirectory: string, projectName: string, packageName: string, className?: string) {
        
             //check whether project name already exists
             let mediatorProjectDirectory: string = path.join(rootDirectory, projectName);
@@ -49,9 +49,13 @@ export namespace MediatorProjectModule {
             }
 
             //create directory structure
-            let packageSubdirectories: string[] = packageName.split(".");
-            let packageSubDirPath: string = packageSubdirectories.join(path.sep);
-            let javaFilePath: string = path.join(rootDirectory, projectName, "src", "main", "java", packageSubDirPath);
+            let javaFilePath: string = path.join(rootDirectory, projectName, "src", "main", "java");
+            if( typeof className !== "undefined"){
+                let packageSubdirectories: string[] = packageName.split(".");
+                let packageSubDirPath: string = packageSubdirectories.join(path.sep);
+                javaFilePath = path.join(javaFilePath, packageSubDirPath);
+            }
+                
             fs.mkdirSync(javaFilePath, {recursive: true});
 
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
@@ -143,14 +147,11 @@ export namespace MediatorProjectModule {
             ArtifactModule.addNewDependancy(pomXml, dependencies, projectName, packageName);
             fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXml));
 
+            //no java class is created
+            if(typeof className === "undefined") return;
+
             //create sample java class
             let sampleJavaClassfilePath: string = path.join(javaFilePath, className + ".java");
-            //let templateJavaFilePath: string = path.join(dirName, "..", "..", "templates", "mediator-project", "SampleClass.txt");
-            /*const javaBuffer: Buffer = fs.readFileSync(templateJavaFilePath,'utf8');
-            let tmpData: string = javaBuffer.toString();
-            tmpData.replace("packageName", "Hi");
-            tmpData.replace("className", className);*/
-            //console.log(tmpData);
 
             const data: string = 
             `package ${packageName};
@@ -165,8 +166,6 @@ export namespace MediatorProjectModule {
                 return true;
             }
             }`;
-
-            //console.log(data);
 
             let fileUri:Uri = Uri.file(sampleJavaClassfilePath);
             let edit = new WorkspaceEdit();

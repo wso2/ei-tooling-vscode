@@ -51,16 +51,4 @@ export async function createMediatorProject() {
     }
 }
 
-/*export async function createNewDataService(filePath: string){
 
-    let dataServiceName = await showInputBox(DataServiceInfo.PROMPT_MESSAGE);
-
-    while (typeof dataServiceName !== "undefined" && !Utils.validate(dataServiceName.trim())) {
-        window.showErrorMessage("Enter valid Data Service name!!");
-        dataServiceName = await showInputBox(DataServiceInfo.PROMPT_MESSAGE);
-    }
-
-    if (dataServiceName) {
-        DataServiceModule.createService(filePath, dataServiceName);
-    }
-}*/

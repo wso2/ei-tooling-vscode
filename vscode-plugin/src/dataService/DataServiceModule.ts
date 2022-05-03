@@ -37,11 +37,9 @@ export namespace DataServiceModule {
 
     const dirName = __dirname;
 
-    export async function createProject(projectName: string) {
-        if (workspace.workspaceFolders) {
+    export async function createProject(projectName: string, rootDirectory: string) {
 
             //check whether data service project already exists
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             let dSConfigsDirectory: string = path.join(rootDirectory, projectName);
             if(fse.existsSync(dSConfigsDirectory)){
                 window.showErrorMessage("Data Service project name already exists!");
@@ -92,8 +90,6 @@ export namespace DataServiceModule {
 
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
 
-            
-        }
     }
 
     export function createFile(filePath: string, data: any): Uri{
