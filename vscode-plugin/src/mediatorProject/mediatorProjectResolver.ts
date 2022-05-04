@@ -18,9 +18,10 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 import {QuickPickItem, window, workspace} from "vscode";
 import {MediatorProjectModule} from "./MediatorProjectModule";
-import { MediatorProjectInfo } from "./mediarorProjectUtils";
+import { MediatorProjectInfo} from "./mediarorProjectUtils";
 import {showInputBox, showQuickPick} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
+import { ServerRoleInfo } from "../artifacts/artifactUtils";
 
 export async function createMediatorProject() {
         
@@ -47,7 +48,7 @@ export async function createMediatorProject() {
 
     if (projectName && packageName && className && workspace.workspaceFolders) {
         let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-        MediatorProjectModule.createProject(projectName.trim(), packageName.trim(), className.trim(), rootDirectory);
+        MediatorProjectModule.createProject(rootDirectory, projectName.trim(), packageName.trim(), "1.0.0", ServerRoleInfo.ENTERPRISE_SERVICE_BUS, className.trim());
     }
 }
 

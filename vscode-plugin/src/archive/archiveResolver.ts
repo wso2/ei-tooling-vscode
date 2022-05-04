@@ -31,6 +31,7 @@ import { ConnectorModule } from "../connector/ConnectorModule";
 import { DataServiceInfo } from "../dataService/dataServiceUtils";
 import { strictEqual } from "assert";
 import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
+import { MediatorProjectModule } from "../mediatorProject/MediatorProjectModule";
 
 let DOM = require('xmldom').DOMParser;
 var fileSystem = require('fs');
@@ -500,76 +501,31 @@ async function copyArtifactFile(rootDirectory: string, projectName: string, conf
             let jarFilePath: string = path.join(artifactXmlFilePath, "..", fileName);
             let extractDirectory: string = path.join(artifactXmlFilePath, "..", "tmp");
             let manifestDirectory: string = path.join(extractDirectory, "META-INF");
+            let manifestFilePath: string = path.join(manifestDirectory, "MANIFEST.MF");
+
             //extract .jar file
             if(fse.existsSync(jarFilePath)){
                 await extract(jarFilePath, { dir: extractDirectory });
             }
+
+            //get package name from MANIFEST.MF
+            const buf: Buffer = fse.readFileSync(manifestFilePath);
+            let manifest = buf.toString();
+            let split1: string[] = manifest.split("Export-Package:");
+            let split2: string = split1[split1.length - 1];
+            let packageName: string = split2.split("DynamicImport-Package:")[0].trim();
+
             //remove manifest files
             if(fse.existsSync(manifestDirectory)) fse.removeSync(manifestDirectory);
 
-            var zip = new AdmZip(jarFilePath);
-            var zipEntries = zip.getEntries(); // an array of ZipEntry records
-            let packageName: string;
-            zipEntries.forEach((element: any) => {
-                //console.log(element.entryName);
-                let pathSplit: string[] = element.entryName.split(path.sep);
-                let className: string = pathSplit[pathSplit.length - 1];
-                let tmp: string[] = className.split(".");
-                let fileExtension: String = tmp[tmp.length - 1];
-                if(fileExtension.trim() === "class"){
-                    pathSplit.pop();
-                    packageName = pathSplit.join(".");
-                    console.log(packageName);
-                }
-            });
-
-            //let projectFiles = fse.readdirSync(extractDirectory);
-            let projectFiles = fileSystem.readdirSync(extractDirectory, {recursive : true});
-            projectFiles.forEach((folder: any) => {
-                //console.log(folder);
-                //let projectFolderPath: string = path.join(extractDirectory, folder);
-            });
-
-
+            MediatorProjectModule.createProject(rootDirectory, name, packageName, version, serverRole);
             
-
-            /*let dataServiceFilePath: string = path.join(artifactXmlFilePath, "..", fileName);
-            let newFileName: string = `${name}.${ArtifactInfo.fileTypes.get(type)}`;
-            let dataServiceProjectName: string = `${projectName}DataService`;
-            if(!dataServiceProjectCreated){
-                DataServiceModule.createProject(dataServiceProjectName, rootDirectory);
-                dataServiceProjectCreated = true;
+            //copy java files
+            let destinationDirectory: string = path.join(rootDirectory, name, "src", "main", "java");
+            if(fse.existsSync(destinationDirectory)){
+                fse.copySync(extractDirectory, destinationDirectory);
+                window.showWarningMessage("Mediator Projects contain .class files");
             }
-
-            let destinationFilePath = path.join(rootDirectory, dataServiceProjectName, "dataservice", newFileName);
-
-            let edit = new WorkspaceEdit();
-            edit.createFile(Uri.file(destinationFilePath));
-            workspace.applyEdit(edit);
-
-            fse.copySync(dataServiceFilePath, destinationFilePath);
-
-            //update artifact.xml
-            let artifactfilePath: string = path.join(rootDirectory, dataServiceProjectName, "artifact.xml");
-            const buf: Buffer = fse.readFileSync(artifactfilePath);
-            let artifactXmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-            let artifacts = artifactXmlDoc.getElementsByTagName("artifacts")[0];
-            let artifact = artifactXmlDoc.createElement("artifact");
-            artifacts.appendChild(artifact);
-            artifact.setAttribute("name", name);
-            let finalGroupId: string = `${groupId}.${type.split("/")[1]}`;
-            artifact.setAttribute("groupId", finalGroupId);
-            artifact.setAttribute("version", version);
-            artifact.setAttribute("type", type);
-            artifact.setAttribute("serverRole", serverRole);
-            let file = artifactXmlDoc.createElement("file");
-            file.textContent = newFileName;
-            artifact.appendChild(file);
-
-            fse.writeFileSync(artifactfilePath, new XMLSerializer().serializeToString(artifactXmlDoc));
-
-            //update composite pom.xml
-            updateCompositePomXml(compositeDirectory, name, type, serverRole, finalGroupId);*/
 
         }
     }

@@ -39,7 +39,8 @@ export namespace MediatorProjectModule {
 
     const dirName = __dirname;
 
-    export async function createProject(rootDirectory: string, projectName: string, packageName: string, className?: string) {
+    export async function createProject(rootDirectory: string, projectName: string, packageName: string,
+        version: string, serverRole: string, className?: string) {
        
             //check whether project name already exists
             let mediatorProjectDirectory: string = path.join(rootDirectory, projectName);
@@ -84,7 +85,7 @@ export namespace MediatorProjectModule {
             //child
             artifactIds[1].textContent = projectName;
             groupIds[1].textContent = packageName;
-            versions[1].textContent = "1.0.0";
+            versions[1].textContent = version;
             childProjectName.textContent = projectName;
             childProjectDescription.textContent = projectName;
             bundleSymbolicName.textContent = projectName;
@@ -140,11 +141,11 @@ export namespace MediatorProjectModule {
             //add new property
             let tagName: string = packageName + "_._" + projectName;
             let properties = pomXml.getElementsByTagName("properties");
-            ArtifactModule.addNewProperty(pomXml, tagName, properties, ServerRoleInfo.ENTERPRISE_SERVICE_BUS);
+            ArtifactModule.addNewProperty(pomXml, tagName, properties, serverRole);
 
             //add new dependancy
             let dependencies = pomXml.getElementsByTagName("dependencies");
-            ArtifactModule.addNewDependancy(pomXml, dependencies, projectName, packageName);
+            ArtifactModule.addNewDependancy(pomXml, dependencies, projectName, packageName, undefined, version);
             fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXml));
 
             //no java class is created
