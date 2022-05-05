@@ -29,7 +29,6 @@ import {XMLSerializer as XMLSerializer} from 'xmldom';
 import { ConnectorInfo } from "../connector/connectorUtils";
 import { ConnectorModule } from "../connector/ConnectorModule";
 import { DataServiceInfo } from "../dataService/dataServiceUtils";
-import { strictEqual } from "assert";
 import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
 import { MediatorProjectModule } from "../mediatorProject/MediatorProjectModule";
 
@@ -38,7 +37,7 @@ var fileSystem = require('fs');
 var archiver = require('archiver');
 const extract = require('extract-zip');
 var AdmZip = require('adm-zip');
-const YAML = require("js-yaml");
+const fernflower = require("fernflower");
 
 let dataServiceProjectCreated: boolean = false;
 
@@ -500,16 +499,39 @@ async function copyArtifactFile(rootDirectory: string, projectName: string, conf
 
             let jarFilePath: string = path.join(artifactXmlFilePath, "..", fileName);
             let extractDirectory: string = path.join(artifactXmlFilePath, "..", "tmp");
-            let manifestDirectory: string = path.join(extractDirectory, "META-INF");
+            let decompiledDirectory: string = path.join(extractDirectory, "decompiled");
+            let manifestDirectory: string = path.join(decompiledDirectory, "META-INF");
             let manifestFilePath: string = path.join(manifestDirectory, "MANIFEST.MF");
 
+            fernflower(jarFilePath,extractDirectory)
+            .then((decompiledDir: any) => {
+                //get package name from MANIFEST.MF
+                const buf: Buffer = fse.readFileSync(manifestFilePath);
+                let manifest = buf.toString();
+                let split1: string[] = manifest.split("Export-Package:");
+                let split2: string = split1[split1.length - 1];
+                let packageName: string = split2.split("DynamicImport-Package:")[0].trim();
+
+                //remove manifest files
+                if(fse.existsSync(manifestDirectory)) fse.removeSync(manifestDirectory);
+
+                MediatorProjectModule.createProject(rootDirectory, name, packageName, version, serverRole);
+                
+                //copy java files
+                let destinationDirectory: string = path.join(rootDirectory, name, "src", "main", "java");
+                if(fse.existsSync(destinationDirectory)){
+                    fse.copySync(decompiledDirectory, destinationDirectory);
+                }
+            })
+            .catch((err: any) => console.log(err.stack));
+
             //extract .jar file
-            if(fse.existsSync(jarFilePath)){
+            /*if(fse.existsSync(jarFilePath)){
                 await extract(jarFilePath, { dir: extractDirectory });
-            }
+            }*/
 
             //get package name from MANIFEST.MF
-            const buf: Buffer = fse.readFileSync(manifestFilePath);
+            /*const buf: Buffer = fse.readFileSync(manifestFilePath);
             let manifest = buf.toString();
             let split1: string[] = manifest.split("Export-Package:");
             let split2: string = split1[split1.length - 1];
@@ -523,9 +545,9 @@ async function copyArtifactFile(rootDirectory: string, projectName: string, conf
             //copy java files
             let destinationDirectory: string = path.join(rootDirectory, name, "src", "main", "java");
             if(fse.existsSync(destinationDirectory)){
-                fse.copySync(extractDirectory, destinationDirectory);
-                window.showWarningMessage("Mediator Projects contain .class files");
-            }
+                fse.copySync(decompiledDirectory, destinationDirectory);
+                //window.showWarningMessage("Mediator Projects contain .class files");
+            }*/
 
         }
     }

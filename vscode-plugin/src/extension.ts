@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace, languages} from 'vscode';
+import {commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace} from 'vscode';
 import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
@@ -34,11 +34,9 @@ import {
     LocalEntryArtifactInfo,
     MessageProcessorArtifactInfo,
     MessageStoreArtifactInfo,
-    ProjectNatures,
     ProxyArtifactInfo,
     RegistryResourceInfo,
     SequenceArtifactInfo,
-    SubDirectories,
     TaskArtifactInfo,
     TemplateArtifactInfo
 } from "./artifacts/artifactUtils";
@@ -50,7 +48,6 @@ import * as path from 'path';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
-var file_system = require('fs');
 const chokidar = require('chokidar');
 
 
@@ -103,29 +100,23 @@ export function activate(context: ExtensionContext) {
             );
             fileWatcherCreated = true;
 
-            
             watcher.onDidChange((changedFile: Uri) => {
                
                 if (workspace.workspaceFolders) {
-                    let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-                    const subDir: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONFIGS, rootDirectory);
-                    const directoryPattern: string = path.join(subDir, "src", "main", "synapse-config", "api");
-
+                    //update metadata.yaml for API
+                    const directoryPattern: string = path.join("src", "main", "synapse-config", "api");
+                    
                     //check whether an api resource file is changed
                     if(isExistDirectoryPattern(changedFile.fsPath, directoryPattern)){
-                        ArtifactModule.updateMetadataforApi(changedFile.fsPath);
+                        const esbConfigsDirectory: string = changedFile.fsPath.split(directoryPattern)[0];
+                        ArtifactModule.updateMetadataforApi(esbConfigsDirectory, changedFile.fsPath);
                     }
 
                 }
             });
-
-            
-
             watcher.onDidDelete((deletedFile: Uri) => {
                 DataServiceModule.safeDeteteProject(deletedFile.path);
-            });
-
-            
+            });       
         }
     }
 
@@ -185,7 +176,8 @@ function registerSynapseCommands(context: ExtensionContext) {
         unzipArchive();
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.api", async () => {
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.api", async (Uri: Uri) => {
+        console.log(Uri.fsPath);
         await createArtifact(APIArtifactInfo.ARTIFACT_TYPE);
     }));
 

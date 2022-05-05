@@ -16,14 +16,13 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
+import {Uri, window, workspace, WorkspaceEdit} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
 import {LocalEntryArtifactInfo, ServerRoleInfo, SubDirectories, ProjectNatures, APIArtifactInfo, ProxyArtifactInfo, ArtifactInfo, RegistryResourceInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, MessageProcessorArtifactInfo, MessageStoreArtifactInfo, SequenceArtifactInfo, TaskArtifactInfo, TemplateArtifactInfo } from "./artifactUtils";
 import { ConnectorModule } from "../connector/ConnectorModule";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
 import {RegistryResource} from "./artifactResolver";
-import { dir } from "console";
 import { DataServiceModule } from "../dataService/DataServiceModule";
 
 let DOM = require('xmldom').DOMParser;
@@ -45,21 +44,21 @@ export namespace ArtifactModule {
     }
 
     /**
-     * Create new config artifact in Synapse ESB project.
+     * Create new config artifact in ESB Configs.
      */
     export function createArtifact(targetFolder: string, templateFileName: string, targetArtifactName: string,
                                    artifactType: string, type: string) {
         if (workspace.workspaceFolders) {
 
             // Create target folder path where the new config artifact is going to be added in the project.
-            const subFolder: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, workspace.workspaceFolders[0].uri.fsPath);
-            const pathToTargetFolder = path.join(subFolder, "src", "main", "synapse-config",
+            const esbConfigsDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, workspace.workspaceFolders[0].uri.fsPath);
+            const pathToTargetFolder = path.join(esbConfigsDirectory, "src", "main", "synapse-config",
                                                  targetFolder);
 
             // Check if the path really exists. If not exists, the project is not a standard Synapse muilti-module Project
             checkPathExistence(pathToTargetFolder).then(exists => {
                 if (exists) {
-                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, artifactType, type,
+                    createArtifactFromTemplate(esbConfigsDirectory, targetFolder, templateFileName, targetArtifactName, artifactType, type,
                                                pathToTargetFolder, "synapse-config", undefined);
                 }
             });
@@ -67,7 +66,7 @@ export namespace ArtifactModule {
     }
 
     /**
-     * Create new resource in Synapse ESB project.
+     * Create new resource in Registry Resources.
      */
     export function createResource(targetFolder: string, templateFileName: string, targetArtifactName: string,
                                    artifactType: string, type: string, registryResource: RegistryResource) {
@@ -77,7 +76,7 @@ export namespace ArtifactModule {
             // Check if the path really exists. If not exists, the project is not a standard Synapse muilti-module Project
             checkPathExistence(registryResourceSubDirectory).then(exists => {
                 if (exists) {
-                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, artifactType, type,
+                    createArtifactFromTemplate(registryResourceSubDirectory, targetFolder, templateFileName, targetArtifactName, artifactType, type,
                                                registryResourceSubDirectory, "registry-resources", registryResource);
                 }
             });
@@ -98,18 +97,15 @@ export namespace ArtifactModule {
     /**
      * Create artifact from template.
      */
-    function createArtifactFromTemplate(targetFolder: string, templateFileName: string, targetArtifactName: string,
+    function createArtifactFromTemplate(subDirectory: string, targetFolder: string, templateFileName: string, targetArtifactName: string,
                                         artifactType: string, type: string, pathToTargetFolder: string,
                                         resourceType: string, registryResource: RegistryResource | undefined) {
         
-        //create artifact
-        if (workspace.workspaceFolders && (registryResource === undefined)) {
+        let rootDirectory: string = path.join(subDirectory, "..");
+        
+        if (typeof registryResource === "undefined"){//synapse artifact
 
-            
             let pattern = path.join("*", targetArtifactName + getFileExtension(registryResource));
-
-            //let subDirectory: string = workspace.workspaceFolders[0].name + SubDirectories.CONFIGS;
-            let subDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, workspace.workspaceFolders[0].uri.fsPath);
             let cwd = path.join(subDirectory, "src", "main", resourceType);
 
              //target metadata.yaml and swagger.yaml folder
@@ -131,7 +127,7 @@ export namespace ArtifactModule {
                     let templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
                                                                templateFileName + getFileExtension(registryResource));
                     //create metadata and swagger files for API
-                    if(targetFolder.trim() === "api"){
+                    if(targetFolder.trim() === APIArtifactInfo.DESTINATION_FOLDER){
                         //path to metadata template
                         let templateMetadataFilePath = path.join(dirName, '..', '..', 'templates', 'metadata', "metadata.yaml");
                         //path to swagger template
@@ -164,7 +160,7 @@ export namespace ArtifactModule {
                         fse.writeFileSync(targetSwaggerFilePatUri.fsPath, YAML.dump(data));
 
                     }
-                    else if(targetFolder.trim() === "proxy-services"){
+                    else if(targetFolder.trim() === ProxyArtifactInfo.PROXY_DESTINATION_FOLDER){
                         //path to metadata template
                         let templateMetadataFilePath = path.join(dirName, '..', '..', 'templates', 'metadata', "metadata.yaml");
                         //path to metadata file
@@ -186,21 +182,17 @@ export namespace ArtifactModule {
                     createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
                                                      templateArtifactFilePath, artifactType, registryResource);
 
-                    
-                    await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
-                    await updateCompositePomXmlFile(targetArtifactName, targetFolder, type);
+                    addNewArtifactToConfigArtifactXMLFile(subDirectory, targetArtifactName, targetFolder, type);
+                    updateCompositePomXmlFile(rootDirectory, targetArtifactName, targetFolder, type);
                 }
             });
         }
-
-        //create registry resource
-        if (workspace.workspaceFolders && registryResource) {
+        else{//create registry resource
 
             let pattern = path.join(targetArtifactName + getFileExtension(registryResource));
+            let cwd: string = subDirectory;
 
-            let cwd: string = getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES, workspace.workspaceFolders[0].uri.fsPath);
-
-             //target metadata.yaml and swagger.yaml folder
+            //target metadata.yaml and swagger.yaml folder
 
             let newGlob = new glob(pattern, {cwd: cwd}, async function (err: any, files: any) {
                 if (err) {
@@ -222,13 +214,11 @@ export namespace ArtifactModule {
                     createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
                         templateArtifactFilePath, artifactType, registryResource);
 
-                    await addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type, registryResource);
-                    await updateCompositePomXmlFile(targetArtifactName, targetFolder, type);
+                    addNewArtifactToRegistryArtifactXMLFile(subDirectory, targetArtifactName, type, registryResource);
+                    updateCompositePomXmlFile(rootDirectory, targetArtifactName, targetFolder, type);
 
                 }
             });
-
-            
         }
     }
 
@@ -285,14 +275,15 @@ export namespace ArtifactModule {
      * Add artifact info of the newly created artifact to synapse-config artifact.xml file.
      * Create dependancy and property in CompositeExporter pom.xml
      */
-    async function addNewArtifactToConfigArtifactXMLFile(artifactName: string, targetFolder: string, type: string) {
-        if (workspace.workspaceFolders) {
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-            const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
+    function addNewArtifactToConfigArtifactXMLFile(esbConfigsDirectory: string, artifactName: string, targetFolder: string, type: string) {
+            const pomFile: string = path.join(esbConfigsDirectory, "..", "pom.xml");
+            const configArtifactXmlFileLocation: string = path.join(esbConfigsDirectory, "artifact.xml");
+            if( (!fse.existsSync(pomFile)) || (!fse.existsSync(configArtifactXmlFileLocation)) ) return;
+
             // read pom and get project group_id and version
             let project: Project = getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
-            const configArtifactXmlFileLocation: string = path.join(getDirectoryFromProjectNature(SubDirectories.CONFIGS, rootDirectory), "artifact.xml");
+            
             // Read and buffer synapse-config artifact.xml file
             const buf: Buffer = fse.readFileSync(configArtifactXmlFileLocation);
 
@@ -304,7 +295,7 @@ export namespace ArtifactModule {
             addSynapseArtifactData(parent, xmlDoc, artifactName, groupId, type, "1.0.0", ServerRoleInfo.ENTERPRISE_SERVICE_BUS, artifactFilePath, targetFolder);
 
             //add  metadata and swagger artifacts to artifact.xml for an api resource
-            if(targetFolder.trim() === "api"){
+            if(targetFolder.trim() === APIArtifactInfo.DESTINATION_FOLDER){
                 //metadata
                 let metaDataName: string = artifactName + "_metadata";
                 let metaDataFilePath: string = path.join("src", "main", "resources", "metadata", artifactName + "_metadata"+ ".yaml");
@@ -315,7 +306,7 @@ export namespace ArtifactModule {
                 addSynapseArtifactData(parent, xmlDoc, swaggerName,groupId, "synapse/metadata", "1.0.0", ServerRoleInfo.ENTERPRISE_SERVICE_BUS, swaggerFilePath, targetFolder);
 
             }
-            else if(targetFolder.trim() === "proxy-services"){
+            else if(targetFolder.trim() === ProxyArtifactInfo.PROXY_DESTINATION_FOLDER){
                 //metadata
                 let metaDataName: string = artifactName + "_proxy_metadata";
                 let metaDataFilePath: string = path.join("src", "main", "resources", "metadata", artifactName + "_proxy_metadata"+ ".yaml");
@@ -323,24 +314,20 @@ export namespace ArtifactModule {
             }
             // Update the synapse-config artifact.xml file.
             fse.writeFileSync(configArtifactXmlFileLocation, new XMLSerializer().serializeToString(xmlDoc));
-
-        }
     }
 
     /**
      * Add artifact info of the newly created artifact to registry-resource artifact.xml file.
      */
-    async function addNewArtifactToRegistryArtifactXMLFile(artifactName: string, type: string,
+    function addNewArtifactToRegistryArtifactXMLFile(registryResourcesDirectory: string, artifactName: string, type: string,
                                                      registryResource: RegistryResource | undefined) {
 
-        if (workspace.workspaceFolders) {
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath
-
-            const registryArtifactXML: string = path.join(getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES, rootDirectory), "artifact.xml");
-
+            const registryArtifactXML: string = path.join(registryResourcesDirectory, "artifact.xml");
             // read pom and get project group_id and version
-            const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
-            let project: Project = await getProjectInfoFromPOM(pomFile);
+            const pomFile: string = path.join(registryResourcesDirectory, "..", "pom.xml");
+            if( (!fse.existsSync(pomFile)) || (!fse.existsSync(registryArtifactXML)) ) return;
+
+            let project: Project = getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
 
             const buf: Buffer = fse.readFileSync(registryArtifactXML);
@@ -373,14 +360,16 @@ export namespace ArtifactModule {
             child.appendChild(item);
 
             fse.writeFileSync(registryArtifactXML, new XMLSerializer().serializeToString(xmlDoc));
-        }
     }
 
-    function updateCompositePomXmlFile(artifactName: string, targetFolder: string, type: string) {
-        if (workspace.workspaceFolders) {
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath
+    function updateCompositePomXmlFile(rootDirectory: string, artifactName: string, targetFolder: string, type: string) {
+
             // read pom and get project group_id and version
             const pomFile: string = path.join(getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
+            if(!fse.existsSync(pomFile)){
+                window.showErrorMessage("Can not find Composite Exporter Project");
+                return;
+            }
             let project: Project = getProjectInfoFromPOM(pomFile);
             const {groupId, version} = Object.assign(project);
             // Read and buffer Composite Exporter pom.xml file
@@ -435,19 +424,18 @@ export namespace ArtifactModule {
 
             addNewDependancy(pomXmlDoc, dependencies, artifactName, finalGroupId, fileType);
 
-            if(targetFolder.trim() === "api"){
+            if(targetFolder.trim() === APIArtifactInfo.DESTINATION_FOLDER){
                 //metadata
                 addNewDependancy(pomXmlDoc, dependencies, artifactName + "_metadata", groupId + ".metadata", "yaml");
                 //swagger
                 addNewDependancy(pomXmlDoc, dependencies, artifactName + "_swagger", groupId + ".metadata", "yaml");
             }
-            if(targetFolder.trim() === "proxy-services"){
+            if(targetFolder.trim() === ProxyArtifactInfo.PROXY_DESTINATION_FOLDER){
                 //metadata
                 addNewDependancy(pomXmlDoc, dependencies, artifactName + "_proxy_metadata", groupId + ".proxy-service.metadata", "yaml");
             }
             // Update the Composite Exporter pom.xml file.
             fse.writeFileSync(pomFile, new XMLSerializer().serializeToString(pomXmlDoc));
-        }
     }
 
     /**
@@ -481,31 +469,39 @@ export namespace ArtifactModule {
      * -swagger.yaml file
      */
     export function safeDeleteArtifact(filePath: string) {
-        let array: string[] = filePath.split(path.sep);
-        let deletedArtifact: string = array[array.length - 1];
-        let artifactFolder: string = array[array.length - 2];
-        let rawArtifactName: string[] = deletedArtifact.split(".");
-        
-        // Check if the deleted file is a synapse-config or a registry-resource file
-        let artifactXmlFilePath: string;
+       
         if (workspace.workspaceFolders) {
 
+            let array: string[] = filePath.split(path.sep);
+            let deletedArtifact: string = array[array.length - 1];
+            let artifactFolder: string = array[array.length - 2];
+            let rawArtifactName: string[] = deletedArtifact.split(".");
+            
+            // Check if the deleted file is a synapse-config or a registry-resource file
+            let artifactXmlFilePath: string;
             let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-
-            let syapseSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, rootDirectory);
-            let resourceSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.REGISTRY_RESOURCES, rootDirectory);
+            let synapseDirectoryPattern: string = path.join("src", "main", "synapse-config");
+            
+            let resourceSubDirectory: string = path.join(filePath, "..");
+            let resourcesProjectNaturePath: string = path.join(resourceSubDirectory, ".project");
+            let resourceProjectNature: string = "";
+            if(fse.existsSync(resourcesProjectNaturePath)){
+                resourceProjectNature = getProjectNature(path.join(resourceSubDirectory, ".project"));
+            }
 
             //artifact
-            if (isExistDirectoryPattern(filePath, path.join(syapseSubDirectory, "src", "main", "synapse-config"))) {
+            if (isExistDirectoryPattern(filePath, synapseDirectoryPattern)) {
+                console.log("synapse artifact");
+                let syapseSubDirectory: string = filePath.split(synapseDirectoryPattern)[0];
                 artifactXmlFilePath = path.join(syapseSubDirectory, "artifact.xml");
-
                 deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
+
                 let artifactType = ArtifactInfo.artifactTypes.get(artifactFolder);
-                if(artifactType !== undefined) deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1], rootDirectory);
-                
+                if(typeof artifactType !== "undefined") deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1], rootDirectory);
                 
             //resource
-            } else if (isExistDirectoryPattern(filePath, resourceSubDirectory)) {
+            } else if (resourceProjectNature === SubDirectories.REGISTRY_RESOURCES) {
+                console.log("rr");
                 artifactXmlFilePath = path.join(resourceSubDirectory, "artifact.xml");
 
                 deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
@@ -644,14 +640,12 @@ export namespace ArtifactModule {
 
     
 
-    export function updateMetadataforApi(filePath: string){
-        if(workspace.workspaceFolders){
-            const metadataSubDirectory: string = getDirectoryFromProjectNature(SubDirectories.CONFIGS, workspace.workspaceFolders[0].uri.fsPath);
+    export function updateMetadataforApi(esbConfigsDirectory: string, filePath: string){
             let array: string[] = filePath.split(path.sep);
             let rawFileName: string = array[array.length -1];
             let rawArtifactName: string = rawFileName.split(".")[0];
             let metadaFileName: string = rawArtifactName + "_metadata.yaml";
-            const pathToMetadataYaml: string = path.join(metadataSubDirectory, "src", "main", "resources", "metadata",metadaFileName);
+            const pathToMetadataYaml: string = path.join(esbConfigsDirectory, "src", "main", "resources", "metadata",metadaFileName);
 
             //read xml file for artifact file
             const buf: Buffer = fse.readFileSync(filePath);
@@ -667,8 +661,6 @@ export namespace ArtifactModule {
 
             // Write the updated template content to the target file.
             fse.writeFileSync(pathToMetadataYaml, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
-
-    }
 }
 
     export function checkBuildPlugins(filePath: string, directory: string){
@@ -678,7 +670,7 @@ export namespace ArtifactModule {
         let pomXmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
         let build = pomXmlDoc.getElementsByTagName("build")[0];
         
-        let parentPluging = build.getElementsByTagName("plugins")[0];
+        let parentPlugin = build.getElementsByTagName("plugins")[0];
         let plugins = build.getElementsByTagName("plugin");
         let currentPluginsArray: string[] = [plugins.length];
 
@@ -703,7 +695,7 @@ export namespace ArtifactModule {
 
         for(let i=0; i<length; i++){
             let artifactId: string = newPlugins[i].getElementsByTagName("artifactId")[0].textContent.trim();
-            if(!currentPluginsMap.has(artifactId)) parentPluging.appendChild(newPlugins[i]);
+            if(!currentPluginsMap.has(artifactId)) parentPlugin.appendChild(newPlugins[i]);
         };
             
 
@@ -712,8 +704,8 @@ export namespace ArtifactModule {
     }
 
     //add artifact element to artifact.xml
-    export function addSynapseArtifactData(parent: any, xmlDoc: any, artifactName: string, groupId: string, type: string, version: string, serverRole: string,
-                                                                                    filePath: string, targetFolder: string){
+    export function addSynapseArtifactData(parent: any, xmlDoc: any, artifactName: string, groupId: string, type: string, 
+        version: string, serverRole: string, filePath: string, targetFolder: string){
 
         let child = xmlDoc.createElement("artifact");
         parent[0].appendChild(child);
@@ -783,9 +775,9 @@ export namespace ArtifactModule {
           fse.writeFileSync(targetFilePathUri.fsPath, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
     }
 
-    export function getProjectNature(projectConfigFilePath: string): string{
+    export function getProjectNature(projectNatureFilePath: string): string{
 
-                const buff: Buffer = fse.readFileSync(projectConfigFilePath);
+                const buff: Buffer = fse.readFileSync(projectNatureFilePath);
                 let xmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
                 let projectNatures = xmlDoc.getElementsByTagName("nature");
                 let nature: string = "unidentified";

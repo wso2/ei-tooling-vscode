@@ -34,7 +34,7 @@ export async function createMediatorProject() {
 
     let packageName = await showInputBox(MediatorProjectInfo.PACKAGE_PROMPT_MESSAGE);
 
-    while (typeof packageName !== "undefined" && !Utils.validate(packageName.trim())) {
+    while (typeof packageName !== "undefined" && !Utils.validateGroupId(packageName.trim())) {
         window.showErrorMessage("Enter valid Package name!!");
         packageName = await showInputBox(MediatorProjectInfo.PACKAGE_PROMPT_MESSAGE);
     }
@@ -48,7 +48,7 @@ export async function createMediatorProject() {
 
     if (projectName && packageName && className && workspace.workspaceFolders) {
         let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-        MediatorProjectModule.createProject(rootDirectory, projectName.trim(), packageName.trim(), "1.0.0", ServerRoleInfo.ENTERPRISE_SERVICE_BUS, className.trim());
+        MediatorProjectModule.createProject(rootDirectory, projectName.trim(), packageName.trim(), "1.0.0", ServerRoleInfo.ENTERPRISE_INTEGRATOR, className.trim());
     }
 }
 

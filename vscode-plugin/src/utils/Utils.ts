@@ -42,4 +42,12 @@ export namespace Utils {
         let regex = /^[a-zA-Z][a-zA-Z0-9_\-\. ]+$/;
         return regex.test(str);
     }
+
+    export function validateGroupId(str: string) {
+        if (!str.replace(/\s/g, '').length) {
+            return false;
+        }
+        let regex = /^[a-zA-Z][a-zA-Z\. ]+$/;
+        return regex.test(str);
+    }
 }

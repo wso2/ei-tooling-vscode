@@ -50,7 +50,7 @@ export namespace ArchetypeModule {
         }
 
         // Ensure that groupID name is valid.
-        while (typeof groupID !== "undefined" && !Utils.validate(groupID)) {
+        while (typeof groupID !== "undefined" && !Utils.validateGroupId(groupID)) {
             window.showErrorMessage("Enter valid GroupId name!!");
             groupID = await showInputBoxForGroupId();
         }
