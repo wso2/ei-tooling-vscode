@@ -307,7 +307,7 @@ export async function createCompositeProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-       ArtifactModule.CreateNewCompositeExporterProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+       Utils.CreateNewCompositeExporterProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
     }
     
 }

@@ -24,6 +24,7 @@ import { ProjectNatures, SubDirectories } from "../artifacts/artifactUtils";
 import { ServerRoleInfo, ConnectorInfo } from "./connectorUtils";
 import { DataServiceModule } from "../dataService/DataServiceModule";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
+import { Utils } from "../utils/Utils";
 
 const axios = require('axios').default;
 const { DownloaderHelper } = require('node-downloader-helper');
@@ -36,7 +37,7 @@ export namespace ConnectorModule {
    export async function createProject(projectName: string, type: string, templatePomFilePath: string, templateProjNatureFilePath: string,
                                             directoryType: string, createArtifactXml: boolean, rootDirectory: string, projectNature: ProjectNatures){
         
-            const currentDirectory: string = ArtifactModule.getDirectoryFromProjectNature(directoryType, rootDirectory).trim();
+            const currentDirectory: string = Utils.getDirectoryFromDirectoryType(directoryType, rootDirectory).trim();
             if(currentDirectory !== "unidentified"){
                 window.showWarningMessage(`WSO2 Enterprise Integrator Extension can not handle more than one ${type} &
                     Handling more than one ${type} is under user's control, Do you want to continue?`, "Yes", "No").then(decision => {
@@ -49,7 +50,7 @@ export namespace ConnectorModule {
                         }
                         fse.mkdirSync(newDirectory);
                         //add artifact.xml, pom.xml and .project
-                        DataServiceModule.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
+                        Utils.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
                         addProjectToRootPom(projectName, projectNature, rootDirectory);
                     }
                 });
@@ -63,7 +64,7 @@ export namespace ConnectorModule {
                 }
                 fse.mkdirSync(newDirectory);
                 //add artifact.xml, pom.xml and .project
-                DataServiceModule.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
+                Utils.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
                 addProjectToRootPom(projectName, projectNature, rootDirectory);
             }
    }
@@ -77,7 +78,7 @@ export namespace ConnectorModule {
 
    function addProjectToRootPom(projectName: string, projectNature: ProjectNatures, rootDirectory: string){
         if(projectNature === ProjectNatures.COMPOSITE_EXPORTER){
-            ArtifactModule.addCompositeExporterToRootPom(rootDirectory, projectName);
+            Utils.addCompositeExporterToRootPom(rootDirectory, projectName);
         }
         else if(projectNature === ProjectNatures.CONFIGS){
             ArtifactModule.addESBConfigsToRootPom(rootDirectory, projectName);
@@ -110,7 +111,7 @@ export namespace ConnectorModule {
       
        for(let i=0; i<totalSubModules; i++){
            let configurationFilePath: string = path.join(rootDirectory, subModules[i].textContent.trim(), '.project');
-           let projectNature: string = ArtifactModule.getProjectNature(configurationFilePath).trim();
+           let projectNature: string = Utils.getDirectoryType(configurationFilePath).trim();
 
            if(projectNature === SubDirectories.DATA_SOURCE){
                rootPomXmlDoc.insertBefore(connectorModule, subModules[i]);
@@ -197,7 +198,7 @@ export namespace ConnectorModule {
    }
 
    function downloadConnector(downloadLink: string, connectorName: string, version: string, rootDirectory: string){
-        const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER, rootDirectory).trim();
+        const connectorExporterFilePath: string = Utils.getDirectoryFromDirectoryType(SubDirectories.CONNECTOR_EXPORTER, rootDirectory).trim();
         if(connectorExporterFilePath.trim() !== "unidentified"){
             let urlSplit: string[] = downloadLink.split("/");
             let connectorFileName: string = urlSplit[urlSplit.length - 1].trim();
@@ -234,7 +235,7 @@ export namespace ConnectorModule {
             nameSplit.pop();
             let connectorName: string = nameSplit.join("-");
 
-            const connectorExporterFilePath: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONNECTOR_EXPORTER, rootDirectory);
+            const connectorExporterFilePath: string = Utils.getDirectoryFromDirectoryType(SubDirectories.CONNECTOR_EXPORTER, rootDirectory);
             //update artifact.xml
             let artifactXmlFilePath: string = path.join(connectorExporterFilePath, "artifact.xml");
                     
@@ -243,7 +244,7 @@ export namespace ConnectorModule {
             let artifacts = artifactXmlDoc.getElementsByTagName("artifacts");
 
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
-            let project: ArtifactModule.Project = ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);
+            let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
             let groupId: string = project.groupId!;
 
             ArtifactModule.addSynapseArtifactData(artifacts, artifactXmlDoc, connectorName, groupId, ConnectorInfo.TYPE, version, 
@@ -251,7 +252,7 @@ export namespace ConnectorModule {
             fse.writeFileSync(artifactXmlFilePath, new XMLSerializer().serializeToString(artifactXmlDoc));
 
             //update composite pom
-            let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER,
+            let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER,
                  rootDirectory), "pom.xml");
             const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
             let pomXmlDoc = new DOM().parseFromString(pomBuff.toString(), "text/xml");
@@ -259,12 +260,12 @@ export namespace ConnectorModule {
             //add new property
             let tagName: string = groupId + "." + ConnectorInfo.DATA_SERVICE_LABEL + "_._" + connectorName;
             let properties = pomXmlDoc.getElementsByTagName("properties");
-            ArtifactModule.addNewProperty(pomXmlDoc, tagName, properties, ServerRoleInfo.ENTERPRISE_SERVICE_BUS);
+            Utils.addNewProperty(pomXmlDoc, tagName, properties, ServerRoleInfo.ENTERPRISE_SERVICE_BUS);
 
             //add new dependancy
             let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
             let finalGroupId: string = groupId + "." + ConnectorInfo.DATA_SERVICE_LABEL;
-            ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, connectorName, finalGroupId, "zip", version);
+            Utils.addNewDependancy(pomXmlDoc, dependencies, connectorName, finalGroupId, "zip", version);
             fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
    }
 
@@ -283,8 +284,8 @@ export namespace ConnectorModule {
         if (fileExtension === "zip") {
 
             let artifactXmlFilePath: string = path.join(deletedFile, "..", "artifact.xml");
-            ArtifactModule.deletefromArtifactXml(artifactXmlFilePath, connectorName.trim());
-            ArtifactModule.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER, rootDirectory);
+            Utils.deletefromArtifactXml(artifactXmlFilePath, connectorName.trim());
+            Utils.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER, rootDirectory);
 
         }
    }

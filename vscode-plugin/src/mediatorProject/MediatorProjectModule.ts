@@ -28,6 +28,7 @@ import { dir } from "console";
 import { version } from "process";
 import { SubDirectories } from "../artifacts/artifactUtils";
 import {SYNAPSE_LANGUAGE_ID, SYNAPSE_NAMESPACE} from "../language/languageUtils";
+import { Utils } from "../utils/Utils";
 
 let DOM = require('xmldom').DOMParser;
 let glob = require("glob");
@@ -61,7 +62,7 @@ export namespace MediatorProjectModule {
 
             let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
             let mediatorProjectPomFilePath: string = path.join(rootDirectory, projectName, "pom.xml");
-            let project: ArtifactModule.Project = ArtifactModule.getProjectInfoFromPOM(rootPomFilePath);
+            let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
 
             //add new pom.xml
             let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "MediatorProjectPom.xml");
@@ -92,7 +93,7 @@ export namespace MediatorProjectModule {
             bundleName.textContent = projectName;
             exportPackage.textContent = packageName;
 
-            DataServiceModule.createFile(mediatorProjectPomFilePath, pomXmlDoc);
+            Utils.createXmlFile(mediatorProjectPomFilePath, pomXmlDoc);
 
             //add new .project file
             let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "mediatorProject.xml");
@@ -103,7 +104,7 @@ export namespace MediatorProjectModule {
             name.textContent = projectName.trim(); 
 
             let projectNatureFilePath: string = path.join(rootDirectory, projectName, ".project");
-            DataServiceModule.createFile(projectNatureFilePath, projectNature);
+            Utils.createXmlFile(projectNatureFilePath, projectNature);
 
             //add new .classpath file
             let templateclassPathFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "mediatorProjectClassPath.xml");
@@ -111,7 +112,7 @@ export namespace MediatorProjectModule {
             let classPath  = new DOM().parseFromString(buffer.toString(), "text/xml");
 
             let classPathFilePath: string = path.join(rootDirectory, projectName, ".classpath");
-            DataServiceModule.createFile(classPathFilePath, classPath);
+            Utils.createXmlFile(classPathFilePath, classPath);
 
             //add mediatorProject module to root pom
             if(!fse.existsSync(rootPomFilePath)){
@@ -134,18 +135,18 @@ export namespace MediatorProjectModule {
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
 
             //update composite pom
-            let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
+            let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
             const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
             let pomXml = new DOM().parseFromString(pomBuff.toString(), "text/xml");
 
             //add new property
             let tagName: string = packageName + "_._" + projectName;
             let properties = pomXml.getElementsByTagName("properties");
-            ArtifactModule.addNewProperty(pomXml, tagName, properties, serverRole);
+            Utils.addNewProperty(pomXml, tagName, properties, serverRole);
 
             //add new dependancy
             let dependencies = pomXml.getElementsByTagName("dependencies");
-            ArtifactModule.addNewDependancy(pomXml, dependencies, projectName, packageName, undefined, version);
+            Utils.addNewDependancy(pomXml, dependencies, projectName, packageName, undefined, version);
             fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXml));
 
             //no java class is created
@@ -200,7 +201,7 @@ export namespace MediatorProjectModule {
                 let tmp5: string[] = tmp4.split(path.sep);
                 let projectName: string = tmp5[tmp5.length - 1].trim();
                 
-                let compositePomFilePath: string = path.join(ArtifactModule.getDirectoryFromProjectNature(SubDirectories.COMPOSITE_EXPORTER,
+                let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER,
                      rootDirectory), "pom.xml");
                 const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
                 let pomXml = new DOM().parseFromString(pomBuff.toString(), "text/xml");

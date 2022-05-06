@@ -45,6 +45,7 @@ import {createDeployableArchive, createZipArchive, unzipArchive, createProjectFr
 import {ArtifactModule} from "./artifacts/ArtifactModule";
 import {SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
+import { Utils } from './utils/Utils';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
@@ -115,7 +116,7 @@ export function activate(context: ExtensionContext) {
                 }
             });
             watcher.onDidDelete((deletedFile: Uri) => {
-                DataServiceModule.safeDeteteProject(deletedFile.path);
+                Utils.safeDeteteProject(deletedFile.path);
             });       
         }
     }

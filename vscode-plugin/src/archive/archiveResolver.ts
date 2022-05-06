@@ -59,11 +59,11 @@ export function createDeployableArchive() {
               files.forEach( (file: any) => {
                 let projConfigFilePath: string = path.join(rootDirectory, file, ".project");
                 let pomFilePath: string = path.join(rootDirectory, file, "pom.xml");
-                ArtifactModule.checkPathExistence(pomFilePath).then(exists => {
+                Utils.checkPathExistence(pomFilePath).then(exists => {
                     if (exists) {
-                        let projectNature: string = ArtifactModule.getProjectNature(projConfigFilePath);
+                        let projectNature: string = Utils.getDirectoryType(projConfigFilePath);
                         if(projectNatures.indexOf(projectNature) !== -1){
-                            ArtifactModule.checkBuildPlugins(pomFilePath, projectNature);
+                            Utils.checkBuildPlugins(pomFilePath, projectNature);
                         }
                     }
                 });
@@ -234,7 +234,7 @@ export async function createProjectFromCar(){
                     fse.writeFileSync(settingsFilePath, settings);
                     
                     //create composite exporter project
-                    ArtifactModule.CreateNewCompositeExporterProject(newProjectDirectory, name.trim());
+                    Utils.CreateNewCompositeExporterProject(newProjectDirectory, name.trim());
 
                     if(dependencies.length === 0){
                         window.showInformationMessage("No dependencies for the project...!");
@@ -310,7 +310,7 @@ function createRootPomXml(directory: string,groupID: string, artifactID: string,
     rootVersion.textContent = version;
     name.textContent = artifactID;
     description.textContent = artifactID;
-    DataServiceModule.createFile(pomFilePath, rootPomXmlDoc);
+    Utils.createXmlFile(pomFilePath, rootPomXmlDoc);
 }
 
 function createProjectNatureFile(directory: string, artifactId: string){
@@ -320,7 +320,7 @@ function createProjectNatureFile(directory: string, artifactId: string){
     let xmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
     let name = xmlDoc.getElementsByTagName("name")[0];
     name.textContent = artifactId;
-    DataServiceModule.createFile(newFilePath, xmlDoc);
+    Utils.createXmlFile(newFilePath, xmlDoc);
 }
 
 async function copyArtifactFile(rootDirectory: string, projectName: string, configsDirecrory: string, compositeDirectory: string, connectorExporterDirectory: string, registryResourcesDirectory: string,
@@ -617,7 +617,7 @@ function copySynapseMetadataFiles(metaDataDirectory: string, rootMetadataFilePat
                             finalGroupId = `${groupId}.${type.split("/")[1]}`;
                          }
                          let artifactTagName: string = `${finalGroupId}_._${name}`;
-                         ArtifactModule.addNewProperty(pomXmlDoc, artifactTagName, properties, serverRole);
+                         Utils.addNewProperty(pomXmlDoc, artifactTagName, properties, serverRole);
                  
                          //add new dependency
                          let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
@@ -635,7 +635,7 @@ function copySynapseMetadataFiles(metaDataDirectory: string, rootMetadataFilePat
                              dependencies[0] = newDependancies;
                          }
                  
-                         ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, "yaml");
+                         Utils.addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, "yaml");
                          fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
                         
                     }
@@ -654,7 +654,7 @@ function copySynapseMetadataFiles(metaDataDirectory: string, rootMetadataFilePat
         let pomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
         let properties = pomXmlDoc.getElementsByTagName("properties");
         let artifatTagName:string = `${finalGroupId}_._${name}`;
-        ArtifactModule.addNewProperty(pomXmlDoc, artifatTagName, properties, serverRole);
+        Utils.addNewProperty(pomXmlDoc, artifatTagName, properties, serverRole);
 
         //add new dependency
         let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
@@ -672,7 +672,7 @@ function copySynapseMetadataFiles(metaDataDirectory: string, rootMetadataFilePat
             dependencies[0] = newDependancies;
         }
 
-        ArtifactModule.addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, ArtifactInfo.fileTypes.get(type));
+        Utils.addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, ArtifactInfo.fileTypes.get(type));
         fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
     }
 
