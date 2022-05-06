@@ -35,7 +35,7 @@ import {
 import {showInputBox, showQuickPick} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 
-export async function createArtifact(artifactType: string) {
+export async function createArtifact(artifactType: string, targetFolderPath: string | undefined) {
     switch (artifactType) {
         case APIArtifactInfo.ARTIFACT_TYPE: {
             let artifactName = await showInputBox(APIArtifactInfo.PROMPT_MESSAGE);
@@ -46,7 +46,7 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createArtifact(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.API_LABEL,
+                ArtifactModule.createArtifact(targetFolderPath, APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.API_LABEL,
                                               artifactName.trim(), artifactType, APIArtifactInfo.TYPE);
             }
             break;
@@ -60,7 +60,7 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createArtifact(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_LABEL,
+                ArtifactModule.createArtifact(targetFolderPath, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_LABEL,
                                               artifactName.trim(), artifactType, ProxyArtifactInfo.TYPE);
             }
             break;
@@ -78,7 +78,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(targetFolderPath, EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName.trim(), artifactType, EndpointArtifactInfo.TYPE);
                 }
             }
@@ -97,7 +97,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(targetFolderPath, InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName.trim(), artifactType, InboundEndpointArtifactInfo.TYPE);
                 }
             }
@@ -116,7 +116,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(targetFolderPath, LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName.trim(), artifactType, LocalEntryArtifactInfo.TYPE);
                 }
             }
@@ -135,7 +135,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(targetFolderPath, MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName.trim(), artifactType, MessageStoreArtifactInfo.TYPE);
                 }
             }
@@ -154,7 +154,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(targetFolderPath, MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName.trim(), artifactType, MessageProcessorArtifactInfo.TYPE);
                 }
             }
@@ -173,7 +173,7 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                    ArtifactModule.createArtifact(targetFolderPath, TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
                                                   artifactName.trim(), artifactType, TemplateArtifactInfo.TYPE);
                 }
             }
@@ -188,7 +188,7 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createArtifact(SequenceArtifactInfo.DESTINATION_FOLDER,
+                ArtifactModule.createArtifact(targetFolderPath, SequenceArtifactInfo.DESTINATION_FOLDER,
                                               SequenceArtifactInfo.SEQUENCE_LABEL,
                                               artifactName.trim(), artifactType, SequenceArtifactInfo.TYPE);
             }
@@ -203,7 +203,7 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createArtifact(TaskArtifactInfo.DESTINATION_FOLDER,
+                ArtifactModule.createArtifact(targetFolderPath, TaskArtifactInfo.DESTINATION_FOLDER,
                                               TaskArtifactInfo.TASK_LABEL,
                                               artifactName.trim(), artifactType, TaskArtifactInfo.TYPE);
             }
@@ -232,27 +232,46 @@ export async function createArtifact(artifactType: string) {
                     }
                 }
 
-                const registryPath = await window.showInputBox({
+                let registryPath = await window.showInputBox({
                                                                    prompt: "Enter valid registry path here",
                                                                    placeHolder: "eg: Datamapper/example"
                                                                }).then(text => text);
 
-                let fileName = artifactName + ".xml";
                 
-                if (selectedArtifactType === "JSONSchemaTemplate") {
-                    fileName = artifactName + ".json";
+                while (typeof registryPath !== "undefined" && !Utils.validateRegistryPath(registryPath.trim())) {
+                    window.showErrorMessage("Enter valid registry path!!");
+                    registryPath = await  window.showInputBox({
+                        prompt: "Enter valid registry path here",
+                        placeHolder: "eg: Datamapper/example"
+                    }).then(text => text);
                 }
 
-                let registryResource: RegistryResource = {
-                    file: fileName,
-                    path: path + "/" + registryPath,
-                    mediaType: RegistryResourceInfo.mediaTypes.get(selectedArtifactType)
-                };
+                if(registryPath && artifactName && registry){
 
-                if (artifactName && registry) {
+                    registryPath = registryPath.trim();
+                    while(registryPath[registryPath.length - 1] === "/"){
+                        registryPath = registryPath.slice(0, -1);
+                    }
+
+                    let fileName = artifactName + ".xml";
+                
+                    if (selectedArtifactType === "JSONSchemaTemplate") {
+                        fileName = artifactName + ".json";
+                    }
+
+                    let registryResource: RegistryResource = {
+                        file: fileName,
+                        path: path + "/" + registryPath,
+                        mediaType: RegistryResourceInfo.mediaTypes.get(selectedArtifactType)
+                    };
+
                     ArtifactModule.createResource(RegistryResourceInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, RegistryResourceInfo.TYPE, registryResource);
+                                                artifactName.trim(), artifactType, RegistryResourceInfo.TYPE, registryResource);
+                    
+
                 }
+
+                
             }
             break;
         }

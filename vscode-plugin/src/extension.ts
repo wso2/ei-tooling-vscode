@@ -177,49 +177,48 @@ function registerSynapseCommands(context: ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.api", async (Uri: Uri) => {
-        console.log(Uri.fsPath);
-        await createArtifact(APIArtifactInfo.ARTIFACT_TYPE);
+        await createArtifact(APIArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.proxy", async () => {
-        await createArtifact(ProxyArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.proxy", async (Uri: Uri) => {
+        await createArtifact(ProxyArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.endpoint", async () => {
-        await createArtifact(EndpointArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.endpoint", async (Uri: Uri) => {
+        await createArtifact(EndpointArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.inboundEndpoint",
-                                                        async () => {
-                                                            await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE);
+                                                        async (Uri: Uri) => {
+                                                            await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
                                                         }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.localEntry", async () => {
-        await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.localEntry", async (Uri: Uri) => {
+        await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageStore", async () => {
-        await createArtifact(MessageStoreArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageStore", async (Uri: Uri) => {
+        await createArtifact(MessageStoreArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageProcessor",
-                                                        async () => {
-                                                            await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE);
+                                                        async (Uri: Uri) => {
+                                                            await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
                                                         }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.template", async () => {
-        await createArtifact(TemplateArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.template", async (Uri: Uri) => {
+        await createArtifact(TemplateArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.sequence", async () => {
-        await createArtifact(SequenceArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.sequence", async (Uri: Uri) => {
+        await createArtifact(SequenceArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.task", async () => {
-        await createArtifact(TaskArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.task", async (Uri: Uri) => {
+        await createArtifact(TaskArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.resource.registry", async () => {
-        await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE);
+        await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE, undefined);
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.dataservice.create.project", async () => {
         await createDataServiceProject();
