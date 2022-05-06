@@ -44,6 +44,10 @@ export class ProjectNatures {
     static readonly MEDIATOR_PROJECT: string = "org.wso2.developerstudio.eclipse.artifact.mediator.project.nature";
 }
 
+export class MetadataInfo {
+    static readonly SYNAPSE_MEATADATA_TYPE: string = "synapse/metadata";
+}
+
 export class APIArtifactInfo {
     static readonly ARTIFACT_TYPE: string = "api";
     static readonly PLACEHOLDER: string = "Select an API Artifact Creation Option...";
@@ -316,6 +320,10 @@ export class RegistryResourceInfo {
 }
 
 export class ArtifactInfo{
+    static readonly ESB_PROMPT_MESSAGE: string = "Enter New ESB Project Name...";
+    static readonly COMPOSITE_EXPORTER_PROMPT_MESSAGE: string = "Enter New Composite Expoeter Project Name...";
+    static readonly REGISTRY_RESOURCES_PROMPT_MESSAGE: string = "Enter New Registry Resources Project Name...";
+
     static artifactTypes: Map<string, string> = new Map();
     static setTypes(){
         this.artifactTypes.set(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.TYPE);
@@ -330,8 +338,51 @@ export class ArtifactInfo{
         this.artifactTypes.set(TaskArtifactInfo.DESTINATION_FOLDER, TaskArtifactInfo.TYPE);
         this.artifactTypes.set(RegistryResourceInfo.DESTINATION_FOLDER, RegistryResourceInfo.TYPE);
     
-}
+    }
+
+    static fileTypes: Map<string, string> = new Map();
+    static setFileTypes(){
+        this.fileTypes.set("jaggery/app", "zip");
+        this.fileTypes.set("synapse/priority-executor", "xml");
+        this.fileTypes.set("synapse/inbound-endpoint", "xml");
+        this.fileTypes.set("service/rule", "aar");
+        this.fileTypes.set("synapse/message-store", "xml");
+        this.fileTypes.set("event/stream", "json");
+        this.fileTypes.set("service/meta", "xml");
+        this.fileTypes.set("datasource/datasource", "xml");
+        this.fileTypes.set("synapse/proxy-service", "xml");
+        this.fileTypes.set("bpel/workflow", "zip");
+        this.fileTypes.set("synapse/sequence", "xml");
+        this.fileTypes.set("synapse/endpointTemplate", "xml");
+        this.fileTypes.set("carbon/application", "car");
+        this.fileTypes.set("wso2/gadget", "dar");
+        this.fileTypes.set("synapse/api", "xml");
+        this.fileTypes.set("synapse/event-source", "xml");
+        this.fileTypes.set("synapse/message-processors", "xml");
+        this.fileTypes.set("event/receiver", "xml");
+        this.fileTypes.set("lib/dataservice/validator", "jar");
+        this.fileTypes.set("synapse/template", "xml");
+        this.fileTypes.set("synapse/endpoint", "xml");
+        this.fileTypes.set("lib/carbon/ui", "jar");
+        this.fileTypes.set("lib/synapse/mediator", "jar");
+        this.fileTypes.set("synapse/metadata", "yaml");
+        this.fileTypes.set("event/publisher", "xml");
+        this.fileTypes.set("synapse/local-entry", "xml");
+        this.fileTypes.set("synapse/task", "xml");
+        this.fileTypes.set("webapp/jaxws", "war");
+        this.fileTypes.set("registry/resource", "zip");
+        this.fileTypes.set("synapse/configuration", "xml");
+        this.fileTypes.set("service/axis2", "aar");
+        this.fileTypes.set("synapse/lib", "zip");
+        this.fileTypes.set("synapse/sequenceTemplate", "xml");
+        this.fileTypes.set("event/execution-plan", "siddhiql");
+        this.fileTypes.set("service/dataservice", "dbs");
+        this.fileTypes.set("web/application", "war");
+        this.fileTypes.set("lib/library/bundle", "jar");
+        
+    }
 }
 
 ArtifactInfo.setTypes();
+ArtifactInfo.setFileTypes();
 RegistryResourceInfo.initialize();

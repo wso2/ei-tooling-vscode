@@ -21,8 +21,13 @@ import {showInputBox, showQuickPick} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 import { ConnectorInfo } from "./connectorUtils";
 import { ConnectorModule } from "./ConnectorModule";
+import { SubDirectories } from "../artifacts/artifactUtils";
+import * as path from 'path';
 
 export async function addNewConnectorExporter(){
+
+    const dirName = __dirname;
+
     let projectName = await showInputBox(ConnectorInfo.CONNECTOR_EXPORTER_PROMPT_MESSAGE);
 
     while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
@@ -30,8 +35,8 @@ export async function addNewConnectorExporter(){
         projectName = await showInputBox(ConnectorInfo.CONNECTOR_EXPORTER_PROMPT_MESSAGE);
     }
 
-    if (projectName) {
-        ConnectorModule.createProject(projectName.trim());
+    if (projectName && workspace.workspaceFolders) {
+        ConnectorModule.createNewConnectorExporter(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
     }
 }
 
@@ -44,8 +49,8 @@ export async function addNewConnector() {
         connectorName = await showInputBox(ConnectorInfo.CONNECTOR_PROMPT_MESSAGE);
     }
 
-    if (connectorName) {
-        ConnectorModule.getSuggestedConnectors(connectorName.trim());
+    if (connectorName && workspace.workspaceFolders) {
+        ConnectorModule.getSuggestedConnectors(connectorName.trim(), workspace.workspaceFolders[0].uri.fsPath);
     }
 
 }

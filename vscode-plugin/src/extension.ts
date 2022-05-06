@@ -16,14 +16,14 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace, languages} from 'vscode';
+import {commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace} from 'vscode';
 import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
 import {launch as launchServer} from './server';
 import {ArchetypeModule} from "./archetype/ArchetypeModule";
 import {DataServiceModule } from './dataService/DataServiceModule';
 import { MediatorProjectModule } from './mediatorProject/MediatorProjectModule';
 import { ConnectorModule } from './connector/ConnectorModule';
-import {createArtifact} from "./artifacts/artifactResolver";
+import {createArtifact, createESBProject, createCompositeProject, createRegistryResourcesProject} from "./artifacts/artifactResolver";
 import {createDataServiceProject, createNewDataService} from "./dataService/dataServiceResolver";
 import {createMediatorProject} from './mediatorProject/mediatorProjectResolver';
 import { addNewConnector, addNewConnectorExporter } from './connector/connectorResolver';
@@ -34,23 +34,20 @@ import {
     LocalEntryArtifactInfo,
     MessageProcessorArtifactInfo,
     MessageStoreArtifactInfo,
-    ProjectNatures,
     ProxyArtifactInfo,
     RegistryResourceInfo,
     SequenceArtifactInfo,
-    SubDirectories,
     TaskArtifactInfo,
     TemplateArtifactInfo
 } from "./artifacts/artifactUtils";
 
-import {createDeployableArchive, createZipArchive, unzipArchive} from "./archive/archiveResolver";
+import {createDeployableArchive, createZipArchive, unzipArchive, createProjectFromCar} from "./archive/archiveResolver";
 import {ArtifactModule} from "./artifacts/ArtifactModule";
 import {SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
-var file_system = require('fs');
 const chokidar = require('chokidar');
 
 
@@ -103,38 +100,36 @@ export function activate(context: ExtensionContext) {
             );
             fileWatcherCreated = true;
 
-            
             watcher.onDidChange((changedFile: Uri) => {
                
                 if (workspace.workspaceFolders) {
-                    const subDir: string = ArtifactModule.getDirectoryFromProjectNature(SubDirectories.CONFIGS);
-                    const directoryPattern: string = path.join(subDir, "src", "main", "synapse-config", "api");
-
+                    //update metadata.yaml for API
+                    const directoryPattern: string = path.join("src", "main", "synapse-config", "api");
+                    
                     //check whether an api resource file is changed
                     if(isExistDirectoryPattern(changedFile.fsPath, directoryPattern)){
-                        ArtifactModule.updateMetadataforApi(changedFile.fsPath);
+                        const esbConfigsDirectory: string = changedFile.fsPath.split(directoryPattern)[0];
+                        ArtifactModule.updateMetadataforApi(esbConfigsDirectory, changedFile.fsPath);
                     }
 
                 }
             });
-
-            
-
             watcher.onDidDelete((deletedFile: Uri) => {
                 DataServiceModule.safeDeteteProject(deletedFile.path);
-            });
-
-            
+            });       
         }
     }
 
     function createFileWatcher(){
-        chokidar.watch(workspace.workspaceFolders![0].uri.fsPath).on('unlink', (path: string) => {
-            ArtifactModule.safeDeleteArtifact(path);
-            DataServiceModule.safeDeleteDataService(path);
-            ConnectorModule.safeDeleteConnector(path);
-            MediatorProjectModule.safeDeleteMediatorProjectDetails(path);
-          });
+        if(workspace.workspaceFolders){
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            chokidar.watch(rootDirectory).on('unlink', (path: string) => {
+                ArtifactModule.safeDeleteArtifact(path);
+                DataServiceModule.safeDeleteDataService(path, rootDirectory);
+                ConnectorModule.safeDeleteConnector(path, rootDirectory);
+                MediatorProjectModule.safeDeleteMediatorProjectDetails(path, rootDirectory);
+            });
+    }
     }
 
     function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
@@ -158,15 +153,21 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2ei.project.create", async () => {
         await ArchetypeModule.createESBProject();
     }));
-
     context.subscriptions.push(commands.registerCommand("wso2ei.project.build", async () => {
         createDeployableArchive();
     }));
-
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.create.esb", async () => {
+        await createESBProject();
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.create.composite", async () => {
+        await createCompositeProject();
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.create.registry", async () => {
+        await createRegistryResourcesProject();
+    }));
     context.subscriptions.push(commands.registerCommand("wso2ei.project.import", async () => {
         ArchetypeModule.importProject();
     }));
-
     context.subscriptions.push(commands.registerCommand("wso2ei.project.zip", async () => {
         createZipArchive();
     }));
@@ -175,49 +176,49 @@ function registerSynapseCommands(context: ExtensionContext) {
         unzipArchive();
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.api", async () => {
-        await createArtifact(APIArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.api", async (Uri: Uri) => {
+        await createArtifact(APIArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.proxy", async () => {
-        await createArtifact(ProxyArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.proxy", async (Uri: Uri) => {
+        await createArtifact(ProxyArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.endpoint", async () => {
-        await createArtifact(EndpointArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.endpoint", async (Uri: Uri) => {
+        await createArtifact(EndpointArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.inboundEndpoint",
-                                                        async () => {
-                                                            await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE);
+                                                        async (Uri: Uri) => {
+                                                            await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
                                                         }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.localEntry", async () => {
-        await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.localEntry", async (Uri: Uri) => {
+        await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageStore", async () => {
-        await createArtifact(MessageStoreArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageStore", async (Uri: Uri) => {
+        await createArtifact(MessageStoreArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageProcessor",
-                                                        async () => {
-                                                            await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE);
+                                                        async (Uri: Uri) => {
+                                                            await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
                                                         }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.template", async () => {
-        await createArtifact(TemplateArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.template", async (Uri: Uri) => {
+        await createArtifact(TemplateArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.sequence", async () => {
-        await createArtifact(SequenceArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.sequence", async (Uri: Uri) => {
+        await createArtifact(SequenceArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.task", async () => {
-        await createArtifact(TaskArtifactInfo.ARTIFACT_TYPE);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.task", async (Uri: Uri) => {
+        await createArtifact(TaskArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.resource.registry", async () => {
-        await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE);
+        await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE, undefined);
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.dataservice.create.project", async () => {
         await createDataServiceProject();
@@ -234,7 +235,9 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2ei.connector.create.project", async () => {
         await addNewConnectorExporter();
     }));
-
+    context.subscriptions.push(commands.registerCommand("wso2ei.car.create.zip", async () => {
+        await createProjectFromCar();
+    }));
 }
 
 // this method is called when your extension is deactivated

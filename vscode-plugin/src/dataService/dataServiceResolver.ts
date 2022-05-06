@@ -34,8 +34,8 @@ export async function createDataServiceProject() {
         projectName = await showInputBox(DataServiceProjectInfo.PROMPT_MESSAGE);
     }
 
-    if (projectName) {
-        DataServiceModule.createProject(projectName.trim());
+    if (projectName && workspace.workspaceFolders) {
+        DataServiceModule.createProject(projectName.trim(), workspace.workspaceFolders[0].uri.fsPath);
     }
 }
 

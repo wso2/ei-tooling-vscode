@@ -80,15 +80,13 @@ export async function chooseTargetFolder(entry: Uri | undefined): Promise<string
     return targetLocation;
 }
 
-export async function chooseTargetFile(entry: Uri | undefined): Promise<string | null> {
+export async function chooseTargetFile(entry: Uri | undefined, label: string, filters: any): Promise<string | null> {
     const result: Uri | null = await openDialogForFolder({
                                                              defaultUri: entry,
-                                                             openLabel: "Select Target Zip",
+                                                             openLabel: label,
                                                              canSelectFiles: true,
                                                              canSelectFolders: false,
-                                                             filters: {
-                                                                'Zip files': ['zip']
-                                                           }
+                                                             filters: filters
                                                          });
     const targetLocation: string | null = result && result.fsPath;
     if (!targetLocation) {

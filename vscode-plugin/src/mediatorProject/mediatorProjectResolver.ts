@@ -18,9 +18,10 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 import {QuickPickItem, window, workspace} from "vscode";
 import {MediatorProjectModule} from "./MediatorProjectModule";
-import { MediatorProjectInfo } from "./mediarorProjectUtils";
+import { MediatorProjectInfo} from "./mediarorProjectUtils";
 import {showInputBox, showQuickPick} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
+import { ServerRoleInfo } from "../artifacts/artifactUtils";
 
 export async function createMediatorProject() {
         
@@ -33,7 +34,7 @@ export async function createMediatorProject() {
 
     let packageName = await showInputBox(MediatorProjectInfo.PACKAGE_PROMPT_MESSAGE);
 
-    while (typeof packageName !== "undefined" && !Utils.validate(packageName.trim())) {
+    while (typeof packageName !== "undefined" && !Utils.validateGroupId(packageName.trim())) {
         window.showErrorMessage("Enter valid Package name!!");
         packageName = await showInputBox(MediatorProjectInfo.PACKAGE_PROMPT_MESSAGE);
     }
@@ -45,21 +46,10 @@ export async function createMediatorProject() {
         className = await showInputBox(MediatorProjectInfo.CLASS_PROMPT_MESSAGE);
     }
 
-    if (projectName && packageName && className) {
-        MediatorProjectModule.createProject(projectName.trim(), packageName.trim(), className.trim());
+    if (projectName && packageName && className && workspace.workspaceFolders) {
+        let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+        MediatorProjectModule.createProject(rootDirectory, projectName.trim(), packageName.trim(), "1.0.0", ServerRoleInfo.ENTERPRISE_INTEGRATOR, className.trim());
     }
 }
 
-/*export async function createNewDataService(filePath: string){
 
-    let dataServiceName = await showInputBox(DataServiceInfo.PROMPT_MESSAGE);
-
-    while (typeof dataServiceName !== "undefined" && !Utils.validate(dataServiceName.trim())) {
-        window.showErrorMessage("Enter valid Data Service name!!");
-        dataServiceName = await showInputBox(DataServiceInfo.PROMPT_MESSAGE);
-    }
-
-    if (dataServiceName) {
-        DataServiceModule.createService(filePath, dataServiceName);
-    }
-}*/
