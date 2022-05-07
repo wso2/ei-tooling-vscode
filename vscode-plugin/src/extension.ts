@@ -101,20 +101,6 @@ export function activate(context: ExtensionContext) {
             );
             fileWatcherCreated = true;
 
-            watcher.onDidChange((changedFile: Uri) => {
-               
-                if (workspace.workspaceFolders) {
-                    //update metadata.yaml for API
-                    const directoryPattern: string = path.join("src", "main", "synapse-config", "api");
-                    
-                    //check whether an api resource file is changed
-                    if(isExistDirectoryPattern(changedFile.fsPath, directoryPattern)){
-                        const esbConfigsDirectory: string = changedFile.fsPath.split(directoryPattern)[0];
-                        ArtifactModule.updateMetadataforApi(esbConfigsDirectory, changedFile.fsPath);
-                    }
-
-                }
-            });
             watcher.onDidDelete((deletedFile: Uri) => {
                 Utils.safeDeteteProject(deletedFile.path);
             });       
@@ -124,12 +110,24 @@ export function activate(context: ExtensionContext) {
     function createFileWatcher(){
         if(workspace.workspaceFolders){
             let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-            chokidar.watch(rootDirectory).on('unlink', (path: string) => {
-                ArtifactModule.safeDeleteArtifact(path);
-                DataServiceModule.safeDeleteDataService(path, rootDirectory);
-                ConnectorModule.safeDeleteConnector(path, rootDirectory);
-                MediatorProjectModule.safeDeleteMediatorProjectDetails(path, rootDirectory);
+            chokidar.watch(rootDirectory).on('unlink', (filePath: string) => {
+                console.log("unlink triggerd");
+                ArtifactModule.safeDeleteArtifact(filePath);
+                DataServiceModule.safeDeleteDataService(filePath, rootDirectory);
+                ConnectorModule.safeDeleteConnector(filePath, rootDirectory);
+                MediatorProjectModule.safeDeleteMediatorProjectDetails(filePath, rootDirectory);
             });
+            chokidar.watch(rootDirectory).on('change', (filePath: string) => {
+                //update metadata.yaml for API
+                const directoryPattern: string = path.join("src", "main", "synapse-config", "api");
+                    
+                //check whether an api resource file is changed
+                if(isExistDirectoryPattern(filePath, directoryPattern)){
+                    const esbConfigsDirectory: string = filePath.split(directoryPattern)[0];
+                    ArtifactModule.updateMetadataforApi(esbConfigsDirectory, filePath);
+                }
+            });
+            
     }
     }
 

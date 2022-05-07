@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * WSO2 Inc. licenses this file to you under the Apache License,
 * Version 2.0 (the "License"); you may not use this file except
@@ -20,16 +20,16 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import {Uri, window, workspace, WorkspaceEdit} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import {LocalEntryArtifactInfo, ServerRoleInfo, SubDirectories, ProjectNatures, APIArtifactInfo, ProxyArtifactInfo, ArtifactInfo, RegistryResourceInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, MessageProcessorArtifactInfo, MessageStoreArtifactInfo, SequenceArtifactInfo, TaskArtifactInfo, TemplateArtifactInfo } from "../artifacts/artifactUtils";
+import {SubDirectories, ProjectNatures, APIArtifactInfo, ProxyArtifactInfo, ArtifactInfo, RegistryResourceInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, MessageProcessorArtifactInfo, MessageStoreArtifactInfo, SequenceArtifactInfo, TaskArtifactInfo, TemplateArtifactInfo } from "../artifacts/artifactUtils";
 import { ConnectorModule } from "../connector/ConnectorModule";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
-import { DataServiceModule } from "../dataService/DataServiceModule";
 
 let DOM = require('xmldom').DOMParser;
 let glob = require("glob");
 const YAML = require("js-yaml");
 var file_system = require('fs');
 import * as xml2js from "xml2js";
+import { ArtifactModule } from "../artifacts/ArtifactModule";
 
 export namespace Utils {
 
@@ -85,7 +85,6 @@ export namespace Utils {
             });
     }
 
-
     /**
      * Interface that holds project information.
      */
@@ -95,8 +94,7 @@ export namespace Utils {
         version?: string;
     }
 
-
-    /**
+    /*
      * Read pom.xml file and abstract project related info.
      */
      export function getProjectInfoFromPOM(pomFilePath: string): Project {
@@ -315,7 +313,7 @@ export namespace Utils {
         //create pom.xml, artifact.xml and .project files
         let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "CompositeExporterPom.xml");
         let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "compositeExporter.xml")
-        ConnectorModule.createProject(projectName, "Composite Exporter Project", templatePomFilePath, 
+        Utils.createProject(projectName, "Composite Exporter Project", templatePomFilePath, 
             templateProjNatureFilePath, SubDirectories.COMPOSITE_EXPORTER, false, rootDirectory, ProjectNatures.COMPOSITE_EXPORTER);
     
     }
@@ -431,8 +429,8 @@ export namespace Utils {
     * Data services
     */
    export function addArtifactToArtifactXml(artifactXmlFilePath: string, name: string, groupId: string, version: string,
-                                            type: string,serverRole: string, file: string, path: string | undefined,
-                                            mediaType: string | undefined){
+                                            type: string,serverRole: string, file: string | undefined, path: string | undefined,
+                                            mediaType: string | undefined, item: any){
 
         if(!fse.existsSync(artifactXmlFilePath)) return;
 
@@ -457,7 +455,7 @@ export namespace Utils {
 
         artifacts.appendChild(artifact);
 
-        if(type === RegistryResourceInfo.TYPE && path && mediaType){
+        if(type === RegistryResourceInfo.TYPE && file && path && mediaType){
             let child = xmlDoc.createElement("item");
             artifact.appendChild(child);
 
@@ -476,7 +474,10 @@ export namespace Utils {
             let properties = xmlDoc.createElement("properties");
             child.appendChild(properties);
         }
-        else{
+        else if(type === RegistryResourceInfo.TYPE && typeof item !== "undefined"){
+            artifact.appendChild(item);
+        }
+        else if(type !== RegistryResourceInfo.TYPE && typeof file !== "undefined"){
             let child = xmlDoc.createElement("file");
             child.textContent = file;
             artifact.appendChild(child);
@@ -526,7 +527,7 @@ export namespace Utils {
         let rootDirectory: string = path.join(directory, "..");
         let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
         let pomFilePath: string = path.join(directory, "pom.xml");
-        let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
+        let project: Project = getProjectInfoFromPOM(rootPomFilePath);
 
         //add new pom.xml
         const buff: Buffer = fse.readFileSync(templatePomXmlPath);
@@ -561,7 +562,7 @@ export namespace Utils {
         name.textContent = projectName.trim(); 
 
         let projectNatureFilePath: string = path.join(directory, ".project");
-        Utils.createXmlFile(projectNatureFilePath,projectNature);
+        createXmlFile(projectNatureFilePath,projectNature);
 
         if(createArtifactXml){
         //create new artifact.xml
@@ -571,7 +572,58 @@ export namespace Utils {
         let artifacts  = new DOM().parseFromString(buffer.toString(), "text/xml");
 
         let artifactFilePath: string = path.join(directory, "artifact.xml");
-        Utils.createXmlFile(artifactFilePath,artifacts);
+        createXmlFile(artifactFilePath,artifacts);
+        }
+    }
+
+    export async function createProject(projectName: string, type: string, templatePomFilePath: string,
+                                        templateProjNatureFilePath: string, directoryType: string, 
+                                        createArtifactXml: boolean, rootDirectory: string,
+                                        projectNature: ProjectNatures){
+
+        const currentDirectory: string = Utils.getDirectoryFromDirectoryType(directoryType, rootDirectory).trim();
+        if(currentDirectory !== "unidentified"){
+            window.showWarningMessage(`WSO2 Enterprise Integrator Extension can not handle more than one ${type} &
+            Handling more than one ${type} is under user's control, Do you want to continue?`, "Yes", "No").then(decision => {
+                if(decision && (decision.trim() === "Yes")){
+
+                    let newDirectory: string = path.join(rootDirectory, projectName);
+                    if(fse.existsSync(newDirectory)){
+                        window.showErrorMessage(`${type} name already exists!`);
+                        return;
+                    }
+                    fse.mkdirSync(newDirectory);
+                    //add artifact.xml, pom.xml and .project
+                    Utils.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
+                    addProjectToRootPom(projectName, projectNature, rootDirectory);
+                }
+            });
+        }
+        else{
+            let newDirectory: string = path.join(rootDirectory, projectName);
+            if(fse.existsSync(newDirectory)){
+                window.showErrorMessage(`${type} name already exists!`);
+                return;
+            }
+            fse.mkdirSync(newDirectory);
+            //add artifact.xml, pom.xml and .project
+            Utils.createConfigurationFiles(projectName, newDirectory, templateProjNatureFilePath, templatePomFilePath, createArtifactXml);
+            addProjectToRootPom(projectName, projectNature, rootDirectory);
+        }
+    }
+
+    function addProjectToRootPom(projectName: string, projectNature: ProjectNatures, rootDirectory: string){
+        if(projectNature === ProjectNatures.COMPOSITE_EXPORTER){
+            Utils.addCompositeExporterToRootPom(rootDirectory, projectName);
+        }
+        else if(projectNature === ProjectNatures.CONFIGS){
+            ArtifactModule.addESBConfigsToRootPom(rootDirectory, projectName);
+        }
+        else if(projectNature === ProjectNatures.REGISTRY_RESOURCES){
+            ArtifactModule.addRegistryResourcesToRootPom(rootDirectory, projectName);
+        }
+        else if(projectNature === ProjectNatures.CONNECTOR_EXPORTER){
+            ConnectorModule.addConnectorExporterToRootPom(rootDirectory, projectName);
         }
     }
 }

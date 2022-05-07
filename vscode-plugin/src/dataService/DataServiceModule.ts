@@ -116,7 +116,7 @@ export namespace DataServiceModule {
             let artifactXmlFilePath: string = path.join(subDirectoryPath, "..", "artifact.xml");
 
             Utils.addArtifactToArtifactXml(artifactXmlFilePath, dataServiceName, finalGroupId, "1.0.0", DataServiceInfo.TYPE,
-                                            ServerRoleInfo.DATA_SERVICES_SERVER, file, undefined, undefined);
+                                            ServerRoleInfo.DATA_SERVICES_SERVER, file, undefined, undefined, undefined);
 
             //update composite pom.xml
             let compositeExporterDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
