@@ -112,7 +112,7 @@ export namespace DataServiceModule {
             let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
             let groupId: string = project.groupId!;
             let finalGroupId: string = `${groupId}.${DataServiceInfo.TYPE.split("/")[1]}`;
-            let file: string = path.join(DataServiceInfo.DATA_SERVICE_LABEL, dataServiceName + ".dbs");
+            let file: string = [DataServiceInfo.DATA_SERVICE_LABEL, dataServiceName + ".dbs"].join("/");
             let artifactXmlFilePath: string = path.join(subDirectoryPath, "..", "artifact.xml");
 
             Utils.addArtifactToArtifactXml(artifactXmlFilePath, dataServiceName, finalGroupId, "1.0.0", DataServiceInfo.TYPE,
@@ -137,15 +137,15 @@ export namespace DataServiceModule {
 
         let array: string[] = deletedFile.split(path.sep);
         let deletedDataService: string = array[array.length - 1];
-        let fileExtension: string = deletedDataService[1];
+        let fileExtension: string = deletedDataService.split(".")[1];
         let dataServiceFolder: string = array[array.length - 2];
-        let rawDataServiceName: string[] = deletedDataService.split(".");
+        let rawDataServiceName: string = deletedDataService.split(".")[0];
         let artifactXmlFilePath: string = path.join(deletedFile, "..", "..", "artifact.xml");
 
         //check whether a .dbs file was deleted
         if((dataServiceFolder === DataServiceInfo.DESTINATION_FOLDER) && (fileExtension === "dbs")){
-            Utils.deletefromArtifactXml(artifactXmlFilePath, rawDataServiceName[0].trim());
-            Utils.deleteArtifactFromPomXml(rawDataServiceName[0].trim(), dataServiceFolder, rootDirectory);
+            Utils.deletefromArtifactXml(artifactXmlFilePath, rawDataServiceName.trim());
+            Utils.deleteArtifactFromPomXml(rawDataServiceName.trim(), dataServiceFolder, rootDirectory);
         }
     }
 }

@@ -20,7 +20,6 @@ import {Uri, window, workspace, WorkspaceEdit} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
 import {LocalEntryArtifactInfo, ServerRoleInfo, SubDirectories, ProjectNatures, APIArtifactInfo, ProxyArtifactInfo, ArtifactInfo, RegistryResourceInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, MessageProcessorArtifactInfo, MessageStoreArtifactInfo, SequenceArtifactInfo, TaskArtifactInfo, TemplateArtifactInfo } from "./artifactUtils";
-import { ConnectorModule } from "../connector/ConnectorModule";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
 import {RegistryResource} from "./artifactResolver";
 import { Utils } from "../utils/Utils";
@@ -163,7 +162,7 @@ export namespace ArtifactModule {
                     createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
                                                         templateArtifactFilePath, artifactType, registryResource);
                     addNewArtifactToArtifactXmlFile(subDirectory, targetArtifactName, targetFolder, type);
-                    updateCompositePomXmlFile(rootDirectory, targetArtifactName, targetFolder, type);
+                    updateCompositePomXmlFile(rootDirectory, targetArtifactName, type);
                 }
             });
         }
@@ -202,7 +201,7 @@ export namespace ArtifactModule {
                     Utils.addArtifactToArtifactXml(artifactXmlFilePath, targetArtifactName, finalGroupId, "1.0.0", type, 
                                                     ServerRoleInfo.ENTERPRISE_INTEGRATOR, registryResource.file!, registryResource.path,
                                                     registryResource.mediaType, undefined);
-                    updateCompositePomXmlFile(rootDirectory, targetArtifactName, targetFolder, type);
+                    updateCompositePomXmlFile(rootDirectory, targetArtifactName, type);
                 }
             });
         }
@@ -236,7 +235,6 @@ export namespace ArtifactModule {
         } else  {
             data = updateSynapseArtifactTemplate(artifactType, buf, targetArtifactName);
         }
-        console.log(data);
         // Write the updated template content to the target file.
         let xmlData = new DOM().parseFromString(data, "text/xml");
         let fileUri: Uri = Utils.createXmlFile(targetArtifactFileUri.fsPath, xmlData);
@@ -276,24 +274,24 @@ export namespace ArtifactModule {
                                             undefined, undefined);
             
             //add  metadata and swagger artifacts to artifact.xml for an api resource
-            if(targetFolder.trim() === APIArtifactInfo.DESTINATION_FOLDER){
+            if(type === APIArtifactInfo.TYPE){
 
                 finalGroupId = `${groupId}.metadata`;
 
                 //metadata
                 let metaDataName: string = `${artifactName}_metadata`;
                 let metaDataFilePath: string = ["src", "main", "resources", "metadata", `${metaDataName}.yaml`].join("/");
-                Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, metaDataName, finalGroupId, "1.0.0", type, 
+                Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, metaDataName, finalGroupId, "1.0.0", "synapse/metadata", 
                                                 ServerRoleInfo.ENTERPRISE_SERVICE_BUS, metaDataFilePath, undefined,
                                                 undefined, undefined);
                 //swagger
                 let swaggerName: string = `${artifactName}_swagger`;
                 let swaggerFilePath: string = ["src", "main", "resources", "metadata", `${swaggerName}.yaml`].join("/");
-                Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, swaggerName, finalGroupId, "1.0.0", type, 
+                Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, swaggerName, finalGroupId, "1.0.0", "synapse/metadata", 
                                                 ServerRoleInfo.ENTERPRISE_SERVICE_BUS, swaggerFilePath, undefined,
                                                 undefined, undefined);
             }
-            else if(targetFolder.trim() === ProxyArtifactInfo.PROXY_DESTINATION_FOLDER){
+            else if(type === ProxyArtifactInfo.TYPE){
 
                 finalGroupId = `${groupId}.proxy-service.metadata`;
 
@@ -301,7 +299,7 @@ export namespace ArtifactModule {
                 let metaDataName: string = `${artifactName}_proxy_metadata`;
                 let metaDataFilePath: string = ["src", "main", "resources", "metadata",  `${metaDataName}.yaml`].join("/");
                 
-                Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, metaDataName, finalGroupId, "1.0.0", type, 
+                Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, metaDataName, finalGroupId, "1.0.0", "synapse/metadata", 
                                                 ServerRoleInfo.ENTERPRISE_SERVICE_BUS, metaDataFilePath, undefined,
                                                 undefined, undefined);
             }
@@ -310,7 +308,7 @@ export namespace ArtifactModule {
     /**
      * Update composite pom.xml with new artifact related information.
      */
-    function updateCompositePomXmlFile(rootDirectory: string, artifactName: string, targetFolder: string, type: string) {
+    function updateCompositePomXmlFile(rootDirectory: string, artifactName: string, type: string) {
 
             // read pom and get project group_id and version
             let compositeExporterDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
@@ -334,7 +332,7 @@ export namespace ArtifactModule {
                 let swaggerArtifactName: string = artifactName + "_swagger";
                 Utils.updateCompositePomXml(compositeExporterDirectory, swaggerArtifactName, "synapse/metadata", serverRole, finalGroupId);
             }
-            else if(type === ProxyArtifactInfo.ARTIFACT_TYPE){
+            else if(type === ProxyArtifactInfo.TYPE){
                 finalGroupId = groupId + ".proxy-service.metadata";
                 //metadata
                 let metadataArtifactName: string = artifactName + "_proxy_metadata";

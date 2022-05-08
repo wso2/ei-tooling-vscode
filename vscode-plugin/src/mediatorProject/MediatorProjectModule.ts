@@ -16,25 +16,16 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder, languages} from "vscode";
+import {Uri, window, workspace, WorkspaceEdit} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-//import {ServerRoleInfo, DataServiceInfo} from "./dataServiceUtils";
 import {XMLSerializer as XMLSerializer} from 'xmldom';
-import {ArtifactModule} from "../artifacts/ArtifactModule";
-import {DataServiceModule} from "../dataService/DataServiceModule";
-import { ServerRoleInfo } from "../artifacts/artifactUtils";
-import { dir } from "console";
-import { version } from "process";
 import { SubDirectories } from "../artifacts/artifactUtils";
-import {SYNAPSE_LANGUAGE_ID, SYNAPSE_NAMESPACE} from "../language/languageUtils";
 import { Utils } from "../utils/Utils";
+import { MediatorProjectInfo, ServerRoleInfo } from "./mediarorProjectUtils";
 
 let DOM = require('xmldom').DOMParser;
-let glob = require("glob");
-const YAML = require("js-yaml");
 var fs = require('fs');
-var filewatcher = require('filewatcher');
 
 export namespace MediatorProjectModule {
 
@@ -135,19 +126,8 @@ export namespace MediatorProjectModule {
             fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
 
             //update composite pom
-            let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
-            const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
-            let pomXml = new DOM().parseFromString(pomBuff.toString(), "text/xml");
-
-            //add new property
-            let tagName: string = packageName + "_._" + projectName;
-            let properties = pomXml.getElementsByTagName("properties");
-            Utils.addNewProperty(pomXml, tagName, properties, serverRole);
-
-            //add new dependancy
-            let dependencies = pomXml.getElementsByTagName("dependencies");
-            Utils.addNewDependancy(pomXml, dependencies, projectName, packageName, undefined, version);
-            fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXml));
+            let compositePomDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
+            Utils.updateCompositePomXml(compositePomDirectory, projectName, MediatorProjectInfo.TYPE, ServerRoleInfo.ENTERPRISE_INTEGRATOR, packageName, version);
 
             //no java class is created
             if(typeof className === "undefined") return;
@@ -163,10 +143,10 @@ export namespace MediatorProjectModule {
         
             public class ${className} extends AbstractMediator {
         
-            public boolean mediate(MessageContext context) { 
-                // TODO Implement your mediation logic here 
-                return true;
-            }
+                public boolean mediate(MessageContext context) { 
+                    // TODO Implement your mediation logic here 
+                    return true;
+                }
             }`;
 
             let fileUri:Uri = Uri.file(sampleJavaClassfilePath);
@@ -175,7 +155,6 @@ export namespace MediatorProjectModule {
             workspace.applyEdit(edit);
             fse.writeFileSync(fileUri.fsPath, data);
 
-           
             // Open and show newly created java file in the editor.
             workspace.openTextDocument(fileUri).then(doc => window.showTextDocument(doc));
     
@@ -189,6 +168,8 @@ export namespace MediatorProjectModule {
             //chech whether a java file was deleted
             if(fileExtension === "java"){
                 //detele project related details if there are any
+
+                //get package name
                 let parentDirectory: string = path.join(filePath, "..");
                 let splitRegex: string = `java${path.sep}`;
                 let tmp1: string[] = parentDirectory.split(splitRegex);
@@ -196,36 +177,15 @@ export namespace MediatorProjectModule {
                 let tmp3: string[] = tmp2.split(path.sep);
                 let packageName: string = tmp3.join(".");
                 
+                //get project name
                 splitRegex = `${path.sep}src`;
                 let tmp4: string = filePath.split(splitRegex)[0];
                 let tmp5: string[] = tmp4.split(path.sep);
                 let projectName: string = tmp5[tmp5.length - 1].trim();
-                
-                let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER,
-                     rootDirectory), "pom.xml");
-                const pomBuff: Buffer = fse.readFileSync(compositePomFilePath);
-                let pomXml = new DOM().parseFromString(pomBuff.toString(), "text/xml");
-                let properties = pomXml.getElementsByTagName("properties")[0];
 
-                //delete property
-                let propertyTagName: string = `${packageName}_._${projectName}`;
-                let propertyList = properties.getElementsByTagName(propertyTagName);
-                if(propertyList.length > 0){
-                    properties.removeChild(propertyList[0]);
-                    //delete dependency
-                    let dependencies = pomXml.getElementsByTagName("dependencies")[0];
-                    let dependencyList = dependencies.getElementsByTagName("dependency");
-                    let dependancyCount: number = dependencyList.length;
-                    for(let i=0; i<dependancyCount; i++){
-                        let groupId: string = dependencyList[i].getElementsByTagName("groupId")[0].textContent.trim();
-                        let artifactId: string = dependencyList[i].getElementsByTagName("artifactId")[0].textContent.trim();
-                        if((groupId === packageName) && (artifactId === projectName)){
-                            dependencies.removeChild(dependencyList[i]);
-                            break;
-                        }
-                    }
-                }
-                fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXml));
+                //delete mediator project details from composite pom
+                Utils.deleteArtifactFromPomXml(projectName, projectName, rootDirectory, packageName);
+                
             }
         }
 }

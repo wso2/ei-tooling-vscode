@@ -16,13 +16,13 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {QuickPickItem, window, workspace} from "vscode";
+import {window, workspace} from "vscode";
 import {DataServiceModule} from "./DataServiceModule";
 import {
     DataServiceProjectInfo,
     DataServiceInfo
 } from "./dataServiceUtils";
-import {showInputBox, showQuickPick} from "../utils/uiUtils";
+import {showInputBox} from "../utils/uiUtils";
 import {Utils} from "../utils/Utils";
 
 export async function createDataServiceProject() {

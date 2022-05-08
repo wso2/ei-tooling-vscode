@@ -30,6 +30,7 @@ const YAML = require("js-yaml");
 var file_system = require('fs');
 import * as xml2js from "xml2js";
 import { ArtifactModule } from "../artifacts/ArtifactModule";
+import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
 
 export namespace Utils {
 
@@ -118,6 +119,7 @@ export namespace Utils {
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
 
         let artifacts = xmlDoc.getElementsByTagName("artifacts");
+        if(artifacts.length < 1) return;
         let elementList = xmlDoc.getElementsByTagName("artifact");
         let listLength: number = elementList.length;
 
@@ -138,7 +140,7 @@ export namespace Utils {
     /**
      * Delete artifact related information from composite pom.xml.
      */
-    export function deleteArtifactFromPomXml(artifactName: string, artifactType: string, rootDirectory: string){
+    export function deleteArtifactFromPomXml(artifactName: string, artifactType: string, rootDirectory: string, groupId?: string){
 
         //const pomSubdirectory: string = workspaceFolder.name + SubDirectories.COMPOSITE_EXPORTER;
         const pathToPomXml:string = path.join(getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
@@ -147,15 +149,21 @@ export namespace Utils {
 
         let rootPomXmlFilePath: string = path.join(workspace.workspaceFolders![0].uri.fsPath, "pom.xml");
         let project:  Utils.Project =  Utils.getProjectInfoFromPOM(rootPomXmlFilePath);
-        const {groupId, version} = Object.assign(project);
+        const {rootGroupId, version} = Object.assign(project);
 
         let buffer: Buffer = fse.readFileSync(pathToPomXml);
         let pomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml")
         let dependencies = pomXmlDoc.getElementsByTagName("dependencies");
         let dependencyList = dependencies[0].getElementsByTagName("dependency");
         let listLength: number = dependencyList.length;
+        let artifactGroupId: string;
 
-        let artifactGroupId: string = `${groupId}.${artifactType}`;
+        if(typeof groupId !== "undefined"){
+            artifactGroupId = groupId;
+        }
+        else{
+            artifactGroupId = `${rootGroupId}.${artifactType}`;
+        }
 
         //delete metadata dependencies and properties in pom.xml
         for (let i = 0; i < listLength; i++) {
@@ -199,7 +207,7 @@ export namespace Utils {
                 else if(artifactType === proxyServiceType){
 
                     //delete metadata related imformation
-                    let metadataArtifactName: string = `${artifactName}"_proxy_metadata`;
+                    let metadataArtifactName: string = `${artifactName}_proxy_metadata`;
                     deleteArtifactFromPomXml(metadataArtifactName, "proxy-service.metadata", rootDirectory);
 
                     let syapseSubDirectory: string = getDirectoryFromDirectoryType(SubDirectories.CONFIGS, rootDirectory);
@@ -355,13 +363,13 @@ export namespace Utils {
      export function addNewProperty(xmlDoc: any, tagName: string, properties: any, serverRole: string){
         let pomChild = xmlDoc.createElement(tagName);
         properties[0].appendChild(pomChild);
-        pomChild.textContent = path.join("capp", serverRole);
+        pomChild.textContent = ["capp", serverRole].join("/");
     }
 
     /**
      * Create new dependency in composite pom.xml. 
      */
-    export function addNewDependancy(xmlDoc: any, dependencies: any, artifactName: string, groupId: string, type?: string, version?: string){
+    export function addNewDependancy(xmlDoc: any, dependencies: any, artifactName: string, groupId: string, type: string | undefined, version?: string){
         let dependancy = xmlDoc.createElement("dependency");
         dependencies[0].appendChild(dependancy);
         createAndAppendElement(xmlDoc, dependancy,"groupId", groupId);
@@ -390,11 +398,11 @@ export namespace Utils {
     /**
     * Update composite pom.xml for new artifact.
     */
-    export function updateCompositePomXml(compositeDirectory: string, name: string, type: string, serverRole: string, finalGroupId: string){
+    export function updateCompositePomXml(compositeDirectory: string, name: string, type: string, serverRole: string, finalGroupId: string, version?: string){
+        
         //add entry to properties
         let compositePomFilePath : string = path.join(compositeDirectory, "pom.xml");
         if(!fse.existsSync(compositePomFilePath)) return;
-
         const buffer: Buffer = fse.readFileSync(compositePomFilePath);
         let pomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
         let properties = pomXmlDoc.getElementsByTagName("properties");
@@ -417,7 +425,14 @@ export namespace Utils {
             dependencies[0] = newDependancies;
         }
 
-        addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, ArtifactInfo.fileTypes.get(type));
+        //skip creating <type></type> tags for mediator projects
+        if(type === MediatorProjectInfo.TYPE){
+            addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, undefined, version)
+        }
+        else{
+            addNewDependancy(pomXmlDoc, dependencies, name, finalGroupId, ArtifactInfo.fileTypes.get(type), version);
+        }
+
         fse.writeFileSync(compositePomFilePath, new XMLSerializer().serializeToString(pomXmlDoc));
     }
 

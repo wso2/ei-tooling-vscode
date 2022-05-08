@@ -101,8 +101,8 @@ export function activate(context: ExtensionContext) {
             );
             fileWatcherCreated = true;
 
-            watcher.onDidDelete((deletedFile: Uri) => {
-                Utils.safeDeteteProject(deletedFile.path);
+            watcher.onDidDelete((deletedDir: Uri) => {
+                Utils.safeDeteteProject(deletedDir.fsPath);
             });       
         }
     }
@@ -111,7 +111,6 @@ export function activate(context: ExtensionContext) {
         if(workspace.workspaceFolders){
             let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             chokidar.watch(rootDirectory).on('unlink', (filePath: string) => {
-                console.log("unlink triggerd");
                 ArtifactModule.safeDeleteArtifact(filePath);
                 DataServiceModule.safeDeleteDataService(filePath, rootDirectory);
                 ConnectorModule.safeDeleteConnector(filePath, rootDirectory);
@@ -120,9 +119,8 @@ export function activate(context: ExtensionContext) {
             chokidar.watch(rootDirectory).on('change', (filePath: string) => {
                 //update metadata.yaml for API
                 const directoryPattern: string = path.join("src", "main", "synapse-config", "api");
-                    
                 //check whether an api resource file is changed
-                if(isExistDirectoryPattern(filePath, directoryPattern)){
+                if(filePath.includes(directoryPattern)){
                     const esbConfigsDirectory: string = filePath.split(directoryPattern)[0];
                     ArtifactModule.updateMetadataforApi(esbConfigsDirectory, filePath);
                 }

@@ -90,14 +90,13 @@ export namespace ConnectorModule {
 
    export async function getSuggestedConnectors(keyWord: string, rootDirectory: string){
 
-    let suggestions;
-    let tmp: QuickPickItem[];
-    let downloadLinkMap: Map<string,string>;
-    let query: string = `"overview_name":"${keyWord}"`;
-    const encodedUri = encodeURI(ConnectorInfo.CONNECTOR_SERVER_URL + ConnectorInfo.CONNECTOR_ASSETS_ES210_SEARCH + query);
+        let suggestions;
+        let tmp: QuickPickItem[];
+        let downloadLinkMap: Map<string,string>;
+        let query: string = `"overview_name":"${keyWord}"`;
+        const encodedUri = encodeURI(ConnectorInfo.CONNECTOR_SERVER_URL + ConnectorInfo.CONNECTOR_ASSETS_ES210_SEARCH + query);
 
-    axios.get(encodedUri)
-        .then((response: any) =>{
+        axios.get(encodedUri).then((response: any) =>{
             // handle success
             suggestions = response.data.data;
             if(suggestions.length === 0){
@@ -105,25 +104,22 @@ export namespace ConnectorModule {
                 return;
             }
             [tmp, downloadLinkMap] = createQuickPickList(suggestions);
-            
-            window.showQuickPick(
-                tmp,
-                {matchOnDescription: true, placeHolder: "Select a connector..."}
-            ).then(selected => {
-                if(selected && downloadLinkMap.has(selected.label.trim())) {
-                    let downloadLink: string =  downloadLinkMap.get(selected.label.trim())!;
-                    downloadConnector(downloadLink, selected.label.trim(), selected.description!.trim(), rootDirectory);
-                }
-                else{
-                    window.showErrorMessage("Can not download the connector...!");
-                }
-            });
+
+            window.showQuickPick(tmp, {matchOnDescription: true, placeHolder: "Select a connector..."})
+                .then(selected => {
+                    if(selected && downloadLinkMap.has(selected.label.trim())) {
+                        let downloadLink: string =  downloadLinkMap.get(selected.label.trim())!;
+                        downloadConnector(downloadLink, selected.label.trim(), selected.description!.trim(), rootDirectory);
+                    }
+                    else{
+                        window.showErrorMessage("Can not download the connector...!");
+                    }
+                });
         })
         .catch((error: any) =>{
             // handle error
             window.showErrorMessage(error);
         });
-
    }
 
    function createQuickPickList(connectorList: any[]): [QuickPickItem[], Map<string,string>]{
@@ -133,14 +129,12 @@ export namespace ConnectorModule {
             let connector: QuickPickItem = {
                 label: element.name,
                 description: element.version
-                
             }
             suggestedConnectors[index] = connector;
             let downloadLink: string | undefined = element.attributes.overview_downloadlink;
             if(downloadLink !== undefined){
                 downloadLinkMap.set(element.name.trim(), downloadLink.trim());
             }
-            
         });
         return [suggestedConnectors, downloadLinkMap];
    }
@@ -168,9 +162,9 @@ export namespace ConnectorModule {
                 title: "Downloading the Connector..",
                 cancellable: true
                 }, async (progress) => {
-                    progress.report({  increment: 0 });
-                    await downloadHelper.start();
-                    progress.report({ increment: 100 });
+                        progress.report({  increment: 0 });
+                        await downloadHelper.start();
+                        progress.report({ increment: 100 });
                 }
             );
         } 
@@ -194,12 +188,11 @@ export namespace ConnectorModule {
             Utils.addArtifactToArtifactXml(artifactXmlFilePath, connectorName, finalGroupId, version, ConnectorInfo.TYPE, 
                                                     ServerRoleInfo.ENTERPRISE_SERVICE_BUS, connectorFileName, undefined,
                                                     undefined, undefined);
-
+            
             //update composite pom
-            let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER,
-                rootDirectory), "pom.xml");
-            Utils.updateCompositePomXml(compositePomFilePath, connectorName, ConnectorInfo.TYPE,
-                                        ServerRoleInfo.ENTERPRISE_SERVICE_BUS, finalGroupId);
+            let compositeDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
+            Utils.updateCompositePomXml(compositeDirectory, connectorName, ConnectorInfo.TYPE,
+                                        ServerRoleInfo.ENTERPRISE_SERVICE_BUS, finalGroupId, version);
    }
 
    export function safeDeleteConnector(deletedFile: string, rootDirectory: string){

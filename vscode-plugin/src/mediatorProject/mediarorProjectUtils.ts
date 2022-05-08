@@ -19,7 +19,7 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 'use strict';
 
 export class ServerRoleInfo {
-    static readonly APPLICATION_SERVER: string = "ApplicationServer";
+    static readonly ENTERPRISE_INTEGRATOR: string = "EnterpriseIntegrator";
 }
 
 export class MediatorProjectInfo {
@@ -27,6 +27,7 @@ export class MediatorProjectInfo {
     static readonly PACKAGE_PROMPT_MESSAGE: string = "Enter Package name...";
     static readonly CLASS_PROMPT_MESSAGE: string = "Enter Class name...";
     static readonly TYPE: string = "lib/synapse/mediator";
+    static readonly FOLDER: string = "mediator"
 }
 
 
