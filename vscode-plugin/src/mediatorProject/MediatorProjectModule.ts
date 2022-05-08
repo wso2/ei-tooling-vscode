@@ -127,7 +127,7 @@ export namespace MediatorProjectModule {
 
             //update composite pom
             let compositePomDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
-            Utils.updateCompositePomXml(compositePomDirectory, projectName, MediatorProjectInfo.TYPE, ServerRoleInfo.ENTERPRISE_INTEGRATOR, packageName, version);
+            Utils.updateCompositePomXml(compositePomDirectory, projectName, MediatorProjectInfo.TYPE, serverRole, packageName, version);
 
             //no java class is created
             if(typeof className === "undefined") return;
