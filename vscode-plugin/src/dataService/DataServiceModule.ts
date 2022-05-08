@@ -145,7 +145,7 @@ export namespace DataServiceModule {
         //check whether a .dbs file was deleted
         if((dataServiceFolder === DataServiceInfo.DESTINATION_FOLDER) && (fileExtension === "dbs")){
             Utils.deletefromArtifactXml(artifactXmlFilePath, rawDataServiceName.trim());
-            Utils.deleteArtifactFromPomXml(rawDataServiceName.trim(), dataServiceFolder, rootDirectory);
+            Utils.deleteArtifactFromPomXml(rawDataServiceName.trim(), dataServiceFolder, rootDirectory, undefined);
         }
     }
 }

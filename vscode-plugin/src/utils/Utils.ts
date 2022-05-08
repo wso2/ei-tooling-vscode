@@ -140,16 +140,16 @@ export namespace Utils {
     /**
      * Delete artifact related information from composite pom.xml.
      */
-    export function deleteArtifactFromPomXml(artifactName: string, artifactType: string, rootDirectory: string, groupId?: string){
+    export function deleteArtifactFromPomXml(artifactName: string, artifactType: string, rootDirectory: string, groupId: string | undefined){
 
         //const pomSubdirectory: string = workspaceFolder.name + SubDirectories.COMPOSITE_EXPORTER;
         const pathToPomXml:string = path.join(getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), "pom.xml");
 
         if(!fse.existsSync(pathToPomXml)) return;
 
-        let rootPomXmlFilePath: string = path.join(workspace.workspaceFolders![0].uri.fsPath, "pom.xml");
+        let rootPomXmlFilePath: string = path.join(rootDirectory, "pom.xml");
         let project:  Utils.Project =  Utils.getProjectInfoFromPOM(rootPomXmlFilePath);
-        const {rootGroupId, version} = Object.assign(project);
+        let rootGroupId = project.groupId;
 
         let buffer: Buffer = fse.readFileSync(pathToPomXml);
         let pomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml")
@@ -192,11 +192,11 @@ export namespace Utils {
 
                     //delete swagger related information
                     let swaggerArtifactName: string = `${artifactName}_swagger`;
-                    deleteArtifactFromPomXml(swaggerArtifactName, "metadata", rootDirectory);
+                    deleteArtifactFromPomXml(swaggerArtifactName, "metadata", rootDirectory, undefined);
 
                     //delete metadata related imformation
                     let metadataArtifactName: string = `${artifactName}_metadata`;
-                    deleteArtifactFromPomXml(metadataArtifactName, "metadata", rootDirectory);
+                    deleteArtifactFromPomXml(metadataArtifactName, "metadata", rootDirectory, undefined);
 
                     //delete swagger and metadata files
                     let syapseSubDirectory: string = getDirectoryFromDirectoryType(SubDirectories.CONFIGS, rootDirectory); 
@@ -208,7 +208,7 @@ export namespace Utils {
 
                     //delete metadata related imformation
                     let metadataArtifactName: string = `${artifactName}_proxy_metadata`;
-                    deleteArtifactFromPomXml(metadataArtifactName, "proxy-service.metadata", rootDirectory);
+                    deleteArtifactFromPomXml(metadataArtifactName, "proxy-service.metadata", rootDirectory, undefined);
 
                     let syapseSubDirectory: string = getDirectoryFromDirectoryType(SubDirectories.CONFIGS, rootDirectory);
                     let metaDataDirectory: string = path.join(syapseSubDirectory, "src", "main", "resources", "metadata");

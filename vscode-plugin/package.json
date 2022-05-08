@@ -247,6 +247,12 @@
 			{
 				"id": "SynapseXml",
 				"extensions": [
+					
+				]
+			},
+			{
+				"id": "XML",
+				"extensions": [
 					".dbs"
 				]
 			}

@@ -383,13 +383,13 @@ export namespace ArtifactModule {
                 Utils.deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
 
                 let artifactType = ArtifactInfo.artifactTypes.get(artifactFolder);
-                if(typeof artifactType !== "undefined") Utils.deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1], rootDirectory);
+                if(typeof artifactType !== "undefined") Utils.deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1], rootDirectory, undefined);
             //resource
             }else if (resourceDirectoryType === SubDirectories.REGISTRY_RESOURCES) {
                 artifactXmlFilePath = path.join(resourceSubDirectory, "artifact.xml");
 
                 Utils.deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
-                Utils.deleteArtifactFromPomXml(rawArtifactName[0], RegistryResourceInfo.TYPE.split("/")[1], rootDirectory);
+                Utils.deleteArtifactFromPomXml(rawArtifactName[0], RegistryResourceInfo.TYPE.split("/")[1], rootDirectory, undefined);
             }
         }
     }

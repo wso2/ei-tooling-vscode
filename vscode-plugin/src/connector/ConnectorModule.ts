@@ -211,7 +211,7 @@ export namespace ConnectorModule {
 
             let artifactXmlFilePath: string = path.join(deletedFile, "..", "artifact.xml");
             Utils.deletefromArtifactXml(artifactXmlFilePath, connectorName.trim());
-            Utils.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER, rootDirectory);
+            Utils.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER, rootDirectory, undefined);
 
         }
    }
