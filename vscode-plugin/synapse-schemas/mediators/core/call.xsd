@@ -15,11 +15,9 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../endpoint.xsd"/>
+    <xs:include schemaLocation="../../endpoint.xsd" />
 
     <xs:element name="call">
         <xs:annotation>
@@ -30,41 +28,41 @@
         </xs:annotation>
         <xs:complexType>
             <xs:all>
-                <xs:element name="source" minOccurs="0" maxOccurs="1" >
-                
-                    <xs:complexType mixed="true" >
-                        <xs:sequence>
-                            <xs:any minOccurs="0" processContents="skip"/>
-                        </xs:sequence>
-                         <xs:attribute name="contentType" type="xs:string" use="required"/>
-                         <xs:attribute name="type" use="required">
-                            <xs:simpleType>
-                                <xs:restriction base="xs:string">
-                                    <xs:enumeration value="custom"/>
-                                    <xs:enumeration value="inline"/>
-                                    <xs:enumeration value="property"/>
-                                    <xs:enumeration value="body"/>
-                                </xs:restriction>
-                            </xs:simpleType>
-                         </xs:attribute>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="target" minOccurs="0" maxOccurs="1">
+                <xs:element name="source" minOccurs="0" maxOccurs="1">
+
                     <xs:complexType mixed="true">
-                        <xs:attribute name="type"  use="required">
+                        <xs:sequence>
+                            <xs:any minOccurs="0" processContents="skip" />
+                        </xs:sequence>
+                        <xs:attribute name="contentType" type="xs:string" use="required" />
+                        <xs:attribute name="type" use="required">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
-                                    <xs:enumeration value="property"/>
-                                    <xs:enumeration value="body"/>
+                                    <xs:enumeration value="custom" />
+                                    <xs:enumeration value="inline" />
+                                    <xs:enumeration value="property" />
+                                    <xs:enumeration value="body" />
                                 </xs:restriction>
                             </xs:simpleType>
                         </xs:attribute>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="endpoint" type="NamedEndpoint" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="target" minOccurs="0" maxOccurs="1">
+                    <xs:complexType mixed="true">
+                        <xs:attribute name="type" use="required">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="property" />
+                                    <xs:enumeration value="body" />
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="endpoint" type="NamedEndpoint" minOccurs="1" maxOccurs="1" />
             </xs:all>
-            <xs:attribute name="blocking" type="xs:boolean" use="optional" default="true"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="blocking" type="xs:boolean" use="optional" default="true" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

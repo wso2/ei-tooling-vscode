@@ -18,9 +18,7 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:element name="script">
         <xs:annotation>
@@ -34,24 +32,24 @@
             <xs:sequence>
                 <xs:element name="include" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
-                        <xs:attribute name="key" type="xs:string" use="required"/>
+                        <xs:attribute name="key" type="xs:string" use="required" />
                     </xs:complexType>
                 </xs:element>
-                <xs:any processContents="skip" minOccurs="0"/>
+                <xs:any processContents="skip" minOccurs="0" />
             </xs:sequence>
             <xs:attribute name="language" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
-                        <xs:enumeration value="js"/>
-                        <xs:enumeration value="rb"/>
-                        <xs:enumeration value="groovy"/>
-                        <xs:enumeration value="nashornJs"/>
+                        <xs:enumeration value="js" />
+                        <xs:enumeration value="rb" />
+                        <xs:enumeration value="groovy" />
+                        <xs:enumeration value="nashornJs" />
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="key" type="xs:string" use="optional"/>
-            <xs:attribute name="function" type="xs:string" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="key" type="xs:string" use="optional" />
+            <xs:attribute name="function" type="xs:string" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

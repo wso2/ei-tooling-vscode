@@ -15,10 +15,7 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:include schemaLocation="misc/common.xsd" />
 
@@ -28,8 +25,7 @@
                 &lt;inbound endpoint&gt; declarations for the synapse configuration
             </xs:documentation>
             <xs:appinfo>
-                <sch:pattern name="Test constraints on the Root element"
-                             xmlns:sch="http://purl.oclc.org/dsdl/schematron">
+                <sch:pattern name="Test constraints on the Root element" xmlns:sch="http://purl.oclc.org/dsdl/schematron">
                     <sch:rule context="inboundEndpoint">
                         <sch:assert test="@protocol and @class">
                             On an inboundEndpoint element only one of the attributes protocol and class are allowed, not

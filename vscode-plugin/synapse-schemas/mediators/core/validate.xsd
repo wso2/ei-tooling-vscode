@@ -18,12 +18,10 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../mediators.xsd"/>
-    <xs:include schemaLocation="../../misc/common.xsd"/>
+    <xs:include schemaLocation="../mediators.xsd" />
+    <xs:include schemaLocation="../../misc/common.xsd" />
 
     <xs:element name="validate">
         <xs:annotation>
@@ -34,10 +32,10 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="property"  minOccurs="0" maxOccurs="unbounded">
-                     <xs:complexType>
-                        <xs:attribute name="name" type="xs:string" use="required"/>
-                        <xs:attribute name="value" type="xs:boolean" use="required"/>
+                <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="name" type="xs:string" use="required" />
+                        <xs:attribute name="value" type="xs:boolean" use="required" />
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="schema" minOccurs="1" maxOccurs="unbounded">
@@ -47,7 +45,7 @@
                         </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
-                        <xs:attribute name="key" type="xs:string" use="required"/>
+                        <xs:attribute name="key" type="xs:string" use="required" />
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="on-fail" minOccurs="1" maxOccurs="1">
@@ -58,20 +56,20 @@
                         </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
-                        <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded"/>
+                        <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded" />
                     </xs:complexType>
                 </xs:element>
-                <xs:element ref="feature" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="feature" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="resource" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
-                        <xs:attribute name="key" type="xs:string" use="required"/>
-                        <xs:attribute name="location" type="xs:string" use="required"/>
+                        <xs:attribute name="key" type="xs:string" use="required" />
+                        <xs:attribute name="location" type="xs:string" use="required" />
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
             <xs:attribute name="cache-schema" type="xs:boolean" use="optional" />
-            <xs:attribute name="source" type="xs:string" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="source" type="xs:string" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
 
         </xs:complexType>
     </xs:element>

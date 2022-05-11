@@ -15,9 +15,7 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:element name="bean">
         <xs:annotation>
@@ -29,18 +27,18 @@
             <xs:attribute name="action" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
-                        <xs:enumeration value="CREATE"/>
-                        <xs:enumeration value="REMOVE"/>
-                        <xs:enumeration value="SET_PROPERTY"/>
-                        <xs:enumeration value="GET_PROPERTY"/>
+                        <xs:enumeration value="CREATE" />
+                        <xs:enumeration value="REMOVE" />
+                        <xs:enumeration value="SET_PROPERTY" />
+                        <xs:enumeration value="GET_PROPERTY" />
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="var" type="xs:string" use="required"/>
-            <xs:attribute name="class" type="xs:string" use="optional"/>
-            <xs:attribute name="property" type="xs:string" use="required"/>
-            <xs:attribute name="value" type="xs:string" use="required"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="var" type="xs:string" use="required" />
+            <xs:attribute name="class" type="xs:string" use="optional" />
+            <xs:attribute name="property" type="xs:string" use="required" />
+            <xs:attribute name="value" type="xs:string" use="required" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

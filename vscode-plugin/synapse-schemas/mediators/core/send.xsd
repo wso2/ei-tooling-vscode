@@ -18,11 +18,9 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../endpoint.xsd"/>
+    <xs:include schemaLocation="../../endpoint.xsd" />
 
     <xs:element name="send">
         <xs:annotation>
@@ -33,11 +31,11 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="endpoint" type="NamedEndpoint" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="endpoint" type="NamedEndpoint" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
-            <xs:attribute name="receive" type="xs:string" use="optional"/>
-            <xs:attribute name="buildmessage" type="xs:boolean" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="receive" type="xs:string" use="optional" />
+            <xs:attribute name="buildmessage" type="xs:boolean" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

@@ -15,9 +15,7 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:element name="fastXSLT">
         <xs:annotation>
@@ -27,8 +25,8 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
-            <xs:attribute name="key" type="xs:string" use="required"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="key" type="xs:string" use="required" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

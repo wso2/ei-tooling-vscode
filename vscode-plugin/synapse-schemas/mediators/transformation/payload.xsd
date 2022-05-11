@@ -15,11 +15,9 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../misc/common.xsd"/>
+    <xs:include schemaLocation="../../misc/common.xsd" />
 
     <xs:element name="payloadFactory">
         <xs:annotation>
@@ -32,9 +30,9 @@
                 <xs:element name="format" minOccurs="1" maxOccurs="1">
                     <xs:complexType mixed="true">
                         <xs:sequence>
-                            <xs:any minOccurs="0" maxOccurs="1" processContents="skip"/>
+                            <xs:any minOccurs="0" maxOccurs="1" processContents="skip" />
                         </xs:sequence>
-                        <xs:attribute name="key" type="xs:string" use="optional"/>
+                        <xs:attribute name="key" type="xs:string" use="optional" />
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="args" minOccurs="1" maxOccurs="1">
@@ -42,17 +40,17 @@
                         <xs:sequence>
                             <xs:element name="arg" minOccurs="0" maxOccurs="unbounded">
                                 <xs:complexType mixed="true">
-                                    <xs:attribute name="value" type="xs:string" use="optional"/>
+                                    <xs:attribute name="value" type="xs:string" use="optional" />
                                     <xs:attribute name="evaluator" use="optional">
                                         <xs:simpleType>
                                             <xs:restriction base="xs:string">
-                                                <xs:enumeration value="xml"/>
-                                                <xs:enumeration value="json"/>
+                                                <xs:enumeration value="xml" />
+                                                <xs:enumeration value="json" />
                                             </xs:restriction>
                                         </xs:simpleType>
                                     </xs:attribute>
-                                    <xs:attribute name="expression" type="xs:string" use="optional"/>
-                                    <xs:attribute name="literal" type="xs:boolean" use="optional"/>
+                                    <xs:attribute name="expression" type="xs:string" use="optional" />
+                                    <xs:attribute name="literal" type="xs:boolean" use="optional" />
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
@@ -62,21 +60,21 @@
             <xs:attribute name="media-type" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
-                        <xs:enumeration value="xml"/>
-                        <xs:enumeration value="json"/>
-                        <xs:enumeration value="text"/>
+                        <xs:enumeration value="xml" />
+                        <xs:enumeration value="json" />
+                        <xs:enumeration value="text" />
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
             <xs:attribute name="template-type" use="optional">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
-                        <xs:enumeration value="default"/>
-                        <xs:enumeration value="freemarker"/>
+                        <xs:enumeration value="default" />
+                        <xs:enumeration value="freemarker" />
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

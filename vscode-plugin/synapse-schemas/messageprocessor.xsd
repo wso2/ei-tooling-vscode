@@ -15,11 +15,9 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="misc/common.xsd"/>
+    <xs:include schemaLocation="misc/common.xsd" />
 
     <xs:element name="messageProcessor" type="MessageProcessor">
         <xs:annotation>
@@ -36,12 +34,12 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="class" type="xs:string" use="required"/>
-        <xs:attribute name="messageStore" type="xs:string" use="required"/>
-        <xs:attribute name="targetEndpoint" type="xs:string" use="optional"/>        
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="class" type="xs:string" use="required" />
+        <xs:attribute name="messageStore" type="xs:string" use="required" />
+        <xs:attribute name="targetEndpoint" type="xs:string" use="optional" />
     </xs:complexType>
 
 </xs:schema>

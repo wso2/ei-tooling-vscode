@@ -17,12 +17,9 @@
   ~  specific language governing permissions and limitations
   ~  under the License.
   -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
-
-    <xs:include schemaLocation="misc/common.xsd"/>
+    <xs:include schemaLocation="misc/common.xsd" />
 
     <xs:element name="endpoint" type="NamedEndpoint">
         <xs:annotation>
@@ -35,7 +32,7 @@
     <xs:complexType name="NamedEndpoint">
         <xs:complexContent>
             <xs:extension base="Endpoint">
-                <xs:attribute name="name" type="xs:string" use="optional"/>
+                <xs:attribute name="name" type="xs:string" use="optional" />
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -48,9 +45,9 @@
         </xs:annotation>
         <xs:sequence>
             <xs:choice>
-                <xs:group ref="leafEndpoints" minOccurs="0" maxOccurs="1"/>
-                <xs:group ref="aggregatedEndpoints" minOccurs="0" maxOccurs="1"/>
-                <xs:group ref="otherEndpoints" minOccurs="0" maxOccurs="1"/>
+                <xs:group ref="leafEndpoints" minOccurs="0" maxOccurs="1" />
+                <xs:group ref="aggregatedEndpoints" minOccurs="0" maxOccurs="1" />
+                <xs:group ref="otherEndpoints" minOccurs="0" maxOccurs="1" />
             </xs:choice>
             <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
@@ -59,9 +56,9 @@
                             <xs:attribute name="scope" use="optional">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
-                                        <xs:enumeration value="transport"/>
-                                        <xs:enumeration value="axis2"/>
-                                        <xs:enumeration value="axis2-client"/>
+                                        <xs:enumeration value="transport" />
+                                        <xs:enumeration value="axis2" />
+                                        <xs:enumeration value="axis2-client" />
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:attribute>
@@ -71,18 +68,18 @@
             </xs:element>
             <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                    <xs:attribute name="name" type="xs:string" use="required"/>
-                    <xs:attribute name="value" type="xs:anyType" use="required"/>
+                    <xs:attribute name="name" type="xs:string" use="required" />
+                    <xs:attribute name="value" type="xs:string" use="required" />
                 </xs:complexType>
             </xs:element>
-            <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
-        <xs:attribute name="key" type="xs:string" use="optional"/>
+        <xs:attribute name="key" type="xs:string" use="optional" />
 
         <!--key-expression-->
 
-        <xs:attribute name="template" type="xs:string" use="optional"/>
-        <xs:attribute name="uri" type="xs:string" use="optional"/>
+        <xs:attribute name="template" type="xs:string" use="optional" />
+        <xs:attribute name="uri" type="xs:string" use="optional" />
     </xs:complexType>
 
     <!--done-->
@@ -93,7 +90,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:choice>
-            <xs:element name="default" type="DefaultEndpoint"/>
+            <xs:element name="default" type="DefaultEndpoint" />
 
             <xs:element name="http">
                 <xs:annotation>
@@ -103,10 +100,10 @@
                 </xs:annotation>
                 <xs:complexType>
                     <xs:choice maxOccurs="3">
-                        
-                        <xs:group ref="QoS" minOccurs="0" maxOccurs="1"/>
-                        <xs:group ref="commonEndpointTags" minOccurs="0" maxOccurs="1"/>
-                        
+
+                        <xs:group ref="QoS" minOccurs="0" maxOccurs="1" />
+                        <xs:group ref="commonEndpointTags" minOccurs="0" maxOccurs="1" />
+
                         <xs:element name="authentication" minOccurs="0" maxOccurs="1">
                             <xs:complexType>
                                 <xs:choice>
@@ -115,12 +112,12 @@
                                             <xs:choice>
                                                 <xs:element name="authorizationCode" minOccurs="0" maxOccurs="1">
                                                     <xs:complexType>
-                                                       <xs:group ref="oauthParams" minOccurs="1" maxOccurs="1"/>
+                                                        <xs:group ref="oauthParams" minOccurs="1" maxOccurs="1" />
                                                     </xs:complexType>
                                                 </xs:element>
-                                                 <xs:element name="clientCredentials" minOccurs="0" maxOccurs="1">
+                                                <xs:element name="clientCredentials" minOccurs="0" maxOccurs="1">
                                                     <xs:complexType>
-                                                        <xs:group ref="oauthParams" minOccurs="1" maxOccurs="1"/>
+                                                        <xs:group ref="oauthParams" minOccurs="1" maxOccurs="1" />
                                                     </xs:complexType>
                                                 </xs:element>
                                             </xs:choice>
@@ -129,8 +126,8 @@
                                     <xs:element name="basicAuth" minOccurs="0" maxOccurs="1">
                                         <xs:complexType>
                                             <xs:sequence>
-                                                <xs:element name="username" type="xs:string" minOccurs="1" maxOccurs="1"/>
-                                                <xs:element name="password" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                                                <xs:element name="username" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                                <xs:element name="password" type="xs:string" minOccurs="1" maxOccurs="1" />
                                             </xs:sequence>
                                         </xs:complexType>
                                     </xs:element>
@@ -138,21 +135,21 @@
                             </xs:complexType>
                         </xs:element>
                     </xs:choice>
-                    <xs:attribute name="uri-template" type="xs:string" use="optional"/>
+                    <xs:attribute name="uri-template" type="xs:string" use="optional" />
                     <xs:attribute name="method">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
-                                <xs:enumeration value="get"/>
-                                <xs:enumeration value="post"/>
-                                <xs:enumeration value="patch"/>
-                                <xs:enumeration value="delete"/>
-                                <xs:enumeration value="put"/>
-                                <xs:enumeration value="options"/>
-                                <xs:enumeration value="head"/>
+                                <xs:enumeration value="get" />
+                                <xs:enumeration value="post" />
+                                <xs:enumeration value="patch" />
+                                <xs:enumeration value="delete" />
+                                <xs:enumeration value="put" />
+                                <xs:enumeration value="options" />
+                                <xs:enumeration value="head" />
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>
-                    <xs:attributeGroup ref="monitoringAspect"/>
+                    <xs:attributeGroup ref="monitoringAspect" />
                 </xs:complexType>
             </xs:element>
 
@@ -160,12 +157,12 @@
                 <xs:complexType>
                     <xs:complexContent>
                         <xs:extension base="DefaultEndpoint">
-                            <xs:attribute name="uri" type="xs:anyURI" use="required"/>
+                            <xs:attribute name="uri" type="xs:anyURI" use="required" />
                         </xs:extension>
                     </xs:complexContent>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="wsdl" type="WSDLEndpoint"/>
+            <xs:element name="wsdl" type="WSDLEndpoint" />
         </xs:choice>
     </xs:group>
 
@@ -176,8 +173,8 @@
             </xs:documentation>
         </xs:annotation>
         <xs:choice>
-            <xs:group ref="lbEndpoints" minOccurs="1" maxOccurs="1"/>
-            <xs:group ref="failoverEndpoints" minOccurs="1" maxOccurs="1"/>
+            <xs:group ref="lbEndpoints" minOccurs="1" maxOccurs="1" />
+            <xs:group ref="failoverEndpoints" minOccurs="1" maxOccurs="1" />
         </xs:choice>
     </xs:group>
 
@@ -204,40 +201,38 @@
                         <xs:element name="endpoint" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:choice>
-                                    <xs:group ref="leafEndpoints" minOccurs="0" maxOccurs="1"/>
-                                    <xs:group ref="aggregatedEndpoints" minOccurs="0" maxOccurs="1"/>
+                                    <xs:group ref="leafEndpoints" minOccurs="0" maxOccurs="1" />
+                                    <xs:group ref="aggregatedEndpoints" minOccurs="0" maxOccurs="1" />
                                 </xs:choice>
-                                <xs:attribute name="name" type="xs:string" use="optional"/>
-                                <xs:attribute name="key" type="xs:string" use="optional"/>
+                                <xs:attribute name="name" type="xs:string" use="optional" />
+                                <xs:attribute name="key" type="xs:string" use="optional" />
                             </xs:complexType>
                         </xs:element>
                         <xs:element name="member" minOccurs="2" maxOccurs="unbounded">
                             <xs:complexType>
-                                <xs:attribute name="hostName" type="xs:string" use="required"/>
-                                <xs:attribute name="httpPort" type="xs:string" use="optional"/>
-                                <xs:attribute name="httpsPort" type="xs:string" use="optional"/>
+                                <xs:attribute name="hostName" type="xs:string" use="required" />
+                                <xs:attribute name="httpPort" type="xs:string" use="optional" />
+                                <xs:attribute name="httpsPort" type="xs:string" use="optional" />
                             </xs:complexType>
                         </xs:element>
                     </xs:choice>
-                    <xs:attribute name="algorithm" type="xs:string"
-                                  default="org.apache.synapse.endpoints.algorithms.LoadbalanceAlgorithm"
-                                  use="optional"/>
-                    <xs:attribute name="failover" type="xs:boolean" default="true" use="optional"/>
-                    <xs:attribute name="policy" type="xs:string" use="optional"/>
-                    <xs:attribute name="buildMessage" type="xs:boolean" use="optional"/>
+                    <xs:attribute name="algorithm" type="xs:string" default="org.apache.synapse.endpoints.algorithms.LoadbalanceAlgorithm" use="optional" />
+                    <xs:attribute name="failover" type="xs:boolean" default="true" use="optional" />
+                    <xs:attribute name="policy" type="xs:string" use="optional" />
+                    <xs:attribute name="buildMessage" type="xs:boolean" use="optional" />
                 </xs:complexType>
             </xs:element>
             <xs:element name="session" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="sessionTimeout" type="xs:long" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="sessionTimeout" type="xs:long" minOccurs="0" maxOccurs="1" />
                     </xs:sequence>
                     <xs:attribute name="type" use="optional" default="http">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
-                                <xs:enumeration value="simpleClientSession"/>
-                                <xs:enumeration value="http"/>
-                                <xs:enumeration value="soap"/>
+                                <xs:enumeration value="simpleClientSession" />
+                                <xs:enumeration value="http" />
+                                <xs:enumeration value="soap" />
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>
@@ -260,16 +255,16 @@
                         <xs:element name="endpoint" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:choice>
-                                    <xs:group ref="leafEndpoints" minOccurs="0" maxOccurs="1"/>
-                                    <xs:group ref="lbEndpoints" minOccurs="0" maxOccurs="1"/>
+                                    <xs:group ref="leafEndpoints" minOccurs="0" maxOccurs="1" />
+                                    <xs:group ref="lbEndpoints" minOccurs="0" maxOccurs="1" />
                                 </xs:choice>
-                                <xs:attribute name="name" type="xs:string" use="optional"/>
-                                <xs:attribute name="key" type="xs:string" use="optional"/>
+                                <xs:attribute name="name" type="xs:string" use="optional" />
+                                <xs:attribute name="key" type="xs:string" use="optional" />
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
-                    <xs:attribute name="dynamic" type="xs:boolean" use="optional"/>
-                    <xs:attribute name="buildMessage" type="xs:boolean" use="optional"/>
+                    <xs:attribute name="dynamic" type="xs:boolean" use="optional" />
+                    <xs:attribute name="buildMessage" type="xs:boolean" use="optional" />
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
@@ -291,20 +286,18 @@
                                 <xs:sequence>
                                     <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
                                         <xs:complexType>
-                                            <xs:attribute name="name" type="xs:string" use="required"/>
-                                            <xs:attribute name="value" type="xs:string" use="required"/>
+                                            <xs:attribute name="name" type="xs:string" use="required" />
+                                            <xs:attribute name="value" type="xs:string" use="required" />
                                         </xs:complexType>
                                     </xs:element>
                                 </xs:sequence>
-                                <xs:attribute name="class" type="xs:string" use="optional"
-                                              default="org.apache.synapse.core.axis2.Axis2LoadBalanceMembershipHandler"/>
+                                <xs:attribute name="class" type="xs:string" use="optional" default="org.apache.synapse.core.axis2.Axis2LoadBalanceMembershipHandler" />
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
-                    <xs:attribute name="algorithm" type="xs:string" use="optional"
-                                  default="org.apache.synapse.endpoints.algorithms.RoundRobin"/>
-                    <xs:attribute name="failover" type="xs:boolean" use="optional" default="true"/>
-                    <xs:attribute name="policy" type="xs:string" use="optional" default="roundRobin"/>
+                    <xs:attribute name="algorithm" type="xs:string" use="optional" default="org.apache.synapse.endpoints.algorithms.RoundRobin" />
+                    <xs:attribute name="failover" type="xs:boolean" use="optional" default="true" />
+                    <xs:attribute name="policy" type="xs:string" use="optional" default="roundRobin" />
                 </xs:complexType>
             </xs:element>
         </xs:all>
@@ -323,11 +316,11 @@
                         <xs:element name="endpoint" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:choice minOccurs="1">
-                                    <xs:group ref="leafEndpoints" minOccurs="0" maxOccurs="1"/>
-                                    <xs:group ref="aggregatedEndpoints" minOccurs="0" maxOccurs="1"/>
+                                    <xs:group ref="leafEndpoints" minOccurs="0" maxOccurs="1" />
+                                    <xs:group ref="aggregatedEndpoints" minOccurs="0" maxOccurs="1" />
                                 </xs:choice>
-                                <xs:attribute name="name" type="xs:string" use="optional"/>
-                                <xs:attribute name="key" type="xs:string" use="optional"/>
+                                <xs:attribute name="name" type="xs:string" use="optional" />
+                                <xs:attribute name="key" type="xs:string" use="optional" />
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
@@ -344,10 +337,10 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:group ref="QoS" minOccurs="0" maxOccurs="1"/>
-            <xs:group ref="commonEndpointTags" minOccurs="0" maxOccurs="1"/>
+            <xs:group ref="QoS" minOccurs="0" maxOccurs="1" />
+            <xs:group ref="commonEndpointTags" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
-        <xs:attributeGroup ref="commonEndpoint"/>
+        <xs:attributeGroup ref="commonEndpoint" />
     </xs:complexType>
 
     <!--done-->
@@ -358,14 +351,14 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:group ref="inlineWsdl" minOccurs="0" maxOccurs="1"/>
-            <xs:group ref="QoS" minOccurs="0" maxOccurs="1"/>
-            <xs:group ref="commonEndpointTags" minOccurs="0" maxOccurs="1"/>
+            <xs:group ref="inlineWsdl" minOccurs="0" maxOccurs="1" />
+            <xs:group ref="QoS" minOccurs="0" maxOccurs="1" />
+            <xs:group ref="commonEndpointTags" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
-        <xs:attributeGroup ref="commonEndpoint"/>
-        <xs:attribute name="uri" type="xs:anyURI" use="required"/>
-        <xs:attribute name="service" type="xs:string" use="required"/>
-        <xs:attribute name="port" type="xs:string" use="required"/>
+        <xs:attributeGroup ref="commonEndpoint" />
+        <xs:attribute name="uri" type="xs:anyURI" use="required" />
+        <xs:attribute name="service" type="xs:string" use="required" />
+        <xs:attribute name="port" type="xs:string" use="required" />
     </xs:complexType>
 
     <!--done-->
@@ -378,52 +371,52 @@
         <xs:attribute name="format" use="optional">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
-                    <xs:enumeration value="soap11"/>
-                    <xs:enumeration value="soap12"/>
-                    <xs:enumeration value="pox"/>
-                    <xs:enumeration value="get"/>
+                    <xs:enumeration value="soap11" />
+                    <xs:enumeration value="soap12" />
+                    <xs:enumeration value="pox" />
+                    <xs:enumeration value="get" />
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
         <xs:attribute name="optimize" use="optional">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
-                    <xs:enumeration value="mtom"/>
-                    <xs:enumeration value="swa"/>
+                    <xs:enumeration value="mtom" />
+                    <xs:enumeration value="swa" />
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="encoding" type="xs:string" use="optional"/>
-        <xs:attributeGroup ref="monitoringAspect"/>
+        <xs:attribute name="encoding" type="xs:string" use="optional" />
+        <xs:attributeGroup ref="monitoringAspect" />
     </xs:attributeGroup>
 
     <!--done-->
     <xs:group name="commonEndpointTags">
         <xs:sequence>
             <xs:element name="timeout" minOccurs="0" maxOccurs="1">
-                <xs:complexType  mixed="true">
+                <xs:complexType mixed="true">
                     <xs:all>
-                        <xs:element name="duration" minOccurs="0" maxOccurs="1" type="xs:string"/>
-                        <xs:element name="responseAction" type="xs:string" minOccurs="0" maxOccurs="1" default="discard"/>
+                        <xs:element name="duration" minOccurs="0" maxOccurs="1" type="xs:string" />
+                        <xs:element name="responseAction" type="xs:string" minOccurs="0" maxOccurs="1" default="discard" />
                     </xs:all>
                 </xs:complexType>
             </xs:element>
-             <xs:element name="suspendOnFailure" minOccurs="0" maxOccurs="1">
+            <xs:element name="suspendOnFailure" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:all>
-                        <xs:element name="errorCodes" minOccurs="0" maxOccurs="1" type="xs:string"/>
-                        <xs:element name="initialDuration" minOccurs="0" maxOccurs="1" type="xs:string"/>
-                        <xs:element name="progressionFactor" minOccurs="0" maxOccurs="1" type="xs:string"/>
-                        <xs:element name="maximumDuration" minOccurs="0" maxOccurs="1" type="xs:sting"/>
+                        <xs:element name="errorCodes" minOccurs="0" maxOccurs="1" type="xs:string" />
+                        <xs:element name="initialDuration" minOccurs="0" maxOccurs="1" type="xs:string" />
+                        <xs:element name="progressionFactor" minOccurs="0" maxOccurs="1" type="xs:string" />
+                        <xs:element name="maximumDuration" minOccurs="0" maxOccurs="1" type="xs:string" />
                     </xs:all>
                 </xs:complexType>
             </xs:element>
             <xs:element name="markForSuspension" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:all>
-                        <xs:element name="errorCodes" minOccurs="0" maxOccurs="1" type="xs:string"/>
-                        <xs:element name="retriesBeforeSuspension" minOccurs="0" maxOccurs="1" type="xs:string"/>
-                        <xs:element name="retryDelay" minOccurs="0" maxOccurs="1" type="xs:string"/>
+                        <xs:element name="errorCodes" minOccurs="0" maxOccurs="1" type="xs:string" />
+                        <xs:element name="retriesBeforeSuspension" minOccurs="0" maxOccurs="1" type="xs:string" />
+                        <xs:element name="retryDelay" minOccurs="0" maxOccurs="1" type="xs:string" />
                     </xs:all>
                 </xs:complexType>
             </xs:element>
@@ -432,10 +425,10 @@
 
     <xs:group name="oauthParams">
         <xs:sequence>
-            <xs:element name="clientId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="clientSecret" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="refreshToken" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="tokenUrl" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="clientId" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="clientSecret" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="refreshToken" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="tokenUrl" type="xs:string" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:group>
 
@@ -443,12 +436,12 @@
         <xs:sequence>
             <xs:element name="enableSec" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
-                    <xs:attribute name="policy" type="xs:string" use="optional"/>
+                    <xs:attribute name="policy" type="xs:string" use="optional" />
                 </xs:complexType>
             </xs:element>
             <xs:element name="enableRM" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
-                    <xs:attribute name="policy" type="xs:string" use="required"/>
+                    <xs:attribute name="policy" type="xs:string" use="required" />
                 </xs:complexType>
             </xs:element>
             <xs:element name="enableAddressing" minOccurs="0" maxOccurs="1">
@@ -456,13 +449,13 @@
                     <xs:attribute name="version" use="optional">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
-                                <xs:enumeration value="final"/>   
-                                <xs:enumeration value="discard"/>
-                                <xs:enumeration value="fault"/>
+                                <xs:enumeration value="final" />
+                                <xs:enumeration value="discard" />
+                                <xs:enumeration value="fault" />
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>
-                    <xs:attribute name="separateListener" type="xs:boolean" use="optional"/>
+                    <xs:attribute name="separateListener" type="xs:boolean" use="optional" />
                 </xs:complexType>
             </xs:element>
         </xs:sequence>

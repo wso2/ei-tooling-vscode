@@ -15,9 +15,7 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:element name="datamapper">
         <xs:annotation>
@@ -26,24 +24,24 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
-            <xs:attribute name="config" type="xs:string" use="required"/>
-            <xs:attribute name="inputSchema" type="xs:string" use="required"/>
-            <xs:attribute name="outputSchema" type="xs:string" use="required"/>
-            <xs:attribute name="inputType" type="SchemaType" use="required"/>
-            <xs:attribute name="outputType" type="SchemaType" use="required"/>
-            <xs:attribute name="xsltStyleSheet" type="xs:string" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="config" type="xs:string" use="required" />
+            <xs:attribute name="inputSchema" type="xs:string" use="required" />
+            <xs:attribute name="outputSchema" type="xs:string" use="required" />
+            <xs:attribute name="inputType" type="SchemaType" use="required" />
+            <xs:attribute name="outputType" type="SchemaType" use="required" />
+            <xs:attribute name="xsltStyleSheet" type="xs:string" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 
     <xs:simpleType name="SchemaType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="XML"/>
-            <xs:enumeration value="JSON"/>
-            <xs:enumeration value="CSV"/>
-            <xs:enumeration value="XSD"/>
-            <xs:enumeration value="JSONSCHEMA"/>
-            <xs:enumeration value="CONNECTOR"/>
+            <xs:enumeration value="XML" />
+            <xs:enumeration value="JSON" />
+            <xs:enumeration value="CSV" />
+            <xs:enumeration value="XSD" />
+            <xs:enumeration value="JSONSCHEMA" />
+            <xs:enumeration value="CONNECTOR" />
         </xs:restriction>
     </xs:simpleType>
 

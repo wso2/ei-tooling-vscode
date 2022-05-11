@@ -18,11 +18,9 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../misc/common.xsd"/>
+    <xs:include schemaLocation="../../misc/common.xsd" />
 
     <xs:element name="xquery">
         <xs:annotation>
@@ -34,34 +32,34 @@
             <xs:sequence>
                 <xs:element name="variable" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
-                        <xs:attribute name="name" type="xs:string" use="required"/>
+                        <xs:attribute name="name" type="xs:string" use="required" />
                         <xs:attribute name="type" use="required">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
-                                    <xs:enumeration value="STRING"/>
-                                    <xs:enumeration value="DOUBLE"/>
-                                    <xs:enumeration value="INT"/>
-                                    <xs:enumeration value="INTEGER"/>
-                                    <xs:enumeration value="BOOLEAN"/>
-                                    <xs:enumeration value="BYTE"/>
-                                    <xs:enumeration value="LONG"/>
-                                    <xs:enumeration value="SHORT"/>
-                                    <xs:enumeration value="FLOAT"/>
-                                    <xs:enumeration value="DOCUMENT"/>
-                                    <xs:enumeration value="DOCUMENT_ELEMENT"/>
-                                    <xs:enumeration value="ELEMENT"/>
+                                    <xs:enumeration value="STRING" />
+                                    <xs:enumeration value="DOUBLE" />
+                                    <xs:enumeration value="INT" />
+                                    <xs:enumeration value="INTEGER" />
+                                    <xs:enumeration value="BOOLEAN" />
+                                    <xs:enumeration value="BYTE" />
+                                    <xs:enumeration value="LONG" />
+                                    <xs:enumeration value="SHORT" />
+                                    <xs:enumeration value="FLOAT" />
+                                    <xs:enumeration value="DOCUMENT" />
+                                    <xs:enumeration value="DOCUMENT_ELEMENT" />
+                                    <xs:enumeration value="ELEMENT" />
                                 </xs:restriction>
                             </xs:simpleType>
                         </xs:attribute>
-                        <xs:attribute name="expression" type="xs:string" use="optional"/>
-                        <xs:attribute name="value" type="xs:string" use="optional"/>
-                        <xs:attribute name="key" type="xs:string" use="optional"/>
+                        <xs:attribute name="expression" type="xs:string" use="optional" />
+                        <xs:attribute name="value" type="xs:string" use="optional" />
+                        <xs:attribute name="key" type="xs:string" use="optional" />
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
-            <xs:attribute name="key" use="required" type="xs:string"/>
-            <xs:attribute name="target" use="optional" type="xs:string"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="key" use="required" type="xs:string" />
+            <xs:attribute name="target" use="optional" type="xs:string" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

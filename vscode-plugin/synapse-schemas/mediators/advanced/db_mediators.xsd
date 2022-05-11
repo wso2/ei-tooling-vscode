@@ -18,11 +18,9 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../misc/common.xsd"/>
+    <xs:include schemaLocation="../../misc/common.xsd" />
 
     <xs:element name="dblookup" type="db-mediator">
         <xs:annotation>
@@ -50,33 +48,33 @@
                         <xs:element name="pool" minOccurs="1" maxOccurs="1">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="dsName" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
-                                    <xs:element name="icClass" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
-                                    <xs:element name="driver" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
-                                    <xs:element name="url" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
-                                    <xs:element name="user" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
-                                    <xs:element name="password" type="keyAttribute" minOccurs="0" maxOccurs="1"/>
+                                    <xs:element name="dsName" type="keyAttribute" minOccurs="0" maxOccurs="1" />
+                                    <xs:element name="icClass" type="keyAttribute" minOccurs="0" maxOccurs="1" />
+                                    <xs:element name="driver" type="keyAttribute" minOccurs="0" maxOccurs="1" />
+                                    <xs:element name="url" type="keyAttribute" minOccurs="0" maxOccurs="1" />
+                                    <xs:element name="user" type="keyAttribute" minOccurs="0" maxOccurs="1" />
+                                    <xs:element name="password" type="keyAttribute" minOccurs="0" maxOccurs="1" />
                                     <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
                                         <xs:complexType>
                                             <xs:attribute name="name" use="required">
                                                 <xs:simpleType>
                                                     <xs:restriction base="xs:string">
-                                                        <xs:enumeration value="autocommit"/>
-                                                        <xs:enumeration value="isolation"/>
-                                                        <xs:enumeration value="initialsize"/>
-                                                        <xs:enumeration value="maxactive"/>
-                                                        <xs:enumeration value="maxidle"/>
-                                                        <xs:enumeration value="maxopenstatements"/>
-                                                        <xs:enumeration value="maxwait"/>
-                                                        <xs:enumeration value="minidle"/>
-                                                        <xs:enumeration value="poolstatements"/>
-                                                        <xs:enumeration value="testonborrow"/>
-                                                        <xs:enumeration value="testwhileidle"/>
-                                                        <xs:enumeration value="validationquery"/>
+                                                        <xs:enumeration value="autocommit" />
+                                                        <xs:enumeration value="isolation" />
+                                                        <xs:enumeration value="initialsize" />
+                                                        <xs:enumeration value="maxactive" />
+                                                        <xs:enumeration value="maxidle" />
+                                                        <xs:enumeration value="maxopenstatements" />
+                                                        <xs:enumeration value="maxwait" />
+                                                        <xs:enumeration value="minidle" />
+                                                        <xs:enumeration value="poolstatements" />
+                                                        <xs:enumeration value="testonborrow" />
+                                                        <xs:enumeration value="testwhileidle" />
+                                                        <xs:enumeration value="validationquery" />
                                                     </xs:restriction>
                                                 </xs:simpleType>
                                             </xs:attribute>
-                                            <xs:attribute name="value" type="xs:string" use="required"/>
+                                            <xs:attribute name="value" type="xs:string" use="required" />
                                         </xs:complexType>
                                     </xs:element>
                                 </xs:sequence>
@@ -88,29 +86,29 @@
             <xs:element name="statement" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="sql" minOccurs="1" maxOccurs="1" type="xs:string"/>
+                        <xs:element name="sql" minOccurs="1" maxOccurs="1" type="xs:string" />
                         <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
-                                <xs:attributeGroup ref="valueOrExpression"/>
+                                <xs:attributeGroup ref="valueOrExpression" />
                                 <xs:attribute name="type" use="required">
                                     <xs:simpleType>
                                         <xs:restriction base="xs:string">
-                                            <xs:enumeration value="CHAR"/>
-                                            <xs:enumeration value="VARCHAR"/>
-                                            <xs:enumeration value="LONGVARCHAR"/>
-                                            <xs:enumeration value="NUMERIC"/>
-                                            <xs:enumeration value="DECIMAL"/>
-                                            <xs:enumeration value="BIT"/>
-                                            <xs:enumeration value="TINYINT"/>
-                                            <xs:enumeration value="SMALLINT"/>
-                                            <xs:enumeration value="INTEGER"/>
-                                            <xs:enumeration value="BIGINT"/>
-                                            <xs:enumeration value="REAL"/>
-                                            <xs:enumeration value="FLOAT"/>
-                                            <xs:enumeration value="DOUBLE"/>
-                                            <xs:enumeration value="DATE"/>
-                                            <xs:enumeration value="TIME"/>
-                                            <xs:enumeration value="TIMESTAMP"/>
+                                            <xs:enumeration value="CHAR" />
+                                            <xs:enumeration value="VARCHAR" />
+                                            <xs:enumeration value="LONGVARCHAR" />
+                                            <xs:enumeration value="NUMERIC" />
+                                            <xs:enumeration value="DECIMAL" />
+                                            <xs:enumeration value="BIT" />
+                                            <xs:enumeration value="TINYINT" />
+                                            <xs:enumeration value="SMALLINT" />
+                                            <xs:enumeration value="INTEGER" />
+                                            <xs:enumeration value="BIGINT" />
+                                            <xs:enumeration value="REAL" />
+                                            <xs:enumeration value="FLOAT" />
+                                            <xs:enumeration value="DOUBLE" />
+                                            <xs:enumeration value="DATE" />
+                                            <xs:enumeration value="TIME" />
+                                            <xs:enumeration value="TIMESTAMP" />
                                         </xs:restriction>
                                     </xs:simpleType>
                                 </xs:attribute>
@@ -118,19 +116,19 @@
                         </xs:element>
                         <xs:element name="result" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
-                                <xs:attribute name="name" type="xs:string" use="required"/>
-                                <xs:attribute name="column" type="xs:string" use="required"/>
+                                <xs:attribute name="name" type="xs:string" use="required" />
+                                <xs:attribute name="column" type="xs:string" use="required" />
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
-        <xs:attribute name="useTransaction" type="xs:boolean" use="optional"/>
-        <xs:attribute name="description" type="xs:string" use="optional"/>
+        <xs:attribute name="useTransaction" type="xs:boolean" use="optional" />
+        <xs:attribute name="description" type="xs:string" use="optional" />
     </xs:complexType>
     <xs:complexType name="keyAttribute" mixed="true">
-        <xs:attribute name="key" type="xs:string" use="optional"/>
+        <xs:attribute name="key" type="xs:string" use="optional" />
     </xs:complexType>
 
 </xs:schema>

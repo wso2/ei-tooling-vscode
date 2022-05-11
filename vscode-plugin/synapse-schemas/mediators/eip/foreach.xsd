@@ -15,11 +15,9 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../mediators.xsd"/>
+    <xs:include schemaLocation="../mediators.xsd" />
 
     <xs:element name="foreach">
         <xs:annotation>
@@ -32,14 +30,14 @@
             <xs:sequence>
                 <xs:element name="sequence" minOccurs="0" maxOccurs="1">
                     <xs:complexType>
-                        <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded"/>
+                        <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded" />
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
-            <xs:attribute name="expression" type="xs:string" use="required"/>
-            <xs:attribute name="sequence" type="xs:string" use="optional"/>
-            <xs:attribute name="id" type="xs:string" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="expression" type="xs:string" use="required" />
+            <xs:attribute name="sequence" type="xs:string" use="optional" />
+            <xs:attribute name="id" type="xs:string" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

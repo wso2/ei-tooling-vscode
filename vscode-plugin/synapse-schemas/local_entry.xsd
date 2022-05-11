@@ -18,9 +18,7 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:element name="localEntry" type="LocalEntry">
         <xs:annotation>
@@ -39,10 +37,10 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:any minOccurs="0" maxOccurs="1" processContents="skip"/>
+            <xs:any minOccurs="0" maxOccurs="1" processContents="skip" />
         </xs:sequence>
-        <xs:attribute name="key" type="xs:string" use="required"/>
-        <xs:attribute name="src" type="xs:anyURI" use="optional"/>
+        <xs:attribute name="key" type="xs:string" use="required" />
+        <xs:attribute name="src" type="xs:anyURI" use="optional" />
     </xs:complexType>
 
 </xs:schema>

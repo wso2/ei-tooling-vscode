@@ -15,9 +15,7 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:element name="oauthService">
         <xs:annotation>
@@ -27,10 +25,10 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
-            <xs:attribute name="remoteServiceUrl" type="xs:string" use="required"/>
-            <xs:attribute name="username" type="xs:string" use="required"/>
-            <xs:attribute name="password" type="xs:string" use="required"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="remoteServiceUrl" type="xs:string" use="required" />
+            <xs:attribute name="username" type="xs:string" use="required" />
+            <xs:attribute name="password" type="xs:string" use="required" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

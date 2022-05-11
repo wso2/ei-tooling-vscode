@@ -18,11 +18,9 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../misc/common.xsd"/>
+    <xs:include schemaLocation="../../misc/common.xsd" />
 
     <xs:element name="header">
         <xs:annotation>
@@ -32,20 +30,20 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:any minOccurs="0" maxOccurs="1" processContents="skip"/>
+                <xs:any minOccurs="0" maxOccurs="1" processContents="skip" />
             </xs:sequence>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attributeGroup ref="valueOrExpression"/>
-            <xs:attribute name="action" type="setRemove" use="optional"/>
+            <xs:attribute name="name" type="xs:string" use="required" />
+            <xs:attributeGroup ref="valueOrExpression" />
+            <xs:attribute name="action" type="setRemove" use="optional" />
             <xs:attribute name="scope" use="optional" default="default">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
-                        <xs:enumeration value="default"/>
-                        <xs:enumeration value="transport"/>
+                        <xs:enumeration value="default" />
+                        <xs:enumeration value="transport" />
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

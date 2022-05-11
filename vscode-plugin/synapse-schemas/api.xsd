@@ -15,12 +15,10 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="misc/common.xsd"/>
-    <xs:include schemaLocation="misc/resource.xsd"/>
+    <xs:include schemaLocation="misc/common.xsd" />
+    <xs:include schemaLocation="misc/resource.xsd" />
 
     <xs:element name="api" type="API">
         <xs:annotation>
@@ -37,7 +35,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="resource" type="APIResource" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="resource" type="APIResource" minOccurs="1" maxOccurs="unbounded" />
             <xs:element name="handlers" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
@@ -58,22 +56,22 @@
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
-        <xs:attributeGroup ref="monitoringAspect"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="context" type="xs:string" use="required"/>
-        <xs:attribute name="hostname" type="xs:string" use="optional"/>
-        <xs:attribute name="port" type="xs:string" use="optional"/>
-        <xs:attribute name="version" type="xs:string" use="optional"/>
+        <xs:attributeGroup ref="monitoringAspect" />
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="context" type="xs:string" use="required" />
+        <xs:attribute name="hostname" type="xs:string" use="optional" />
+        <xs:attribute name="port" type="xs:string" use="optional" />
+        <xs:attribute name="version" type="xs:string" use="optional" />
         <xs:attribute name="version-type" use="optional">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
-                    <xs:enumeration value="context"/>
-                    <xs:enumeration value="url"/>
+                    <xs:enumeration value="context" />
+                    <xs:enumeration value="url" />
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="publishSwagger" type="xs:string" use="optional"/>
-        <xs:attribute name="description" type="xs:string" use="optional"/>
+        <xs:attribute name="publishSwagger" type="xs:string" use="optional" />
+        <xs:attribute name="description" type="xs:string" use="optional" />
     </xs:complexType>
 
 </xs:schema>
