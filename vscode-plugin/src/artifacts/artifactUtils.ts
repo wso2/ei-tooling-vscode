@@ -44,6 +44,25 @@ export class ProjectNatures {
     static readonly MEDIATOR_PROJECT: string = "org.wso2.developerstudio.eclipse.artifact.mediator.project.nature";
 }
 
+export class ESBArtifactPath {
+    static readonly SRC: string = "src";
+    static readonly MAIN: string = "main";
+    static readonly SYNAPSE_CONFIG: string = "synapse-config";
+    static readonly RESOURECS: string = "resources";
+    static readonly METADATA: string = "metadata";
+    static readonly SWAGGER: string = "swagger";
+}
+
+export class Common {
+    static readonly TEMPLATES :string = 'templates';
+    static readonly VERSION :string = "1.0.0";
+    static readonly POM_FILE :string = "pom.xml";
+    static readonly ARTIFACT_FILE :string = "artifact.xml";
+    static readonly PROJECT_FILE :string = ".project";
+    static readonly POM:string = "pom";
+    static readonly CONF :string = "Conf";    
+}
+
 export class MetadataInfo {
     static readonly SYNAPSE_MEATADATA_TYPE: string = "synapse/metadata";
 }
@@ -287,7 +306,7 @@ export class RegistryResourceInfo {
     static readonly WS_POLICY_LABEL: string = "WS Policy";
 
     static mediaTypes: Map<string, string> = new Map();
-    
+
 
     static initialize() {
         this.mediaTypes.set("Sequence", "application/vnd.wso2.sequence");
@@ -315,17 +334,17 @@ export class RegistryResourceInfo {
         this.mediaTypes.set("JSONSchemaTemplate", "application/json");
         this.mediaTypes.set("WSPolicyTemplate", "application/wspolicy+xml");
 
-       
+
     }
 }
 
-export class ArtifactInfo{
+export class ArtifactInfo {
     static readonly ESB_PROMPT_MESSAGE: string = "Enter New ESB Project Name...";
     static readonly COMPOSITE_EXPORTER_PROMPT_MESSAGE: string = "Enter New Composite Expoeter Project Name...";
     static readonly REGISTRY_RESOURCES_PROMPT_MESSAGE: string = "Enter New Registry Resources Project Name...";
 
     static artifactTypes: Map<string, string> = new Map();
-    static setTypes(){
+    static setTypes() {
         this.artifactTypes.set(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.TYPE);
         this.artifactTypes.set(EndpointArtifactInfo.DESTINATION_FOLDER, EndpointArtifactInfo.TYPE);
         this.artifactTypes.set(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, ProxyArtifactInfo.TYPE);
@@ -337,11 +356,11 @@ export class ArtifactInfo{
         this.artifactTypes.set(SequenceArtifactInfo.DESTINATION_FOLDER, SequenceArtifactInfo.TYPE);
         this.artifactTypes.set(TaskArtifactInfo.DESTINATION_FOLDER, TaskArtifactInfo.TYPE);
         this.artifactTypes.set(RegistryResourceInfo.DESTINATION_FOLDER, RegistryResourceInfo.TYPE);
-    
+
     }
 
     static fileTypes: Map<string, string> = new Map();
-    static setFileTypes(){
+    static setFileTypes() {
         this.fileTypes.set("jaggery/app", "zip");
         this.fileTypes.set("synapse/priority-executor", "xml");
         this.fileTypes.set("synapse/inbound-endpoint", "xml");
@@ -379,7 +398,7 @@ export class ArtifactInfo{
         this.fileTypes.set("service/dataservice", "dbs");
         this.fileTypes.set("web/application", "war");
         this.fileTypes.set("lib/library/bundle", "jar");
-        
+
     }
 }
 
