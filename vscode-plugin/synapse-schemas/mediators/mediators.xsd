@@ -140,6 +140,7 @@
             <xs:element ref="rule" />
             <xs:element ref="bam" />
             <xs:element ref="publishEvent" />
+            <xs:any processContents="skip"/>
         </xs:choice>
     </xs:group>
 
