@@ -16,20 +16,17 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import { Uri, window, workspace, WorkspaceEdit } from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import {
-    LocalEntryArtifactInfo, ServerRoleInfo, SubDirectories, ProjectNatures, APIArtifactInfo, ProxyArtifactInfo,
-    ArtifactInfo, RegistryResourceInfo, EndpointArtifactInfo, InboundEndpointArtifactInfo, MessageProcessorArtifactInfo,
-    MessageStoreArtifactInfo, SequenceArtifactInfo, TaskArtifactInfo, TemplateArtifactInfo, MetadataInfo,
-    ESBArtifactPath, Common
-} from "./artifactUtils";
-import { XMLSerializer as XMLSerializer } from 'xmldom';
-import { RegistryResource } from "./artifactResolver";
+import { Uri, window, workspace, WorkspaceEdit } from "vscode";
+import { XMLSerializer } from 'xmldom';
+import { TerminalModule } from "../logging/TerminalModule";
 import { Utils } from "../utils/Utils";
-
-
+import { RegistryResource } from "./artifactResolver";
+import {
+    APIArtifactInfo, ArtifactInfo, Common, EndpointArtifactInfo, ESBArtifactPath, InboundEndpointArtifactInfo, LocalEntryArtifactInfo, MessageProcessorArtifactInfo,
+    MessageStoreArtifactInfo, MetadataInfo, ProjectNatures, ProxyArtifactInfo, RegistryResourceInfo, SequenceArtifactInfo, ServerRoleInfo, SubDirectories, TaskArtifactInfo, TemplateArtifactInfo
+} from "./artifactUtils";
 
 let DOM = require('xmldom').DOMParser;
 let glob = require("glob");
@@ -52,6 +49,8 @@ export namespace ArtifactModule {
     const POM_FILE = Common.POM_FILE;
     const ARTIFACT_FILE = Common.ARTIFACT_FILE;
     const PROJECT_FILE = Common.PROJECT_FILE;
+    const MODULE = Common.MODULE;
+    const MODULES = Common.MODULES;
 
     /**
      * Create new config artifact in ESB Configs.
@@ -59,22 +58,46 @@ export namespace ArtifactModule {
     export function createArtifact(pathToTargetFolder: string | undefined, targetFolder: string, templateFileName: string,
         targetArtifactName: string, artifactType: string, type: string) {
 
-        if (workspace.workspaceFolders && (typeof pathToTargetFolder !== "undefined")) {
+        if (workspace.workspaceFolders) {
 
-            // Create target folder path where the new config artifact is going to be added in the project.
+            let targetArtifactFolderPath: string;
+            let esbConfigsDirectory: string;
             let directoryPattern: string = path.join(SRC, MAIN, SYNAPSE_CONFIG);
-            const esbConfigsDirectory: string = pathToTargetFolder.split(`${path.sep}${directoryPattern}`)[0];
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            if (typeof pathToTargetFolder === "undefined") {
+                esbConfigsDirectory = Utils.getDirectoryFromDirectoryType(SubDirectories.CONFIGS,
+                    rootDirectory).trim();
+                if (esbConfigsDirectory === "unidentified") {
+                    window.showErrorMessage("No ESB Configs project found, artifact creation aborted");
+                    return;
+                }
+                targetArtifactFolderPath = path.join(esbConfigsDirectory, SRC, MAIN, SYNAPSE_CONFIG, targetFolder);
+            }
+            else {
+                esbConfigsDirectory = pathToTargetFolder.split(`${path.sep}${directoryPattern}`)[0];
+                targetArtifactFolderPath = pathToTargetFolder;
+            }
 
-            // Check if the path really exists. If not exists, the project is not a standard Synapse muilti-module Project
-            Utils.checkPathExistence(pathToTargetFolder).then(exists => {
+            //check for artifact.xml and composite pom.xml
+            let artifactFilePath: string = path.join(esbConfigsDirectory, ARTIFACT_FILE);
+            let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
+            if ((!fse.existsSync(artifactFilePath)) || (!fse.existsSync(compositePomFilePath))) {
+                window.showErrorMessage("artifact.xml or composite pom.xml is missing, artifact creation aborted...");
+                return;
+            }
+
+            //Check if the path really exists. If not exists, the project is not a standard Synapse muilti-module Project
+            Utils.checkPathExistence(targetArtifactFolderPath).then(exists => {
                 if (exists) {
                     createArtifactFromTemplate(esbConfigsDirectory, targetFolder, templateFileName, targetArtifactName, artifactType, type,
-                        pathToTargetFolder, SYNAPSE_CONFIG, undefined);
+                        targetArtifactFolderPath, SYNAPSE_CONFIG, undefined);
                 }
             });
         }
         else {
-            window.showErrorMessage("No workspace folder found");
+            let message: string= "No workspace folder found";
+            TerminalModule.printLogMessage(message);
+            window.showErrorMessage(message);
         }
     }
 
@@ -85,18 +108,33 @@ export namespace ArtifactModule {
         artifactType: string, type: string, registryResource: RegistryResource) {
 
         if (workspace.workspaceFolders) {
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             const registryResourceSubDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.REGISTRY_RESOURCES,
-                workspace.workspaceFolders[0].uri.fsPath);
+                rootDirectory);
             // Check if the path really exists. If not exists, the project is not a standard Synapse muilti-module Project
             Utils.checkPathExistence(registryResourceSubDirectory).then(exists => {
                 if (exists) {
+
+                    //check for artifact.xml and composite pom.xml
+                    let artifactFilePath: string = path.join(registryResourceSubDirectory, ARTIFACT_FILE);
+                    let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
+                    if ((!fse.existsSync(artifactFilePath)) || (!fse.existsSync(compositePomFilePath))) {
+                        window.showErrorMessage("artifact.xml or composite pom.xml is missing, resource creation aborted...");
+                        return;
+                    }
+
                     createArtifactFromTemplate(registryResourceSubDirectory, targetFolder, templateFileName, targetArtifactName, artifactType, type,
                         registryResourceSubDirectory, "registry-resources", registryResource);
+                }
+                else {
+                    window.showErrorMessage("No Registry Resources project found, resource creation aborted");
                 }
             });
         }
         else {
-            window.showErrorMessage("No workspace folder found");
+            let message: string= "No workspace folder found";
+            TerminalModule.printLogMessage(message);
+            window.showErrorMessage(message);
         }
     }
 
@@ -385,11 +423,12 @@ export namespace ArtifactModule {
             let synapseDirectoryPattern: string = path.join(SRC, MAIN, SYNAPSE_CONFIG);
 
             let resourceSubDirectory: string = path.join(filePath, "..");
-            let resourcesProjectNaturePath: string = path.join(resourceSubDirectory,);
+            let resourcesProjectNaturePath: string = path.join(resourceSubDirectory, PROJECT_FILE);
             let resourceDirectoryType: string = "";
             if (fse.existsSync(resourcesProjectNaturePath)) {
                 resourceDirectoryType = Utils.getDirectoryType(path.join(resourceSubDirectory, PROJECT_FILE));
             }
+
             //artifact
             if (filePath.includes(synapseDirectoryPattern)) {
                 let syapseSubDirectory: string = filePath.split(synapseDirectoryPattern)[0];
@@ -516,14 +555,17 @@ export namespace ArtifactModule {
     /**
      * Create new ESB Configs project.
      */
-    export function CreateNewESBConfigProject(rootDirectory: string, projectName: string) {
+    export async function CreateNewESBConfigProject(rootDirectory: string, projectName: string) {
 
         //create new sub-directory
         //create pom.xml, artifact.xml and .project files
         let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "ConfigsPom.xml");
         let templateProjNatureFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "esbConfigs.xml")
-        Utils.createProject(projectName, "ESB Configs Project", templatePomFilePath, templateProjNatureFilePath,
+        await Utils.createProject(projectName, "ESB Configs Project", templatePomFilePath, templateProjNatureFilePath,
             SubDirectories.CONFIGS, true, rootDirectory, ProjectNatures.CONFIGS);
+
+        //check whether the project was created
+        if (!fse.existsSync(path.join(rootDirectory, projectName))) return;
 
         //create additional sub-directories
         let metadataPath: string = path.join(rootDirectory, projectName, SRC, MAIN, RESOURECS, METADATA);
@@ -551,10 +593,10 @@ export namespace ArtifactModule {
         }
         const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
         let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
-        let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
-        let subModules = rootPomXmlDoc.getElementsByTagName("module");
+        let modules = rootPomXmlDoc.getElementsByTagName(MODULES)[0];
+        let subModules = rootPomXmlDoc.getElementsByTagName(MODULE);
         let totalSubModules: number = subModules.length;
-        let ESBModule = rootPomXmlDoc.createElement("module");
+        let ESBModule = rootPomXmlDoc.createElement(MODULE);
         ESBModule.textContent = projectName.trim();
 
         let append: boolean = false;
@@ -577,14 +619,17 @@ export namespace ArtifactModule {
     /**
      * Create new Registry Resources project.
      */
-    export function CreateNewRegistryResourcesProject(rootDirectory: string, projectName: string) {
+    export async function CreateNewRegistryResourcesProject(rootDirectory: string, projectName: string) {
 
         //create new sub-directory
         //create pom.xml, artifact.xml and .project files
         let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "RegistryResourcesPom.xml");
         let templateProjNatureFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "registryResources.xml");
-        Utils.createProject(projectName, "Registry Resources Project", templatePomFilePath, templateProjNatureFilePath,
+        await Utils.createProject(projectName, "Registry Resources Project", templatePomFilePath, templateProjNatureFilePath,
             SubDirectories.REGISTRY_RESOURCES, true, rootDirectory, ProjectNatures.REGISTRY_RESOURCES);
+
+        //check whether the project was created
+        if (!fse.existsSync(path.join(rootDirectory, projectName))) return;
 
         //create .classpath file
         let templateConfigFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "registryClassPath.xml")
@@ -606,10 +651,10 @@ export namespace ArtifactModule {
         }
         const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
         let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
-        let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
-        let subModules = rootPomXmlDoc.getElementsByTagName("module");
+        let modules = rootPomXmlDoc.getElementsByTagName(MODULES)[0];
+        let subModules = rootPomXmlDoc.getElementsByTagName(MODULE);
         let totalSubModules: number = subModules.length;
-        let registryModule = rootPomXmlDoc.createElement("module");
+        let registryModule = rootPomXmlDoc.createElement(MODULE);
         registryModule.textContent = projectName.trim();
 
         let append: boolean = false;

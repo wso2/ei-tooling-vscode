@@ -54,13 +54,24 @@ export class ESBArtifactPath {
 }
 
 export class Common {
-    static readonly TEMPLATES :string = 'templates';
-    static readonly VERSION :string = "1.0.0";
-    static readonly POM_FILE :string = "pom.xml";
-    static readonly ARTIFACT_FILE :string = "artifact.xml";
-    static readonly PROJECT_FILE :string = ".project";
-    static readonly POM:string = "pom";
-    static readonly CONF :string = "Conf";    
+    static readonly TEMPLATES: string = 'templates';
+    static readonly VERSION: string = "1.0.0";
+    static readonly POM_FILE: string = "pom.xml";
+    static readonly ARTIFACT_FILE: string = "artifact.xml";
+    static readonly PROJECT_FILE: string = ".project";
+    static readonly POM: string = "pom";
+    static readonly CONF: string = "Conf";
+    static readonly MODULE: string = "module";
+    static readonly MODULES: string = "modules";
+    static readonly PROXY: string = "proxy";
+    static readonly PROXY_METADATA: string = "proxy_metadata";
+    static readonly NAME_TAG: string = "name";
+    static readonly ARTIFACT_ID_TAG: string = "artifactId";
+    static readonly GROUP_ID_TAG: string = "groupId";
+    static readonly VERSION_TAG: string = "version";
+    static readonly DEPENDENCIES_TAG: string = "dependencies";
+    static readonly PLUGIN_TAG: string = "plugin";
+    static readonly XML_TYPE : "text/xml";
 }
 
 export class MetadataInfo {

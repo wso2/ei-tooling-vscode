@@ -16,8 +16,8 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {QuickPickItem, window, workspace} from "vscode";
-import {ArtifactModule} from "./ArtifactModule";
+import { QuickPickItem, window, workspace } from "vscode";
+import { ArtifactModule } from "./ArtifactModule";
 import {
     APIArtifactInfo,
     EndpointArtifactInfo,
@@ -32,8 +32,8 @@ import {
     TemplateArtifactInfo,
     ArtifactInfo
 } from "./artifactUtils";
-import {showInputBox, showQuickPick} from "../utils/uiUtils";
-import {Utils} from "../utils/Utils";
+import { showInputBox, showQuickPick } from "../utils/uiUtils";
+import { Utils } from "../utils/Utils";
 
 export async function createArtifact(artifactType: string, targetFolderPath: string | undefined) {
     switch (artifactType) {
@@ -47,7 +47,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
             if (artifactName) {
                 ArtifactModule.createArtifact(targetFolderPath, APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.API_LABEL,
-                                              artifactName.trim(), artifactType, APIArtifactInfo.TYPE);
+                    artifactName.trim(), artifactType, APIArtifactInfo.TYPE);
             }
             break;
         }
@@ -61,7 +61,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
             if (artifactName) {
                 ArtifactModule.createArtifact(targetFolderPath, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_LABEL,
-                                              artifactName.trim(), artifactType, ProxyArtifactInfo.TYPE);
+                    artifactName.trim(), artifactType, ProxyArtifactInfo.TYPE);
             }
             break;
         }
@@ -79,7 +79,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(targetFolderPath, EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, EndpointArtifactInfo.TYPE);
+                        artifactName.trim(), artifactType, EndpointArtifactInfo.TYPE);
                 }
             }
             break;
@@ -98,7 +98,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(targetFolderPath, InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, InboundEndpointArtifactInfo.TYPE);
+                        artifactName.trim(), artifactType, InboundEndpointArtifactInfo.TYPE);
                 }
             }
             break;
@@ -117,7 +117,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(targetFolderPath, LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, LocalEntryArtifactInfo.TYPE);
+                        artifactName.trim(), artifactType, LocalEntryArtifactInfo.TYPE);
                 }
             }
             break;
@@ -136,7 +136,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(targetFolderPath, MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, MessageStoreArtifactInfo.TYPE);
+                        artifactName.trim(), artifactType, MessageStoreArtifactInfo.TYPE);
                 }
             }
             break;
@@ -155,7 +155,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(targetFolderPath, MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, MessageProcessorArtifactInfo.TYPE);
+                        artifactName.trim(), artifactType, MessageProcessorArtifactInfo.TYPE);
                 }
             }
             break;
@@ -174,7 +174,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
                 if (artifactName) {
                     ArtifactModule.createArtifact(targetFolderPath, TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, TemplateArtifactInfo.TYPE);
+                        artifactName.trim(), artifactType, TemplateArtifactInfo.TYPE);
                 }
             }
             break;
@@ -189,8 +189,8 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
             if (artifactName) {
                 ArtifactModule.createArtifact(targetFolderPath, SequenceArtifactInfo.DESTINATION_FOLDER,
-                                              SequenceArtifactInfo.SEQUENCE_LABEL,
-                                              artifactName.trim(), artifactType, SequenceArtifactInfo.TYPE);
+                    SequenceArtifactInfo.SEQUENCE_LABEL,
+                    artifactName.trim(), artifactType, SequenceArtifactInfo.TYPE);
             }
             break;
         }
@@ -204,8 +204,8 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
             if (artifactName) {
                 ArtifactModule.createArtifact(targetFolderPath, TaskArtifactInfo.DESTINATION_FOLDER,
-                                              TaskArtifactInfo.TASK_LABEL,
-                                              artifactName.trim(), artifactType, TaskArtifactInfo.TYPE);
+                    TaskArtifactInfo.TASK_LABEL,
+                    artifactName.trim(), artifactType, TaskArtifactInfo.TYPE);
             }
             break;
         }
@@ -222,7 +222,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
                 }
 
                 const registry = await window.showQuickPick(['conf', 'gov'],
-                                                            {placeHolder: 'Select the registry type.'});
+                    { placeHolder: 'Select the registry type.' });
                 let path;
                 if (registry) {
                     if (registry === "conf") {
@@ -233,28 +233,28 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
                 }
 
                 let registryPath = await window.showInputBox({
-                                                                   prompt: "Enter valid registry path here",
-                                                                   placeHolder: "eg: Datamapper/example"
-                                                               }).then(text => text);
+                    prompt: "Enter valid registry path here",
+                    placeHolder: "eg: Datamapper/example"
+                }).then(text => text);
 
-                
+
                 while (typeof registryPath !== "undefined" && !Utils.validateRegistryPath(registryPath.trim())) {
                     window.showErrorMessage("Enter valid registry path!!");
-                    registryPath = await  window.showInputBox({
+                    registryPath = await window.showInputBox({
                         prompt: "Enter valid registry path here",
                         placeHolder: "eg: Datamapper/example"
                     }).then(text => text);
                 }
 
-                if(registryPath && artifactName && registry){
+                if (registryPath && artifactName && registry) {
 
                     registryPath = registryPath.trim();
-                    while(registryPath[registryPath.length - 1] === "/"){
+                    while (registryPath[registryPath.length - 1] === "/") {
                         registryPath = registryPath.slice(0, -1);
                     }
 
                     let fileName = artifactName + ".xml";
-                
+
                     if (selectedArtifactType === "JSONSchemaTemplate") {
                         fileName = artifactName + ".json";
                     }
@@ -266,12 +266,12 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
                     };
 
                     ArtifactModule.createResource(RegistryResourceInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                artifactName.trim(), artifactType, RegistryResourceInfo.TYPE, registryResource);
-                    
+                        artifactName.trim(), artifactType, RegistryResourceInfo.TYPE, registryResource);
+
 
                 }
 
-                
+
             }
             break;
         }
@@ -293,9 +293,9 @@ export async function createESBProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-       ArtifactModule.CreateNewESBConfigProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+        ArtifactModule.CreateNewESBConfigProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
     }
-    
+
 }
 
 export async function createCompositeProject() {
@@ -307,9 +307,9 @@ export async function createCompositeProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-       Utils.CreateNewCompositeExporterProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+        Utils.CreateNewCompositeExporterProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
     }
-    
+
 }
 
 export async function createRegistryResourcesProject() {
@@ -321,9 +321,9 @@ export async function createRegistryResourcesProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-       ArtifactModule.CreateNewRegistryResourcesProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+        ArtifactModule.CreateNewRegistryResourcesProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
     }
-    
+
 }
 
 function createEndpointServiceArray(): QuickPickItem[] {

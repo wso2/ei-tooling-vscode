@@ -16,12 +16,12 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {workspace, Uri, window, commands} from "vscode";
+import { workspace, Uri, window, commands } from "vscode";
 import * as path from 'path';
-import {executeProjectBuildCommand} from "../mavenInternals/commandHandler";
-import {SubDirectories} from "../artifacts/artifactUtils";
-import {chooseTargetFolder, chooseTargetFile, showInputBox, showInputBoxForArtifactId, showInputBoxForGroupId} from "../utils/uiUtils";
-import {Utils} from "../utils/Utils";
+import { executeProjectBuildCommand } from "../mavenInternals/commandHandler";
+import { SubDirectories } from "../artifacts/artifactUtils";
+import { chooseTargetFolder, chooseTargetFile, showInputBox, showInputBoxForArtifactId, showInputBoxForGroupId } from "../utils/uiUtils";
+import { Utils } from "../utils/Utils";
 import { ArchiveModule } from "./ArchiveModule";
 
 var fileSystem = require('fs');
@@ -35,35 +35,35 @@ var AdmZip = require('adm-zip');
 export function createDeployableArchive() {
 
     let projectNatures: string[] = [SubDirectories.COMPOSITE_EXPORTER, SubDirectories.CONFIGS, SubDirectories.CONNECTOR_EXPORTER,
-         SubDirectories.REGISTRY_RESOURCES, SubDirectories.DATA_SERVICE];
-    
+    SubDirectories.REGISTRY_RESOURCES, SubDirectories.DATA_SERVICE];
+
 
     if (workspace.workspaceFolders) {
         let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
         fileSystem.readdir(rootDirectory, (err: any, files: any) => {
             if (err)
-              console.log(err);
+                console.log(err);
             else {
-              files.forEach( (file: any) => {
-                let projConfigFilePath: string = path.join(rootDirectory, file, ".project");
-                let pomFilePath: string = path.join(rootDirectory, file, "pom.xml");
-                Utils.checkPathExistence(pomFilePath).then(exists => {
-                    if (exists) {
-                        let projectNature: string = Utils.getDirectoryType(projConfigFilePath);
-                        if(projectNatures.indexOf(projectNature) !== -1){
-                            Utils.checkBuildPlugins(pomFilePath, projectNature);
+                files.forEach((file: any) => {
+                    let projConfigFilePath: string = path.join(rootDirectory, file, ".project");
+                    let pomFilePath: string = path.join(rootDirectory, file, "pom.xml");
+                    Utils.checkPathExistence(pomFilePath).then(exists => {
+                        if (exists) {
+                            let projectNature: string = Utils.getDirectoryType(projConfigFilePath);
+                            if (projectNatures.indexOf(projectNature) !== -1) {
+                                Utils.checkBuildPlugins(pomFilePath, projectNature);
+                            }
                         }
-                    }
-                });
+                    });
 
-              })
+                })
             }
             executeProjectBuildCommand(rootDirectory);
-          });
-        }
+        });
+    }
 }
 
-export async function createZipArchive(){
+export async function createZipArchive() {
 
     // Set home dir as the target folder hint.
     const homedir: string = require('os').homedir();
@@ -71,26 +71,26 @@ export async function createZipArchive(){
 
     let zipFileName = await showInputBox("Enter zip archive name");
 
-    if((typeof zipFileName === "undefined") || (zipFileName === "") ) {
+    if ((typeof zipFileName === "undefined") || (zipFileName === "")) {
         zipFileName = "untitled";
     }
 
     //get the destination folder
     const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
 
-    if(workspace.workspaceFolders && targetLocation){
+    if (workspace.workspaceFolders && targetLocation) {
 
         let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
         let projectName: string = workspace.workspaceFolders[0].name;
 
-        let zipFilePath: string = path.join(targetLocation, zipFileName+".zip");
+        let zipFilePath: string = path.join(targetLocation, zipFileName + ".zip");
         let output = fileSystem.createWriteStream(zipFilePath);
         let archive = archiver('zip');
 
-        archive.on('error', function(err: any){
+        archive.on('error', function (err: any) {
             window.showErrorMessage("Zip Archive Creation Failed");
             return;
-            
+
         });
 
         // pipe archive data to the file
@@ -98,16 +98,14 @@ export async function createZipArchive(){
 
         // append files from a sub-directory and naming it <project-name> within the archive
         archive.directory(rootDirectory, projectName);
-        
+
         // finalize the archive (ie we are done appending files but streams have to finish yet)
         archive.finalize();
         window.showInformationMessage("Zip Archive Created Successfully");
-            
-
     }
 }
 
-export async function unzipArchive(){
+export async function unzipArchive() {
 
     try {
         // Set home dir as the target folder hint.
@@ -115,37 +113,33 @@ export async function unzipArchive(){
         const targetFolderHint = Uri.file(homedir);
 
         //get the target folder
-        const targetLocation: string | null = await chooseTargetFile(targetFolderHint, "Select ZIP Archive...", {'ZIP files': ['zip']});
+        const targetLocation: string | null = await chooseTargetFile(targetFolderHint, "Select ZIP Archive...", { 'ZIP files': ['zip'] });
 
         var zip = new AdmZip(targetLocation);
         var zipEntries = zip.getEntries(); // an array of ZipEntry records
-        
-        if(targetLocation){
+
+        if (targetLocation) {
 
             //get the destination directory
             const destinationLocation: string | null = await chooseTargetFolder(targetFolderHint);
 
-            if(destinationLocation){
+            if (destinationLocation) {
                 await extract(targetLocation, { dir: destinationLocation })
 
                 window.showInformationMessage("Zip Archive Imported Successfully");
-    
+
                 let projectName: string = zipEntries[0].entryName.split(path.sep)[0].trim();
                 let projectFilePath: string = path.join(destinationLocation, projectName);
                 commands.executeCommand('vscode.openFolder', Uri.file(projectFilePath), true);
-
             }
-           
         }
-        
-      } catch (err) {
-            window.showErrorMessage("Zip Archive Extraction Failed");
-      }
+
+    } catch (err) {
+        window.showErrorMessage("Zip Archive Extraction Failed");
+    }
 }
 
-export async function createProjectFromCar(){
-
-    const dirName = __dirname;
+export async function createProjectFromCar() {
 
     try {
         // Set home dir as the target folder hint.
@@ -153,9 +147,9 @@ export async function createProjectFromCar(){
         const targetFolderHint = Uri.file(homedir);
 
         //get the target folder
-        const targetCarFileLocation: string | null = await chooseTargetFile(targetFolderHint, "Select CAR Archive...", {'car files': ['car']});
-        
-        if(targetCarFileLocation){
+        const targetCarFileLocation: string | null = await chooseTargetFile(targetFolderHint, "Select CAR Archive...", { 'car files': ['car'] });
+
+        if (targetCarFileLocation) {
 
             let artifactId: string | undefined = await showInputBoxForArtifactId();
             let groupId: string | undefined = await showInputBoxForGroupId();
@@ -179,18 +173,15 @@ export async function createProjectFromCar(){
             //get the destination directory
             const newProjectLocation: string | null = await chooseTargetFolder(targetFolderHint);
 
-            if(newProjectLocation){
+            if (newProjectLocation) {
                 ArchiveModule.createProject(targetCarFileLocation, newProjectLocation, artifactId, groupId);
             }
         }
-        
-    } catch (err) {
-            window.showErrorMessage("Project Creation Failed");
-    }
 
+    } catch (err) {
+        window.showErrorMessage("Project Creation Failed");
+
+    }
 }
 
-
-
-    
 

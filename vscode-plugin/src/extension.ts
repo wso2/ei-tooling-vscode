@@ -16,17 +16,17 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace} from 'vscode';
-import {changeLanguageToSynapse, setLanguageToSynapse} from './language';
-import {launch as launchServer} from './server';
-import {ArchetypeModule} from "./archetype/ArchetypeModule";
-import {DataServiceModule } from './dataService/DataServiceModule';
+import { commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace } from 'vscode';
+import { changeLanguageToSynapse, setLanguageToSynapse } from './language';
+import { launch as launchServer } from './server';
+import { ArchetypeModule } from "./archetype/ArchetypeModule";
+import { DataServiceModule } from './dataService/DataServiceModule';
 import { MediatorProjectModule } from './mediatorProject/MediatorProjectModule';
 import { ConnectorModule } from './connector/ConnectorModule';
-import {createArtifact, createESBProject, createCompositeProject, createRegistryResourcesProject} from "./artifacts/artifactResolver";
-import {createDataServiceProject, createNewDataService} from "./dataService/dataServiceResolver";
-import {createMediatorProject} from './mediatorProject/mediatorProjectResolver';
-import { addNewConnector, addNewConnectorExporter } from './connector/connectorResolver';
+import { createArtifact, createESBProject, createCompositeProject, createRegistryResourcesProject } from "./artifacts/artifactResolver";
+import { createDataServiceProject, createNewDataService } from "./dataService/dataServiceResolver";
+import { createMediatorProject } from './mediatorProject/mediatorProjectResolver';
+import { addNewConnectorFromStore, addNewConnectorExporter, addNewConnectorFromFileSystem } from './connector/connectorResolver';
 import {
     APIArtifactInfo,
     EndpointArtifactInfo,
@@ -41,16 +41,15 @@ import {
     TemplateArtifactInfo
 } from "./artifacts/artifactUtils";
 
-import {createDeployableArchive, createZipArchive, unzipArchive, createProjectFromCar} from "./archive/archiveResolver";
-import {ArtifactModule} from "./artifacts/ArtifactModule";
-import {SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
+import { createDeployableArchive, createZipArchive, unzipArchive, createProjectFromCar } from "./archive/archiveResolver";
+import { ArtifactModule } from "./artifacts/ArtifactModule";
+import { SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
 import { Utils } from './utils/Utils';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
 const chokidar = require('chokidar');
-
 
 export function activate(context: ExtensionContext) {
 
@@ -103,14 +102,15 @@ export function activate(context: ExtensionContext) {
 
             watcher.onDidDelete((deletedDir: Uri) => {
                 Utils.safeDeteteProject(deletedDir.fsPath);
-            });       
+            });
         }
     }
 
-    function createFileWatcher(){
-        if(workspace.workspaceFolders){
+    function createFileWatcher() {
+        if (workspace.workspaceFolders) {
             let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             chokidar.watch(rootDirectory).on('unlink', (filePath: string) => {
+
                 ArtifactModule.safeDeleteArtifact(filePath);
                 DataServiceModule.safeDeleteDataService(filePath, rootDirectory);
                 ConnectorModule.safeDeleteConnector(filePath, rootDirectory);
@@ -120,19 +120,15 @@ export function activate(context: ExtensionContext) {
                 //update metadata.yaml for API
                 const directoryPattern: string = path.join("src", "main", "synapse-config", "api");
                 //check whether an api resource file is changed
-                if(filePath.includes(directoryPattern)){
+                if (filePath.includes(directoryPattern)) {
                     const esbConfigsDirectory: string = filePath.split(directoryPattern)[0];
                     ArtifactModule.updateMetadataforApi(esbConfigsDirectory, filePath);
                 }
             });
-            
-    }
+
+        }
     }
 
-    function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
-        let regExpForDirPattern = new RegExp(dirPattern);
-        return regExpForDirPattern.test(filePath);
-    }
 }
 
 function registerSynapseCommands(context: ExtensionContext) {
@@ -141,11 +137,11 @@ function registerSynapseCommands(context: ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerTextEditorCommand('wso2ei.language.change',
-                                                                  (editor, edit) => {
-                                                                      if (!setLanguageToSynapse(editor.document)) {
-                                                                          changeLanguageToSynapse(editor, edit, context, __dirname);
-                                                                      }
-                                                                  }));
+        (editor, edit) => {
+            if (!setLanguageToSynapse(editor.document)) {
+                changeLanguageToSynapse(editor, edit, context, __dirname);
+            }
+        }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.project.create", async () => {
         await ArchetypeModule.createESBProject();
@@ -173,46 +169,56 @@ function registerSynapseCommands(context: ExtensionContext) {
         unzipArchive();
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.api", async (Uri: Uri) => {
-        await createArtifact(APIArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.api", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        await createArtifact(APIArtifactInfo.ARTIFACT_TYPE, filePath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.proxy", async (Uri: Uri) => {
-        await createArtifact(ProxyArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.proxy", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        await createArtifact(ProxyArtifactInfo.ARTIFACT_TYPE, filePath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.endpoint", async (Uri: Uri) => {
-        await createArtifact(EndpointArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.endpoint", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        await createArtifact(EndpointArtifactInfo.ARTIFACT_TYPE, filePath);
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.inboundEndpoint",
-                                                        async (Uri: Uri) => {
-                                                            await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
-                                                        }));
+        async (Uri: Uri | undefined) => {
+            let filePath: string | undefined = checkUriExistence(Uri);
+            await createArtifact(InboundEndpointArtifactInfo.ARTIFACT_TYPE, filePath);
+        }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.localEntry", async (Uri: Uri) => {
-        await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.localEntry", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        await createArtifact(LocalEntryArtifactInfo.ARTIFACT_TYPE, filePath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageStore", async (Uri: Uri) => {
-        await createArtifact(MessageStoreArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageStore", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        await createArtifact(MessageStoreArtifactInfo.ARTIFACT_TYPE, filePath);
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.artifact.messageProcessor",
-                                                        async (Uri: Uri) => {
-                                                            await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
-                                                        }));
+        async (Uri: Uri | undefined) => {
+            let filePath: string | undefined = checkUriExistence(Uri);
+            await createArtifact(MessageProcessorArtifactInfo.ARTIFACT_TYPE, filePath);
+        }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.template", async (Uri: Uri) => {
-        await createArtifact(TemplateArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.template", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        await createArtifact(TemplateArtifactInfo.ARTIFACT_TYPE, filePath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.sequence", async (Uri: Uri) => {
-        await createArtifact(SequenceArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.sequence", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        await createArtifact(SequenceArtifactInfo.ARTIFACT_TYPE, filePath);
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.task", async (Uri: Uri) => {
-        await createArtifact(TaskArtifactInfo.ARTIFACT_TYPE, Uri.fsPath);
+    context.subscriptions.push(commands.registerCommand("wso2ei.artifact.task", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        await createArtifact(TaskArtifactInfo.ARTIFACT_TYPE, filePath);
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.resource.registry", async () => {
         await createArtifact(RegistryResourceInfo.ARTIFACT_TYPE, undefined);
@@ -227,7 +233,10 @@ function registerSynapseCommands(context: ExtensionContext) {
         await createMediatorProject();
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.connector.add", async () => {
-        await addNewConnector();
+        await addNewConnectorFromStore();
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.connector.import", async () => {
+        await addNewConnectorFromFileSystem()
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.connector.create.project", async () => {
         await addNewConnectorExporter();
@@ -235,6 +244,11 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2ei.car.create.zip", async () => {
         await createProjectFromCar();
     }));
+}
+
+function checkUriExistence(uri: Uri | undefined) {
+    if (typeof uri !== "undefined") return uri.fsPath;
+    return undefined;
 }
 
 // this method is called when your extension is deactivated

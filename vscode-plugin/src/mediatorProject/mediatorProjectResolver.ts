@@ -16,15 +16,15 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {window, workspace} from "vscode";
-import {MediatorProjectModule} from "./MediatorProjectModule";
-import { MediatorProjectInfo} from "./mediarorProjectUtils";
-import {showInputBox} from "../utils/uiUtils";
-import {Utils} from "../utils/Utils";
+import { window, workspace } from "vscode";
+import { MediatorProjectModule } from "./MediatorProjectModule";
+import { MediatorProjectInfo } from "./mediarorProjectUtils";
+import { showInputBox } from "../utils/uiUtils";
+import { Utils } from "../utils/Utils";
 import { ServerRoleInfo } from "../artifacts/artifactUtils";
 
 export async function createMediatorProject() {
-        
+
     let projectName = await showInputBox(MediatorProjectInfo.PROJECT_PROMPT_MESSAGE);
 
     while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {

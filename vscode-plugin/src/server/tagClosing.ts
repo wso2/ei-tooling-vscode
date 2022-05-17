@@ -16,8 +16,10 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Disposable, Position, Range, SnippetString, TextDocument, TextDocumentContentChangeEvent, window,
-    workspace} from "vscode";
+import {
+    Disposable, Position, Range, SnippetString, TextDocument, TextDocumentContentChangeEvent, window,
+    workspace
+} from "vscode";
 
 export interface AutoCloseResult {
     snippet: string;
@@ -25,11 +27,11 @@ export interface AutoCloseResult {
 }
 
 export function activateTagClosing(tagProvider: (document: TextDocument, position: Position) => Thenable<AutoCloseResult>,
-                                   supportedLanguages: { [id: string]: boolean }, configName: string): Disposable {
+    supportedLanguages: { [id: string]: boolean }, configName: string): Disposable {
     const TRIGGER_CHARACTERS = ['>', '/'];
     let disposables: Disposable[] = [];
     workspace.onDidChangeTextDocument(event => onDidChangeTextDocument(event.document, event.contentChanges),
-                                      null, disposables);
+        null, disposables);
 
     let isEnabled = false;
     updateEnabledState();
@@ -78,9 +80,9 @@ export function activateTagClosing(tagProvider: (document: TextDocument, positio
                     return;
                 }
                 let text = result.snippet;
-                let replaceLocation : Position | Range;
-                let range : Range | undefined = result.range;
-                if(range !== undefined) {
+                let replaceLocation: Position | Range;
+                let range: Range | undefined = result.range;
+                if (range !== undefined) {
                     // re-create Range
                     let line = range.start.line;
                     let character = range.start.character;

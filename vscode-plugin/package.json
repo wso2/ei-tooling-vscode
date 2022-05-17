@@ -45,6 +45,7 @@
 		"onCommand:wso2ei.dataservice.create.service",
 		"onCommand:wso2ei.mediatorproject.create.project",
 		"onCommand:wso2ei.connector.add",
+		"onCommand:wso2ei.connector.import",
 		"onCommand:wso2ei.connector.create.project",
 		"onCommand:wso2ei.car.create.zip",
 		"workspaceContains:src/main/synapse-config",
@@ -113,28 +114,13 @@
 				"category": "WSO2EI"
 			},
 			{
+				"command": "wso2ei.language.change",
+				"title": "Change Language to SynapseXml",
+				"category": "WSO2EI"
+			},
+			{
 				"command": "wso2ei.project.create",
-				"title": "Create new Integration Project",
-				"category": "WSO2EI"
-			},
-			{
-				"command": "wso2ei.project.build",
-				"title": "Build Project",
-				"category": "WSO2EI"
-			},
-			{
-				"command": "wso2ei.project.import",
-				"title": "Import Project",
-				"category": "WSO2EI"
-			},
-			{
-				"command": "wso2ei.project.zip",
-				"title": "Create Zip Archive",
-				"category": "WSO2EI"
-			},
-			{
-				"command": "wso2ei.project.unzip",
-				"title": "Import Zip Archive",
+				"title": "Create New Integration Project",
 				"category": "WSO2EI"
 			},
 			{
@@ -153,8 +139,18 @@
 				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2ei.language.change",
-				"title": "Change Language to SynapseXml",
+				"command": "wso2ei.connector.create.project",
+				"title": "Create New Connector Exporter Project",
+				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.dataservice.create.project",
+				"title": "Create New Data Service Project",
+				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.mediatorproject.create.project",
+				"title": "Create New Mediator Project",
 				"category": "WSO2EI"
 			},
 			{
@@ -213,18 +209,8 @@
 				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2ei.dataservice.create.project",
-				"title": "Create Data Service Project",
-				"category": "WSO2EI"
-			},
-			{
 				"command": "wso2ei.dataservice.create.service",
 				"title": "Create New Data Service",
-				"category": "WSO2EI"
-			},
-			{
-				"command": "wso2ei.mediatorproject.create.project",
-				"title": "Create New Mediator Project",
 				"category": "WSO2EI"
 			},
 			{
@@ -233,27 +219,51 @@
 				"category": "WSO2EI"
 			},
 			{
-				"command": "wso2ei.connector.create.project",
-				"title": "Add New Connector Exporter",
+				"command": "wso2ei.connector.import",
+				"title": "Import Connector From File System",
+				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.project.build",
+				"title": "Build Integration Project",
 				"category": "WSO2EI"
 			},
 			{
 				"command": "wso2ei.car.create.zip",
-				"title": "Create Integration Project From .car file",
+				"title": "Build Integration Project From capp",
+				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.project.import",
+				"title": "Import Integration Project",
+				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.project.zip",
+				"title": "Create Zip Archive",
+				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.project.unzip",
+				"title": "Import Zip Archive",
 				"category": "WSO2EI"
 			}
 		],
 		"languages": [
 			{
 				"id": "SynapseXml",
+				"extensions": []
+			},
+			{
+				"id": "xml",
 				"extensions": [
-					
+					".dbs"
 				]
 			},
 			{
-				"id": "XML",
+				"id": "java",
 				"extensions": [
-					".dbs"
+					".java"
 				]
 			}
 		],

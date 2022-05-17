@@ -16,17 +16,17 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {window, workspace} from "vscode";
-import {DataServiceModule} from "./DataServiceModule";
+import { window, workspace } from "vscode";
+import { DataServiceModule } from "./DataServiceModule";
 import {
     DataServiceProjectInfo,
     DataServiceInfo
 } from "./dataServiceUtils";
-import {showInputBox} from "../utils/uiUtils";
-import {Utils} from "../utils/Utils";
+import { showInputBox } from "../utils/uiUtils";
+import { Utils } from "../utils/Utils";
 
 export async function createDataServiceProject() {
-        
+
     let projectName = await showInputBox(DataServiceProjectInfo.PROMPT_MESSAGE);
 
     while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
@@ -39,7 +39,7 @@ export async function createDataServiceProject() {
     }
 }
 
-export async function createNewDataService(filePath: string){
+export async function createNewDataService(filePath: string) {
 
     let dataServiceName = await showInputBox(DataServiceInfo.PROMPT_MESSAGE);
 

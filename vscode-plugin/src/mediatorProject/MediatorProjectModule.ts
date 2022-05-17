@@ -16,13 +16,13 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Uri, window, workspace, WorkspaceEdit} from "vscode";
+import { Uri, window, workspace, WorkspaceEdit } from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import {XMLSerializer as XMLSerializer} from 'xmldom';
-import { SubDirectories } from "../artifacts/artifactUtils";
+import { XMLSerializer as XMLSerializer } from 'xmldom';
+import { SubDirectories, ESBArtifactPath, Common } from "../artifacts/artifactUtils";
 import { Utils } from "../utils/Utils";
-import { MediatorProjectInfo, ServerRoleInfo } from "./mediarorProjectUtils";
+import { MediatorProjectInfo } from "./mediarorProjectUtils";
 
 let DOM = require('xmldom').DOMParser;
 var fs = require('fs');
@@ -30,112 +30,128 @@ var fs = require('fs');
 export namespace MediatorProjectModule {
 
     const dirName = __dirname;
+    const SRC = ESBArtifactPath.SRC;
+    const MAIN = ESBArtifactPath.MAIN;
+    const POM = Common.POM;
+    const CONF = Common.CONF;
+    const TEMPLATES = Common.TEMPLATES;
+    const POM_FILE = Common.POM_FILE;
+    const PROJECT_FILE = Common.PROJECT_FILE;
+    const MODULE = Common.MODULE;
+    const MODULES = Common.MODULES;
 
     export async function createProject(rootDirectory: string, projectName: string, packageName: string,
         version: string, serverRole: string, className?: string) {
-       
-            //check whether project name already exists
-            let mediatorProjectDirectory: string = path.join(rootDirectory, projectName);
-            if(fse.existsSync(mediatorProjectDirectory)){
-                window.showErrorMessage("Mediator project name already exists!");
-                return;
-            }
 
-            //create directory structure
-            let javaFilePath: string = path.join(rootDirectory, projectName, "src", "main", "java");
-            if( typeof className !== "undefined"){
-                let packageSubdirectories: string[] = packageName.split(".");
-                let packageSubDirPath: string = packageSubdirectories.join(path.sep);
-                javaFilePath = path.join(javaFilePath, packageSubDirPath);
-            }
-                
-            fs.mkdirSync(javaFilePath, {recursive: true});
+        //check for composite pom.xml
+        let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
+        if (!fse.existsSync(compositePomFilePath)) {
+            window.showErrorMessage("Composite pom.xml is missing, Mediator Project creation aborted...");
+            return;
+        }
 
-            let rootPomFilePath: string = path.join(rootDirectory, "pom.xml");
-            let mediatorProjectPomFilePath: string = path.join(rootDirectory, projectName, "pom.xml");
-            let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
+        //check whether project name already exists
+        let mediatorProjectDirectory: string = path.join(rootDirectory, projectName);
+        if (fse.existsSync(mediatorProjectDirectory)) {
+            window.showErrorMessage("Mediator project name already exists!");
+            return;
+        }
 
-            //add new pom.xml
-            let templatePomFilePath: string = path.join(dirName, "..", "..", "templates", "pom", "MediatorProjectPom.xml");
-            const buff: Buffer = fse.readFileSync(templatePomFilePath);
-            let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
+        //create directory structure
+        let javaFilePath: string = path.join(rootDirectory, projectName, SRC, MAIN, "java");
+        if (typeof className !== "undefined") {
+            let packageSubdirectories: string[] = packageName.split(".");
+            let packageSubDirPath: string = packageSubdirectories.join(path.sep);
+            javaFilePath = path.join(javaFilePath, packageSubDirPath);
+        }
 
-            let artifactIds =pomXmlDoc.getElementsByTagName("artifactId");
-            let groupIds =pomXmlDoc.getElementsByTagName("groupId");
-            let versions =pomXmlDoc.getElementsByTagName("version");
-            let childProjectName = pomXmlDoc.getElementsByTagName("name")[0];
-            let childProjectDescription = pomXmlDoc.getElementsByTagName("description")[0];
-            let bundleSymbolicName = pomXmlDoc.getElementsByTagName("Bundle-SymbolicName")[0];
-            let bundleName = pomXmlDoc.getElementsByTagName("Bundle-Name")[0];
-            let exportPackage = pomXmlDoc.getElementsByTagName("Export-Package")[0];
+        fs.mkdirSync(javaFilePath, { recursive: true });
 
-            //parent
-            artifactIds[0].textContent = project.artifactId;
-            groupIds[0].textContent = project.groupId;
-            versions[0].textContent = project.version;
+        let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
+        let mediatorProjectPomFilePath: string = path.join(rootDirectory, projectName, POM_FILE);
+        let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
 
-            //child
-            artifactIds[1].textContent = projectName;
-            groupIds[1].textContent = packageName;
-            versions[1].textContent = version;
-            childProjectName.textContent = projectName;
-            childProjectDescription.textContent = projectName;
-            bundleSymbolicName.textContent = projectName;
-            bundleName.textContent = projectName;
-            exportPackage.textContent = packageName;
+        //add new pom.xml
+        let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "MediatorProjectPom.xml");
+        const buff: Buffer = fse.readFileSync(templatePomFilePath);
+        let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
 
-            Utils.createXmlFile(mediatorProjectPomFilePath, pomXmlDoc);
+        let artifactIds = pomXmlDoc.getElementsByTagName("artifactId");
+        let groupIds = pomXmlDoc.getElementsByTagName("groupId");
+        let versions = pomXmlDoc.getElementsByTagName("version");
+        let childProjectName = pomXmlDoc.getElementsByTagName("name")[0];
+        let childProjectDescription = pomXmlDoc.getElementsByTagName("description")[0];
+        let bundleSymbolicName = pomXmlDoc.getElementsByTagName("Bundle-SymbolicName")[0];
+        let bundleName = pomXmlDoc.getElementsByTagName("Bundle-Name")[0];
+        let exportPackage = pomXmlDoc.getElementsByTagName("Export-Package")[0];
 
-            //add new .project file
-            let templateProjNatureFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "mediatorProject.xml");
-            const buf: Buffer = fse.readFileSync(templateProjNatureFilePath);
-            let projectNature  = new DOM().parseFromString(buf.toString(), "text/xml");
+        //parent
+        artifactIds[0].textContent = project.artifactId;
+        groupIds[0].textContent = project.groupId;
+        versions[0].textContent = project.version;
 
-            let name = projectNature.getElementsByTagName("name")[0];
-            name.textContent = projectName.trim(); 
+        //child
+        artifactIds[1].textContent = projectName;
+        groupIds[1].textContent = packageName;
+        versions[1].textContent = version;
+        childProjectName.textContent = projectName;
+        childProjectDescription.textContent = projectName;
+        bundleSymbolicName.textContent = projectName;
+        bundleName.textContent = projectName;
+        exportPackage.textContent = packageName;
 
-            let projectNatureFilePath: string = path.join(rootDirectory, projectName, ".project");
-            Utils.createXmlFile(projectNatureFilePath, projectNature);
+        Utils.createXmlFile(mediatorProjectPomFilePath, pomXmlDoc);
 
-            //add new .classpath file
-            let templateclassPathFilePath: string = path.join(dirName, "..", "..", "templates", "Conf", "mediatorProjectClassPath.xml");
-            const buffer: Buffer = fse.readFileSync(templateclassPathFilePath);
-            let classPath  = new DOM().parseFromString(buffer.toString(), "text/xml");
+        //add new .project file
+        let templateProjNatureFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "mediatorProject.xml");
+        const buf: Buffer = fse.readFileSync(templateProjNatureFilePath);
+        let projectNature = new DOM().parseFromString(buf.toString(), "text/xml");
 
-            let classPathFilePath: string = path.join(rootDirectory, projectName, ".classpath");
-            Utils.createXmlFile(classPathFilePath, classPath);
+        let name = projectNature.getElementsByTagName("name")[0];
+        name.textContent = projectName.trim();
 
-            //add mediatorProject module to root pom
-            if(!fse.existsSync(rootPomFilePath)){
-                window.showErrorMessage("No root pom.xml found...!");
-                return;
-            }
-            const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
-            let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
-            let modules = rootPomXmlDoc.getElementsByTagName("modules")[0];
-            let firstModule = modules.getElementsByTagName("module");
-            let mediatorProjectChild = rootPomXmlDoc.createElement("module");
-            mediatorProjectChild.textContent = projectName;
+        let projectNatureFilePath: string = path.join(rootDirectory, projectName, PROJECT_FILE);
+        Utils.createXmlFile(projectNatureFilePath, projectNature);
 
-            if(firstModule.length === 0){
-                modules.appendChild(mediatorProjectChild);
-            }
-            else if(firstModule.length > 0){
-                rootPomXmlDoc.insertBefore(mediatorProjectChild, firstModule[0]);
-            }
-            fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
+        //add new .classpath file
+        let templateclassPathFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "mediatorProjectClassPath.xml");
+        const buffer: Buffer = fse.readFileSync(templateclassPathFilePath);
+        let classPath = new DOM().parseFromString(buffer.toString(), "text/xml");
 
-            //update composite pom
-            let compositePomDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
-            Utils.updateCompositePomXml(compositePomDirectory, projectName, MediatorProjectInfo.TYPE, serverRole, packageName, version);
+        let classPathFilePath: string = path.join(rootDirectory, projectName, ".classpath");
+        Utils.createXmlFile(classPathFilePath, classPath);
 
-            //no java class is created
-            if(typeof className === "undefined") return;
+        //add mediatorProject module to root pom
+        if (!fse.existsSync(rootPomFilePath)) {
+            window.showErrorMessage("No root pom.xml found...!");
+            return;
+        }
+        const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
+        let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
+        let modules = rootPomXmlDoc.getElementsByTagName(MODULES)[0];
+        let firstModule = modules.getElementsByTagName(MODULE);
+        let mediatorProjectChild = rootPomXmlDoc.createElement(MODULE);
+        mediatorProjectChild.textContent = projectName;
 
-            //create sample java class
-            let sampleJavaClassfilePath: string = path.join(javaFilePath, className + ".java");
+        if (firstModule.length === 0) {
+            modules.appendChild(mediatorProjectChild);
+        }
+        else if (firstModule.length > 0) {
+            rootPomXmlDoc.insertBefore(mediatorProjectChild, firstModule[0]);
+        }
+        fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
 
-            const data: string = 
+        //update composite pom
+        let compositePomDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
+        Utils.updateCompositePomXml(compositePomDirectory, projectName, MediatorProjectInfo.TYPE, serverRole, packageName, version);
+
+        //no java class is created
+        if (typeof className === "undefined") return;
+
+        //create sample java class
+        let sampleJavaClassfilePath: string = path.join(javaFilePath, className + ".java");
+
+        const data: string =
             `package ${packageName};
             
             import org.apache.synapse.MessageContext; 
@@ -149,43 +165,43 @@ export namespace MediatorProjectModule {
                 }
             }`;
 
-            let fileUri:Uri = Uri.file(sampleJavaClassfilePath);
-            let edit = new WorkspaceEdit();
-            edit.createFile(fileUri);
-            workspace.applyEdit(edit);
-            fse.writeFileSync(fileUri.fsPath, data);
+        let fileUri: Uri = Uri.file(sampleJavaClassfilePath);
+        let edit = new WorkspaceEdit();
+        edit.createFile(fileUri);
+        workspace.applyEdit(edit);
+        fse.writeFileSync(fileUri.fsPath, data);
 
-            // Open and show newly created java file in the editor.
-            workspace.openTextDocument(fileUri).then(doc => window.showTextDocument(doc));
-    
+        // Open and show newly created java file in the editor.
+        workspace.openTextDocument(fileUri).then(doc => window.showTextDocument(doc));
+
     }
 
-    export function safeDeleteMediatorProjectDetails(filePath: string, rootDirectory: string){
+    export function safeDeleteMediatorProjectDetails(filePath: string, rootDirectory: string) {
 
-            let extensionSplit: string[] = filePath.split(".");
-            let fileExtension: string = extensionSplit[extensionSplit.length - 1].trim();
+        let extensionSplit: string[] = filePath.split(".");
+        let fileExtension: string = extensionSplit[extensionSplit.length - 1].trim();
 
-            //chech whether a java file was deleted
-            if(fileExtension === "java"){
-                //detele project related details if there are any
+        //chech whether a java file was deleted
+        if (fileExtension === "java") {
+            //detele project related details if there are any
 
-                //get package name
-                let parentDirectory: string = path.join(filePath, "..");
-                let splitRegex: string = `java${path.sep}`;
-                let tmp1: string[] = parentDirectory.split(splitRegex);
-                let tmp2: string = tmp1[tmp1.length - 1];
-                let tmp3: string[] = tmp2.split(path.sep);
-                let packageName: string = tmp3.join(".");
-                
-                //get project name
-                splitRegex = `${path.sep}src`;
-                let tmp4: string = filePath.split(splitRegex)[0];
-                let tmp5: string[] = tmp4.split(path.sep);
-                let projectName: string = tmp5[tmp5.length - 1].trim();
+            //get package name
+            let parentDirectory: string = path.join(filePath, "..");
+            let splitRegex: string = `java${path.sep}`;
+            let pathSplit: string[] = parentDirectory.split(splitRegex);
+            let packageDirectory: string = pathSplit[pathSplit.length - 1];
+            let packageNameArray: string[] = packageDirectory.split(path.sep);
+            let packageName: string = packageNameArray.join(".");
 
-                //delete mediator project details from composite pom
-                Utils.deleteArtifactFromPomXml(projectName, projectName, rootDirectory, packageName);
-                
-            }
+            //get project name
+            splitRegex = `${path.sep}src`;
+            let projectDirectory: string = filePath.split(splitRegex)[0];
+            let projectDirectoryArray: string[] = projectDirectory.split(path.sep);
+            let projectName: string = projectDirectoryArray[projectDirectoryArray.length - 1].trim();
+
+            //delete mediator project details from composite pom
+            Utils.deleteArtifactFromPomXml(projectName, projectName, rootDirectory, packageName);
+
         }
+    }
 }

@@ -16,11 +16,11 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Uri, window, commands, workspace, WorkspaceEdit} from "vscode";
-import {chooseTargetFolder, showInputBoxForArtifactId, showInputBoxForGroupId} from "../utils/uiUtils";
-import {Utils} from "../utils/Utils";
-import {executeProjectCreateCommand} from "../mavenInternals/commandHandler";
-import {ARCHETYPE_ARTIFACT_ID, ARCHETYPE_GROUP_ID, ARCHETYPE_VERSION, GROUP_ID_PREFIX} from "./archetypeUtils";
+import { Uri, window, commands, workspace, WorkspaceEdit } from "vscode";
+import { chooseTargetFolder, showInputBoxForArtifactId, showInputBoxForGroupId } from "../utils/uiUtils";
+import { Utils } from "../utils/Utils";
+import { executeProjectCreateCommand } from "../mavenInternals/commandHandler";
+import { ARCHETYPE_ARTIFACT_ID, ARCHETYPE_GROUP_ID, ARCHETYPE_VERSION, GROUP_ID_PREFIX } from "./archetypeUtils";
 import * as fse from "fs-extra";
 import * as path from 'path';
 
@@ -43,15 +43,15 @@ export namespace ArchetypeModule {
         let artifactID: string | undefined = await showInputBoxForArtifactId();
         let groupID: string | undefined = await showInputBoxForGroupId();
 
-          // Ensure that artifactID name is valid.
+        // Ensure that artifactID name is valid.
         while (typeof artifactID !== "undefined" && !Utils.validate(artifactID)) {
-            window.showErrorMessage("Enter valid ArtifactId name!!");
+            window.showErrorMessage("Enter valid ArtifactId!!");
             artifactID = await showInputBoxForArtifactId();
         }
 
         // Ensure that groupID name is valid.
         while (typeof groupID !== "undefined" && !Utils.validateGroupId(groupID)) {
-            window.showErrorMessage("Enter valid GroupId name!!");
+            window.showErrorMessage("Enter valid GroupId!!");
             groupID = await showInputBoxForGroupId();
         }
 
@@ -59,13 +59,10 @@ export namespace ArchetypeModule {
             return;
         }
 
-        
-
         // Set home dir as the target folder hint.
         const homedir: string = require('os').homedir();
         const targetFolderHint = Uri.file(homedir);
         const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
-
 
         if (artifactID && artifactID.length > 0 && groupID && groupID.length > 0 && targetLocation) {
 
@@ -76,41 +73,49 @@ export namespace ArchetypeModule {
                 groupId: groupID,
                 artifactId: artifactID
             };
+
+            let newProjectDirectory: string = path.join(targetLocation, artifactID);
+            if(fse.existsSync(newProjectDirectory)){
+                window.showErrorMessage("Project name already exists...!");
+                return;
+            }
+
             // Execute command handler that runs maven project generate.
             await executeProjectCreateCommand(newProject, targetLocation);
         }
     }
 
-    export async function importProject(){
+    export async function importProject() {
         const homedir: string = require('os').homedir();
         const targetFolderHint = Uri.file(homedir);
 
         //get the target folder
         const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
-        
-        if(targetLocation){
 
+        if (targetLocation) {
 
-                let templateSettingsFilePath: string = path.join(dirName, '..', '..', 'templates', 'Conf', "settings.json");
+            // let templateSettingsFilePath: string = path.join(dirName, '..', '..', 'templates', 'Conf', "settings.json");
 
-                let targetSettingsFilePath: string = path.join(targetLocation, ".vscode", "settings.json");
-                let targetSettingsDirectory: string = path.join(targetLocation, ".vscode") ;
-                
-                //create .vscode directory, if there are no
-                if(!fse.existsSync(targetSettingsDirectory)) fse.mkdirSync(targetSettingsDirectory);
-                
-                let edit = new WorkspaceEdit();
-                let targetSettingsFilePatUri = Uri.file(targetSettingsFilePath);
+            // let targetSettingsFilePath: string = path.join(targetLocation, ".vscode", "settings.json");
+            // let targetSettingsDirectory: string = path.join(targetLocation, ".vscode");
 
-                edit.createFile(targetSettingsFilePatUri);
-                workspace.applyEdit(edit);
-                let settings: Buffer = fse.readFileSync(templateSettingsFilePath);
-                fse.writeFileSync(targetSettingsFilePatUri.fsPath, settings);
-                
-                commands.executeCommand('vscode.openFolder', Uri.file(targetLocation), true);
-                window.showInformationMessage("Project Imported Successfully");
+            // //create .vscode directory, if there are no
+            // if (!fse.existsSync(targetSettingsDirectory)) fse.mkdirSync(targetSettingsDirectory);
 
-            }
+            // let edit = new WorkspaceEdit();
+            // let targetSettingsFilePatUri = Uri.file(targetSettingsFilePath);
+
+            // edit.createFile(targetSettingsFilePatUri);
+            // workspace.applyEdit(edit);
+            // let settings: Buffer = fse.readFileSync(templateSettingsFilePath);
+            // fse.writeFileSync(targetSettingsFilePatUri.fsPath, settings);
+
+            Utils.createVsCodeSettingsFile(targetLocation);
+
+            commands.executeCommand('vscode.openFolder', Uri.file(targetLocation), true);
+            window.showInformationMessage("Project Imported Successfully");
+
+        }
 
     }
 }

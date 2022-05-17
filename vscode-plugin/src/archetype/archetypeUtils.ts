@@ -23,5 +23,5 @@ export const GROUP_ID_PREFIX: string = "com.example.";
 
 export const ARCHETYPE_ARTIFACT_ID: string = "my-archetype-id";
 export const ARCHETYPE_GROUP_ID: string = "my.groupId";
-export const ARCHETYPE_VERSION: string = "2.0.16";
+export const ARCHETYPE_VERSION: string = "1.0.0";
 
