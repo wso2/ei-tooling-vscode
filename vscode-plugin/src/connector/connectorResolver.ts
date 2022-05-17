@@ -16,15 +16,13 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {QuickPickItem, window, workspace} from "vscode";
-import {showInputBox, showQuickPick} from "../utils/uiUtils";
-import {Utils} from "../utils/Utils";
+import { window, workspace, Uri } from "vscode";
+import { showInputBox, chooseTargetFile } from "../utils/uiUtils";
+import { Utils } from "../utils/Utils";
 import { ConnectorInfo } from "./connectorUtils";
 import { ConnectorModule } from "./ConnectorModule";
-import { SubDirectories } from "../artifacts/artifactUtils";
-import * as path from 'path';
 
-export async function addNewConnectorExporter(){
+export async function addNewConnectorExporter() {
 
     const dirName = __dirname;
 
@@ -40,7 +38,7 @@ export async function addNewConnectorExporter(){
     }
 }
 
-export async function addNewConnector() {
+export async function addNewConnectorFromStore() {
 
     let connectorName = await showInputBox(ConnectorInfo.CONNECTOR_PROMPT_MESSAGE);
 
@@ -52,5 +50,23 @@ export async function addNewConnector() {
     if (connectorName && workspace.workspaceFolders) {
         ConnectorModule.getSuggestedConnectors(connectorName.trim(), workspace.workspaceFolders[0].uri.fsPath);
     }
+}
 
+export async function addNewConnectorFromFileSystem() {
+
+    try {
+        // Set home dir as the target folder hint.
+        const homedir: string = require('os').homedir();
+        const targetFolderHint = Uri.file(homedir);
+
+        //get the target folder
+        const targetLocation: string | null = await chooseTargetFile(targetFolderHint, "Select a connector...", { 'ZIP files': ['zip'] });
+
+        if (targetLocation && workspace.workspaceFolders) {
+            ConnectorModule.importConnectorFromFileSystem(targetLocation, workspace.workspaceFolders[0].uri.fsPath);
+        }
+
+    } catch (err) {
+        window.showErrorMessage("Could not import the connector...!");
+    }
 }
