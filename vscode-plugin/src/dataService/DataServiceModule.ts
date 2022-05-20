@@ -23,9 +23,10 @@ import { ServerRoleInfo, DataServiceInfo } from "./dataServiceUtils";
 import { XMLSerializer as XMLSerializer } from 'xmldom';
 import { SubDirectories, Common } from "../artifacts/artifactUtils";
 import { Utils } from "../utils/Utils";
+import { TerminalModule } from "../logging/TerminalModule";
 
 let DOM = require('xmldom').DOMParser;
-var file_system = require('fs');
+var fileSystem = require('fs');
 
 export namespace DataServiceModule {
 
@@ -50,7 +51,7 @@ export namespace DataServiceModule {
         }
 
         let dSConfigsSubDirectory: string = path.join(dSConfigsDirectory, "dataservice");
-        file_system.mkdirSync(dSConfigsSubDirectory, { recursive: true });
+        fileSystem.mkdirSync(dSConfigsSubDirectory, { recursive: true });
 
         //create artifact.xml, pom.xml and .project
         let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "DataServiceConfigsPom.xml");
@@ -116,6 +117,14 @@ export namespace DataServiceModule {
                 window.showErrorMessage("Data Service name already exists!");
                 return;
             }
+
+            //check whether if there is a data service with same name exists in the projects
+            let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
+            let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
+            let groupId: string = project.groupId;
+            let finalGroupId: string = `${groupId}.${DataServiceInfo.TYPE.split("/")[1]}`;
+            let isArtifactIdExists: boolean = Utils.checkArtifactIdExists(compositePomFilePath, dataServiceName, finalGroupId);
+
             let dSTemplateFilePath: string = path.join(dirName, "..", "..", TEMPLATES, "data-services", "dataService.xml");
             const buffer: Buffer = fse.readFileSync(dSTemplateFilePath);
             let dataService = new DOM().parseFromString(buffer.toString(), "text/xml");
@@ -124,20 +133,21 @@ export namespace DataServiceModule {
             let fileUri: Uri = Utils.createXmlFile(dSFilePath, dataService);
 
             //update artifact.xml
-            
-            let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
-            let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
-            let groupId: string = project.groupId;
-            let finalGroupId: string = `${groupId}.${DataServiceInfo.TYPE.split("/")[1]}`;
             let file: string = [DataServiceInfo.DATA_SERVICE_LABEL, dataServiceName + ".dbs"].join("/");
-            
             Utils.addArtifactToArtifactXml(artifactXmlFilePath, dataServiceName, finalGroupId, VERSION, DataServiceInfo.TYPE,
                 ServerRoleInfo.DATA_SERVICES_SERVER, file, undefined, undefined, undefined);
 
             //update composite pom.xml
             let compositeExporterDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
-            Utils.updateCompositePomXml(compositeExporterDirectory, dataServiceName, DataServiceInfo.TYPE,
-                ServerRoleInfo.DATA_SERVICES_SERVER, finalGroupId);
+
+            if (!isArtifactIdExists) {
+                Utils.updateCompositePomXml(compositeExporterDirectory, dataServiceName, DataServiceInfo.TYPE,
+                    ServerRoleInfo.DATA_SERVICES_SERVER, finalGroupId);
+            }
+            else {
+                TerminalModule.printLogMessage(`Data service itentifier for ${dataServiceName} already exists, adding to composite exorter aborted`);
+
+            }
 
             // Open and show newly created .dbs file in the editor.
             workspace.openTextDocument(fileUri).then(doc => window.showTextDocument(doc));
@@ -161,7 +171,7 @@ export namespace DataServiceModule {
         //check whether a .dbs file was deleted
         if ((dataServiceFolder === DataServiceInfo.DESTINATION_FOLDER) && (fileExtension === "dbs")) {
             Utils.deletefromArtifactXml(artifactXmlFilePath, rawDataServiceName.trim());
-            Utils.deleteArtifactFromPomXml(rawDataServiceName.trim(), dataServiceFolder, rootDirectory, undefined);
+            Utils.deleteArtifactFromPomXml(rawDataServiceName.trim(), dataServiceFolder, rootDirectory, undefined, undefined);
         }
     }
 }

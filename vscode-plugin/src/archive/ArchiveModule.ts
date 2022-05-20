@@ -32,6 +32,7 @@ import { ConnectorModule } from "../connector/ConnectorModule";
 import { DataServiceInfo } from "../dataService/dataServiceUtils";
 import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
 import { MediatorProjectModule } from "../mediatorProject/MediatorProjectModule";
+import { TerminalModule } from "../logging/TerminalModule";
 
 let DOM = require('xmldom').DOMParser;
 var fileSystem = require('fs');
@@ -88,8 +89,9 @@ export namespace ArchiveModule {
             return;
         }
         const buffer: Buffer = fse.readFileSync(rootArtifactsPath);
-        let medatadaXml = new DOM().parseFromString(buffer.toString(), XML_TYPE);
-        let artifacts = medatadaXml.getElementsByTagName(ARTIFACT_ID_TAG);
+        let artifactXml = new DOM().parseFromString(buffer.toString(), XML_TYPE);
+        let artifacts = artifactXml.getElementsByTagName("artifact");
+        
         if (artifacts.length > 0) {
 
             //create root pom.xml and .project files
@@ -100,15 +102,7 @@ export namespace ArchiveModule {
             createRootPomXml(newRootDirectory, groupId, projectName, version);
 
             //create settings.json
-            let settingsDirectory: string = path.join(newProjectDirectory, ".vscode");
-            let settingsFilePath: string = path.join(settingsDirectory, "settings.json");
-            let templateSettingsFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "settings.json");
-            fse.mkdirSync(settingsDirectory);
-            let edit = new WorkspaceEdit();
-            edit.createFile(Uri.file(settingsFilePath));
-            workspace.applyEdit(edit);
-            let settings: Buffer = fse.readFileSync(templateSettingsFilePath);
-            fse.writeFileSync(settingsFilePath, settings);
+            Utils.createVsCodeSettingsFile(newProjectDirectory);
 
             //create composite exporter project
             Utils.CreateNewCompositeExporterProject(newProjectDirectory, name.trim());
@@ -118,8 +112,9 @@ export namespace ArchiveModule {
                 return;
             }
 
-            for (let i = 0; i < dependencies.length; i++) {
-                let artifactName: string = dependencies[i].getAttribute(ARTIFACT_ID_TAG);
+            let length: number = dependencies.length;
+            for (let i = 0; i < length; i++) {
+                let artifactName: string = dependencies[i].getAttribute("artifact");
                 let version: string = dependencies[i].getAttribute(VERSION_TAG);
                 let include: string = dependencies[i].getAttribute("include").trim();
                 if (include === "true") {
@@ -252,7 +247,7 @@ export namespace ArchiveModule {
         let configsArtifactfilePath: string = path.join(esbConfigsDirectory, ARTIFACT_FILE);
         let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
         let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
-        let groupId: string = project.groupId!;
+        let groupId: string = project.groupId;
         let finalGroupId: string = `${groupId}.${type.split("/")[1]}`;
         let filePath: string = [SRC, MAIN, SYNAPSE_CONFIG, destinationFolder, newFileName].join("/");
         Utils.addArtifactToArtifactXml(configsArtifactfilePath, name, finalGroupId, version, type, serverRole,

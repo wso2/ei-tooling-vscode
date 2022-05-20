@@ -76,7 +76,7 @@ export namespace TerminalModule {
 
     export function printLogMessage(logMessage: string) {
         createTerminal();
-        terminal.sendText(`echo "[Log]: ${logMessage}"`);
+        terminal.sendText(`echo "[Log] ${logMessage}"`);
     }
 
 }

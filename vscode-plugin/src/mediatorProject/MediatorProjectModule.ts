@@ -200,7 +200,7 @@ export namespace MediatorProjectModule {
             let projectName: string = projectDirectoryArray[projectDirectoryArray.length - 1].trim();
 
             //delete mediator project details from composite pom
-            Utils.deleteArtifactFromPomXml(projectName, projectName, rootDirectory, packageName);
+            Utils.deleteArtifactFromPomXml(projectName, projectName, rootDirectory, undefined, packageName);
 
         }
     }

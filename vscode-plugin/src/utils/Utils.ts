@@ -181,7 +181,8 @@ export namespace Utils {
     /**
      * Delete artifact related information from composite pom.xml.
      */
-    export function deleteArtifactFromPomXml(artifactName: string, artifactType: string, rootDirectory: string, groupId: string | undefined) {
+    export function deleteArtifactFromPomXml(artifactName: string, artifactType: string, rootDirectory: string,
+        esbConfigsDirectory: string | undefined, groupId: string | undefined) {
 
         const pathToPomXml: string = path.join(getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
         if (!fse.existsSync(pathToPomXml)) return;
@@ -231,27 +232,29 @@ export namespace Utils {
 
                     //delete swagger related information
                     let swaggerArtifactName: string = `${artifactName}_${SWAGGER}`;
-                    deleteArtifactFromPomXml(swaggerArtifactName, METADATA, rootDirectory, undefined);
+                    deleteArtifactFromPomXml(swaggerArtifactName, METADATA, rootDirectory, esbConfigsDirectory, undefined);
 
                     //delete metadata related imformation
                     let metadataArtifactName: string = `${artifactName}_${METADATA}`;
-                    deleteArtifactFromPomXml(metadataArtifactName, METADATA, rootDirectory, undefined);
+                    deleteArtifactFromPomXml(metadataArtifactName, METADATA, rootDirectory, esbConfigsDirectory, undefined);
 
                     //delete swagger and metadata files
-                    let syapseSubDirectory: string = getDirectoryFromDirectoryType(SubDirectories.CONFIGS, rootDirectory);
-                    let metaDataDirectory: string = path.join(syapseSubDirectory, SRC, MAIN, RESOURECS, METADATA);
-                    fse.remove(path.join(metaDataDirectory, `${artifactName}_${METADATA}.yaml`));
-                    fse.remove(path.join(metaDataDirectory, `${artifactName}_${SWAGGER}.yaml`));
+                    if (esbConfigsDirectory) {
+                        let metaDataDirectory: string = path.join(esbConfigsDirectory, SRC, MAIN, RESOURECS, METADATA);
+                        fse.remove(path.join(metaDataDirectory, `${artifactName}_${METADATA}.yaml`));
+                        fse.remove(path.join(metaDataDirectory, `${artifactName}_${SWAGGER}.yaml`));
+                    }
                 }
                 else if (artifactType === proxyServiceType) {
 
                     //delete metadata related imformation
                     let metadataArtifactName: string = `${artifactName}_${PROXY_METADATA}`;
-                    deleteArtifactFromPomXml(metadataArtifactName, "proxy-service.metadata", rootDirectory, undefined);
+                    deleteArtifactFromPomXml(metadataArtifactName, "proxy-service.metadata", rootDirectory, esbConfigsDirectory, undefined);
 
-                    let syapseSubDirectory: string = getDirectoryFromDirectoryType(SubDirectories.CONFIGS, rootDirectory);
-                    let metaDataDirectory: string = path.join(syapseSubDirectory, SRC, MAIN, RESOURECS, METADATA);
-                    fse.remove(path.join(metaDataDirectory, artifactName + "_proxy_metadata.yaml"));
+                    if (esbConfigsDirectory) {
+                        let metaDataDirectory: string = path.join(esbConfigsDirectory, SRC, MAIN, RESOURECS, METADATA);
+                        fse.remove(path.join(metaDataDirectory, artifactName + "_proxy_metadata.yaml"));
+                    }
                 }
                 return;
             }
@@ -684,5 +687,26 @@ export namespace Utils {
         else if (projectNature === ProjectNatures.CONNECTOR_EXPORTER) {
             ConnectorModule.addConnectorExporterToRootPom(rootDirectory, projectName);
         }
+    }
+
+    /**
+    * Check same artifact Id and artifact type exists in the project.
+    */
+    export function checkArtifactIdExists(pomFilePath: string, artifactId: string, finalGroupId: string): boolean {
+
+        let isArtifactIdExists: boolean = false;
+        const buffer: Buffer = fse.readFileSync(pomFilePath);
+        let pomXml = new DOM().parseFromString(buffer.toString(), "text/xml");
+        let dependencies = pomXml.getElementsByTagName("dependencies")[0];
+        let dependencyList = dependencies.getElementsByTagName("dependency");
+        let length: number = dependencyList.length;
+
+        for (let i = 0; i < length; i++) {
+            let groupId: string = dependencyList[i].getElementsByTagName("groupId")[0].textContent.trim();
+            let id: string = dependencyList[i].getElementsByTagName("artifactId")[0].textContent.trim();
+            if ((groupId === finalGroupId) && (id === artifactId)) return true;
+        }
+
+        return isArtifactIdExists;
     }
 }

@@ -226,7 +226,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
                 let path;
                 if (registry) {
                     if (registry === "conf") {
-                        path = "/_system/configuration";
+                        path = "/_system/config";
                     } else {
                         path = "/_system/governance";
                     }

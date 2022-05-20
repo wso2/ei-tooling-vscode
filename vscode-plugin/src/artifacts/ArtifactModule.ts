@@ -95,7 +95,7 @@ export namespace ArtifactModule {
             });
         }
         else {
-            let message: string= "No workspace folder found";
+            let message: string = "No workspace folder found";
             TerminalModule.printLogMessage(message);
             window.showErrorMessage(message);
         }
@@ -132,7 +132,7 @@ export namespace ArtifactModule {
             });
         }
         else {
-            let message: string= "No workspace folder found";
+            let message: string = "No workspace folder found";
             TerminalModule.printLogMessage(message);
             window.showErrorMessage(message);
         }
@@ -164,12 +164,12 @@ export namespace ArtifactModule {
                     // file name already exists in the project.
                     window.showErrorMessage("Artifact Name " + targetArtifactName + " already exists!");
                 } else {
-                    let targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName +
-                        getFileExtension(registryResource));
+                    let fileExtension: string = getFileExtension(registryResource);
+                    let targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + fileExtension);
 
                     const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
                     let templateArtifactFilePath = path.join(dirName, '..', '..', TEMPLATES, targetFolder,
-                        templateFileName + getFileExtension(registryResource));
+                        templateFileName + fileExtension);
                     //create metadata and swagger files for API
                     if (type === APIArtifactInfo.TYPE) {
                         //path to metadata template
@@ -230,7 +230,8 @@ export namespace ArtifactModule {
         }
         else {//create registry resource
 
-            let targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + getFileExtension(registryResource));
+            let fileExtension: string = getFileExtension(registryResource);
+            let targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + fileExtension);
 
             if (fse.existsSync(targetArtifactFilePath)) {
                 // file name already exists in the project.
@@ -240,7 +241,7 @@ export namespace ArtifactModule {
 
             const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
             let templateArtifactFilePath = path.join(dirName, '..', '..', TEMPLATES, targetFolder,
-                templateFileName + getFileExtension(registryResource));
+                templateFileName + fileExtension);
 
             createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
                 templateArtifactFilePath, artifactType, registryResource);
@@ -371,14 +372,25 @@ export namespace ArtifactModule {
      */
     function updateCompositePomXmlFile(rootDirectory: string, artifactName: string, type: string) {
 
-        // read pom and get project group_id and version
         let compositeExporterDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
         const pomFile: string = path.join(compositeExporterDirectory, POM_FILE);
+        if (!fse.existsSync(pomFile)) {
+            window.showErrorMessage("No composite pom.xml found...!");
+            return;
+        }
 
-        let serverRole: string;
+        //read project group id
         let project: Utils.Project = Utils.getProjectInfoFromPOM(pomFile);
         const { groupId, version } = Object.assign(project);
         let finalGroupId: string = groupId + "." + type.split("/")[1];
+
+        //check whether artifcat/resource identifier already exists
+        if (Utils.checkArtifactIdExists(pomFile, artifactName, finalGroupId)) {
+            TerminalModule.printLogMessage(`Artifact identifier for ${artifactName} already exists, adding to composite exporter aborted`);
+            return;
+        }
+
+        let serverRole: string;
         if (type === RegistryResourceInfo.TYPE) serverRole = ServerRoleInfo.ENTERPRISE_INTEGRATOR;
         else serverRole = ServerRoleInfo.ENTERPRISE_SERVICE_BUS;
 
@@ -409,40 +421,34 @@ export namespace ArtifactModule {
      * -metadata.yaml file
      * -swagger.yaml file
      */
-    export function safeDeleteArtifact(filePath: string) {
+    export function safeDeleteArtifact(filePath: string, rootDirectory: string) {
 
         if (workspace.workspaceFolders) {
             let array: string[] = filePath.split(path.sep);
             let deletedArtifact: string = array[array.length - 1];
             let artifactFolder: string = array[array.length - 2];
             let rawArtifactName: string[] = deletedArtifact.split(".");
+            let fileExtension: string = rawArtifactName[1].trim();
 
             // Check if the deleted file is a synapse-config or a registry-resource file
             let artifactXmlFilePath: string;
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             let synapseDirectoryPattern: string = path.join(SRC, MAIN, SYNAPSE_CONFIG);
 
+            let currentRootDirectory: string = path.join(filePath, "..", "..");
             let resourceSubDirectory: string = path.join(filePath, "..");
-            let resourcesProjectNaturePath: string = path.join(resourceSubDirectory, PROJECT_FILE);
-            let resourceDirectoryType: string = "";
-            if (fse.existsSync(resourcesProjectNaturePath)) {
-                resourceDirectoryType = Utils.getDirectoryType(path.join(resourceSubDirectory, PROJECT_FILE));
-            }
 
-            //artifact
-            if (filePath.includes(synapseDirectoryPattern)) {
+            if (filePath.includes(synapseDirectoryPattern)) {//artifact
                 let syapseSubDirectory: string = filePath.split(synapseDirectoryPattern)[0];
                 artifactXmlFilePath = path.join(syapseSubDirectory, ARTIFACT_FILE);
                 Utils.deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
 
                 let artifactType = ArtifactInfo.artifactTypes.get(artifactFolder);
-                if (typeof artifactType !== "undefined") Utils.deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1], rootDirectory, undefined);
-                //resource
-            } else if (resourceDirectoryType === SubDirectories.REGISTRY_RESOURCES) {
+                if (typeof artifactType !== "undefined") Utils.deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1], rootDirectory, syapseSubDirectory, undefined);
+            } else if ((currentRootDirectory === rootDirectory) && (fileExtension !== "zip")) {//resource
                 artifactXmlFilePath = path.join(resourceSubDirectory, ARTIFACT_FILE);
 
                 Utils.deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
-                Utils.deleteArtifactFromPomXml(rawArtifactName[0], RegistryResourceInfo.TYPE.split("/")[1], rootDirectory, undefined);
+                Utils.deleteArtifactFromPomXml(rawArtifactName[0], RegistryResourceInfo.TYPE.split("/")[1], rootDirectory, undefined, undefined);
             }
         }
     }

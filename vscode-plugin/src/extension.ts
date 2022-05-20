@@ -111,7 +111,7 @@ export function activate(context: ExtensionContext) {
             let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             chokidar.watch(rootDirectory).on('unlink', (filePath: string) => {
 
-                ArtifactModule.safeDeleteArtifact(filePath);
+                ArtifactModule.safeDeleteArtifact(filePath, rootDirectory);
                 DataServiceModule.safeDeleteDataService(filePath, rootDirectory);
                 ConnectorModule.safeDeleteConnector(filePath, rootDirectory);
                 MediatorProjectModule.safeDeleteMediatorProjectDetails(filePath, rootDirectory);
