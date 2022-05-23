@@ -30,7 +30,6 @@ let DOM = require('xmldom').DOMParser;
 
 export namespace ConnectorModule {
 
-    const dirName = __dirname;
     const POM = Common.POM;
     const CONF = Common.CONF;
     const TEMPLATES = Common.TEMPLATES;
@@ -43,8 +42,8 @@ export namespace ConnectorModule {
     * Add new connector exporter to the workspace.
     */
     export async function createNewConnectorExporter(rootDirectory: string, projectName: string) {
-        let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "ConnectorExporterPom.xml");
-        let templateProjNatureFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "connectorExporter.xml")
+        let templatePomFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, "ConnectorExporterPom.xml");
+        let templateProjNatureFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "connectorExporter.xml")
         await Utils.createProject(projectName.trim(), "connector exporter", templatePomFilePath,
             templateProjNatureFilePath, SubDirectories.CONNECTOR_EXPORTER, true, rootDirectory, ProjectNatures.CONNECTOR_EXPORTER);
     }

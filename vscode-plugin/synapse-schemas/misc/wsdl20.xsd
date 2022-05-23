@@ -17,7 +17,14 @@
 
    $Id: wsdl20.xsd,v 1.4 2008/03/31 19:12:51 plehegar Exp $
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://www.w3.org/ns/wsdl" targetNamespace="http://www.w3.org/ns/wsdl" elementFormDefault="qualified" finalDefault="" blockDefault="" attributeFormDefault="unqualified">
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:wsdl="http://www.w3.org/ns/wsdl" 
+    targetNamespace="http://www.w3.org/ns/wsdl" 
+    elementFormDefault="qualified" 
+    finalDefault="" 
+    blockDefault="" 
+    attributeFormDefault="unqualified">
 
   <xs:element name="documentation" type="wsdl:DocumentationType"/>
   <xs:complexType name="DocumentationType" mixed="true">
@@ -360,3 +367,4 @@
   </xs:complexType>
 
 </xs:schema>
+

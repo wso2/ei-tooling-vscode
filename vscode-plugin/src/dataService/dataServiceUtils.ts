@@ -35,4 +35,3 @@ export class DataServiceInfo {
 
     static readonly DATA_SERVICE_LABEL: string = "dataservice";
 }
-

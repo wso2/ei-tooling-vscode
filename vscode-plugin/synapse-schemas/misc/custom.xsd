@@ -4,3 +4,4 @@
            elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:attribute name="customAttr" type="xs:boolean" default="true"/>
 </xs:schema>
+

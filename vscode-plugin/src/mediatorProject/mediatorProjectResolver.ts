@@ -51,5 +51,3 @@ export async function createMediatorProject() {
         MediatorProjectModule.createProject(rootDirectory, projectName.trim(), packageName.trim(), "1.0.0", ServerRoleInfo.ENTERPRISE_INTEGRATOR, className.trim());
     }
 }
-
-

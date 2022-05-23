@@ -18,9 +18,11 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified"
+        targetNamespace="http://ws.apache.org/ns/synapse"
+        xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:include schemaLocation="../endpoint.xsd"/>
     <xs:include schemaLocation="../mediators/mediators.xsd"/>
@@ -92,3 +94,4 @@
     </xs:complexType>
 
 </xs:schema>
+

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * WSO2 Inc. licenses this file to you under the Apache License,
 * Version 2.0 (the "License"); you may not use this file except
@@ -18,10 +18,6 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 export const GROUP_ID_PREFIX: string = "com.example.";
 
-//export const ARCHETYPE_ARTIFACT_ID: string = "org.wso2.carbon.extension.esb.project-archetype";
-//export const ARCHETYPE_GROUP_ID: string = "org.wso2.carbon.extension.archetype";
-
 export const ARCHETYPE_ARTIFACT_ID: string = "my-archetype-id";
 export const ARCHETYPE_GROUP_ID: string = "my.groupId";
 export const ARCHETYPE_VERSION: string = "1.0.0";
-

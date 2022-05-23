@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * WSO2 Inc. licenses this file to you under the Apache License,
 * Version 2.0 (the "License"); you may not use this file except
@@ -34,7 +34,6 @@ import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
 
 export namespace Utils {
 
-    const dirName = __dirname;
     const SRC = ESBArtifactPath.SRC;
     const MAIN = ESBArtifactPath.MAIN;
     const RESOURECS = ESBArtifactPath.RESOURECS;
@@ -120,7 +119,7 @@ export namespace Utils {
 
         if (!fse.existsSync(settingsDirectory)) fse.mkdirSync(settingsDirectory);
 
-        let templateSettingsFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "settings.json");
+        let templateSettingsFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "settings.json");
         let edit = new WorkspaceEdit();
         edit.createFile(Uri.file(settingsFilePath));
         workspace.applyEdit(edit);
@@ -287,7 +286,7 @@ export namespace Utils {
 
         //read template file
         let fileName: string = directory + "Pom.xml";
-        let buildTemplatePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, fileName);
+        let buildTemplatePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, fileName);
         const buff: Buffer = fse.readFileSync(buildTemplatePath);
         let templateXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
 
@@ -357,8 +356,8 @@ export namespace Utils {
 
         //create new sub-directory
         //create pom.xml, artifact.xml and .project files
-        let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "CompositeExporterPom.xml");
-        let templateProjNatureFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "compositeExporter.xml");
+        let templatePomFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, "CompositeExporterPom.xml");
+        let templateProjNatureFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "compositeExporter.xml");
         await createProject(projectName, "Composite Exporter Project", templatePomFilePath,
             templateProjNatureFilePath, SubDirectories.COMPOSITE_EXPORTER, false, rootDirectory, ProjectNatures.COMPOSITE_EXPORTER);
     }
@@ -624,7 +623,7 @@ export namespace Utils {
         if (createArtifactXml) {
             //create new artifact.xml
             //read template file
-            let templateArtifactFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, ARTIFACT_FILE);
+            let templateArtifactFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, ARTIFACT_FILE);
             const buffer: Buffer = fse.readFileSync(templateArtifactFilePath);
             let artifacts = new DOM().parseFromString(buffer.toString(), "text/xml");
 

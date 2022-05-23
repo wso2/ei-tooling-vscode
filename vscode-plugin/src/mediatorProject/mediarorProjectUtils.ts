@@ -29,5 +29,3 @@ export class MediatorProjectInfo {
     static readonly TYPE: string = "lib/synapse/mediator";
     static readonly FOLDER: string = "mediator"
 }
-
-

@@ -29,7 +29,6 @@ var fs = require('fs');
 
 export namespace MediatorProjectModule {
 
-    const dirName = __dirname;
     const SRC = ESBArtifactPath.SRC;
     const MAIN = ESBArtifactPath.MAIN;
     const POM = Common.POM;
@@ -72,7 +71,7 @@ export namespace MediatorProjectModule {
         let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
 
         //add new pom.xml
-        let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "MediatorProjectPom.xml");
+        let templatePomFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, "MediatorProjectPom.xml");
         const buff: Buffer = fse.readFileSync(templatePomFilePath);
         let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
 
@@ -103,7 +102,7 @@ export namespace MediatorProjectModule {
         Utils.createXmlFile(mediatorProjectPomFilePath, pomXmlDoc);
 
         //add new .project file
-        let templateProjNatureFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "mediatorProject.xml");
+        let templateProjNatureFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "mediatorProject.xml");
         const buf: Buffer = fse.readFileSync(templateProjNatureFilePath);
         let projectNature = new DOM().parseFromString(buf.toString(), "text/xml");
 
@@ -114,7 +113,7 @@ export namespace MediatorProjectModule {
         Utils.createXmlFile(projectNatureFilePath, projectNature);
 
         //add new .classpath file
-        let templateclassPathFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "mediatorProjectClassPath.xml");
+        let templateclassPathFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "mediatorProjectClassPath.xml");
         const buffer: Buffer = fse.readFileSync(templateclassPathFilePath);
         let classPath = new DOM().parseFromString(buffer.toString(), "text/xml");
 

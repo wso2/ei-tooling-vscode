@@ -30,7 +30,6 @@ var fileSystem = require('fs');
 
 export namespace DataServiceModule {
 
-    const dirName = __dirname;
     const POM = Common.POM;
     const CONF = Common.CONF;
     const TEMPLATES = Common.TEMPLATES;
@@ -54,8 +53,8 @@ export namespace DataServiceModule {
         fileSystem.mkdirSync(dSConfigsSubDirectory, { recursive: true });
 
         //create artifact.xml, pom.xml and .project
-        let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "DataServiceConfigsPom.xml");
-        let templateProjNatureFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "dataService.xml")
+        let templatePomFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, "DataServiceConfigsPom.xml");
+        let templateProjNatureFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "dataService.xml")
         Utils.createConfigurationFiles(projectName, dSConfigsDirectory, templateProjNatureFilePath, templatePomFilePath, true);
 
         //add dataservice module to root pom
@@ -125,7 +124,7 @@ export namespace DataServiceModule {
             let finalGroupId: string = `${groupId}.${DataServiceInfo.TYPE.split("/")[1]}`;
             let isArtifactIdExists: boolean = Utils.checkArtifactIdExists(compositePomFilePath, dataServiceName, finalGroupId);
 
-            let dSTemplateFilePath: string = path.join(dirName, "..", "..", TEMPLATES, "data-services", "dataService.xml");
+            let dSTemplateFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, "data-services", "dataService.xml");
             const buffer: Buffer = fse.readFileSync(dSTemplateFilePath);
             let dataService = new DOM().parseFromString(buffer.toString(), "text/xml");
             let data = dataService.getElementsByTagName("data")[0];

@@ -24,8 +24,6 @@ import { ConnectorModule } from "./ConnectorModule";
 
 export async function addNewConnectorExporter() {
 
-    const dirName = __dirname;
-
     let projectName = await showInputBox(ConnectorInfo.CONNECTOR_EXPORTER_PROMPT_MESSAGE);
 
     while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {

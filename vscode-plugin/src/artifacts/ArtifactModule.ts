@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * WSO2 Inc. licenses this file to you under the Apache License,
 * Version 2.0 (the "License"); you may not use this file except
@@ -35,7 +35,6 @@ var file_system = require('fs');
 
 export namespace ArtifactModule {
 
-    const dirName = __dirname;
     const SRC = ESBArtifactPath.SRC;
     const MAIN = ESBArtifactPath.MAIN;
     const SYNAPSE_CONFIG = ESBArtifactPath.SYNAPSE_CONFIG;
@@ -168,14 +167,14 @@ export namespace ArtifactModule {
                     let targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + fileExtension);
 
                     const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
-                    let templateArtifactFilePath = path.join(dirName, '..', '..', TEMPLATES, targetFolder,
+                    let templateArtifactFilePath = path.join(__dirname, '..', '..', TEMPLATES, targetFolder,
                         templateFileName + fileExtension);
                     //create metadata and swagger files for API
                     if (type === APIArtifactInfo.TYPE) {
                         //path to metadata template
-                        let templateMetadataFilePath = path.join(dirName, '..', '..', TEMPLATES, METADATA, `${METADATA}.yaml`);
+                        let templateMetadataFilePath = path.join(__dirname, '..', '..', TEMPLATES, METADATA, `${METADATA}.yaml`);
                         //path to swagger template
-                        let templateSwaggerFilePath = path.join(dirName, '..', '..', TEMPLATES, METADATA, `${SWAGGER}.yaml`);
+                        let templateSwaggerFilePath = path.join(__dirname, '..', '..', TEMPLATES, METADATA, `${SWAGGER}.yaml`);
                         //path to metadata file
                         let targetMetadataFilePath = path.join(pathtoResourcesFile, `${targetArtifactName}_${METADATA}.yaml`);
                         //path to swagger file
@@ -206,7 +205,7 @@ export namespace ArtifactModule {
                     }
                     else if (type === ProxyArtifactInfo.TYPE) {//create metadata file for proxy service
                         //path to metadata template
-                        let templateMetadataFilePath = path.join(dirName, '..', '..', TEMPLATES, METADATA, `${METADATA}.yaml`);
+                        let templateMetadataFilePath = path.join(__dirname, '..', '..', TEMPLATES, METADATA, `${METADATA}.yaml`);
                         //path to metadata file
                         let targetMetadataFilePath = path.join(pathtoResourcesFile, `${targetArtifactName}_proxy_${METADATA}.yaml`);
 
@@ -240,7 +239,7 @@ export namespace ArtifactModule {
             }
 
             const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
-            let templateArtifactFilePath = path.join(dirName, '..', '..', TEMPLATES, targetFolder,
+            let templateArtifactFilePath = path.join(__dirname, '..', '..', TEMPLATES, targetFolder,
                 templateFileName + fileExtension);
 
             createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
@@ -565,8 +564,8 @@ export namespace ArtifactModule {
 
         //create new sub-directory
         //create pom.xml, artifact.xml and .project files
-        let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "ConfigsPom.xml");
-        let templateProjNatureFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "esbConfigs.xml")
+        let templatePomFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, "ConfigsPom.xml");
+        let templateProjNatureFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "esbConfigs.xml")
         await Utils.createProject(projectName, "ESB Configs Project", templatePomFilePath, templateProjNatureFilePath,
             SubDirectories.CONFIGS, true, rootDirectory, ProjectNatures.CONFIGS);
 
@@ -629,8 +628,8 @@ export namespace ArtifactModule {
 
         //create new sub-directory
         //create pom.xml, artifact.xml and .project files
-        let templatePomFilePath: string = path.join(dirName, "..", "..", TEMPLATES, POM, "RegistryResourcesPom.xml");
-        let templateProjNatureFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "registryResources.xml");
+        let templatePomFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, "RegistryResourcesPom.xml");
+        let templateProjNatureFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "registryResources.xml");
         await Utils.createProject(projectName, "Registry Resources Project", templatePomFilePath, templateProjNatureFilePath,
             SubDirectories.REGISTRY_RESOURCES, true, rootDirectory, ProjectNatures.REGISTRY_RESOURCES);
 
@@ -638,7 +637,7 @@ export namespace ArtifactModule {
         if (!fse.existsSync(path.join(rootDirectory, projectName))) return;
 
         //create .classpath file
-        let templateConfigFilePath: string = path.join(dirName, "..", "..", TEMPLATES, CONF, "registryClassPath.xml")
+        let templateConfigFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "registryClassPath.xml")
         const buf: Buffer = fse.readFileSync(templateConfigFilePath);
         let classPath = new DOM().parseFromString(buf.toString(), "text/xml");
         let configFilePath: string = path.join(rootDirectory, projectName, ".classpath");

@@ -18,19 +18,25 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 import { Terminal, window, Uri, commands } from "vscode";
 import { ChildProcess, spawn } from "child_process";
-import { CommandTypes } from "./terminalUtils";
+import { CommandTypes, TerminalDetails } from "./terminalUtils";
 import { Utils } from "../utils/Utils";
 
 export namespace TerminalModule {
 
     let terminal: Terminal;
 
+    /**
+    * Create new Terminal in VS Code editor.
+    */
     export function createTerminal() {
         if (!terminal) {
-            terminal = window.createTerminal({ name: "WSO2 Enterprise Integrator Logs" });
+            terminal = window.createTerminal({ name: TerminalDetails.NAME });
         }
     }
 
+    /**
+    * Create new integration project using maven commands.
+    */
     export function createIntegrationProject(command: string, projectRootDir: string, targetLocation: string) {
 
         createTerminal();
@@ -40,6 +46,9 @@ export namespace TerminalModule {
 
     }
 
+    /**
+    * Build integration project using maven commands.
+    */
     export function buildIntegrationProject(command: string, targetLocation: string) {
 
         createTerminal();
@@ -49,6 +58,9 @@ export namespace TerminalModule {
 
     }
 
+    /**
+    * Run a given maven command.
+    */
     export function runMavenCommand(command: string, type: CommandTypes, targetLocation: string, projectRootDir?: string) {
 
         let childProcess: ChildProcess = spawn(command, [], { cwd: targetLocation, shell: true });
@@ -74,6 +86,9 @@ export namespace TerminalModule {
         });;
     }
 
+    /**
+    * Print Log messages to the terminal.
+    */
     export function printLogMessage(logMessage: string) {
         createTerminal();
         terminal.sendText(`echo "[Log] ${logMessage}"`);

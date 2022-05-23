@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * WSO2 Inc. licenses this file to you under the Apache License,
 * Version 2.0 (the "License"); you may not use this file except
@@ -25,7 +25,6 @@ import * as fse from "fs-extra";
 import * as path from 'path';
 
 export namespace ArchetypeModule {
-    const dirName = __dirname;
 
     export interface ESBProject {
         archetypeGroupId: string;
@@ -94,22 +93,6 @@ export namespace ArchetypeModule {
 
         if (targetLocation) {
 
-            // let templateSettingsFilePath: string = path.join(dirName, '..', '..', 'templates', 'Conf', "settings.json");
-
-            // let targetSettingsFilePath: string = path.join(targetLocation, ".vscode", "settings.json");
-            // let targetSettingsDirectory: string = path.join(targetLocation, ".vscode");
-
-            // //create .vscode directory, if there are no
-            // if (!fse.existsSync(targetSettingsDirectory)) fse.mkdirSync(targetSettingsDirectory);
-
-            // let edit = new WorkspaceEdit();
-            // let targetSettingsFilePatUri = Uri.file(targetSettingsFilePath);
-
-            // edit.createFile(targetSettingsFilePatUri);
-            // workspace.applyEdit(edit);
-            // let settings: Buffer = fse.readFileSync(templateSettingsFilePath);
-            // fse.writeFileSync(targetSettingsFilePatUri.fsPath, settings);
-
             Utils.createVsCodeSettingsFile(targetLocation);
 
             commands.executeCommand('vscode.openFolder', Uri.file(targetLocation), true);
@@ -119,8 +102,3 @@ export namespace ArchetypeModule {
 
     }
 }
-
-
-
-
-

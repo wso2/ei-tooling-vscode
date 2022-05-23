@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * WSO2 Inc. licenses this file to you under the Apache License,
 * Version 2.0 (the "License"); you may not use this file except
@@ -32,7 +32,6 @@ import { ConnectorModule } from "../connector/ConnectorModule";
 import { DataServiceInfo } from "../dataService/dataServiceUtils";
 import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
 import { MediatorProjectModule } from "../mediatorProject/MediatorProjectModule";
-import { TerminalModule } from "../logging/TerminalModule";
 
 let DOM = require('xmldom').DOMParser;
 var fileSystem = require('fs');
@@ -46,7 +45,6 @@ let isDataServiceProjectCreated: boolean = false;
 
 export namespace ArchiveModule {
 
-    const dirName = __dirname;
     const SRC = ESBArtifactPath.SRC;
     const MAIN = ESBArtifactPath.MAIN;
     const RESOURECS = ESBArtifactPath.RESOURECS;
@@ -85,7 +83,7 @@ export namespace ArchiveModule {
         //read root artifact file
         let rootArtifactsPath: string = path.join(tmpDirectory, "artifacts.xml");
         if (!fse.existsSync(rootArtifactsPath)) {
-            window.showErrorMessage("Can not find root artifacts file.New project creation failed...!");
+            window.showErrorMessage("Can not find root artifacts.xml file. New project creation failed...!");
             return;
         }
         const buffer: Buffer = fse.readFileSync(rootArtifactsPath);

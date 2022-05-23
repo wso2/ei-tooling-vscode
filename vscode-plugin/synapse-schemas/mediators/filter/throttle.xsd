@@ -18,7 +18,11 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/ns/synapse" xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:import namespace="http://schemas.xmlsoap.org/ws/2004/09/policy" />
 
@@ -61,3 +65,4 @@
     </xs:element>
 
 </xs:schema>
+

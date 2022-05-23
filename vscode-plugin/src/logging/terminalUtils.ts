@@ -18,7 +18,11 @@ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 'use strict';
 
+export class TerminalDetails {
+    static readonly NAME: string = "WSO2 Enterprise Integrator Logs";
+}
+
 export class CommandTypes {
-    static readonly CREATE: string = "create"
+    static readonly CREATE: string = "create";
     static readonly BUILD: string = "build";
 }

@@ -230,7 +230,7 @@
 			},
 			{
 				"command": "wso2ei.car.create.zip",
-				"title": "Build Integration Project From capp",
+				"title": "Build Integration Project From CApp",
 				"category": "WSO2EI"
 			},
 			{
