@@ -46,6 +46,7 @@ export namespace DataServiceModule {
         let dSConfigsDirectory: string = path.join(rootDirectory, projectName);
         if (fse.existsSync(dSConfigsDirectory)) {
             window.showErrorMessage("Data Service project name already exists!");
+            TerminalModule.printLogMessage(`Project name ${projectName} already exists. Data Service project creation aborted.`);
             return;
         }
 
@@ -61,6 +62,7 @@ export namespace DataServiceModule {
         let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
         if (!fse.existsSync(rootPomFilePath)) {
             window.showErrorMessage("No root pom.xml found...!");
+            TerminalModule.printLogMessage(`${rootPomFilePath} does not exists. Could not add the ${projectName} to root pom.xml.`);
             return;
         }
         const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
@@ -106,7 +108,8 @@ export namespace DataServiceModule {
             let artifactXmlFilePath: string = path.join(subDirectoryPath, "..", ARTIFACT_FILE);
             let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
             if ((!fse.existsSync(artifactXmlFilePath)) || (!fse.existsSync(compositePomFilePath))) {
-                window.showErrorMessage("artifact.xml or composite pom.xml is missing, data service creation aborted...");
+                window.showErrorMessage("artifact.xml or composite pom.xml is missing, data service creation aborted...!");
+                TerminalModule.printLogMessage(`artifact.xml or composite pom.xml is missing, creating dataservice '${dataServiceName}' aborted.`);
                 return;
             }
 
@@ -114,6 +117,7 @@ export namespace DataServiceModule {
             let dSFilePath: string = path.join(subDirectoryPath, dataServiceName + ".dbs");
             if (fse.existsSync(dSFilePath)) {
                 window.showErrorMessage("Data Service name already exists!");
+                TerminalModule.printLogMessage(`Data service name '${dataServiceName}' already exists in ${subDirectoryPath}. Data service creation aborted.`);
                 return;
             }
 
@@ -144,7 +148,7 @@ export namespace DataServiceModule {
                     ServerRoleInfo.DATA_SERVICES_SERVER, finalGroupId);
             }
             else {
-                TerminalModule.printLogMessage(`Data service itentifier for ${dataServiceName} already exists, adding to composite exorter aborted`);
+                TerminalModule.printLogMessage(`Data service itentifier for '${dataServiceName}' already exists. Adding to composite exorter aborted.`);
 
             }
 

@@ -19,10 +19,12 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 import { workspace, Uri, window, commands } from "vscode";
 import * as path from 'path';
 import { executeProjectBuildCommand } from "../mavenInternals/commandHandler";
-import { SubDirectories } from "../artifacts/artifactUtils";
+import { Common, SubDirectories } from "../artifacts/artifactUtils";
 import { chooseTargetFolder, chooseTargetFile, showInputBox, showInputBoxForArtifactId, showInputBoxForGroupId } from "../utils/uiUtils";
 import { Utils } from "../utils/Utils";
 import { ArchiveModule } from "./ArchiveModule";
+import { TerminalModule } from "../logging/TerminalModule";
+import * as fse from "fs-extra";
 
 var fileSystem = require('fs');
 var archiver = require('archiver');
@@ -34,24 +36,38 @@ var AdmZip = require('adm-zip');
 * */
 export function createDeployableArchive() {
 
-    let projectNatures: string[] = [SubDirectories.COMPOSITE_EXPORTER, SubDirectories.CONFIGS, SubDirectories.CONNECTOR_EXPORTER,
-    SubDirectories.REGISTRY_RESOURCES, SubDirectories.DATA_SERVICE];
+    const PROJECT_FILE = Common.PROJECT_FILE;
+    const POM_FILE = Common.POM_FILE;
+
+    let directoryTypes: string[] = [SubDirectories.COMPOSITE_EXPORTER, SubDirectories.CONFIGS, SubDirectories.CONNECTOR_EXPORTER,
+    SubDirectories.REGISTRY_RESOURCES, SubDirectories.DATA_SERVICE, SubDirectories.MEDIATOR_PROJECT];
 
 
     if (workspace.workspaceFolders) {
         let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+
+        //check build plugins in root pom.xml
+        let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
+        if (!fse.existsSync(rootPomFilePath)) {
+            window.showErrorMessage("No root pom.xml found, project build aborted.");
+            TerminalModule.printLogMessage(`${rootPomFilePath} does not exists. Project build aborted.`);
+            return;
+        }
+        Utils.checkBuildPlugins(rootPomFilePath, SubDirectories.MULTI_MODULE);
+
         fileSystem.readdir(rootDirectory, (err: any, files: any) => {
             if (err)
-                console.log(err);
+                TerminalModule.printLogMessage(err);
             else {
                 files.forEach((file: any) => {
-                    let projConfigFilePath: string = path.join(rootDirectory, file, ".project");
-                    let pomFilePath: string = path.join(rootDirectory, file, "pom.xml");
+                    let projConfigFilePath: string = path.join(rootDirectory, file, PROJECT_FILE);
+                    let pomFilePath: string = path.join(rootDirectory, file, POM_FILE);
                     Utils.checkPathExistence(pomFilePath).then(exists => {
                         if (exists) {
-                            let projectNature: string = Utils.getDirectoryType(projConfigFilePath);
-                            if (projectNatures.indexOf(projectNature) !== -1) {
-                                Utils.checkBuildPlugins(pomFilePath, projectNature);
+                            let directoryType: string = Utils.getDirectoryType(projConfigFilePath);
+
+                            if (directoryTypes.indexOf(directoryType) !== -1) {
+                                Utils.checkBuildPlugins(pomFilePath, directoryType);
                             }
                         }
                     });

@@ -23,6 +23,7 @@ import { XMLSerializer as XMLSerializer } from 'xmldom';
 import { SubDirectories, ESBArtifactPath, Common } from "../artifacts/artifactUtils";
 import { Utils } from "../utils/Utils";
 import { MediatorProjectInfo } from "./mediarorProjectUtils";
+import { TerminalModule } from "../logging/TerminalModule";
 
 let DOM = require('xmldom').DOMParser;
 var fs = require('fs');
@@ -45,7 +46,8 @@ export namespace MediatorProjectModule {
         //check for composite pom.xml
         let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
         if (!fse.existsSync(compositePomFilePath)) {
-            window.showErrorMessage("Composite pom.xml is missing, Mediator Project creation aborted...");
+            window.showErrorMessage("Composite pom.xml is missing, Mediator Project creation aborted...!");
+            TerminalModule.printLogMessage(`${compositePomFilePath} does not exists. Mediator Project '${projectName}' creation aborted.`);
             return;
         }
 
@@ -53,6 +55,7 @@ export namespace MediatorProjectModule {
         let mediatorProjectDirectory: string = path.join(rootDirectory, projectName);
         if (fse.existsSync(mediatorProjectDirectory)) {
             window.showErrorMessage("Mediator project name already exists!");
+            TerminalModule.printLogMessage(`Project name '${projectName}' already exsits. Mediator Project '${projectName}' creation aborted.`);
             return;
         }
 
@@ -123,6 +126,7 @@ export namespace MediatorProjectModule {
         //add mediatorProject module to root pom
         if (!fse.existsSync(rootPomFilePath)) {
             window.showErrorMessage("No root pom.xml found...!");
+            TerminalModule.printLogMessage(`${rootPomFilePath} does not exists. Adding Mediator Project '${projectName}' to root pom.xml aborted.`);
             return;
         }
         const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);

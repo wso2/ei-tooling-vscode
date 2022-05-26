@@ -24,6 +24,7 @@ export class ServerRoleInfo {
 }
 
 export class SubDirectories {
+    static readonly MULTI_MODULE = "root";
     static readonly COMPOSITE_EXPORTER: string = "CompositeExporter";
     static readonly CONFIGS: string = "Configs";
     static readonly CONNECTOR_EXPORTER: string = "ConnectorExporter";
@@ -71,7 +72,7 @@ export class Common {
     static readonly VERSION_TAG: string = "version";
     static readonly DEPENDENCIES_TAG: string = "dependencies";
     static readonly PLUGIN_TAG: string = "plugin";
-    static readonly XML_TYPE : "text/xml";
+    static readonly XML_TYPE: "text/xml";
 }
 
 export class MetadataInfo {
