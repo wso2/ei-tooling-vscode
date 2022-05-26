@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,9 +15,11 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified"
+        targetNamespace="http://ws.apache.org/ns/synapse"
+        xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:include schemaLocation="../mediators/mediators.xsd"/>
 
@@ -29,7 +31,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:all>
-            <xs:element name="inSequence" minOccurs="1" maxOccurs="1">
+            <xs:element name="inSequence" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:group ref="mediatorList" minOccurs="0" maxOccurs="unbounded"/>
@@ -63,8 +65,20 @@
                     <xs:enumeration value="PATCH"/>
                 </xs:restriction>
             </xs:simpleType>
+
+        </xs:attribute>
+         <xs:attribute name="protocol" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="http"/>
+                    <xs:enumeration value="https"/>
+                </xs:restriction>
+            </xs:simpleType>
         </xs:attribute>
 
+        <xs:attribute name="inSequence" type="xs:string" use="optional"/>
+        <xs:attribute name="outSequence" type="xs:string" use="optional"/>
+        <xs:attribute name="faultSequence" type="xs:string" use="optional"/>
 
         <xs:attributeGroup ref="templateOrMapping"/>
     </xs:complexType>
@@ -80,3 +94,4 @@
     </xs:attributeGroup>
 
 </xs:schema>
+

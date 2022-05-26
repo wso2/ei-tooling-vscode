@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Uri, workspace} from "vscode";
+import { Uri, workspace } from "vscode";
 
 export namespace Settings {
 
@@ -89,7 +89,7 @@ export namespace Settings {
         const javaHome: string | undefined = External.javaHome();
         const useJavaHome: boolean | undefined = Terminal.useJavaHome();
         if (useJavaHome && javaHome) {
-            return {JAVA_HOME: javaHome};
+            return { JAVA_HOME: javaHome };
         } else {
             return {};
         }

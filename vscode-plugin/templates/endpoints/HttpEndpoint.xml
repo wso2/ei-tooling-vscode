@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <endpoint name="SampleHttpEP" xmlns="http://ws.apache.org/ns/synapse">
-   <http method="POST" uri-template="http://{uri.var.host}:{uri.var.port}/{uri.var.context}"/>
+   <http method="post" uri-template="http://{uri.var.host}:{uri.var.port}/{uri.var.context}"/>
 </endpoint>

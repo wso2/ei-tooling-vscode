@@ -16,8 +16,8 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {QuickPickItem, window} from "vscode";
-import {ArtifactModule} from "./ArtifactModule";
+import { QuickPickItem, window, workspace } from "vscode";
+import { ArtifactModule } from "./ArtifactModule";
 import {
     APIArtifactInfo,
     EndpointArtifactInfo,
@@ -29,12 +29,13 @@ import {
     RegistryResourceInfo,
     SequenceArtifactInfo,
     TaskArtifactInfo,
-    TemplateArtifactInfo
+    TemplateArtifactInfo,
+    ArtifactInfo
 } from "./artifactUtils";
-import {showInputBox, showQuickPick} from "../utils/uiUtils";
-import {Utils} from "../utils/Utils";
+import { showInputBox, showQuickPick } from "../utils/uiUtils";
+import { Utils } from "../utils/Utils";
 
-export async function createArtifact(artifactType: string) {
+export async function createArtifact(artifactType: string, targetFolderPath: string | undefined) {
     switch (artifactType) {
         case APIArtifactInfo.ARTIFACT_TYPE: {
             let artifactName = await showInputBox(APIArtifactInfo.PROMPT_MESSAGE);
@@ -45,8 +46,8 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createArtifact(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.API_LABEL,
-                                              artifactName.trim(), artifactType, APIArtifactInfo.TYPE);
+                ArtifactModule.createArtifact(targetFolderPath, APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.API_LABEL,
+                    artifactName.trim(), artifactType, APIArtifactInfo.TYPE);
             }
             break;
         }
@@ -59,8 +60,8 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createArtifact(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_LABEL,
-                                              artifactName.trim(), artifactType, ProxyArtifactInfo.TYPE);
+                ArtifactModule.createArtifact(targetFolderPath, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_LABEL,
+                    artifactName.trim(), artifactType, ProxyArtifactInfo.TYPE);
             }
             break;
         }
@@ -77,8 +78,8 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, EndpointArtifactInfo.TYPE);
+                    ArtifactModule.createArtifact(targetFolderPath, EndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName.trim(), artifactType, EndpointArtifactInfo.TYPE);
                 }
             }
             break;
@@ -96,8 +97,8 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, InboundEndpointArtifactInfo.TYPE);
+                    ArtifactModule.createArtifact(targetFolderPath, InboundEndpointArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName.trim(), artifactType, InboundEndpointArtifactInfo.TYPE);
                 }
             }
             break;
@@ -115,8 +116,8 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, LocalEntryArtifactInfo.TYPE);
+                    ArtifactModule.createArtifact(targetFolderPath, LocalEntryArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName.trim(), artifactType, LocalEntryArtifactInfo.TYPE);
                 }
             }
             break;
@@ -134,8 +135,8 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, MessageStoreArtifactInfo.TYPE);
+                    ArtifactModule.createArtifact(targetFolderPath, MessageStoreArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName.trim(), artifactType, MessageStoreArtifactInfo.TYPE);
                 }
             }
             break;
@@ -153,8 +154,8 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, MessageProcessorArtifactInfo.TYPE);
+                    ArtifactModule.createArtifact(targetFolderPath, MessageProcessorArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName.trim(), artifactType, MessageProcessorArtifactInfo.TYPE);
                 }
             }
             break;
@@ -172,8 +173,8 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 if (artifactName) {
-                    ArtifactModule.createArtifact(TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, TemplateArtifactInfo.TYPE);
+                    ArtifactModule.createArtifact(targetFolderPath, TemplateArtifactInfo.DESTINATION_FOLDER, selectedArtifactType,
+                        artifactName.trim(), artifactType, TemplateArtifactInfo.TYPE);
                 }
             }
             break;
@@ -187,9 +188,9 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createArtifact(SequenceArtifactInfo.DESTINATION_FOLDER,
-                                              SequenceArtifactInfo.SEQUENCE_LABEL,
-                                              artifactName.trim(), artifactType, SequenceArtifactInfo.TYPE);
+                ArtifactModule.createArtifact(targetFolderPath, SequenceArtifactInfo.DESTINATION_FOLDER,
+                    SequenceArtifactInfo.SEQUENCE_LABEL,
+                    artifactName.trim(), artifactType, SequenceArtifactInfo.TYPE);
             }
             break;
         }
@@ -202,9 +203,9 @@ export async function createArtifact(artifactType: string) {
             }
 
             if (artifactName) {
-                ArtifactModule.createArtifact(TaskArtifactInfo.DESTINATION_FOLDER,
-                                              TaskArtifactInfo.TASK_LABEL,
-                                              artifactName.trim(), artifactType, TaskArtifactInfo.TYPE);
+                ArtifactModule.createArtifact(targetFolderPath, TaskArtifactInfo.DESTINATION_FOLDER,
+                    TaskArtifactInfo.TASK_LABEL,
+                    artifactName.trim(), artifactType, TaskArtifactInfo.TYPE);
             }
             break;
         }
@@ -221,37 +222,56 @@ export async function createArtifact(artifactType: string) {
                 }
 
                 const registry = await window.showQuickPick(['conf', 'gov'],
-                                                            {placeHolder: 'Select the registry type.'});
+                    { placeHolder: 'Select the registry type.' });
                 let path;
                 if (registry) {
                     if (registry === "conf") {
-                        path = "/_system/configuration";
+                        path = "/_system/config";
                     } else {
                         path = "/_system/governance";
                     }
                 }
 
-                const registryPath = await window.showInputBox({
-                                                                   prompt: "Enter valid registry path here",
-                                                                   placeHolder: "eg: Datamapper/example"
-                                                               }).then(text => text);
+                let registryPath = await window.showInputBox({
+                    prompt: "Enter valid registry path here",
+                    placeHolder: "eg: Datamapper/example"
+                }).then(text => text);
 
-                let fileName = artifactName + ".xml";
-                
-                if (selectedArtifactType === "JSONSchemaTemplate") {
-                    fileName = artifactName + ".json";
+
+                while (typeof registryPath !== "undefined" && !Utils.validateRegistryPath(registryPath.trim())) {
+                    window.showErrorMessage("Enter valid registry path!!");
+                    registryPath = await window.showInputBox({
+                        prompt: "Enter valid registry path here",
+                        placeHolder: "eg: Datamapper/example"
+                    }).then(text => text);
                 }
 
-                let registryResource: RegistryResource = {
-                    file: fileName,
-                    path: path + "/" + registryPath,
-                    mediaType: RegistryResourceInfo.mediaTypes.get(selectedArtifactType)
-                };
+                if (registryPath && artifactName && registry) {
 
-                if (artifactName && registry) {
+                    registryPath = registryPath.trim();
+                    while (registryPath[registryPath.length - 1] === "/") {
+                        registryPath = registryPath.slice(0, -1);
+                    }
+
+                    let fileName = artifactName + ".xml";
+
+                    if (selectedArtifactType === "JSONSchemaTemplate") {
+                        fileName = artifactName + ".json";
+                    }
+
+                    let registryResource: RegistryResource = {
+                        file: fileName,
+                        path: path + "/" + registryPath,
+                        mediaType: RegistryResourceInfo.mediaTypes.get(selectedArtifactType)
+                    };
+
                     ArtifactModule.createResource(RegistryResourceInfo.DESTINATION_FOLDER, selectedArtifactType,
-                                                  artifactName.trim(), artifactType, RegistryResourceInfo.TYPE, registryResource);
+                        artifactName.trim(), artifactType, RegistryResourceInfo.TYPE, registryResource);
+
+
                 }
+
+
             }
             break;
         }
@@ -262,6 +282,48 @@ export interface RegistryResource {
     file?: string;
     path?: string;
     mediaType?: any;
+}
+
+export async function createESBProject() {
+    let projectName = await showInputBox(ArtifactInfo.ESB_PROMPT_MESSAGE);
+
+    while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
+        window.showErrorMessage("Enter valid ESB Project Name!!");
+        projectName = await showInputBox(ArtifactInfo.ESB_PROMPT_MESSAGE);
+    }
+
+    if (projectName && workspace.workspaceFolders) {
+        ArtifactModule.CreateNewESBConfigProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+    }
+
+}
+
+export async function createCompositeProject() {
+    let projectName = await showInputBox(ArtifactInfo.COMPOSITE_EXPORTER_PROMPT_MESSAGE);
+
+    while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
+        window.showErrorMessage("Enter valid Composite Exporter Project Name!!");
+        projectName = await showInputBox(ArtifactInfo.COMPOSITE_EXPORTER_PROMPT_MESSAGE);
+    }
+
+    if (projectName && workspace.workspaceFolders) {
+        Utils.CreateNewCompositeExporterProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+    }
+
+}
+
+export async function createRegistryResourcesProject() {
+    let projectName = await showInputBox(ArtifactInfo.REGISTRY_RESOURCES_PROMPT_MESSAGE);
+
+    while (typeof projectName !== "undefined" && !Utils.validate(projectName.trim())) {
+        window.showErrorMessage("Enter valid Registry Resources Project Name!!");
+        projectName = await showInputBox(ArtifactInfo.REGISTRY_RESOURCES_PROMPT_MESSAGE);
+    }
+
+    if (projectName && workspace.workspaceFolders) {
+        ArtifactModule.CreateNewRegistryResourcesProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+    }
+
 }
 
 function createEndpointServiceArray(): QuickPickItem[] {

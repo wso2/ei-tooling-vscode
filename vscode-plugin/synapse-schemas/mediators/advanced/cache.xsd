@@ -18,11 +18,13 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../mediators.xsd"/>
+    <xs:include schemaLocation="../mediators.xsd" />
 
     <xs:element name="cache">
         <xs:annotation>
@@ -33,6 +35,30 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="onCacheHit" minOccurs="0" maxOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation>
+                            If a cache hit occurs, the sequence or the mediator list to be invoked
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded" />
+                        <xs:attribute name="sequence" type="xs:string" use="optional" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="protocol" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="methods" minOccurs="1" maxOccurs="1" type="xs:string" />
+                            <xs:element name="headersToExcludeInHash" minOccurs="1" maxOccurs="1" type="xs:string" />
+                            <xs:element name="responseCodes" minOccurs="1" maxOccurs="1" type="xs:string" />
+                            <xs:element name="enableCacheControl" minOccurs="1" maxOccurs="1" type="xs:boolean" />
+                            <xs:element name="includeAgeHeader" minOccurs="1" maxOccurs="1" type="xs:boolean" />
+                            <xs:element name="hashGenerator" minOccurs="1" maxOccurs="1" type="xs:string" />
+                        </xs:all>
+                        <xs:attribute name="type" type="xs:string" fixed="HTTP" use="required" />
+                    </xs:complexType>
+                </xs:element>
                 <xs:element name="implementation" minOccurs="1" maxOccurs="1">
                     <xs:annotation>
                         <xs:documentation>
@@ -40,39 +66,23 @@
                         </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
-                        <xs:attribute name="maxSize" type="xs:int" use="optional"/>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="onCacheHit" minOccurs="1" maxOccurs="1">
-                    <xs:annotation>
-                        <xs:documentation>
-                            If a cache hit occurs, the sequence or the mediator list to be invoked
-                        </xs:documentation>
-                    </xs:annotation>
-                    <xs:complexType>
-                        <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded"/>
-                        <xs:attribute name="sequence" type="xs:string" use="optional"/>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="protocol" minOccurs="1" maxOccurs="1">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="methods" minOccurs="1" maxOccurs="1"/>
-                            <xs:element name="headersToExcludeInHash" minOccurs="1" maxOccurs="1"/>
-                            <xs:element name="responseCodes" minOccurs="1" maxOccurs="1"/>
-                            <xs:element name="enableCacheControl" minOccurs="1" maxOccurs="1"/>
-                            <xs:element name="includeAgeHeader" minOccurs="1" maxOccurs="1"/>
-                            <xs:element name="hashGenerator" minOccurs="1" maxOccurs="1"/>
-                        </xs:sequence>
-                        <xs:attribute name="type" type="xs:string" default="http"/>
+                        <xs:attribute name="maxSize" type="xs:int" use="optional" />
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
-            <xs:attribute name="timeout" type="xs:int" use="optional"/>
-            <xs:attribute name="collector" type="xs:boolean" use="required"/>
-            <xs:attribute name="maxMessageSize" type="xs:int" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="timeout" type="xs:int" use="optional" />
+            <xs:attribute name="collector" type="xs:boolean" use="optional" />
+            <xs:attribute name="maxMessageSize" type="xs:int" use="optional" />
+            <xs:attribute name="scope" use="optional">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="per-host" />
+                        <xs:enumeration value="per-mediator" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
-
 </xs:schema>
+

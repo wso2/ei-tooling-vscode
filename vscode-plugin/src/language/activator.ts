@@ -18,11 +18,11 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 'use strict';
 
-import {ExtensionContext, languages, TextEditor, TextEditorEdit} from 'vscode';
-import {SYNAPSE_LANGUAGE_ID, SYNAPSE_NAMESPACE} from "./languageUtils";
+import { ExtensionContext, languages, TextEditor, TextEditorEdit } from 'vscode';
+import { SYNAPSE_LANGUAGE_ID, SYNAPSE_NAMESPACE } from "./languageUtils";
 import * as path from "path";
 import extension = require("../extension");
-import {launch as launchServer} from "../server";
+import { launch as launchServer } from "../server";
 
 /**
  * Set language-id to SynapseXml if Synapse namespace exists in the file.
@@ -39,7 +39,7 @@ export function setLanguageToSynapse(document: any): boolean {
 }
 
 export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit, context: ExtensionContext,
-                                        directoryName: string) {
+    directoryName: string) {
 
     let lineCount = editor.document.lineCount;
     let num = 0;
@@ -67,26 +67,26 @@ export function changeLanguageToSynapse(editor: TextEditor, edit: TextEditorEdit
         if (typeof column === "undefined") {
             let newLine = editor.document.lineAt(num - 1);
             let endCharPosition = newLine.range.end.with(num, 0);
-            const {rootElementTagName, fileName} = Object.assign(getRootElementTagName(editor.document.uri.fsPath));
+            const { rootElementTagName, fileName } = Object.assign(getRootElementTagName(editor.document.uri.fsPath));
             edit.insert(endCharPosition, "<" + rootElementTagName + " name=\"" + fileName +
-                                         "\" xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName +
-                                         ">");
+                "\" xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName +
+                ">");
             languages.setTextDocumentLanguage(editor.document, SYNAPSE_LANGUAGE_ID);
             changedLangToSynapse = true;
         }
     } else {
         let endCharPosition = editor.document.positionAt(0);
-        const {rootElementTagName, fileName} = Object.assign(getRootElementTagName(editor.document.uri.fsPath));
+        const { rootElementTagName, fileName } = Object.assign(getRootElementTagName(editor.document.uri.fsPath));
 
         let completionItem: string = "";
         if (rootElementTagName !== "localEntry") {
             completionItem = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
-                             "<" + rootElementTagName + " name=\"" + fileName + "\" " +
-                             "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
+                "<" + rootElementTagName + " name=\"" + fileName + "\" " +
+                "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
         } else {
             completionItem = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
-                             "<" + rootElementTagName + " key=\"" + fileName + "\" " +
-                             "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
+                "<" + rootElementTagName + " key=\"" + fileName + "\" " +
+                "xmlns=\"http://ws.apache.org/ns/synapse\">\n\n</" + rootElementTagName + ">";
         }
 
         edit.insert(endCharPosition, completionItem);

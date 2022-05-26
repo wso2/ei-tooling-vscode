@@ -38,7 +38,7 @@ import {
     ServerOptions,
     TextDocumentPositionParams
 } from 'vscode-languageclient';
-import {activateTagClosing, AutoCloseResult} from './tagClosing';
+import { activateTagClosing, AutoCloseResult } from './tagClosing';
 
 export interface ScopeInfo {
     scope: "default" | "global" | "workspace" | "folder";
@@ -56,7 +56,7 @@ let ignoreVMArgs = false;
 const main: string = 'org.eclipse.lsp4xml.XMLServerLauncher';
 
 export function launch(context: ExtensionContext, directoryName: string) {
-    const {JAVA_HOME} = process.env;
+    const { JAVA_HOME } = process.env;
 
     if (JAVA_HOME) {
         let executable: string = path.join(JAVA_HOME, 'bin', 'java');
@@ -79,18 +79,18 @@ export function launch(context: ExtensionContext, directoryName: string) {
 
         // Options to control the language client
         let clientOptions: LanguageClientOptions = {
-            initializationOptions: {"settings": getXMLSettings()},
+            initializationOptions: { "settings": getXMLSettings() },
             synchronize: {
                 //preferences starting with these will trigger didChangeConfiguration
                 configurationSection: ['xml', '[SynapseXml]']
             },
             // Register the server for synapse xml documents
-            documentSelector: [{scheme: 'file', language: 'SynapseXml'}],
+            documentSelector: [{ scheme: 'file', language: 'SynapseXml' }],
             middleware: {
                 workspace: {
                     didChangeConfiguration: () => {
                         languageClient.sendNotification(DidChangeConfigurationNotification.type,
-                                                        {settings: getXMLSettings()});
+                            { settings: getXMLSettings() });
                         if (!ignoreAutoCloseTags) {
                             verifyAutoClosing();
                         }
@@ -102,7 +102,7 @@ export function launch(context: ExtensionContext, directoryName: string) {
 
         // Create the language client and start the client.
         let languageClient = new LanguageClient('synapseXML', 'Synapse Language Server',
-                                                serverOptions, clientOptions);
+            serverOptions, clientOptions);
         let disposable = languageClient.start();
 
         context.subscriptions.push(disposable);
@@ -114,8 +114,8 @@ export function launch(context: ExtensionContext, directoryName: string) {
                 return languageClient.sendRequest(TagCloseRequest.type, param);
             };
 
-            disposable = activateTagClosing(tagProvider, {SynapseXml: true, xsl: true},
-                                            'xml.completion.autoCloseTags');
+            disposable = activateTagClosing(tagProvider, { SynapseXml: true, xsl: true },
+                'xml.completion.autoCloseTags');
             context.subscriptions.push(disposable);
         });
         languages.setLanguageConfiguration('SynapseXml', getIndentationRules());
@@ -126,27 +126,27 @@ export function launch(context: ExtensionContext, directoryName: string) {
         let xml: any;
         if (!configXML) { //Set default preferences if not provided
             xml =
-                {
-                    xml: {
-                        trace: {
-                            server: 'verbose'
-                        },
-                        logs: {
-                            client: true
-                        },
-                        format: {
-                            enabled: true,
-                            splitAttributes: false
-                        },
-                        completion: {
-                            autoCloseTags: false
-                        }
+            {
+                xml: {
+                    trace: {
+                        server: 'verbose'
+                    },
+                    logs: {
+                        client: true
+                    },
+                    format: {
+                        enabled: true,
+                        splitAttributes: false
+                    },
+                    completion: {
+                        autoCloseTags: false
                     }
-                };
+                }
+            };
         } else {
             let x: string = JSON.stringify(configXML); //configXML is not a JSON type
             JSON.parse(x);
-            xml = {xml: JSON.parse(x)};
+            xml = { xml: JSON.parse(x) };
 
         }
         xml['xml']['useCache'] = true;
@@ -168,11 +168,11 @@ export function launch(context: ExtensionContext, directoryName: string) {
                         if (selection === "Disable") {
                             let scopeInfo: ScopeInfo = getScopeLevel("", "[SynapseXml]");
                             workspace.getConfiguration().update("[SynapseXml]",
-                                                                {"editor.autoClosingBrackets": "never"},
-                                                                scopeInfo.configurationTarget).then(
-                                () => console.log('[SynapseXml].editor.autoClosingBrackets globally set to never'),
-                                (error) => console.log(error)
-                            );
+                                { "editor.autoClosingBrackets": "never" },
+                                scopeInfo.configurationTarget).then(
+                                    () => console.log('[SynapseXml].editor.autoClosingBrackets globally set to never'),
+                                    (error) => console.log(error)
+                                );
                         } else if (selection === "Ignore") {
                             ignoreAutoCloseTags = true;
                         }
@@ -189,12 +189,12 @@ export function launch(context: ExtensionContext, directoryName: string) {
                     "XML Language Server configuration changed, please restart VS Code.",
                     "Restart",
                     "Ignore").then((selection: string | undefined) => {
-                    if (selection === "Restart") {
-                        commands.executeCommand("workbench.action.reloadWindow");
-                    } else if (selection === "Ignore") {
-                        ignoreVMArgs = true;
-                    }
-                });
+                        if (selection === "Restart") {
+                            commands.executeCommand("workbench.action.reloadWindow");
+                        } else if (selection === "Ignore") {
+                            ignoreVMArgs = true;
+                        }
+                    });
             }
         } else {
             vmArgsCache = currentVMArgs;
@@ -222,7 +222,7 @@ export function launch(context: ExtensionContext, directoryName: string) {
             scope = "folder";
             configurationTarget = undefined;
         }
-        return {"scope": scope, "configurationTarget": configurationTarget};
+        return { "scope": scope, "configurationTarget": configurationTarget };
     }
 
     function getIndentationRules(): LanguageConfiguration {
@@ -231,11 +231,11 @@ export function launch(context: ExtensionContext, directoryName: string) {
                 {
                     beforeText: new RegExp(`<([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
                     afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
-                    action: {indentAction: IndentAction.IndentOutdent}
+                    action: { indentAction: IndentAction.IndentOutdent }
                 },
                 {
                     beforeText: new RegExp(`<(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-                    action: {indentAction: IndentAction.Indent}
+                    action: { indentAction: IndentAction.Indent }
                 }
             ],
         };

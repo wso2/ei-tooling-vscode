@@ -20,7 +20,62 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 export class ServerRoleInfo {
     static readonly ENTERPRISE_SERVICE_BUS: string = "EnterpriseServiceBus";
-    static readonly ENTERPRISE_INTEGRATOR: string = "EnterpriseIntegrator.";
+    static readonly ENTERPRISE_INTEGRATOR: string = "EnterpriseIntegrator";
+}
+
+export class SubDirectories {
+    static readonly COMPOSITE_EXPORTER: string = "CompositeExporter";
+    static readonly CONFIGS: string = "Configs";
+    static readonly CONNECTOR_EXPORTER: string = "ConnectorExporter";
+    static readonly REGISTRY_RESOURCES: string = "RegistryResources";
+    static readonly DATA_SERVICE: string = "DataServiceConfigs";
+    static readonly DATA_SOURCE: string = "DataSourceConfigs";
+    static readonly MEDIATOR_PROJECT: string = "MediatorProject";
+}
+
+export class ProjectNatures {
+    static readonly MULTI_MODULE: string = "org.wso2.developerstudio.eclipse.mavenmultimodule.project.nature";
+    static readonly COMPOSITE_EXPORTER: string = "org.wso2.developerstudio.eclipse.distribution.project.nature";
+    static readonly CONFIGS: string = "org.wso2.developerstudio.eclipse.esb.project.nature";
+    static readonly CONNECTOR_EXPORTER: string = "org.wso2.developerstudio.eclipse.artifact.connector.project.nature";
+    static readonly REGISTRY_RESOURCES: string = "org.wso2.developerstudio.eclipse.general.project.nature";
+    static readonly DATA_SERVICE: string = "org.wso2.developerstudio.eclipse.ds.project.nature";
+    static readonly DATA_SOURCE: string = "org.wso2.developerstudio.eclipse.datasource.project.nature";
+    static readonly MEDIATOR_PROJECT: string = "org.wso2.developerstudio.eclipse.artifact.mediator.project.nature";
+}
+
+export class ESBArtifactPath {
+    static readonly SRC: string = "src";
+    static readonly MAIN: string = "main";
+    static readonly SYNAPSE_CONFIG: string = "synapse-config";
+    static readonly RESOURECS: string = "resources";
+    static readonly METADATA: string = "metadata";
+    static readonly SWAGGER: string = "swagger";
+}
+
+export class Common {
+    static readonly TEMPLATES: string = 'templates';
+    static readonly VERSION: string = "1.0.0";
+    static readonly POM_FILE: string = "pom.xml";
+    static readonly ARTIFACT_FILE: string = "artifact.xml";
+    static readonly PROJECT_FILE: string = ".project";
+    static readonly POM: string = "pom";
+    static readonly CONF: string = "Conf";
+    static readonly MODULE: string = "module";
+    static readonly MODULES: string = "modules";
+    static readonly PROXY: string = "proxy";
+    static readonly PROXY_METADATA: string = "proxy_metadata";
+    static readonly NAME_TAG: string = "name";
+    static readonly ARTIFACT_ID_TAG: string = "artifactId";
+    static readonly GROUP_ID_TAG: string = "groupId";
+    static readonly VERSION_TAG: string = "version";
+    static readonly DEPENDENCIES_TAG: string = "dependencies";
+    static readonly PLUGIN_TAG: string = "plugin";
+    static readonly XML_TYPE : "text/xml";
+}
+
+export class MetadataInfo {
+    static readonly SYNAPSE_MEATADATA_TYPE: string = "synapse/metadata";
 }
 
 export class APIArtifactInfo {
@@ -234,7 +289,7 @@ export class RegistryResourceInfo {
     static readonly WSDL_ENDPOINT_TEMPLATE: string = "WSDLEndpointTemplate";
     static readonly HTTP_ENDPOINT_TEMPLATE: string = "HTTPEndpointTemplate";
     static readonly JSON_SCHEMA_TEMPLATE: string = "JSONSchemaTemplate";
-    static readonly WS_POLICY: string = "WSPolicy";
+    static readonly WS_POLICY: string = "WSPolicyTemplate";
 
     static readonly SEQUENCE_LABEL: string = "Sequence";
     static readonly ADDRESS_ENDPOINT_LABEL: string = "Address Endpoint";
@@ -263,6 +318,7 @@ export class RegistryResourceInfo {
 
     static mediaTypes: Map<string, string> = new Map();
 
+
     static initialize() {
         this.mediaTypes.set("Sequence", "application/vnd.wso2.sequence");
         this.mediaTypes.set("AddressEndpoint", "application/vnd.wso2.esb.endpoint");
@@ -287,8 +343,76 @@ export class RegistryResourceInfo {
         this.mediaTypes.set("WSDLEndpointTemplate", "application/vnd.wso2.template.endpoint");
         this.mediaTypes.set("HTTPEndpointTemplate", "application/vnd.wso2.template.endpoint");
         this.mediaTypes.set("JSONSchemaTemplate", "application/json");
-        this.mediaTypes.set("WSPolicy", "application/wspolicy+xml");
+        this.mediaTypes.set("WSPolicyTemplate", "application/wspolicy+xml");
+
+
     }
 }
 
+export class ArtifactInfo {
+    static readonly ESB_PROMPT_MESSAGE: string = "Enter New ESB Project Name...";
+    static readonly COMPOSITE_EXPORTER_PROMPT_MESSAGE: string = "Enter New Composite Expoeter Project Name...";
+    static readonly REGISTRY_RESOURCES_PROMPT_MESSAGE: string = "Enter New Registry Resources Project Name...";
+
+    static artifactTypes: Map<string, string> = new Map();
+    static setTypes() {
+        this.artifactTypes.set(APIArtifactInfo.DESTINATION_FOLDER, APIArtifactInfo.TYPE);
+        this.artifactTypes.set(EndpointArtifactInfo.DESTINATION_FOLDER, EndpointArtifactInfo.TYPE);
+        this.artifactTypes.set(ProxyArtifactInfo.PROXY_DESTINATION_FOLDER, ProxyArtifactInfo.TYPE);
+        this.artifactTypes.set(InboundEndpointArtifactInfo.DESTINATION_FOLDER, InboundEndpointArtifactInfo.TYPE);
+        this.artifactTypes.set(LocalEntryArtifactInfo.DESTINATION_FOLDER, LocalEntryArtifactInfo.TYPE);
+        this.artifactTypes.set(MessageStoreArtifactInfo.DESTINATION_FOLDER, MessageStoreArtifactInfo.TYPE);
+        this.artifactTypes.set(MessageProcessorArtifactInfo.DESTINATION_FOLDER, MessageProcessorArtifactInfo.TYPE);
+        this.artifactTypes.set(TemplateArtifactInfo.DESTINATION_FOLDER, TemplateArtifactInfo.TYPE);
+        this.artifactTypes.set(SequenceArtifactInfo.DESTINATION_FOLDER, SequenceArtifactInfo.TYPE);
+        this.artifactTypes.set(TaskArtifactInfo.DESTINATION_FOLDER, TaskArtifactInfo.TYPE);
+        this.artifactTypes.set(RegistryResourceInfo.DESTINATION_FOLDER, RegistryResourceInfo.TYPE);
+
+    }
+
+    static fileTypes: Map<string, string> = new Map();
+    static setFileTypes() {
+        this.fileTypes.set("jaggery/app", "zip");
+        this.fileTypes.set("synapse/priority-executor", "xml");
+        this.fileTypes.set("synapse/inbound-endpoint", "xml");
+        this.fileTypes.set("service/rule", "aar");
+        this.fileTypes.set("synapse/message-store", "xml");
+        this.fileTypes.set("event/stream", "json");
+        this.fileTypes.set("service/meta", "xml");
+        this.fileTypes.set("datasource/datasource", "xml");
+        this.fileTypes.set("synapse/proxy-service", "xml");
+        this.fileTypes.set("bpel/workflow", "zip");
+        this.fileTypes.set("synapse/sequence", "xml");
+        this.fileTypes.set("synapse/endpointTemplate", "xml");
+        this.fileTypes.set("carbon/application", "car");
+        this.fileTypes.set("wso2/gadget", "dar");
+        this.fileTypes.set("synapse/api", "xml");
+        this.fileTypes.set("synapse/event-source", "xml");
+        this.fileTypes.set("synapse/message-processors", "xml");
+        this.fileTypes.set("event/receiver", "xml");
+        this.fileTypes.set("lib/dataservice/validator", "jar");
+        this.fileTypes.set("synapse/template", "xml");
+        this.fileTypes.set("synapse/endpoint", "xml");
+        this.fileTypes.set("lib/carbon/ui", "jar");
+        this.fileTypes.set("lib/synapse/mediator", "jar");
+        this.fileTypes.set("synapse/metadata", "yaml");
+        this.fileTypes.set("event/publisher", "xml");
+        this.fileTypes.set("synapse/local-entry", "xml");
+        this.fileTypes.set("synapse/task", "xml");
+        this.fileTypes.set("webapp/jaxws", "war");
+        this.fileTypes.set("registry/resource", "zip");
+        this.fileTypes.set("synapse/configuration", "xml");
+        this.fileTypes.set("service/axis2", "aar");
+        this.fileTypes.set("synapse/lib", "zip");
+        this.fileTypes.set("synapse/sequenceTemplate", "xml");
+        this.fileTypes.set("event/execution-plan", "siddhiql");
+        this.fileTypes.set("service/dataservice", "dbs");
+        this.fileTypes.set("web/application", "war");
+        this.fileTypes.set("lib/library/bundle", "jar");
+
+    }
+}
+
+ArtifactInfo.setTypes();
+ArtifactInfo.setFileTypes();
 RegistryResourceInfo.initialize();

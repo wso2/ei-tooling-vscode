@@ -15,9 +15,11 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:element name="ejb">
         <xs:annotation>
@@ -33,22 +35,25 @@
                         <xs:sequence>
                             <xs:element name="arg" minOccurs="0" maxOccurs="unbounded">
                                 <xs:complexType>
-                                    <xs:attribute name="value" type="xs:string" use="required"/>
+                                    <xs:attribute name="value" type="xs:string" use="required" />
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
-            <xs:attribute name="beanstalk" type="xs:string" use="required"/>
-            <xs:attribute name="class" type="xs:string" use="required"/>
-            <xs:attribute name="sessionId" type="xs:string" use="optional"/>
-            <xs:attribute name="remove" type="xs:boolean" use="optional"/>
-            <xs:attribute name="method" type="xs:string" use="optional"/>
-            <xs:attribute name="target" type="xs:string" use="optional"/>
-            <xs:attribute name="jndiName" type="xs:string" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="beanstalk" type="xs:string" use="required" />
+            <xs:attribute name="class" type="xs:string" use="required" />
+            <xs:attribute name="sessionId" type="xs:string" use="optional" />
+            <xs:attribute name="remove" type="xs:boolean" use="optional" />
+            <xs:attribute name="method" type="xs:string" use="optional" />
+            <xs:attribute name="target" type="xs:string" use="optional" />
+            <xs:attribute name="jndiName" type="xs:string" use="optional" />
+            <xs:attribute name="id" type="xs:string" use="optional" />
+            <xs:attribute name="stateful" type="xs:boolean" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 
 </xs:schema>
+

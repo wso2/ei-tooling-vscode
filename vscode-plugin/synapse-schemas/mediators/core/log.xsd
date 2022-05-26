@@ -18,11 +18,13 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../misc/common.xsd"/>
+    <xs:include schemaLocation="../../misc/common.xsd" />
 
     <xs:element name="log">
         <xs:annotation>
@@ -34,12 +36,12 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="property" type="mediatorProperty" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="property" type="mediatorProperty" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
-            <xs:attribute name="level" type="logLevel" use="required"/>
-            <xs:attribute name="separator" type="xs:string" use="optional" default=", "/>
-            <xs:attribute name="category" type="logCategory" use="optional" default="INFO"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="level" type="logLevel" use="optional" default="simple" />
+            <xs:attribute name="separator" type="xs:string" use="optional" default=", " />
+            <xs:attribute name="category" type="logCategory" use="optional" default="INFO" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 
@@ -51,10 +53,10 @@
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:enumeration value="simple"/>
-            <xs:enumeration value="headers"/>
-            <xs:enumeration value="full"/>
-            <xs:enumeration value="custom"/>
+            <xs:enumeration value="simple" />
+            <xs:enumeration value="headers" />
+            <xs:enumeration value="full" />
+            <xs:enumeration value="custom" />
         </xs:restriction>
     </xs:simpleType>
 
@@ -66,13 +68,14 @@
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:enumeration value="FATAL"/>
-            <xs:enumeration value="ERROR"/>
-            <xs:enumeration value="WARN"/>
-            <xs:enumeration value="INFO"/>
-            <xs:enumeration value="DEBUG"/>
-            <xs:enumeration value="TRACE"/>
+            <xs:enumeration value="INFO" />
+            <xs:enumeration value="FATAL" />
+            <xs:enumeration value="ERROR" />
+            <xs:enumeration value="WARN" />
+            <xs:enumeration value="DEBUG" />
+            <xs:enumeration value="TRACE" />
         </xs:restriction>
     </xs:simpleType>
 
 </xs:schema>
+

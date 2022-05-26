@@ -16,119 +16,245 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {Uri, window, workspace, WorkspaceEdit, WorkspaceFolder} from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
-import {LocalEntryArtifactInfo, ServerRoleInfo} from "./artifactUtils";
-import {XMLSerializer as XMLSerializer} from 'xmldom';
-import {RegistryResource} from "./artifactResolver";
+import { Uri, window, workspace, WorkspaceEdit } from "vscode";
+import { XMLSerializer } from 'xmldom';
+import { TerminalModule } from "../logging/TerminalModule";
+import { Utils } from "../utils/Utils";
+import { RegistryResource } from "./artifactResolver";
+import {
+    APIArtifactInfo, ArtifactInfo, Common, EndpointArtifactInfo, ESBArtifactPath, InboundEndpointArtifactInfo, LocalEntryArtifactInfo, MessageProcessorArtifactInfo,
+    MessageStoreArtifactInfo, MetadataInfo, ProjectNatures, ProxyArtifactInfo, RegistryResourceInfo, SequenceArtifactInfo, ServerRoleInfo, SubDirectories, TaskArtifactInfo, TemplateArtifactInfo
+} from "./artifactUtils";
 
 let DOM = require('xmldom').DOMParser;
 let glob = require("glob");
+const YAML = require("js-yaml");
+var file_system = require('fs');
 
 export namespace ArtifactModule {
 
-    const dirName = __dirname;
+    const SRC = ESBArtifactPath.SRC;
+    const MAIN = ESBArtifactPath.MAIN;
+    const SYNAPSE_CONFIG = ESBArtifactPath.SYNAPSE_CONFIG;
+    const RESOURECS = ESBArtifactPath.RESOURECS;
+    const METADATA = ESBArtifactPath.METADATA;
+    const SWAGGER = ESBArtifactPath.SWAGGER;
+    const VERSION = Common.VERSION;
+    const POM = Common.POM;
+    const CONF = Common.CONF;
+    const TEMPLATES = Common.TEMPLATES;
+    const POM_FILE = Common.POM_FILE;
+    const ARTIFACT_FILE = Common.ARTIFACT_FILE;
+    const PROJECT_FILE = Common.PROJECT_FILE;
+    const MODULE = Common.MODULE;
+    const MODULES = Common.MODULES;
 
     /**
-     * Interface that holds project information.
+     * Create new config artifact in ESB Configs.
      */
-    export interface Project {
-        groupId?: string;
-        artifactId?: string;
-        version?: string;
-    }
+    export function createArtifact(pathToTargetFolder: string | undefined, targetFolder: string, templateFileName: string,
+        targetArtifactName: string, artifactType: string, type: string) {
 
-    /**
-     * Create new config artifact in Synapse ESB project.
-     */
-    export function createArtifact(targetFolder: string, templateFileName: string, targetArtifactName: string,
-                                   artifactType: string, type: string) {
         if (workspace.workspaceFolders) {
-            const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
 
-            // Create target folder path where the new config artifact is going to be added in the project.
-            const pathToTargetFolder = path.join(synapseWorkspace.uri.fsPath, "src", "main", "synapse-config",
-                                                 targetFolder);
-
-            // Check if the path really exists. If not exists, the project is not a standard Synapse ESB Project
-            checkPathExistence(pathToTargetFolder).then(exists => {
-                if (exists) {
-                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, artifactType, type,
-                                               pathToTargetFolder, "synapse-config", undefined);
+            let targetArtifactFolderPath: string;
+            let esbConfigsDirectory: string;
+            let directoryPattern: string = path.join(SRC, MAIN, SYNAPSE_CONFIG);
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            if (typeof pathToTargetFolder === "undefined") {
+                esbConfigsDirectory = Utils.getDirectoryFromDirectoryType(SubDirectories.CONFIGS,
+                    rootDirectory).trim();
+                if (esbConfigsDirectory === "unidentified") {
+                    window.showErrorMessage("No ESB Configs project found, artifact creation aborted");
+                    return;
                 }
-            });
-        }
-    }
-
-    /**
-     * Create new resource in Synapse ESB project.
-     */
-    export function createResource(targetFolder: string, templateFileName: string, targetArtifactName: string,
-                                   artifactType: string, type: string, registryResource: RegistryResource) {
-        if (workspace.workspaceFolders) {
-            const synapseWorkspace: WorkspaceFolder = workspace.workspaceFolders[0];
-
-            const targetFolderPath = path.join(synapseWorkspace.uri.fsPath, "src", "main", "registry-resources");
-
-            // Check if the path really exists. If not exists, the project is not a standard Synapse ESB Project
-            checkPathExistence(targetFolderPath).then(exists => {
-                if (exists) {
-                    createArtifactFromTemplate(targetFolder, templateFileName, targetArtifactName, artifactType, type,
-                                               targetFolderPath, "registry-resources", registryResource);
-                }
-            });
-        }
-    }
-
-    export async function checkPathExistence(path: string): Promise<boolean> {
-        return await fse.pathExists(path).then(
-            result => {
-                return result;
+                targetArtifactFolderPath = path.join(esbConfigsDirectory, SRC, MAIN, SYNAPSE_CONFIG, targetFolder);
             }
-            , error => {
-                console.log(error);
-                return false;
+            else {
+                esbConfigsDirectory = pathToTargetFolder.split(`${path.sep}${directoryPattern}`)[0];
+                targetArtifactFolderPath = pathToTargetFolder;
+            }
+
+            //check for artifact.xml and composite pom.xml
+            let artifactFilePath: string = path.join(esbConfigsDirectory, ARTIFACT_FILE);
+            let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
+            if ((!fse.existsSync(artifactFilePath)) || (!fse.existsSync(compositePomFilePath))) {
+                window.showErrorMessage("artifact.xml or composite pom.xml is missing, artifact creation aborted...");
+                return;
+            }
+
+            //Check if the path really exists. If not exists, the project is not a standard Synapse muilti-module Project
+            Utils.checkPathExistence(targetArtifactFolderPath).then(exists => {
+                if (exists) {
+                    createArtifactFromTemplate(esbConfigsDirectory, targetFolder, templateFileName, targetArtifactName, artifactType, type,
+                        targetArtifactFolderPath, SYNAPSE_CONFIG, undefined);
+                }
             });
+        }
+        else {
+            let message: string = "No workspace folder found";
+            TerminalModule.printLogMessage(message);
+            window.showErrorMessage(message);
+        }
     }
 
     /**
-     * Create artifact from template.
-     */
-    function createArtifactFromTemplate(targetFolder: string, templateFileName: string, targetArtifactName: string,
-                                        artifactType: string, type: string, pathToTargetFolder: string,
-                                        resourceType: string, registryResource: RegistryResource | undefined) {
+    * Create new resource in Registry Resources.
+    */
+    export function createResource(targetFolder: string, templateFileName: string, targetArtifactName: string,
+        artifactType: string, type: string, registryResource: RegistryResource) {
 
         if (workspace.workspaceFolders) {
-            let pattern = path.join("*", targetArtifactName + getFileExtension(registryResource));
+            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            const registryResourceSubDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.REGISTRY_RESOURCES,
+                rootDirectory);
+            // Check if the path really exists. If not exists, the project is not a standard Synapse muilti-module Project
+            Utils.checkPathExistence(registryResourceSubDirectory).then(exists => {
+                if (exists) {
 
-            let cwd = path.join(workspace.workspaceFolders[0].uri.fsPath, "src", "main", resourceType);
-            let newGlob = new glob(pattern, {cwd: cwd}, async function (err: any, files: any) {
+                    //check for artifact.xml and composite pom.xml
+                    let artifactFilePath: string = path.join(registryResourceSubDirectory, ARTIFACT_FILE);
+                    let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
+                    if ((!fse.existsSync(artifactFilePath)) || (!fse.existsSync(compositePomFilePath))) {
+                        window.showErrorMessage("artifact.xml or composite pom.xml is missing, resource creation aborted...");
+                        return;
+                    }
+
+                    createArtifactFromTemplate(registryResourceSubDirectory, targetFolder, templateFileName, targetArtifactName, artifactType, type,
+                        registryResourceSubDirectory, "registry-resources", registryResource);
+                }
+                else {
+                    window.showErrorMessage("No Registry Resources project found, resource creation aborted");
+                }
+            });
+        }
+        else {
+            let message: string = "No workspace folder found";
+            TerminalModule.printLogMessage(message);
+            window.showErrorMessage(message);
+        }
+    }
+
+    /**
+    * Create artifact from template.
+    */
+    function createArtifactFromTemplate(subDirectory: string, targetFolder: string, templateFileName: string, targetArtifactName: string,
+        artifactType: string, type: string, pathToTargetFolder: string, resourceType: string,
+        registryResource: RegistryResource | undefined) {
+
+        let rootDirectory: string = path.join(subDirectory, "..");
+
+        if (typeof registryResource === "undefined") {//synapse artifact
+
+            let pattern = path.join("*", targetArtifactName + getFileExtension(registryResource));
+            let cwd = path.join(subDirectory, SRC, MAIN, resourceType);
+
+            //target metadata.yaml and swagger.yaml folder
+            let pathtoResourcesFile = path.join(subDirectory, SRC, MAIN, RESOURECS, METADATA);
+
+            let newGlob = new glob(pattern, { cwd: cwd }, async function (err: any, files: any) {
                 if (err) {
                     window.showErrorMessage("Error creating " + targetArtifactName + " artifact!. ERROR: " + err);
                     return;
                 }
                 if (files.length > 0) {
                     // file name already exists in the project.
-                    window.showErrorMessage("Error creating " + targetArtifactName + " artifact!");
+                    window.showErrorMessage("Artifact Name " + targetArtifactName + " already exists!");
                 } else {
-                    let targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName +
-                        getFileExtension(registryResource));
+                    let fileExtension: string = getFileExtension(registryResource);
+                    let targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + fileExtension);
 
                     const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
-                    let templateArtifactFilePath = path.join(dirName, '..', '..', 'templates', targetFolder,
-                                                               templateFileName + getFileExtension(registryResource));
+                    let templateArtifactFilePath = path.join(__dirname, '..', '..', TEMPLATES, targetFolder,
+                        templateFileName + fileExtension);
+                    //create metadata and swagger files for API
+                    if (type === APIArtifactInfo.TYPE) {
+                        //path to metadata template
+                        let templateMetadataFilePath = path.join(__dirname, '..', '..', TEMPLATES, METADATA, `${METADATA}.yaml`);
+                        //path to swagger template
+                        let templateSwaggerFilePath = path.join(__dirname, '..', '..', TEMPLATES, METADATA, `${SWAGGER}.yaml`);
+                        //path to metadata file
+                        let targetMetadataFilePath = path.join(pathtoResourcesFile, `${targetArtifactName}_${METADATA}.yaml`);
+                        //path to swagger file
+                        let targetSwaggerFilePath = path.join(pathtoResourcesFile, `${targetArtifactName}_${SWAGGER}.yaml`);
+
+                        let edit = new WorkspaceEdit();
+                        let targetMetadataFilePatUri = Uri.file(targetMetadataFilePath);
+                        edit.createFile(targetMetadataFilePatUri);
+                        workspace.applyEdit(edit);
+
+                        //create and update metadata.yaml
+                        let serviceUrl: string = "https://{MI_HOST}:{MI_PORT}/context_here";
+                        createMetaDataYaml(templateMetadataFilePath, targetArtifactName, "Sample API", "OAS3", serviceUrl, targetMetadataFilePatUri);
+
+                        let targetSwaggerFilePatUri = Uri.file(targetSwaggerFilePath);
+                        edit.createFile(targetSwaggerFilePatUri);
+                        workspace.applyEdit(edit);
+
+                        // Read and buffer swagger.yaml template file.
+                        let rawYaml: Buffer = fse.readFileSync(templateSwaggerFilePath);
+                        let data = YAML.load(rawYaml)
+                        data.info.title = targetArtifactName;
+                        data.info.description = "API Definition of " + targetArtifactName;
+
+                        // Write the updated template content to the target file.
+                        fse.writeFileSync(targetSwaggerFilePatUri.fsPath, YAML.dump(data));
+
+                    }
+                    else if (type === ProxyArtifactInfo.TYPE) {//create metadata file for proxy service
+                        //path to metadata template
+                        let templateMetadataFilePath = path.join(__dirname, '..', '..', TEMPLATES, METADATA, `${METADATA}.yaml`);
+                        //path to metadata file
+                        let targetMetadataFilePath = path.join(pathtoResourcesFile, `${targetArtifactName}_proxy_${METADATA}.yaml`);
+
+                        let edit = new WorkspaceEdit();
+                        let targetMetadataFilePatUri = Uri.file(targetMetadataFilePath);
+                        edit.createFile(targetMetadataFilePatUri);
+                        workspace.applyEdit(edit);
+
+                        //create and update metadata.yaml
+                        let serviceUrl: string = "https://{MI_HOST}:{MI_PORT}/services/" + targetArtifactName;
+                        createMetaDataYaml(templateMetadataFilePath, targetArtifactName, "Sample Proxy Service", "WSDL1", serviceUrl,
+                            targetMetadataFilePatUri);
+                    }
 
                     createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
-                                                     templateArtifactFilePath, artifactType, registryResource);
-
-                    if (resourceType === "synapse-config") {
-                        await addNewArtifactToConfigArtifactXMLFile(targetArtifactName, targetFolder, type);
-                    } else {
-                        addNewArtifactToRegistryArtifactXMLFile(targetArtifactName, type, registryResource);
-                    }
+                        templateArtifactFilePath, artifactType, registryResource);
+                    addNewArtifactToArtifactXmlFile(subDirectory, targetArtifactName, targetFolder, type);
+                    updateCompositePomXmlFile(rootDirectory, targetArtifactName, type);
                 }
             });
+        }
+        else {//create registry resource
+
+            let fileExtension: string = getFileExtension(registryResource);
+            let targetArtifactFilePath = path.join(pathToTargetFolder, targetArtifactName + fileExtension);
+
+            if (fse.existsSync(targetArtifactFilePath)) {
+                // file name already exists in the project.
+                window.showErrorMessage("Artifact Name " + targetArtifactName + " already exists!");
+                return;
+            }
+
+            const targetArtifactFileUri: Uri = Uri.file(targetArtifactFilePath);
+            let templateArtifactFilePath = path.join(__dirname, '..', '..', TEMPLATES, targetFolder,
+                templateFileName + fileExtension);
+
+            createTargetArtifactFromTemplate(targetArtifactFileUri, targetArtifactName,
+                templateArtifactFilePath, artifactType, registryResource);
+
+            let rootPomFilePath: string = path.join(subDirectory, "..", POM_FILE);
+            let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
+            const { groupId, version } = Object.assign(project);
+            let artifactXmlFilePath: string = path.join(subDirectory, ARTIFACT_FILE);
+            let finalGroupId: string = `${groupId}.${RegistryResourceInfo.TYPE.split("/")[1]}`;
+
+            Utils.addArtifactToArtifactXml(artifactXmlFilePath, targetArtifactName, finalGroupId, VERSION, type,
+                ServerRoleInfo.ENTERPRISE_INTEGRATOR, registryResource.file!, registryResource.path,
+                registryResource.mediaType, undefined);
+            updateCompositePomXmlFile(rootDirectory, targetArtifactName, type);
         }
     }
 
@@ -136,17 +262,14 @@ export namespace ArtifactModule {
      * Create the artifact from template.
      */
     function createTargetArtifactFromTemplate(targetArtifactFileUri: Uri, targetArtifactName: string,
-                                              templateArtifactFilePath: string, artifactType: string,
-                                              registryResource: RegistryResource | undefined) {
-        let edit = new WorkspaceEdit();
-        edit.createFile(targetArtifactFileUri);
-        workspace.applyEdit(edit);
+        templateArtifactFilePath: string, artifactType: string,
+        registryResource: RegistryResource | undefined) {
 
         // Read and buffer artifact template file.
         const buf: Buffer = fse.readFileSync(templateArtifactFilePath);
         let data = "";
         if (registryResource !== undefined) {
-            switch(registryResource!.mediaType) {
+            switch (registryResource!.mediaType) {
                 case "application/json": {
                     data = buf.toString();
                     break;
@@ -160,16 +283,17 @@ export namespace ArtifactModule {
                     break;
                 }
             }
-        } else  {
+        } else {
             data = updateSynapseArtifactTemplate(artifactType, buf, targetArtifactName);
         }
         // Write the updated template content to the target file.
-        fse.writeFileSync(targetArtifactFileUri.fsPath, data);
+        let xmlData = new DOM().parseFromString(data, "text/xml");
+        let fileUri: Uri = Utils.createXmlFile(targetArtifactFileUri.fsPath, xmlData);
 
         // Open and show newly created artifact document in the editor.
-        workspace.openTextDocument(targetArtifactFileUri).then(doc => window.showTextDocument(doc));
+        workspace.openTextDocument(fileUri).then(doc => window.showTextDocument(doc));
     }
-    
+
     /**
      * Update the name/key attribute with the new artifact name.
      */
@@ -182,91 +306,6 @@ export namespace ArtifactModule {
     }
 
     /**
-     * Add artifact info of the newly created artifact to synapse-config artifact.xml file.
-     */
-    async function addNewArtifactToConfigArtifactXMLFile(artifactName: string, targetFolder: string, type: string) {
-        if (workspace.workspaceFolders) {
-            // read pom and get project group_id and version
-            const pomFile: string = path.join(workspace.workspaceFolders[0].uri.fsPath, "pom.xml");
-            let project: Project = await getProjectInfoFromPOM(pomFile);
-            const {groupId, version} = Object.assign(project);
-
-            const configArtifactXmlFileLocation: string = path.join(workspace.workspaceFolders[0].uri.fsPath,
-                                                                    "src", "main", "synapse-config", "artifact.xml");
-            // Read and buffer synapse-config artifact.xml file
-            const buf: Buffer = fse.readFileSync(configArtifactXmlFileLocation);
-
-            // Parse the artifact.xml file content to a DOM document.
-            // Create new artifact DOM Element info to represent the newly created artifact.
-            let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-            let parent = xmlDoc.getElementsByTagName("artifacts");
-            let child = xmlDoc.createElement("artifact");
-            parent[0].appendChild(child);
-            child.setAttribute("name", artifactName);
-            child.setAttribute("type", type);
-            child.setAttribute("serverRole", ServerRoleInfo.ENTERPRISE_SERVICE_BUS);
-            child.setAttribute("groupId", groupId);
-            child.setAttribute("version", version);
-
-            let fileTag = xmlDoc.createElement("file");
-            fileTag.textContent = path.join(targetFolder, artifactName + ".xml");
-            child.appendChild(fileTag);
-
-            // Update the synapse-config artifact.xml file.
-            fse.writeFileSync(configArtifactXmlFileLocation, new XMLSerializer().serializeToString(xmlDoc));
-        }
-    }
-
-    /**
-     * Add artifact info of the newly created artifact to registry-resource artifact.xml file.
-     */
-    function addNewArtifactToRegistryArtifactXMLFile(artifactName: string, type: string,
-                                                     registryResource: RegistryResource | undefined) {
-        if (workspace.workspaceFolders) {
-            const registryArtifactXML: string = path.join(workspace.workspaceFolders[0].uri.fsPath,
-                                                          "src", "main", "registry-resources", "artifact.xml");
-            const buf: Buffer = fse.readFileSync(registryArtifactXML);
-
-            let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-            let parent = xmlDoc.getElementsByTagName("artifacts");
-            let child = parent[0].appendChild(xmlDoc.createElement("artifact"));
-            child.setAttribute("name", artifactName);
-            child.setAttribute("type", type);
-            child.setAttribute("serverRole", "EnterpriseIntegrator");
-
-            let item = xmlDoc.createElement("item");
-            let file = xmlDoc.createElement("file");
-            file.textContent = registryResource!.file;
-
-            let filePath = xmlDoc.createElement("path");
-            filePath.textContent = registryResource!.path;
-
-            let mediaType = xmlDoc.createElement("mediaType");
-            mediaType.textContent = registryResource!.mediaType;
-
-            item.appendChild(file);
-            item.appendChild(filePath);
-            item.appendChild(mediaType);
-            child.appendChild(item);
-
-            fse.writeFileSync(registryArtifactXML, new XMLSerializer().serializeToString(xmlDoc));
-        }
-    }
-
-    /**
-     * Read pom.xml file and abstract project related info.
-     */
-    export async function getProjectInfoFromPOM(pomFilePath: string): Promise<Project> {
-        const buf: Buffer = await fse.readFile(pomFilePath);
-        let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-        return {
-            groupId: xmlDoc.getElementsByTagName("groupId")[0].textContent,
-            artifactId: xmlDoc.getElementsByTagName("artifactId")[0].textContent,
-            version: xmlDoc.getElementsByTagName("version")[0].textContent
-        };
-    }
-
-    /**
      * Update the name attribute value in the buffered content.
      */
     function updateAttribute(buf: Buffer, attributeName: string, attributeValue: string): string {
@@ -276,41 +315,140 @@ export namespace ArtifactModule {
     }
 
     /**
-     * Delete the artifact info of the deleted artifact from the related artifact.xml file.
+     * Add artifact info of the newly created artifact to synapse-config artifact.xml file.
+     * Create dependancy and property in CompositeExporter pom.xml
      */
-    export function safeDeleteArtifact(deletedFile: Uri) {
-        const filePath: string = deletedFile.fsPath;
-        let array: string[] = filePath.split(path.sep);
-        let deletedArtifact: string = array[array.length - 1];
-        let rawArtifactName: string[] = deletedArtifact.split(".");
-        let resourceType;
+    function addNewArtifactToArtifactXmlFile(esbConfigsDirectory: string, artifactName: string, targetFolder: string, type: string) {
 
-        // Check if the deleted file is a synapse-config or a registry-resource file
-        if (isExistDirectoryPattern(filePath, path.join("src", "main", "synapse-config"))) {
-            resourceType = "synapse-config";
+        const pomFile: string = path.join(esbConfigsDirectory, "..", POM_FILE);
+        const configArtifactXmlFileLocation: string = path.join(esbConfigsDirectory, ARTIFACT_FILE);
+        if ((!fse.existsSync(pomFile)) || (!fse.existsSync(configArtifactXmlFileLocation))) return;
 
-        } else if (isExistDirectoryPattern(filePath, path.join("src", "main", "registry-resources"))) {
-            resourceType = "registry-resources";
+        // read pom and get project group_id and version
+        let project: Utils.Project = Utils.getProjectInfoFromPOM(pomFile);
+        const { groupId, version } = Object.assign(project);
+        let finalGroupId: string = `${groupId}.${type.split("/")[1]}`;
+        let file: string = [SRC, MAIN, SYNAPSE_CONFIG, targetFolder, `${artifactName}.xml`].join("/");
+
+        Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, artifactName, finalGroupId, VERSION, type,
+            ServerRoleInfo.ENTERPRISE_SERVICE_BUS, file, undefined,
+            undefined, undefined);
+
+        //add  metadata and swagger artifacts to artifact.xml for an api resource
+        if (type === APIArtifactInfo.TYPE) {
+
+            finalGroupId = `${groupId}.${METADATA}`;
+
+            //metadata
+            let metaDataName: string = `${artifactName}_${METADATA}`;
+            let metaDataFilePath: string = [SRC, MAIN, RESOURECS, METADATA, `${metaDataName}.yaml`].join("/");
+            Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, metaDataName, finalGroupId, VERSION, MetadataInfo.SYNAPSE_MEATADATA_TYPE,
+                ServerRoleInfo.ENTERPRISE_SERVICE_BUS, metaDataFilePath, undefined,
+                undefined, undefined);
+            //swagger
+            let swaggerName: string = `${artifactName}_${SWAGGER}`;
+            let swaggerFilePath: string = [SRC, MAIN, RESOURECS, METADATA, `${swaggerName}.yaml`].join("/");
+            Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, swaggerName, finalGroupId, VERSION, MetadataInfo.SYNAPSE_MEATADATA_TYPE,
+                ServerRoleInfo.ENTERPRISE_SERVICE_BUS, swaggerFilePath, undefined,
+                undefined, undefined);
+        }
+        else if (type === ProxyArtifactInfo.TYPE) {
+
+            finalGroupId = `${groupId}.proxy-service.${METADATA}`;
+
+            //metadata
+            let metaDataName: string = `${artifactName}_proxy_${METADATA}`;
+            let metaDataFilePath: string = [SRC, MAIN, RESOURECS, METADATA, `${metaDataName}.yaml`].join("/");
+
+            Utils.addArtifactToArtifactXml(configArtifactXmlFileLocation, metaDataName, finalGroupId, VERSION, MetadataInfo.SYNAPSE_MEATADATA_TYPE,
+                ServerRoleInfo.ENTERPRISE_SERVICE_BUS, metaDataFilePath, undefined,
+                undefined, undefined);
+        }
+    }
+
+    /**
+     * Update composite pom.xml with new artifact related information.
+     */
+    function updateCompositePomXmlFile(rootDirectory: string, artifactName: string, type: string) {
+
+        let compositeExporterDirectory: string = Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory);
+        const pomFile: string = path.join(compositeExporterDirectory, POM_FILE);
+        if (!fse.existsSync(pomFile)) {
+            window.showErrorMessage("No composite pom.xml found...!");
+            return;
         }
 
-        if (workspace.workspaceFolders && resourceType) {
-            let artifactXmlFilePath = path.join(workspace.workspaceFolders[0].uri.fsPath, "src", "main",
-                                                resourceType, "artifact.xml");
+        //read project group id
+        let project: Utils.Project = Utils.getProjectInfoFromPOM(pomFile);
+        const { groupId, version } = Object.assign(project);
+        let finalGroupId: string = groupId + "." + type.split("/")[1];
 
-            let buf: Buffer = fse.readFileSync(artifactXmlFilePath);
-            let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
-            let artifacts = xmlDoc.getElementsByTagName("artifacts");
-            let elementList = artifacts[0].getElementsByTagName("artifact");
+        //check whether artifcat/resource identifier already exists
+        if (Utils.checkArtifactIdExists(pomFile, artifactName, finalGroupId)) {
+            TerminalModule.printLogMessage(`Artifact identifier for ${artifactName} already exists, adding to composite exporter aborted`);
+            return;
+        }
 
-            for (let i = 0; i < elementList.length; i++) {
-                if (elementList[i].getAttribute("name") === rawArtifactName[0]) {
-                    artifacts[0].removeChild(elementList[i]);
-                    let data = new XMLSerializer().serializeToString(xmlDoc);
-                    fse.writeFileSync(artifactXmlFilePath, data);
-                    break;
-                }
+        let serverRole: string;
+        if (type === RegistryResourceInfo.TYPE) serverRole = ServerRoleInfo.ENTERPRISE_INTEGRATOR;
+        else serverRole = ServerRoleInfo.ENTERPRISE_SERVICE_BUS;
+
+        Utils.updateCompositePomXml(compositeExporterDirectory, artifactName, type, serverRole, finalGroupId);
+
+        if (type === APIArtifactInfo.TYPE) {
+            finalGroupId = `${groupId}.${METADATA}`;
+            //metadata
+            let metadataArtifactName: string = `${artifactName}_${METADATA}`;
+            Utils.updateCompositePomXml(compositeExporterDirectory, metadataArtifactName, MetadataInfo.SYNAPSE_MEATADATA_TYPE, serverRole, finalGroupId);
+            //swagger
+            let swaggerArtifactName: string = `${artifactName}_${SWAGGER}`;
+            Utils.updateCompositePomXml(compositeExporterDirectory, swaggerArtifactName, MetadataInfo.SYNAPSE_MEATADATA_TYPE, serverRole, finalGroupId);
+        }
+        else if (type === ProxyArtifactInfo.TYPE) {
+            finalGroupId = groupId + ".proxy-service." + METADATA;
+            //metadata
+            let metadataArtifactName: string = artifactName + "_proxy_" + METADATA;
+            Utils.updateCompositePomXml(compositeExporterDirectory, metadataArtifactName, MetadataInfo.SYNAPSE_MEATADATA_TYPE, serverRole, finalGroupId);
+        }
+    }
+
+    /**
+     * Delete the artifact info of the deleted artifact from the related 
+     * -artifact.xml file
+     * -pom.xml file
+     * Delete the files
+     * -metadata.yaml file
+     * -swagger.yaml file
+     */
+    export function safeDeleteArtifact(filePath: string, rootDirectory: string) {
+
+        if (workspace.workspaceFolders) {
+            let array: string[] = filePath.split(path.sep);
+            let deletedArtifact: string = array[array.length - 1];
+            let artifactFolder: string = array[array.length - 2];
+            let rawArtifactName: string[] = deletedArtifact.split(".");
+            let fileExtension: string = rawArtifactName[1].trim();
+
+            // Check if the deleted file is a synapse-config or a registry-resource file
+            let artifactXmlFilePath: string;
+            let synapseDirectoryPattern: string = path.join(SRC, MAIN, SYNAPSE_CONFIG);
+
+            let currentRootDirectory: string = path.join(filePath, "..", "..");
+            let resourceSubDirectory: string = path.join(filePath, "..");
+
+            if (filePath.includes(synapseDirectoryPattern)) {//artifact
+                let syapseSubDirectory: string = filePath.split(synapseDirectoryPattern)[0];
+                artifactXmlFilePath = path.join(syapseSubDirectory, ARTIFACT_FILE);
+                Utils.deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
+
+                let artifactType = ArtifactInfo.artifactTypes.get(artifactFolder);
+                if (typeof artifactType !== "undefined") Utils.deleteArtifactFromPomXml(rawArtifactName[0], artifactType.split("/")[1], rootDirectory, syapseSubDirectory, undefined);
+            } else if ((currentRootDirectory === rootDirectory) && (fileExtension !== "zip")) {//resource
+                artifactXmlFilePath = path.join(resourceSubDirectory, ARTIFACT_FILE);
+
+                Utils.deletefromArtifactXml(artifactXmlFilePath, rawArtifactName[0]);
+                Utils.deleteArtifactFromPomXml(rawArtifactName[0], RegistryResourceInfo.TYPE.split("/")[1], rootDirectory, undefined, undefined);
             }
-
         }
     }
 
@@ -321,10 +459,46 @@ export namespace ArtifactModule {
      */
     function getFileExtension(registryResource: RegistryResource | undefined) {
         let extension = ".xml";
-        if (registryResource !==  undefined) {
-            switch(registryResource!.mediaType) {
+        if (registryResource !== undefined) {
+            switch (registryResource!.mediaType) {
                 case "application/json": {
                     extension = ".json";
+                    break;
+                }
+                case "text/css": {
+                    extension = ".css";
+                    break;
+                }
+                case "application/datamapper": {
+                    extension = ".dmc";
+                    break;
+                }
+                case "text/html": {
+                    extension = ".html";
+                    break;
+                }
+                case "application/javascript": {
+                    extension = ".js";
+                    break;
+                }
+                case "application/wsdl+xml": {
+                    extension = ".wsdl";
+                    break;
+                }
+                case "application/x-xsd+xml": {
+                    extension = ".xsd";
+                    break;
+                }
+                case "application/xsl+xml": {
+                    extension = ".xsl";
+                    break;
+                }
+                case "application/xslt+xml": {
+                    extension = ".xslt";
+                    break;
+                }
+                case "application/yaml": {
+                    extension = ".yaml";
                     break;
                 }
                 default: {
@@ -337,10 +511,191 @@ export namespace ArtifactModule {
         return extension;
     }
 
-    function isExistDirectoryPattern(filePath: string, dirPattern: string): boolean {
-        let regExpForDirPattern = new RegExp(dirPattern);
-        return regExpForDirPattern.test(filePath);
+    /**
+    * Dynamically update metadata.yaml for API resource 
+    */
+    export function updateMetadataforApi(esbConfigsDirectory: string, filePath: string) {
+        let array: string[] = filePath.split(path.sep);
+        let rawFileName: string = array[array.length - 1];
+        let rawArtifactName: string = rawFileName.split(".")[0];
+        let metadaFileName: string = `${rawArtifactName}_${METADATA}.yaml`;
+        const pathToMetadataYaml: string = path.join(esbConfigsDirectory, SRC, MAIN, RESOURECS, METADATA, metadaFileName);
+        if (!fse.existsSync(pathToMetadataYaml)) return;
+
+        //read xml file for artifact file
+        const buf: Buffer = fse.readFileSync(filePath);
+        let apiXmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
+        let api = apiXmlDoc.getElementsByTagName("api");
+        let context = api[0].getAttribute("context");
+        let newServiceUrl: string = "https://{MI_HOST}:{MI_PORT}" + context;
+
+        // Read metadata.yaml template file.
+        const raw: Buffer = fse.readFileSync(pathToMetadataYaml);
+        let data = YAML.load(raw)
+        data.serviceUrl = newServiceUrl;
+
+        // Write the updated template content to the target file.
+        fse.writeFileSync(pathToMetadataYaml, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
     }
 
-}
+    /**
+     * Create metadata.yaml for API/Proxy resource.
+     */
+    function createMetaDataYaml(templateFilePath: string, artifactName: string, description: string, definitionType: string,
+        serviceUrl: string, targetFilePathUri: Uri) {
+        // Read and buffer metadata.yaml template file.
+        const raw: Buffer = fse.readFileSync(templateFilePath);
+        let data = YAML.load(raw);
+        data.key = `${artifactName}-${VERSION}`;
+        data.name = artifactName;
+        data.displayName = artifactName;
+        data.description = description;
+        data.serviceUrl = serviceUrl;
+        data.definitionType = definitionType;
 
+        // Write the updated template content to the target file.
+        fse.writeFileSync(targetFilePathUri.fsPath, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
+    }
+
+    /**
+     * Create new ESB Configs project.
+     */
+    export async function CreateNewESBConfigProject(rootDirectory: string, projectName: string) {
+
+        //create new sub-directory
+        //create pom.xml, artifact.xml and .project files
+        let templatePomFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, "ConfigsPom.xml");
+        let templateProjNatureFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "esbConfigs.xml")
+        await Utils.createProject(projectName, "ESB Configs Project", templatePomFilePath, templateProjNatureFilePath,
+            SubDirectories.CONFIGS, true, rootDirectory, ProjectNatures.CONFIGS);
+
+        //check whether the project was created
+        if (!fse.existsSync(path.join(rootDirectory, projectName))) return;
+
+        //create additional sub-directories
+        let metadataPath: string = path.join(rootDirectory, projectName, SRC, MAIN, RESOURECS, METADATA);
+        file_system.mkdirSync(metadataPath, { recursive: true });
+
+        let artifactSubFolders: string[] = [APIArtifactInfo.DESTINATION_FOLDER, EndpointArtifactInfo.DESTINATION_FOLDER, InboundEndpointArtifactInfo.DESTINATION_FOLDER,
+        LocalEntryArtifactInfo.DESTINATION_FOLDER, MessageProcessorArtifactInfo.DESTINATION_FOLDER, MessageStoreArtifactInfo.DESTINATION_FOLDER, ProxyArtifactInfo.PROXY_DESTINATION_FOLDER,
+        SequenceArtifactInfo.DESTINATION_FOLDER, TaskArtifactInfo.DESTINATION_FOLDER, TemplateArtifactInfo.DESTINATION_FOLDER];
+
+        for (let i = 0; i < artifactSubFolders.length; i++) {
+            let subFolderPath: string = path.join(rootDirectory, projectName, SRC, MAIN, SYNAPSE_CONFIG, artifactSubFolders[i].trim());
+            file_system.mkdirSync(subFolderPath, { recursive: true });
+        }
+    }
+
+    /**
+     * Add ESB Configs project into correct module possition in root pom.xml.
+     */
+    export function addESBConfigsToRootPom(rootDirectory: string, projectName: string) {
+
+        let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
+        if (!fse.existsSync(rootPomFilePath)) {
+            window.showErrorMessage("No root pom.xml found...!");
+            return;
+        }
+        const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
+        let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
+        let modules = rootPomXmlDoc.getElementsByTagName(MODULES)[0];
+        let subModules = rootPomXmlDoc.getElementsByTagName(MODULE);
+        let totalSubModules: number = subModules.length;
+        let ESBModule = rootPomXmlDoc.createElement(MODULE);
+        ESBModule.textContent = projectName.trim();
+
+        let append: boolean = false;
+
+        for (let i = 0; i < totalSubModules; i++) {
+            let configurationFilePath: string = path.join(rootDirectory, subModules[i].textContent.trim(), PROJECT_FILE);
+            let projectNature: string = Utils.getDirectoryType(configurationFilePath).trim();
+
+            if (projectNature === SubDirectories.COMPOSITE_EXPORTER) {
+                rootPomXmlDoc.insertBefore(ESBModule, subModules[i]);
+                append = true;
+                break;
+            }
+        }
+
+        if (!append) modules.appendChild(ESBModule);
+        fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
+    }
+
+    /**
+     * Create new Registry Resources project.
+     */
+    export async function CreateNewRegistryResourcesProject(rootDirectory: string, projectName: string) {
+
+        //create new sub-directory
+        //create pom.xml, artifact.xml and .project files
+        let templatePomFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, "RegistryResourcesPom.xml");
+        let templateProjNatureFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "registryResources.xml");
+        await Utils.createProject(projectName, "Registry Resources Project", templatePomFilePath, templateProjNatureFilePath,
+            SubDirectories.REGISTRY_RESOURCES, true, rootDirectory, ProjectNatures.REGISTRY_RESOURCES);
+
+        //check whether the project was created
+        if (!fse.existsSync(path.join(rootDirectory, projectName))) return;
+
+        //create .classpath file
+        let templateConfigFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "registryClassPath.xml")
+        const buf: Buffer = fse.readFileSync(templateConfigFilePath);
+        let classPath = new DOM().parseFromString(buf.toString(), "text/xml");
+        let configFilePath: string = path.join(rootDirectory, projectName, ".classpath");
+        Utils.createXmlFile(configFilePath, classPath);
+    }
+
+    /**
+     * Add Registry Resources project into correct module possition in root pom.xml.
+     */
+    export function addRegistryResourcesToRootPom(rootDirectory: string, projectName: string) {
+
+        let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
+        if (!fse.existsSync(rootPomFilePath)) {
+            window.showErrorMessage("No root pom.xml found...!");
+            return;
+        }
+        const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
+        let rootPomXmlDoc = new DOM().parseFromString(rootPomBuffer.toString(), "text/xml");
+        let modules = rootPomXmlDoc.getElementsByTagName(MODULES)[0];
+        let subModules = rootPomXmlDoc.getElementsByTagName(MODULE);
+        let totalSubModules: number = subModules.length;
+        let registryModule = rootPomXmlDoc.createElement(MODULE);
+        registryModule.textContent = projectName.trim();
+
+        let append: boolean = false;
+
+        for (let i = 0; i < totalSubModules; i++) {
+            let configurationFilePath: string = path.join(rootDirectory, subModules[i].textContent.trim(), PROJECT_FILE);
+            let projectNature: string = Utils.getDirectoryType(configurationFilePath).trim();
+
+            if (projectNature === SubDirectories.CONNECTOR_EXPORTER) {
+                rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                append = true;
+                break;
+            }
+            else if (projectNature === SubDirectories.DATA_SOURCE) {
+                rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                append = true;
+                break;
+            }
+            else if (projectNature === SubDirectories.DATA_SERVICE) {
+                rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                append = true;
+                break;
+            }
+            else if (projectNature === SubDirectories.CONFIGS) {
+                rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                append = true;
+                break;
+            }
+            else if (projectNature === SubDirectories.COMPOSITE_EXPORTER) {
+                rootPomXmlDoc.insertBefore(registryModule, subModules[i]);
+                append = true;
+                break;
+            }
+        }
+
+        if (!append) modules.appendChild(registryModule);
+        fse.writeFileSync(rootPomFilePath, new XMLSerializer().serializeToString(rootPomXmlDoc));
+    }
+}

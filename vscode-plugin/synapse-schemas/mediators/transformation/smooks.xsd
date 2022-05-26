@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,9 +15,11 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:element name="smooks">
         <xs:annotation>
@@ -33,11 +35,12 @@
                         <xs:attribute name="type" use="optional">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
-                                    <xs:enumeration value="text"/>
-                                    <xs:enumeration value="xml"/>
+                                    <xs:enumeration value="text" />
+                                    <xs:enumeration value="xml" />
                                 </xs:restriction>
                             </xs:simpleType>
                         </xs:attribute>
+                        <xs:attribute name="expression" type="xs:string" use="optional" />
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="output" minOccurs="1" maxOccurs="1">
@@ -45,20 +48,22 @@
                         <xs:attribute name="type" use="optional">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
-                                    <xs:enumeration value="text"/>
-                                    <xs:enumeration value="xml"/>
-                                    <xs:enumeration value="java"/>
+                                    <xs:enumeration value="text" />
+                                    <xs:enumeration value="xml" />
+                                    <xs:enumeration value="java" />
                                 </xs:restriction>
                             </xs:simpleType>
                         </xs:attribute>
-                        <xs:attribute name="property" type="xs:string" use="optional"/>
-                        <xs:attribute name="action" type="xs:string" use="optional"/>
+                        <xs:attribute name="property" type="xs:string" use="optional" />
+                        <xs:attribute name="action" type="xs:string" use="optional" />
+                        <xs:attribute name="expression" type="xs:string" use="optional" />
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
-            <xs:attribute name="config-key" type="xs:string" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="config-key" type="xs:string" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 
 </xs:schema>
+

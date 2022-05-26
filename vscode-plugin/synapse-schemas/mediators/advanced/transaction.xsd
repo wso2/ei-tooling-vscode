@@ -18,9 +18,11 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:element name="transaction">
         <xs:annotation>
@@ -32,18 +34,19 @@
             <xs:attribute name="action" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
-                        <xs:enumeration value="new"/>
-                        <xs:enumeration value="commit"/>
-                        <xs:enumeration value="rollback"/>
-                        <xs:enumeration value="suspend"/>
-                        <xs:enumeration value="resume"/>
-                        <xs:enumeration value="use-existing-or-new"/>
-                        <xs:enumeration value="fault-if-no-tx"/>
+                        <xs:enumeration value="new" />
+                        <xs:enumeration value="commit" />
+                        <xs:enumeration value="rollback" />
+                        <xs:enumeration value="suspend" />
+                        <xs:enumeration value="resume" />
+                        <xs:enumeration value="use-existing-or-new" />
+                        <xs:enumeration value="fault-if-no-tx" />
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 
 </xs:schema>
+

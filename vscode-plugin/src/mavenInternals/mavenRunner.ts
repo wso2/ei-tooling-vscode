@@ -16,9 +16,9 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {ChildProcess, spawn} from "child_process";
-import {commands, Uri, window} from "vscode";
-import {mavenOutputChannel} from "./mavenOutputChannel";
+import { ChildProcess, spawn } from "child_process";
+import { commands, Uri, window } from "vscode";
+import { mavenOutputChannel } from "./mavenOutputChannel";
 
 export class Runner {
 
@@ -30,7 +30,7 @@ export class Runner {
         mavenOutputChannel.clear();
         mavenOutputChannel.show();
 
-        this._process = spawn(command, args, {cwd: cwd, shell: true});
+        this._process = spawn(command, args, { cwd: cwd, shell: true });
 
         this._process.stdout.on('data', (data) => {
             mavenOutputChannel.append(data.toString());

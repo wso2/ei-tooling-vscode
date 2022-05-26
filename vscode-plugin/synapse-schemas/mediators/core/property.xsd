@@ -18,11 +18,13 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../misc/common.xsd"/>
+    <xs:include schemaLocation="../../misc/common.xsd" />
 
     <xs:element name="property">
         <xs:annotation>
@@ -33,24 +35,45 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+                <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip" />
             </xs:sequence>
-            <xs:attributeGroup ref="nameValueOrExpression"/>
-            <xs:attribute name="scope" use="optional" default="default">
+            <xs:attributeGroup ref="nameValueOrExpression" />
+            <xs:attribute name="scope" use="optional" default="synapse">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
-                        <xs:enumeration value="default"/>
-                        <xs:enumeration value="axis2"/>
-                        <xs:enumeration value="transport"/>
-                        <xs:enumeration value="axis2-client"/>
+                        <xs:enumeration value="default" />
+                        <xs:enumeration value="axis2" />
+                        <xs:enumeration value="transport" />
+                        <xs:enumeration value="axis2-client" />
+                        <xs:enumeration value="operation" />
+                        <xs:enumeration value="registry" />
+                        <xs:enumeration value="system" />
+                        <xs:enumeration value="synapse" />
+                        <xs:enumeration value="environment" />
+                        <xs:enumeration value="file" />
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="type" type="xs:string" use="optional"/>
-            <xs:attribute name="pattern" type="xs:string" use="optional"/>
-            <xs:attribute name="group" type="xs:int" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="type" default="STRING" use="optional">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="STRING" />
+                        <xs:enumeration value="INTEGER" />
+                        <xs:enumeration value="BOOLEAN" />
+                        <xs:enumeration value="DOUBLE" />
+                        <xs:enumeration value="FLOAT" />
+                        <xs:enumeration value="LONG" />
+                        <xs:enumeration value="SHORT" />
+                        <xs:enumeration value="OM" />
+                        <xs:enumeration value="JSON" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="pattern" type="xs:string" use="optional" />
+            <xs:attribute name="group" type="xs:int" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 
 </xs:schema>
+

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,12 +15,14 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../endpoint.xsd"/>
-    <xs:include schemaLocation="../mediators.xsd"/>
+    <xs:include schemaLocation="../../endpoint.xsd" />
+    <xs:include schemaLocation="../mediators.xsd" />
 
     <xs:element name="clone">
         <xs:annotation>
@@ -30,24 +32,30 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="target" minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="target" minOccurs="1" maxOccurs="unbounded">
                     <xs:complexType>
-                        <xs:attribute name="to" type="xs:string" use="optional"/>
+
+                        <xs:sequence>
+                            <xs:element name="sequence" minOccurs="0" maxOccurs="1">
+                                <xs:complexType>
+                                    <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded" />
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="endpoint" type="NamedEndpoint" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                        <xs:attribute name="to" type="xs:string" use="optional" />
+                        <xs:attribute name="soapAction" type="xs:string" use="optional" />
+                        <xs:attribute name="sequence" type="xs:string" use="optional" />
+                        <xs:attribute name="endpoint" type="xs:string" use="optional" />
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="sequence" minOccurs="1" maxOccurs="1">
-                    <xs:complexType>
-                        <xs:group ref="mediatorList" minOccurs="1" maxOccurs="unbounded"/>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="endpoint" type="Endpoint" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
-            <xs:attribute name="continueParent" type="xs:boolean" use="required"/>
-            <xs:attribute name="soapAction" type="xs:boolean" use="required"/>
-            <xs:attribute name="sequence" type="xs:boolean" use="required"/>
-            <xs:attribute name="endpoint" type="xs:boolean" use="required"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="id" type="xs:string" use="optional" />
+            <xs:attribute name="continueParent" type="xs:boolean" use="optional" />
+            <xs:attribute name="sequential" type="xs:boolean" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 
 </xs:schema>
+

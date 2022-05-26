@@ -18,11 +18,13 @@
   ~  under the License.
   -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:include schemaLocation="../../misc/target.xsd"/>
+    <xs:include schemaLocation="../../misc/target.xsd" />
 
     <xs:element name="iterate">
         <xs:annotation>
@@ -34,15 +36,17 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="target" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element ref="target" minOccurs="1" maxOccurs="unbounded" />
             </xs:sequence>
-            <xs:attribute name="sequential" type="xs:boolean" use="optional"/>
-            <xs:attribute name="continueParent" type="xs:boolean" use="optional"/>
-            <xs:attribute name="expression" type="xs:string" use="required"/>
-            <xs:attribute name="preservePayload" type="xs:boolean" use="optional"/>
-            <xs:attribute name="attachPath" type="xs:string" use="optional"/>
-            <xs:attribute name="description" type="xs:string" use="optional"/>
+            <xs:attribute name="sequential" type="xs:boolean" use="optional" />
+            <xs:attribute name="continueParent" type="xs:boolean" use="optional" />
+            <xs:attribute name="expression" type="xs:string" use="required" />
+            <xs:attribute name="preservePayload" type="xs:boolean" use="optional" />
+            <xs:attribute name="attachPath" type="xs:string" use="optional" />
+            <xs:attribute name="id" type="xs:string" use="optional" />
+            <xs:attribute name="description" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 
 </xs:schema>
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry exported="true" kind="var" path="ECLIPSE_WORKSPACE/.metadata/.plugins/org.wso2.integrationstudio.esb.libraries/lib/axis2_1.6.1.wso2v20.jar"/>
+	<classpathentry exported="true" kind="var" path="ECLIPSE_WORKSPACE/.metadata/.plugins/org.wso2.integrationstudio.esb.libraries/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry exported="true" kind="var" path="ECLIPSE_WORKSPACE/.metadata/.plugins/org.wso2.integrationstudio.esb.libraries/lib/synapse-core-2.1.7-wso2v142.jar"/>
+	<classpathentry kind="output" path="target"/>
+</classpath>

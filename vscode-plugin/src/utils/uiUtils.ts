@@ -16,14 +16,13 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import {OpenDialogOptions, QuickPickItem, Uri, window} from "vscode";
+import { OpenDialogOptions, QuickPickItem, Uri, window } from "vscode";
 
 // file chooser dialog
 export async function openDialogForFolder(customOptions: OpenDialogOptions): Promise<Uri | null> {
     const options: OpenDialogOptions = {
-        canSelectFiles: false,
-        canSelectFolders: true,
         canSelectMany: false
+
     };
     const result: Uri[] | undefined = await window.showOpenDialog(Object.assign(options, customOptions));
     if (result && result.length > 0) {
@@ -36,41 +35,44 @@ export async function openDialogForFolder(customOptions: OpenDialogOptions): Pro
 // Input project ArtifactID
 export async function showInputBoxForArtifactId(): Promise<string | undefined> {
     return await window.showInputBox({
-                                         value: "",
-                                         prompt: "Enter ArtifactId",
-                                         placeHolder: "Enter ArtifactId here"
-                                     }).then(text => text);
+        value: "",
+        prompt: "Enter ArtifactId",
+        placeHolder: "Enter ArtifactId here"
+    }).then(text => text);
 }
 
 // Input project GroupID
 export async function showInputBoxForGroupId(): Promise<string | undefined> {
     return await window.showInputBox({
-                                         value: "",
-                                         prompt: "Enter GroupId",
-                                         placeHolder: "Enter GroupId here"
-                                     }).then(text => text);
+        value: "",
+        prompt: "Enter GroupId",
+        placeHolder: "Enter GroupId here"
+    }).then(text => text);
 }
 
 export async function showQuickPick(quickPickItems: QuickPickItem[]): Promise<string | undefined> {
     return await window.showQuickPick(
         quickPickItems,
-        {matchOnDescription: true, placeHolder: "Select type..."}
+        { matchOnDescription: true, placeHolder: "Select type..." }
     ).then(selected => (
         selected && selected.description
+
     ));
 }
 
 export async function showInputBox(promptMsg: string) {
     return await window.showInputBox({
-                                         prompt: promptMsg
-                                     }).then(text => text);
+        prompt: promptMsg
+    }).then(text => text);
 }
 
 export async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
     const result: Uri | null = await openDialogForFolder({
-                                                             defaultUri: entry,
-                                                             openLabel: "Select Destination Folder"
-                                                         });
+        defaultUri: entry,
+        openLabel: "Select Destination Folder",
+        canSelectFiles: false,
+        canSelectFolders: true,
+    });
     const targetLocation: string | null = result && result.fsPath;
     if (!targetLocation) {
         window.showErrorMessage("Target folder not selected. Operation aborted!");
@@ -78,3 +80,17 @@ export async function chooseTargetFolder(entry: Uri | undefined): Promise<string
     return targetLocation;
 }
 
+export async function chooseTargetFile(entry: Uri | undefined, label: string, filters: any): Promise<string | null> {
+    const result: Uri | null = await openDialogForFolder({
+        defaultUri: entry,
+        openLabel: label,
+        canSelectFiles: true,
+        canSelectFolders: false,
+        filters: filters
+    });
+    const targetLocation: string | null = result && result.fsPath;
+    if (!targetLocation) {
+        window.showErrorMessage("Target file not selected. Operation aborted!");
+    }
+    return targetLocation;
+}

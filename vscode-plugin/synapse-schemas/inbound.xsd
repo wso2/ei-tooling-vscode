@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
 * limitations under the License.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           elementFormDefault="qualified"
-           targetNamespace="http://ws.apache.org/ns/synapse"
-           xmlns="http://ws.apache.org/ns/synapse">
+<xs:schema 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        targetNamespace="http://ws.apache.org/ns/synapse" 
+        xmlns="http://ws.apache.org/ns/synapse">
 
     <xs:include schemaLocation="misc/common.xsd" />
 
@@ -28,8 +29,7 @@
                 &lt;inbound endpoint&gt; declarations for the synapse configuration
             </xs:documentation>
             <xs:appinfo>
-                <sch:pattern name="Test constraints on the Root element"
-                             xmlns:sch="http://purl.oclc.org/dsdl/schematron">
+                <sch:pattern name="Test constraints on the Root element" xmlns:sch="http://purl.oclc.org/dsdl/schematron">
                     <sch:rule context="inboundEndpoint">
                         <sch:assert test="@protocol and @class">
                             On an inboundEndpoint element only one of the attributes protocol and class are allowed, not
@@ -69,3 +69,4 @@
     </xs:complexType>
 
 </xs:schema>
+
