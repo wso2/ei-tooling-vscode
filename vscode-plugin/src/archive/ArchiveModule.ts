@@ -32,6 +32,7 @@ import { ConnectorModule } from "../connector/ConnectorModule";
 import { DataServiceInfo } from "../dataService/dataServiceUtils";
 import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
 import { MediatorProjectModule } from "../mediatorProject/MediatorProjectModule";
+import { TerminalModule } from "../logging/TerminalModule";
 
 let DOM = require('xmldom').DOMParser;
 var fileSystem = require('fs');
@@ -409,7 +410,9 @@ export namespace ArchiveModule {
                     fse.copySync(decompiledDirectory, destinationDirectory);
                 }
             })
-            .catch((err: any) => console.log(err.stack));
+            .catch((err: any) => {
+                TerminalModule.printLogMessage(err.stack);
+            });
     }
 
     function copySynapseMetadataFiles(metaDataDirectory: string, rootMetadataFilePath: string, artifactName: string,
