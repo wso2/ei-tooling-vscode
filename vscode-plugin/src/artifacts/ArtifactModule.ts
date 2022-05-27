@@ -208,8 +208,8 @@ export namespace ArtifactModule {
                             // Write the updated template content to the target file.
                             fse.writeFileSync(targetSwaggerFilePatUri.fsPath, YAML.dump(data));
                         }
-                        catch (error: any) {
-                            TerminalModule.printLogMessage(error);
+                        catch (error) {
+                            console.log(error);
                         }
 
                     }
@@ -560,8 +560,8 @@ export namespace ArtifactModule {
             // Write the updated template content to the target file.
             fse.writeFileSync(pathToMetadataYaml, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
         }
-        catch (error: any) {
-            TerminalModule.printLogMessage(error);
+        catch (error) {
+            console.log(error);
         }
     }
 
@@ -584,8 +584,8 @@ export namespace ArtifactModule {
             // Write the updated template content to the target file.
             fse.writeFileSync(targetFilePathUri.fsPath, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
         }
-        catch (error: any) {
-            TerminalModule.printLogMessage(error);
+        catch (error) {
+            console.log(error);
         }
     }
 
