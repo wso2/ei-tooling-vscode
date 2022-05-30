@@ -78,10 +78,12 @@ export namespace TerminalModule {
                 window.showInformationMessage("Maven process successfully executed");
                 if (type === CommandTypes.CREATE && projectRootDir) {
                     Utils.createVsCodeSettingsFile(projectRootDir);
+                    terminal.sendText(`echo 'Maven process successfully executed.'`);
                     commands.executeCommand('vscode.openFolder', Uri.file(projectRootDir), true);
                 }
             } else if (code === 1) {
                 window.showInformationMessage("Maven process failed.");
+                terminal.sendText(`echo 'Maven process failed.'`);
             }
         });;
     }

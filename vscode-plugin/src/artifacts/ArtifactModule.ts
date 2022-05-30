@@ -67,7 +67,8 @@ export namespace ArtifactModule {
                 esbConfigsDirectory = Utils.getDirectoryFromDirectoryType(SubDirectories.CONFIGS,
                     rootDirectory).trim();
                 if (esbConfigsDirectory === "unidentified") {
-                    window.showErrorMessage("No ESB Configs project found, artifact creation aborted");
+                    window.showErrorMessage("No ESB Configs project found, artifact creation aborted...!");
+                    TerminalModule.printLogMessage(`No ESB Configs project found, ESB artifact ${targetArtifactName} creation aborted.`);
                     return;
                 }
                 targetArtifactFolderPath = path.join(esbConfigsDirectory, SRC, MAIN, SYNAPSE_CONFIG, targetFolder);
@@ -81,7 +82,8 @@ export namespace ArtifactModule {
             let artifactFilePath: string = path.join(esbConfigsDirectory, ARTIFACT_FILE);
             let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
             if ((!fse.existsSync(artifactFilePath)) || (!fse.existsSync(compositePomFilePath))) {
-                window.showErrorMessage("artifact.xml or composite pom.xml is missing, artifact creation aborted...");
+                window.showErrorMessage("artifact.xml or composite pom.xml is missing, artifact creation aborted...!");
+                TerminalModule.printLogMessage(`artifact.xml or composite pom.xml is missing, ESB artifact ${targetArtifactName} creation aborted.`);
                 return;
             }
 
@@ -118,7 +120,8 @@ export namespace ArtifactModule {
                     let artifactFilePath: string = path.join(registryResourceSubDirectory, ARTIFACT_FILE);
                     let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
                     if ((!fse.existsSync(artifactFilePath)) || (!fse.existsSync(compositePomFilePath))) {
-                        window.showErrorMessage("artifact.xml or composite pom.xml is missing, resource creation aborted...");
+                        window.showErrorMessage("artifact.xml or composite pom.xml is missing, resource creation aborted...!");
+                        TerminalModule.printLogMessage(`artifact.xml or composite pom.xml is missing, resource artifact ${targetArtifactName} creation aborted.`);
                         return;
                     }
 
@@ -127,6 +130,7 @@ export namespace ArtifactModule {
                 }
                 else {
                     window.showErrorMessage("No Registry Resources project found, resource creation aborted");
+                    TerminalModule.printLogMessage(`No Registry Resources project found, resource artifact ${targetArtifactName} creation aborted.`);
                 }
             });
         }
@@ -157,6 +161,7 @@ export namespace ArtifactModule {
             let newGlob = new glob(pattern, { cwd: cwd }, async function (err: any, files: any) {
                 if (err) {
                     window.showErrorMessage("Error creating " + targetArtifactName + " artifact!. ERROR: " + err);
+                    TerminalModule.printLogMessage(err);
                     return;
                 }
                 if (files.length > 0) {
@@ -195,12 +200,17 @@ export namespace ArtifactModule {
 
                         // Read and buffer swagger.yaml template file.
                         let rawYaml: Buffer = fse.readFileSync(templateSwaggerFilePath);
-                        let data = YAML.load(rawYaml)
-                        data.info.title = targetArtifactName;
-                        data.info.description = "API Definition of " + targetArtifactName;
+                        try {
+                            let data = YAML.load(rawYaml)
+                            data.info.title = targetArtifactName;
+                            data.info.description = "API Definition of " + targetArtifactName;
 
-                        // Write the updated template content to the target file.
-                        fse.writeFileSync(targetSwaggerFilePatUri.fsPath, YAML.dump(data));
+                            // Write the updated template content to the target file.
+                            fse.writeFileSync(targetSwaggerFilePatUri.fsPath, YAML.dump(data));
+                        }
+                        catch (error) {
+                            console.log(error);
+                        }
 
                     }
                     else if (type === ProxyArtifactInfo.TYPE) {//create metadata file for proxy service
@@ -322,7 +332,15 @@ export namespace ArtifactModule {
 
         const pomFile: string = path.join(esbConfigsDirectory, "..", POM_FILE);
         const configArtifactXmlFileLocation: string = path.join(esbConfigsDirectory, ARTIFACT_FILE);
-        if ((!fse.existsSync(pomFile)) || (!fse.existsSync(configArtifactXmlFileLocation))) return;
+        if (!fse.existsSync(pomFile)) {
+            TerminalModule.printLogMessage(`${pomFile} does not exists, adding ${artifactName} to artifcat.xml aborted.`);
+            return;
+        }
+
+        if (!fse.existsSync(configArtifactXmlFileLocation)) {
+            TerminalModule.printLogMessage(`${configArtifactXmlFileLocation} does not exists, adding ${artifactName} to artifcat.xml aborted.`);
+            return;
+        }
 
         // read pom and get project group_id and version
         let project: Utils.Project = Utils.getProjectInfoFromPOM(pomFile);
@@ -375,6 +393,7 @@ export namespace ArtifactModule {
         const pomFile: string = path.join(compositeExporterDirectory, POM_FILE);
         if (!fse.existsSync(pomFile)) {
             window.showErrorMessage("No composite pom.xml found...!");
+            TerminalModule.printLogMessage(`${pomFile} does not exists. Adding artifact ${artifactName} to composite pom.xml aborted.`);
             return;
         }
 
@@ -385,7 +404,7 @@ export namespace ArtifactModule {
 
         //check whether artifcat/resource identifier already exists
         if (Utils.checkArtifactIdExists(pomFile, artifactName, finalGroupId)) {
-            TerminalModule.printLogMessage(`Artifact identifier for ${artifactName} already exists, adding to composite exporter aborted`);
+            TerminalModule.printLogMessage(`Artifact identifier for ${artifactName} already exists. Adding artifact ${artifactName} to composite exporter skipped.`);
             return;
         }
 
@@ -405,7 +424,7 @@ export namespace ArtifactModule {
             Utils.updateCompositePomXml(compositeExporterDirectory, swaggerArtifactName, MetadataInfo.SYNAPSE_MEATADATA_TYPE, serverRole, finalGroupId);
         }
         else if (type === ProxyArtifactInfo.TYPE) {
-            finalGroupId = groupId + ".proxy-service." + METADATA;
+            finalGroupId = `${groupId}.${METADATA}`;
             //metadata
             let metadataArtifactName: string = artifactName + "_proxy_" + METADATA;
             Utils.updateCompositePomXml(compositeExporterDirectory, metadataArtifactName, MetadataInfo.SYNAPSE_MEATADATA_TYPE, serverRole, finalGroupId);
@@ -520,7 +539,10 @@ export namespace ArtifactModule {
         let rawArtifactName: string = rawFileName.split(".")[0];
         let metadaFileName: string = `${rawArtifactName}_${METADATA}.yaml`;
         const pathToMetadataYaml: string = path.join(esbConfigsDirectory, SRC, MAIN, RESOURECS, METADATA, metadaFileName);
-        if (!fse.existsSync(pathToMetadataYaml)) return;
+        if (!fse.existsSync(pathToMetadataYaml)) {
+            TerminalModule.printLogMessage(`${pathToMetadataYaml} does not exists. Could not update the metadata file.`);
+            return;
+        }
 
         //read xml file for artifact file
         const buf: Buffer = fse.readFileSync(filePath);
@@ -529,13 +551,18 @@ export namespace ArtifactModule {
         let context = api[0].getAttribute("context");
         let newServiceUrl: string = "https://{MI_HOST}:{MI_PORT}" + context;
 
-        // Read metadata.yaml template file.
-        const raw: Buffer = fse.readFileSync(pathToMetadataYaml);
-        let data = YAML.load(raw)
-        data.serviceUrl = newServiceUrl;
+        try {
+            // Read metadata.yaml template file.
+            const raw: Buffer = fse.readFileSync(pathToMetadataYaml);
+            let data = YAML.load(raw)
+            data.serviceUrl = newServiceUrl;
 
-        // Write the updated template content to the target file.
-        fse.writeFileSync(pathToMetadataYaml, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
+            // Write the updated template content to the target file.
+            fse.writeFileSync(pathToMetadataYaml, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     /**
@@ -543,18 +570,23 @@ export namespace ArtifactModule {
      */
     function createMetaDataYaml(templateFilePath: string, artifactName: string, description: string, definitionType: string,
         serviceUrl: string, targetFilePathUri: Uri) {
-        // Read and buffer metadata.yaml template file.
-        const raw: Buffer = fse.readFileSync(templateFilePath);
-        let data = YAML.load(raw);
-        data.key = `${artifactName}-${VERSION}`;
-        data.name = artifactName;
-        data.displayName = artifactName;
-        data.description = description;
-        data.serviceUrl = serviceUrl;
-        data.definitionType = definitionType;
+        try {
+            // Read and buffer metadata.yaml template file.
+            const raw: Buffer = fse.readFileSync(templateFilePath);
+            let data = YAML.load(raw);
+            data.key = `${artifactName}-${VERSION}`;
+            data.name = artifactName;
+            data.displayName = artifactName;
+            data.description = description;
+            data.serviceUrl = serviceUrl;
+            data.definitionType = definitionType;
 
-        // Write the updated template content to the target file.
-        fse.writeFileSync(targetFilePathUri.fsPath, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
+            // Write the updated template content to the target file.
+            fse.writeFileSync(targetFilePathUri.fsPath, YAML.dump(data, { quotingType: '"', forceQuotes: true }));
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     /**
@@ -570,7 +602,11 @@ export namespace ArtifactModule {
             SubDirectories.CONFIGS, true, rootDirectory, ProjectNatures.CONFIGS);
 
         //check whether the project was created
-        if (!fse.existsSync(path.join(rootDirectory, projectName))) return;
+        let subDirectory: string = path.join(rootDirectory, projectName);
+        if (!fse.existsSync(subDirectory)) {
+            TerminalModule.printLogMessage(`${subDirectory} does not exsits. Creating sub-folders for ESB project "${projectName}" aborted.`);
+            return;
+        }
 
         //create additional sub-directories
         let metadataPath: string = path.join(rootDirectory, projectName, SRC, MAIN, RESOURECS, METADATA);
@@ -594,6 +630,7 @@ export namespace ArtifactModule {
         let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
         if (!fse.existsSync(rootPomFilePath)) {
             window.showErrorMessage("No root pom.xml found...!");
+            TerminalModule.printLogMessage(`${rootPomFilePath} does not exists. Could not add ESB module "${projectName}" to root pom.xml.`);
             return;
         }
         const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
@@ -634,7 +671,11 @@ export namespace ArtifactModule {
             SubDirectories.REGISTRY_RESOURCES, true, rootDirectory, ProjectNatures.REGISTRY_RESOURCES);
 
         //check whether the project was created
-        if (!fse.existsSync(path.join(rootDirectory, projectName))) return;
+        let subDirectory: string = path.join(rootDirectory, projectName);
+        if (!fse.existsSync(subDirectory)) {
+            TerminalModule.printLogMessage(`${subDirectory} does not exsits. Creating .classpath for ESB project "${projectName}" aborted.`);
+            return;
+        }
 
         //create .classpath file
         let templateConfigFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "registryClassPath.xml")
@@ -652,6 +693,7 @@ export namespace ArtifactModule {
         let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
         if (!fse.existsSync(rootPomFilePath)) {
             window.showErrorMessage("No root pom.xml found...!");
+            TerminalModule.printLogMessage(`${rootPomFilePath} does not exists. Could not add Registry Resources module "${projectName}" to root pom.xml.`);
             return;
         }
         const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);

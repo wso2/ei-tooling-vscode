@@ -46,6 +46,7 @@ import { ArtifactModule } from "./artifacts/ArtifactModule";
 import { SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
 import { Utils } from './utils/Utils';
+import { TerminalModule } from './logging/TerminalModule';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
@@ -55,6 +56,9 @@ export function activate(context: ExtensionContext) {
 
     // register commands
     registerSynapseCommands(context);
+
+    //create Terminal to log errors
+    TerminalModule.createTerminal();
 
     //check currently active text editor
     if (window.activeTextEditor) {

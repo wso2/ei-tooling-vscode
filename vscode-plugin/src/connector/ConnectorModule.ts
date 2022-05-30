@@ -23,6 +23,7 @@ import { XMLSerializer } from 'xmldom';
 import { ProjectNatures, SubDirectories, ESBArtifactPath, Common } from "../artifacts/artifactUtils";
 import { Utils } from "../utils/Utils";
 import { ConnectorInfo, ServerRoleInfo } from "./connectorUtils";
+import { TerminalModule } from "../logging/TerminalModule";
 
 const axios = require('axios').default;
 const { DownloaderHelper } = require('node-downloader-helper');
@@ -34,6 +35,7 @@ export namespace ConnectorModule {
     const CONF = Common.CONF;
     const TEMPLATES = Common.TEMPLATES;
     const POM_FILE = Common.POM_FILE;
+    const PROJECT_FILE = Common.PROJECT_FILE;
     const ARTIFACT_FILE = Common.ARTIFACT_FILE;
     const MODULE = Common.MODULE;
     const MODULES = Common.MODULES;
@@ -56,6 +58,7 @@ export namespace ConnectorModule {
         let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
         if (!fse.existsSync(rootPomFilePath)) {
             window.showErrorMessage("No root pom.xml found...!");
+            TerminalModule.printLogMessage(`${rootPomFilePath} does not exists. Could not add connector module '${projectName}' to root pom.xml.`);
             return;
         }
         const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
@@ -69,7 +72,7 @@ export namespace ConnectorModule {
         let append: boolean = false;
 
         for (let i = 0; i < totalSubModules; i++) {
-            let configurationFilePath: string = path.join(rootDirectory, subModules[i].textContent.trim(), POM_FILE);
+            let configurationFilePath: string = path.join(rootDirectory, subModules[i].textContent.trim(), PROJECT_FILE);
             let projectNature: string = Utils.getDirectoryType(configurationFilePath).trim();
 
             if (projectNature === SubDirectories.DATA_SOURCE) {
@@ -115,6 +118,7 @@ export namespace ConnectorModule {
             suggestions = response.data.data;
             if (suggestions.length === 0) {
                 window.showInformationMessage("No Connectors found...!");
+                TerminalModule.printLogMessage(`No connectors found for keyword '${keyWord}'`);
                 return;
             }
             [connectorList, downloadLinkMap] = createQuickPickList(suggestions);
@@ -133,6 +137,7 @@ export namespace ConnectorModule {
             .catch((error: any) => {
                 // handle error
                 window.showErrorMessage(error);
+                TerminalModule.printLogMessage(error);
             });
     }
 
@@ -162,7 +167,8 @@ export namespace ConnectorModule {
     function downloadConnector(downloadLink: string, connectorName: string, version: string, rootDirectory: string) {
         const connectorExporterFilePath: string = Utils.getDirectoryFromDirectoryType(SubDirectories.CONNECTOR_EXPORTER, rootDirectory).trim();
         if (connectorExporterFilePath.trim() === "unidentified") {
-            window.showErrorMessage("No Connector Exporter project found, download aborted");
+            window.showErrorMessage("No Connector Exporter project found, downloading connector aborted");
+            TerminalModule.printLogMessage(`No Connector Exporter project found, downloading ${connectorName} aborted.`);
         }
         else {
             let urlSplit: string[] = downloadLink.split("/");
@@ -171,6 +177,7 @@ export namespace ConnectorModule {
 
             if (fse.existsSync(connectorFilePath)) {
                 window.showErrorMessage(`${connectorName} already exists`);
+                TerminalModule.printLogMessage(`${connectorName} already exists in the connector exporter project. Downloading the connector aborted.`);
                 return;
             }
 
@@ -180,12 +187,16 @@ export namespace ConnectorModule {
                 let status: boolean = updateConfigurationFiles(connectorFileName, version, rootDirectory);
                 if (!status) {
                     fse.removeSync(connectorFilePath);
-                    window.showErrorMessage("artifact.xml or composite pom.xml is missing, downloaded connector deleted...");
+                    window.showErrorMessage("artifact.xml or composite pom.xml is missing, downloaded connector deleted...!");
+                    TerminalModule.printLogMessage(`artifact.xml or composite pom.xml is missing, ${connectorName} deleted from the connector exporter project.`);
                     return;
                 }
                 window.showInformationMessage(`${connectorName} downloaded Successfully`);
             });
-            downloadHelper.on('error', (err: any) => console.log('Connector download Failed', err));
+            downloadHelper.on('error', (err: any) => {
+                window.showErrorMessage('Connector download Failed', err);
+                TerminalModule.printLogMessage(err);
+            });
 
             window.withProgress({
                 location: ProgressLocation.Notification,
@@ -204,26 +215,28 @@ export namespace ConnectorModule {
     /**
      * Add a connector from file system.
      */
-    export function importConnectorFromFileSystem(connectorLocation: string, rootDirectory: string){
+    export function importConnectorFromFileSystem(connectorLocation: string, rootDirectory: string) {
 
         const connectorExporterFilePath: string = Utils.getDirectoryFromDirectoryType(SubDirectories.CONNECTOR_EXPORTER, rootDirectory).trim();
         if (connectorExporterFilePath === "unidentified") {
             window.showErrorMessage("No Connector Exporter project found, importing connector aborted");
+            TerminalModule.printLogMessage(`No Connector Exporter project found. Could not import the connector from ${connectorLocation}`);
             return;
         }
 
         let pathArray: string[] = connectorLocation.split(path.sep);
         let connectorFileName: string = pathArray[pathArray.length - 1];
         let targetConnectorFilePath: string = path.join(connectorExporterFilePath, connectorFileName);
-        if(fse.existsSync(targetConnectorFilePath)){
+        if (fse.existsSync(targetConnectorFilePath)) {
             window.showErrorMessage("Connector already exists in the project");
+            TerminalModule.printLogMessage(`Connector already exists in the connector exporter project. Could not import the connector from ${connectorLocation}.`);
             return;
         }
 
         let connectorName: string = connectorFileName.split(".zip")[0];
         let nameArray: string[] = connectorName.split("-");
         let version: string = nameArray[nameArray.length - 1];
-        
+
         //copy the connector
         let edit = new WorkspaceEdit();
         edit.createFile(Uri.file(targetConnectorFilePath));
@@ -234,7 +247,8 @@ export namespace ConnectorModule {
 
         if (!status) {
             fse.removeSync(targetConnectorFilePath);
-            window.showErrorMessage("artifact.xml or composite pom.xml is missing, imported connector deleted...");
+            window.showErrorMessage("artifact.xml or composite pom.xml is missing, imported connector deleted...!");
+            TerminalModule.printLogMessage(`artifact.xml or composite pom.xml is missing, ${connectorName} deleted from the connector exporter project.`);
             return;
         }
         window.showInformationMessage(`${connectorName} imported Successfully`);
@@ -289,12 +303,12 @@ export namespace ConnectorModule {
         let nameArray = deletedConnectorFileName.split("-");
         nameArray.pop();
         let connectorName: string = nameArray.join("-");
+        let currentRootDirectory: string = path.join(deletedFile, "..", "..").trim();
 
-        if (fileExtension === "zip") {
-
+        if (fileExtension === "zip" && rootDirectory.trim() === currentRootDirectory) {
             let artifactXmlFilePath: string = path.join(deletedFile, "..", ARTIFACT_FILE);
             Utils.deletefromArtifactXml(artifactXmlFilePath, connectorName.trim());
-            Utils.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER, rootDirectory,undefined, undefined);
+            Utils.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER, rootDirectory, undefined, undefined);
 
         }
     }

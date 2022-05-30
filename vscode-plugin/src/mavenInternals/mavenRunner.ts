@@ -18,7 +18,9 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 import { ChildProcess, spawn } from "child_process";
 import { commands, Uri, window } from "vscode";
+import { TerminalModule } from "../logging/TerminalModule";
 import { mavenOutputChannel } from "./mavenOutputChannel";
+import { Utils } from "../utils/Utils";
 
 export class Runner {
 
@@ -38,12 +40,14 @@ export class Runner {
 
         this._process.stderr.on('data', (data) => {
             mavenOutputChannel.append(data.toString());
+            TerminalModule.printLogMessage(data.toString());
         });
 
         this._process.on("exit", (code) => {
             if (code === 0) {
                 window.showInformationMessage("Maven process successfully executed");
                 if (nwd && goal === this.CreateProject) {
+                    Utils.createVsCodeSettingsFile(nwd);
                     commands.executeCommand('vscode.openFolder', Uri.file(nwd), true);
                 }
             } else if (code === 1) {

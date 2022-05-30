@@ -3,16 +3,16 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>{groupId}</groupId>
-    <artifactId>{artifactId}</artifactId>
+    <groupId>${rootGroupId}</groupId>
+    <artifactId>${rootArtifactId}</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <groupId>{groupId}</groupId>
-  <artifactId>{artifactId}</artifactId>
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
-  <name>{artifactId}</name>
-  <description>{artifactId}</description>
+  <name>${artifactId}</name>
+  <description>${artifactId}</description>
   <properties>
     <CApp.type>lib/synapse/mediator</CApp.type>
   </properties>
@@ -74,9 +74,9 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>{artifactId}</Bundle-SymbolicName>
-            <Bundle-Name>{artifactId}</Bundle-Name>
-            <Export-Package>{packageName}</Export-Package>
+            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Name>${project.artifactId}</Bundle-Name>
+            <Export-Package>${project.groupId}</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>

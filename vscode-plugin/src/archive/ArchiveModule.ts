@@ -32,6 +32,7 @@ import { ConnectorModule } from "../connector/ConnectorModule";
 import { DataServiceInfo } from "../dataService/dataServiceUtils";
 import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
 import { MediatorProjectModule } from "../mediatorProject/MediatorProjectModule";
+import { TerminalModule } from "../logging/TerminalModule";
 
 let DOM = require('xmldom').DOMParser;
 var fileSystem = require('fs');
@@ -89,7 +90,7 @@ export namespace ArchiveModule {
         const buffer: Buffer = fse.readFileSync(rootArtifactsPath);
         let artifactXml = new DOM().parseFromString(buffer.toString(), XML_TYPE);
         let artifacts = artifactXml.getElementsByTagName("artifact");
-        
+
         if (artifacts.length > 0) {
 
             //create root pom.xml and .project files
@@ -256,8 +257,9 @@ export namespace ArchiveModule {
 
         //copy metadata files if there are any
         if ((type === APIArtifactInfo.TYPE) || (type === ProxyArtifactInfo.TYPE)) {
+            let metadataGroupId: string = `${groupId}.${METADATA}`;
             copySynapseMetadataFiles(metadataDirectory, metadataFilePath, name, esbConfigsDirectory, compositeExporterDirectory,
-                groupId);
+                metadataGroupId);
         }
     }
 
@@ -369,8 +371,9 @@ export namespace ArchiveModule {
         let project: Utils.Project = Utils.getProjectInfoFromPOM(rootPomFilePath);
         let groupId: string = project.groupId!;
         let finalGroupId: string = `${groupId}.${type.split("/")[1]}`;
+        let filePath: string = `dataservice/${newFileName}`
         Utils.addArtifactToArtifactXml(artifactfilePath, name, finalGroupId, version, type, serverRole,
-            newFileName, undefined, undefined, undefined);
+            filePath, undefined, undefined, undefined);
 
         //update composite pom.xml
         Utils.updateCompositePomXml(compositeExporterDirectory, name, type, serverRole, finalGroupId, version);
@@ -393,7 +396,8 @@ export namespace ArchiveModule {
                 let manifest = buf.toString();
                 let manifestArray: string[] = manifest.split("Export-Package:");
                 let packageArray: string = manifestArray[manifestArray.length - 1];
-                let packageName: string = packageArray.split("DynamicImport-Package:")[0].trim();
+                packageArray = packageArray.split("\n")[0].trim();
+                let packageName: string = packageArray.split(";")[0].trim();
 
                 //remove manifest files
                 if (fse.existsSync(manifestDirectory)) fse.removeSync(manifestDirectory);
@@ -406,7 +410,9 @@ export namespace ArchiveModule {
                     fse.copySync(decompiledDirectory, destinationDirectory);
                 }
             })
-            .catch((err: any) => console.log(err.stack));
+            .catch((err: any) => {
+                TerminalModule.printLogMessage(err.stack);
+            });
     }
 
     function copySynapseMetadataFiles(metaDataDirectory: string, rootMetadataFilePath: string, artifactName: string,

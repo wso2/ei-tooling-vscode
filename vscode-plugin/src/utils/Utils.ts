@@ -31,6 +31,7 @@ var fileSystem = require('fs');
 import * as xml2js from "xml2js";
 import { ArtifactModule } from "../artifacts/ArtifactModule";
 import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
+import { TerminalModule } from "../logging/TerminalModule";
 
 export namespace Utils {
 
@@ -104,7 +105,7 @@ export namespace Utils {
                 return result;
             }
             , error => {
-                console.log(error);
+                TerminalModule.printLogMessage(error);
                 return false;
             });
     }
@@ -154,7 +155,10 @@ export namespace Utils {
      */
     export function deletefromArtifactXml(artifactXmlFilePath: string, artifactName: string) {
 
-        if (!fse.existsSync(artifactXmlFilePath)) return;
+        if (!fse.existsSync(artifactXmlFilePath)) {
+            TerminalModule.printLogMessage(`${artifactXmlFilePath} does not exists, deleting ${artifactName} artifact from artifact.xml skipped.`);
+            return
+        };
 
         let buf: Buffer = fse.readFileSync(artifactXmlFilePath);
         let xmlDoc = new DOM().parseFromString(buf.toString(), "text/xml");
@@ -184,7 +188,10 @@ export namespace Utils {
         esbConfigsDirectory: string | undefined, groupId: string | undefined) {
 
         const pathToPomXml: string = path.join(getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
-        if (!fse.existsSync(pathToPomXml)) return;
+        if (!fse.existsSync(pathToPomXml)) {
+            TerminalModule.printLogMessage(`${pathToPomXml} does not exists, deleting ${artifactName} from composite pom.xml skipped.`);
+            return
+        };
 
         let rootPomXmlFilePath: string = path.join(rootDirectory, POM_FILE);
         let project: Project = getProjectInfoFromPOM(rootPomXmlFilePath);
@@ -248,7 +255,7 @@ export namespace Utils {
 
                     //delete metadata related imformation
                     let metadataArtifactName: string = `${artifactName}_${PROXY_METADATA}`;
-                    deleteArtifactFromPomXml(metadataArtifactName, "proxy-service.metadata", rootDirectory, esbConfigsDirectory, undefined);
+                    deleteArtifactFromPomXml(metadataArtifactName, METADATA, rootDirectory, esbConfigsDirectory, undefined);
 
                     if (esbConfigsDirectory) {
                         let metaDataDirectory: string = path.join(esbConfigsDirectory, SRC, MAIN, RESOURECS, METADATA);
@@ -291,12 +298,14 @@ export namespace Utils {
         let templateXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
 
         let newPlugins = templateXmlDoc.getElementsByTagName(PLUGIN_TAG);
-        length = newPlugins.length
+        length = newPlugins.length;
 
         for (let i = 0; i < length; i++) {
             let artifactId: string = newPlugins[i].getElementsByTagName(ARTIFACT_ID_TAG)[0].textContent.trim();
             let index: number = currentPluginIdArray.indexOf(artifactId);
-            if (index === -1) parentPlugin.appendChild(newPlugins[i]);
+            if (index === -1) {
+                parentPlugin.appendChild(newPlugins[i]);
+            }
         };
 
         let data = new XMLSerializer().serializeToString(pomXmlDoc);
@@ -369,6 +378,7 @@ export namespace Utils {
         let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
         if (!fse.existsSync(rootPomFilePath)) {
             window.showErrorMessage("No root pom.xml found...!");
+            TerminalModule.printLogMessage(`${rootPomFilePath} does not exists, adding ${projectName} to root pom.xml aborted.`);
             return;
         }
         const rootPomBuffer: Buffer = fse.readFileSync(rootPomFilePath);
@@ -443,7 +453,10 @@ export namespace Utils {
 
         //add entry to properties
         let compositePomFilePath: string = path.join(compositeDirectory, POM_FILE);
-        if (!fse.existsSync(compositePomFilePath)) return;
+        if (!fse.existsSync(compositePomFilePath)) {
+            TerminalModule.printLogMessage(`${compositePomFilePath} does not exists, adding ${name} to composite exporter pom.xml aborted.`);
+            return
+        };
         const buffer: Buffer = fse.readFileSync(compositePomFilePath);
         let pomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
         let properties = pomXmlDoc.getElementsByTagName("properties");
@@ -488,7 +501,10 @@ export namespace Utils {
         type: string, serverRole: string, file: string | undefined, path: string | undefined,
         mediaType: string | undefined, item: any) {
 
-        if (!fse.existsSync(artifactXmlFilePath)) return;
+        if (!fse.existsSync(artifactXmlFilePath)) {
+            TerminalModule.printLogMessage(`${artifactXmlFilePath} does not exists, adding ${name} to artifact.xml aborted.`);
+            return
+        };
 
         const buffer: Buffer = fse.readFileSync(artifactXmlFilePath);
         let xmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
@@ -549,17 +565,21 @@ export namespace Utils {
         if (workspace.workspaceFolders) {
             let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
             let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
-            if (!fse.existsSync(rootPomFilePath)) return;
 
             //check wheher a top level module was deleted
             let parentDirectory: string = path.join(subDirectory, "..");
             if (rootDirectory.trim() !== parentDirectory.trim()) return;
 
-            const buffer: Buffer = fse.readFileSync(rootPomFilePath);
-            let rootPomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
-
             let dirArray: string[] = subDirectory.split(path.sep);
             let projectName: string = dirArray[dirArray.length - 1];
+
+            if (!fse.existsSync(rootPomFilePath)) {
+                TerminalModule.printLogMessage(`${rootPomFilePath} does not exists, deleting ${projectName} from root pom.xml aborted.`);
+                return;
+            };
+
+            const buffer: Buffer = fse.readFileSync(rootPomFilePath);
+            let rootPomXmlDoc = new DOM().parseFromString(buffer.toString(), "text/xml");
 
             let modules = rootPomXmlDoc.getElementsByTagName(MODULES)[0];
             let subModules = rootPomXmlDoc.getElementsByTagName(MODULE);
@@ -646,11 +666,11 @@ export namespace Utils {
 
         const currentDirectory: string = getDirectoryFromDirectoryType(directoryType, rootDirectory).trim();
         if (currentDirectory !== "unidentified") {
-            let decision = await window.showWarningMessage(`WSO2 Enterprise Integrator Extension can not handle more than one ${type},
-                Do you want to continue?`, "Yes", "No");
+            let decision = await window.showWarningMessage(`WSO2 Enterprise Integrator Extension can not handle more than one ${type}, Do you want to continue?`, "Yes", "No");
             if (decision && (decision.trim() === "Yes")) {
                 let newDirectory: string = path.join(rootDirectory, projectName);
                 if (fse.existsSync(newDirectory)) {
+                    TerminalModule.printLogMessage(`${projectName} project name already exists, creating ${type} aborted.`);
                     window.showErrorMessage(`${type} name already exists!`);
                     return;
                 }
@@ -663,6 +683,7 @@ export namespace Utils {
         else {
             let newDirectory: string = path.join(rootDirectory, projectName);
             if (fse.existsSync(newDirectory)) {
+                TerminalModule.printLogMessage(`${projectName} project name already exists, creating ${type} aborted.`);
                 window.showErrorMessage(`${type} name already exists!`);
                 return;
             }
