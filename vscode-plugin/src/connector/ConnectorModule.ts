@@ -303,9 +303,9 @@ export namespace ConnectorModule {
         let nameArray = deletedConnectorFileName.split("-");
         nameArray.pop();
         let connectorName: string = nameArray.join("-");
+        let currentRootDirectory: string = path.join(deletedFile, "..", "..").trim();
 
-        if (fileExtension === "zip") {
-
+        if (fileExtension === "zip" && rootDirectory.trim() === currentRootDirectory) {
             let artifactXmlFilePath: string = path.join(deletedFile, "..", ARTIFACT_FILE);
             Utils.deletefromArtifactXml(artifactXmlFilePath, connectorName.trim());
             Utils.deleteArtifactFromPomXml(connectorName.trim(), ConnectorInfo.DESTINATION_FOLDER, rootDirectory, undefined, undefined);

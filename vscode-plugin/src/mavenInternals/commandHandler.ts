@@ -17,20 +17,21 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 */
 
 import { ArchetypeModule } from "../archetype/ArchetypeModule";
-import { TerminalModule } from "../logging/TerminalModule";
+import { Runner } from "./mavenRunner";
 import * as path from 'path';
 
 export async function executeProjectCreateCommand(newProject: ArchetypeModule.ESBProject, targetLocation: string) {
     let cmd = getMavenGenerateCommand(newProject);
-
     const projectRootDir: string = path.join(targetLocation, newProject.artifactId);
-    TerminalModule.createIntegrationProject(cmd, projectRootDir, targetLocation);
+
+    let commandRunner: Runner = new Runner();
+    commandRunner.runProjectCreateCommand(cmd, [], projectRootDir, targetLocation);
 }
 
 export function executeProjectBuildCommand(pathToPom: string) {
     let cmd = createMavenBuildCommand();
-
-    TerminalModule.buildIntegrationProject(cmd,pathToPom);
+    let commandRunner: Runner = new Runner();
+    commandRunner.runProjectBuildCommand(cmd, pathToPom);
 }
 
 function getMavenGenerateCommand(newProject: ArchetypeModule.ESBProject): string {
