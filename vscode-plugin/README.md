@@ -12,25 +12,25 @@ This VS Code extension provides support for creating and editing WSO2 EI Project
 * Mediator Project
 
 #### Composite Exporter
-* pom.xml file will be updated in Composite Exporter when new artifact is added to the workspace.
-* When deleting an artifact, related information will be deleted from Composite Exporter.
+* pom.xml file will be updated in the Composite Exporter when a new artifact is added to the workspace.
+* When deleting an artifact, related information will be deleted from the Composite Exporter.
 
 #### ESB Configs
-* ESB artifact can be added to the ESB Configs through command palette commands or by right clicking the relevant artifact folder.
+* An ESB artifact can be added to the ESB Configs through command palette commands or by right clicking on the relevant artifact folder.
 
 #### Registry Resources
-* Command pallet command can be used to add new registry resources into Registry Resources project by using available templates.
+* Command pallet command can be used to add new registry resources into the Registry Resources project by using available templates.
 
 #### Connector Exporter
 * Command palette command can be used to add a new connector to the Connector Exporter. User can enter a keyword for a particular connector and extension will give a list of suggested connectors. User can select one of the suggested connectors and it will be added to the Connector Exporter.
 
 #### Data Service Project
-* By right clicking the dataservice sub-folder within a Data Service project, a new data service can be added.
+* A new data service can be added by right clicking on the dataservice sub-folder within a Data Service project.
 
 #### Mediator Project
-* By using the command palette command, new Mediator Project can be added to the workspace.
+* A new Mediator Project can be added to the workspace by using the command palette command.
  
-This extension also can be used to generate an Integration Project from capp(.car) file.
+This extension can also be used to generate an Integration Project from capp(.car) file.
 
 ## Requirements:
 - Java JDK 8 at least
