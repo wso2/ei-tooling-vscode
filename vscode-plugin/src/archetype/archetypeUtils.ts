@@ -18,6 +18,6 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
 export const GROUP_ID_PREFIX: string = "com.example.";
 
-export const ARCHETYPE_ARTIFACT_ID: string = "my-archetype-id";
-export const ARCHETYPE_GROUP_ID: string = "my.groupId";
-export const ARCHETYPE_VERSION: string = "1.0.0";
+export const ARCHETYPE_ARTIFACT_ID: string = "org.wso2.carbon.extension.ei.project.archetype";
+export const ARCHETYPE_GROUP_ID: string = "org.wso2.carbon.extension.archetype";
+export const ARCHETYPE_VERSION: string = "2.0.17";
