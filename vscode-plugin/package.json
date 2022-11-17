@@ -48,6 +48,9 @@
 		"onCommand:wso2ei.connector.import",
 		"onCommand:wso2ei.connector.create.project",
 		"onCommand:wso2ei.car.create.zip",
+
+		"onCommand:wso2ei.open.diagrams",
+
 		"workspaceContains:src/main/synapse-config",
 		"workspaceContains:**/.classpath"
 	],
@@ -238,6 +241,13 @@
 				"title": "Import Integration Project",
 				"category": "WSO2EI"
 			},
+
+			{
+				"command": "wso2ei.open.diagrams",
+				"title": "Open Graphical View",
+				"category": "WSO2EI"
+			},
+
 			{
 				"command": "wso2ei.project.zip",
 				"title": "Create Zip Archive",
