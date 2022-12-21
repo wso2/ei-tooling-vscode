@@ -89,13 +89,13 @@ export default class DraggingUI {
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
           <meta name="theme-color" content="#000000">
-          <link rel="stylesheet" type="text/css" href="https://file%2B.vscode-resource.vscode-cdn.net/c%3A/Wso2_API_Manager/wso2EI_Tooling_Test7/ei-tooling-vscode/vscode-plugin/webview-ui/build/static/css/main.073c9b0a.css">
+          <link rel="stylesheet" type="text/css" href="https://file%2B.vscode-resource.vscode-cdn.net/c%3A/Wso2_API_Manager/wso2EI_Tooling_Test15/ei-tooling-vscode/vscode-plugin/webview-ui/build/static/css/main.28864fb5.css">
           <title>Graphical View</title>
         </head>
         <body>
           <noscript>You need to enable JavaScript to run this app.</noscript>
           <div id="root"></div>
-          <script src="https://file%2B.vscode-resource.vscode-cdn.net/c%3A/Wso2_API_Manager/wso2EI_Tooling_Test7/ei-tooling-vscode/vscode-plugin/webview-ui/build/static/js/main.d8f5a699.js"></script>
+          <script src="https://file%2B.vscode-resource.vscode-cdn.net/c%3A/Wso2_API_Manager/wso2EI_Tooling_Test15/ei-tooling-vscode/vscode-plugin/webview-ui/build/static/js/main.e0b228cc.js"></script>
         </body>
       </html>
     `;
