@@ -1,0 +1,46 @@
+
+.Webui .mediators1 {
+	position: relative;
+	width: 182px;
+	height: 39px;
+	background: rgba(217,217,217,1.00);
+	border-radius: 5px;
+	margin-top: 90px;
+	margin-left: 90px;
+}
+
+.Webui .plus{
+	position: relative;
+	margin-left: 170px;
+	margin-top: -10px;
+}
+
+.JsonText {
+	position: relative;
+}
+
+.ContentArea {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.DraggingArea {
+	width: 50%;
+	height: 100%;
+}
+
+.CodeTextArea{
+	margin-top: 8%;
+	background-color:#bcc3cf ;
+	justify-content: center;
+	border: 2px solid black;
+	box-sizing: border-box;
+	width: 600px;
+	height: 500px;
+	padding: 50px;
+}
+
+.codeBtn {
+	margin-left: 80%;
+}
