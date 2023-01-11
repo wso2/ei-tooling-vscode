@@ -10,6 +10,9 @@
 			"name": "Run Extension",
 			"type": "extensionHost",
 			"request": "launch",
+			"env":{
+                "LSDEBUG":"true"
+            },
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}"
