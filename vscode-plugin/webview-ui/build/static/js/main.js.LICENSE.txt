@@ -1,11 +1,19 @@
-/*!
-	Copyright (c) 2018 Jed Watson.
-	Licensed under the MIT License (MIT), see
-	http://jedwatson.github.io/classnames
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
 */
 
-/**
- * @license React
+/** @license React v0.20.2
+ * scheduler.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v17.0.2
  * react-dom.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -14,8 +22,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/**
- * @license React
+/** @license React v17.0.2
  * react-jsx-runtime.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -24,19 +31,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/**
- * @license React
+/** @license React v17.0.2
  * react.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-/**
- * @license React
- * scheduler.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
  *

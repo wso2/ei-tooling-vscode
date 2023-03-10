@@ -46,7 +46,7 @@ export interface ScopeInfo {
 }
 
 namespace TagCloseRequest {
-    export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any, any> =
+    export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any> =
         new RequestType('xml/closeTag');
 }
 

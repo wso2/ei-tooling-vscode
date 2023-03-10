@@ -26,12 +26,12 @@ export interface AutoCloseResult {
     range?: Range;
 }
 
-export function activateTagClosing(tagProvider: (document: TextDocument, position: Position) => Thenable<AutoCloseResult>,
+export function activateTagClosing(tagProvider: (document: TextDocument, position: Position) => Thenable<any>,
     supportedLanguages: { [id: string]: boolean }, configName: string): Disposable {
     const TRIGGER_CHARACTERS = ['>', '/'];
     let disposables: Disposable[] = [];
-    workspace.onDidChangeTextDocument(event => onDidChangeTextDocument(event.document, event.contentChanges),
-        null, disposables);
+    // workspace.onDidChangeTextDocument(event => onDidChangeTextDocument(event.document, event.contentChanges),
+    //     null, disposables);
 
     let isEnabled = false;
     updateEnabledState();
