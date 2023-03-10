@@ -47,7 +47,7 @@ import { SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
 import { Utils } from './utils/Utils';
 import { TerminalModule } from './logging/TerminalModule';
-import DraggingUI from './draggingPanel/DraggingUI';
+import { DraggingPanel } from "./panels/DraggingPanel";
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
@@ -250,11 +250,11 @@ function registerSynapseCommands(context: ExtensionContext) {
         await createProjectFromCar();
     }));
 
-    context.subscriptions.push(commands.registerCommand("wso2ei.open.diagrams", async () => {
-        window.showInformationMessage('Drag and drop Extension activated!');
-        await DraggingUI.render();
-
-    }));
+    const showHelloWorldCommand = commands.registerCommand("wso2ei.open.diagrams", () => {
+        DraggingPanel.render(context.extensionUri);
+    });
+    
+    context.subscriptions.push(showHelloWorldCommand);
 
 }
 
