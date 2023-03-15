@@ -1,36 +1,29 @@
 {
-  "name": "dragging-panel",
-  "version": "0.0.1",
+  "name": "recursive",
+  "version": "0.1.0",
   "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-scripts": "^5.0.1",
+    "typescript": "~3.7.2",
+    "yarn": "^1.22.19"
+  },
   "scripts": {
-    "start": "EXTEND_ESLINT=true react-scripts start",
-    "build": "node ./scripts/build-react-no-split.js",
-    "postbuild" : "move build ../vscode-plugin/webview-ui/",
-    "test": "EXTEND_ESLINT=true react-scripts test",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "dependencies": {
-    "@vscode/webview-ui-toolkit": "^1.2.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
-  },
-  "devDependencies": {
-    "@types/node": "^12.20.37",
-    "@types/react": "^17.0.37",
-    "@types/react-dom": "^17.0.11",
-    "@types/vscode-webview": "^1.57.0",
-    "react-scripts": "^5.0.1",
-    "rewire": "^5.0.0",
-    "typescript": "^4.4.4"
-  },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "rules": {
-      "no-unused-expressions": "off"
-    }
+    "extends": "react-app"
   },
   "browserslist": {
     "production": [
