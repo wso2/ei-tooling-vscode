@@ -1,47 +1,74 @@
-export interface FileNode {
-  id: string
-  children?: FileNode[]
+export interface FileData {
+  dataList?: FileNode[]
 }
 
-export const root: FileNode = {
-  id: "API",
-  children: [{
-    id: "Resource",
-    children: [{
-        id: "Palette",
-        children: [{
-          id: "Call"
-        },
+export interface FileNode {
+  id: string,
+  children?: FileNode[]
+  selection: boolean
+}
+
+export const root: FileData = {
+  dataList: [
+    {
+      id: "API",
+      selection: false,
+      children: [
         {
-          id: "Drop"
-        },
-        {
-          id: "Log"
-        },
-        {
-          id: "Switch",
+          id: "Resource",
+          selection: false,
           children: [{
-            id: "Case 1"
-          },
-          {
-            id: "Case 2"
-          },
-          {
-            id: "Case 3"
-          },
-          {
-            id: "Default"
-          }]
-        }]
-      }]
-  },
-  {
-    id: "Properties",
-    children: [{
-      id: "Name: ",
+            selection: true,
+            id: "Palette",
+            children: [{
+
+              id: "Call",
+              selection: true
+            },
+            {
+              id: "Drop",
+              selection: true,
+            },
+            {
+              id: "Log",
+              selection: true,
+            },
+            {
+              id: "Switch",
+              selection: true,
+              children: [{
+                id: "Case 1",
+                selection: true,
+              },
+              {
+                id: "Case 2",
+                selection: true
+              },
+              {
+                id: "Case 3",
+                selection: true
+              },
+              {
+                id: "Default",
+                selection: true
+              }]
+            }]
+          }
+          ]
+        }
+      ]
     },
     {
-      id: "Context: "
-    }]
-  }]
+      id: "Properties",
+      selection: false,
+      children: [{
+        id: "Name: ",
+        selection: true,
+      },
+      {
+        id: "Context: ",
+        selection: true,
+      }]
+    }
+  ]
 }
