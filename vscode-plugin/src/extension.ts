@@ -251,7 +251,8 @@ function registerSynapseCommands(context: ExtensionContext) {
     }));
 
     const showHelloWorldCommand = commands.registerCommand("wso2ei.open.diagrams", () => {
-        DraggingPanel.render(context.extensionUri);
+        DraggingPanel.render(context.extensionPath);
+        window.showInformationMessage('Diagrams view is opened!');
     });
     
     context.subscriptions.push(showHelloWorldCommand);
