@@ -7,7 +7,7 @@ import { FileNode, root } from './data';
 
 type Props = {
   node: FileNode,
-  add?: Function
+  add?: React.Dispatch<React.SetStateAction<FileNode>>
 }
 
 const File = (props: Props) => {
@@ -15,62 +15,64 @@ const File = (props: Props) => {
 
   const [showChildren, setShowChildren] = useState<boolean>(false);
 
-  const [addedNode, setAddedNode] = useState<FileNode>();
+  // const [addedNode, setAddedNode] = useState<FileNode>();
+  const [node, setNode] = useState<FileNode>(props.node);
 
-  const addFun = (data: FileNode) => {
-    setAddedNode(
-      () => {
-        console.log(data);
-        return data;
-      }
-
-    )
-  }
 
   const handleClick = useCallback(() => {
 
+    // console.log(props.topNode);
+    // console.log(node.selection);
 
-    //todo: need to pass this to next level to get data
-    props.node.selection ?
-      props.add && props.add(() => {
-        console.log(props.node);
-        return props.node;
+    if (node.selection) {
+
+
+      props.add && props.add(state => {
+
+        // console.log("oldNode.current: ", oldNode.current)
+        const newNode: FileNode = { ...state, children: [{ ...node, selection: false }] } as FileNode;
+        return newNode;
       })
 
-      :
-      setShowChildren(!showChildren);
+    } else {
+
+      setShowChildren(() => {
+        return !showChildren
+      });
+    }
 
 
-  }, [showChildren, setShowChildren, props.node])
+  }, [showChildren, setShowChildren, node, props])
+
+  // console.log(node)
 
   return (
     <div>
-      <TextButton onClick={() => props.node.selection ? handleClick() : null} >
+      <TextButton onClick={() => node.selection ? handleClick() : null} >
 
-        {props.node.id}
-        {!props.node.selection ?
-          <PlusButton onClick={() =>
+        {node.id}
+        {!node.selection ?
+          <PlusButton onClick={() => {
             handleClick()
+          }
 
           }>{showChildren ? "-" : "+"}</PlusButton> : ""
         }
       </TextButton>
       <DisplayDiv>
         {
-          showChildren && (props.node.children ?? []).map((node: FileNode) => (
+          showChildren && (node.children ?? []).map((childNode: FileNode) => (
             <>
-              {!node.selection ? <>
+              {!childNode.selection ? <>
                 <BoxDiv>
-                  {addedNode ?
-                    //todo: need to call addFun
-                    <File node={{ ...addedNode }} add={() => addFun(props.node)} />
-                    : <File node={{ ...node }} />}
+
+                  <File node={{ ...childNode }} add={setNode} />
 
                 </BoxDiv>
               </>
                 : <>
                   <SelectList>
-                    <File node={{ ...node }} add={() => addFun(props.node)} />
+                    <File node={{ ...childNode }} add={setNode} />
                   </SelectList>
                 </>}
 
