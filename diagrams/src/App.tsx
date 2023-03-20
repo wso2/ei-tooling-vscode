@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import './App.css';
+//import './App.css';
 
 import { FileNode, root } from './data';
 
@@ -119,13 +119,11 @@ const DisplayDiv = styled.div`
   // border-left: 1px solid;
   paddingLeft: 15; `;
 
-
 const BoxDiv = styled.div`
   border: 2px solid;
   padding:10px;
   margin-top:50px;
   margin-right: 15px;
-
   `;
 
 const SelectList = styled.div`
