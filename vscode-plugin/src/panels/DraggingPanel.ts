@@ -63,12 +63,12 @@ export class DraggingPanel {
     // The CSS file from the React build output
     const stylesUri = getUri(webview, extensionUri, [
       "webview-ui",
-      "main.e6c13ad2.css",
+      "main.css",
     ]);
     // The JS file from the React build output
     const scriptUri = getUri(webview, extensionUri, [
       "webview-ui",
-      "main.4ef67e36.js",
+      "main.js",
     ]);
 
     return /*html*/ `
