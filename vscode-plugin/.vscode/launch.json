@@ -20,7 +20,8 @@
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
-			"preLaunchTask": "npm: watch"
+			"preLaunchTask": "npm: watch",
+			"env" : {"LSDEBUG": "true"}
 		},
 		{
 			"name": "Extension Tests",

@@ -1,0 +1,27 @@
+.mediator-wrapper {
+  user-select: none;
+  font-family: inherit;
+
+  .start-button {
+    .start-button-rect {
+      rect {
+        fill: #d7dbfd;
+      }
+    }
+
+    .start-rect-fill {
+      stroke: #5567d5;
+      stroke-miterlimit: 10;
+      stroke-width: 1;
+    }
+
+    text .start-text {
+      fill: #5567d5;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5;
+      text-align: center;
+      text-anchor: middle;
+    }
+  }
+}

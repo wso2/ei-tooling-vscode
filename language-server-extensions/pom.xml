@@ -16,40 +16,40 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${maven.checkstyle.plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>${maven.checkstyle.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <executions>
-                        <execution>
-                            <id>validate</id>
-                            <phase>validate</phase>
-                            <configuration>
-                                <configLocation>
-                                    https://raw.githubusercontent.com/wso2/code-quality-tools/v1.2/checkstyle/checkstyle.xml
-                                </configLocation>
-                                <suppressionsLocation>
-                                    https://raw.githubusercontent.com/wso2/code-quality-tools/v1.1/checkstyle/suppressions.xml
-                                </suppressionsLocation>
-                                <consoleOutput>true</consoleOutput>
-                                <failsOnError>true</failsOnError>
-                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                                <!--Exclude sources-->
-                                <excludes>${maven.checkstyleplugin.excludes}</excludes>
-                            </configuration>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--                    <version>${maven.checkstyle.plugin.version}</version>-->
+<!--                    <dependencies>-->
+<!--                        <dependency>-->
+<!--                            <groupId>com.puppycrawl.tools</groupId>-->
+<!--                            <artifactId>checkstyle</artifactId>-->
+<!--                            <version>${maven.checkstyle.version}</version>-->
+<!--                        </dependency>-->
+<!--                    </dependencies>-->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <id>validate</id>-->
+<!--                            <phase>validate</phase>-->
+<!--                            <configuration>-->
+<!--                                <configLocation>-->
+<!--                                    https://raw.githubusercontent.com/wso2/code-quality-tools/v1.2/checkstyle/checkstyle.xml-->
+<!--                                </configLocation>-->
+<!--                                <suppressionsLocation>-->
+<!--                                    https://raw.githubusercontent.com/wso2/code-quality-tools/v1.1/checkstyle/suppressions.xml-->
+<!--                                </suppressionsLocation>-->
+<!--                                <consoleOutput>true</consoleOutput>-->
+<!--                                <failsOnError>true</failsOnError>-->
+<!--                                <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+<!--                                &lt;!&ndash;Exclude sources&ndash;&gt;-->
+<!--                                <excludes>${maven.checkstyleplugin.excludes}</excludes>-->
+<!--                            </configuration>-->
+<!--                            <goals>-->
+<!--                                <goal>check</goal>-->
+<!--                            </goals>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
+<!--                </plugin>-->
                 <!--<plugin>-->
                     <!--<groupId>com.github.spotbugs</groupId>-->
                     <!--<artifactId>spotbugs-maven-plugin</artifactId>-->

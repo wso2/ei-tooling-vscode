@@ -8,6 +8,21 @@ export interface FileNode {
   selection: boolean
 }
 
+export const model: any = {
+  kind: "Mediator",
+  value: "any",
+  viewState: {
+    trigger: {
+      cx: 10,
+      cy: 20
+    }
+  },
+  position: {
+    x: 10,
+    y: 20
+  }
+}
+
 export const root: FileData = {
   dataList: [
     {
