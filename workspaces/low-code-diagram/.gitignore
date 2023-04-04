@@ -1,0 +1,8 @@
+*.log
+.DS_Store
+node_modules
+dist
+low-code-diagram.build.log
+yarn.lock
+/lib/
+lib

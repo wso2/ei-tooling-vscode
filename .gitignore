@@ -229,5 +229,7 @@ typings/
 .settings
 .project
 
+lib/
+build
 # End of https://www.gitignore.io/api/java,macos,intellij+all,visualstudiocode,node
 

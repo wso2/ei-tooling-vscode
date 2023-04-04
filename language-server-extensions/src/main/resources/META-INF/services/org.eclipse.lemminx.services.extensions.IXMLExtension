@@ -1,0 +1,4 @@
+org.eclipse.lemminx.extensions.synapse.contentmodel.SynapseContentModelPlugin
+org.eclipse.lemminx.extensions.synapse.definition.SynapseXMLDefinitionPlugin
+org.eclipse.lemminx.extensions.synapse.xsd.SynapseXSDPlugin
+

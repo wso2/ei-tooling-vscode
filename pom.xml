@@ -26,7 +26,7 @@
         <dependency>
           <groupId>org.eclipse.lsp4j</groupId>
           <artifactId>org.eclipse.lsp4j</artifactId>
-          <version>0.6.0</version>
+          <version>0.14.0</version>
         </dependency>
         <dependency>
           <groupId>junit</groupId>
@@ -50,8 +50,7 @@
   <modules>
     <module>language-server</module>
     <module>language-server-extensions</module>
-    <module>vscode-plugin</module>
-    <module>diagrams</module>
+    <module>workspaces</module>
   </modules>
 
   <properties>
