@@ -102,13 +102,10 @@ function App() {
 
     return (
         <div style={{ marginLeft: 15 }}>
-
-            return (
-                <BoxDiv>
-                    <Mediator model={model} />
-                    <VSCodeButton onClick={resourcesPanel}>Resources</VSCodeButton>
-                </BoxDiv>
-            )}
+            <BoxDiv>
+                <Mediator model={model} />
+                <VSCodeButton onClick={resourcesPanel}>Resources</VSCodeButton>
+            </BoxDiv>
 
         </div>
     );
