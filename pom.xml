@@ -50,8 +50,8 @@
   <modules>
     <module>language-server</module>
     <module>language-server-extensions</module>
-    <module>vscode-plugin</module>
-    <module>diagrams</module>
+    <module>workspaces</module>
+<!--    <module>diagrams</module>-->
   </modules>
 
   <properties>

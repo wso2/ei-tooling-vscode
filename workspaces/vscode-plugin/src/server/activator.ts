@@ -53,7 +53,7 @@ namespace TagCloseRequest {
 let ignoreAutoCloseTags = false;
 let vmArgsCache: any;
 let ignoreVMArgs = false;
-const main: string = 'org.eclipse.lsp4xml.XMLServerLauncher';
+const main: string = 'org.eclipse.lemminx.XMLServerLauncher';
 
 export function launch(context: ExtensionContext, directoryName: string) {
     const { JAVA_HOME } = process.env;

@@ -14,6 +14,38 @@ export interface Connector extends STNode {
 
 }
 
+export interface Api extends STNode {
+    children: STNode[];
+}
+
+export interface Proxy extends STNode {
+    children: STNode[];
+}
+
+export interface InSequence extends STNode {
+    children: STNode[];
+}
+
+export interface OutSequence extends STNode {
+    children: STNode[];
+}
+
+export interface Resource extends STNode {
+    children: STNode[];
+}
+
+export interface Send extends STNode {
+    children: STNode[];
+}
+
+export interface Respond extends STNode {
+    children: STNode[];
+}
+
+export interface Log extends STNode {
+    children: STNode[];
+}
+
 export interface NodePosition {
     startLine?: number;
     startColumn?: number;

@@ -5,7 +5,6 @@
 {
 	"version": "0.2.0",
 	"configurations": [
-		
 		{
 			"name": "Run Extension",
 			"type": "extensionHost",
@@ -20,8 +19,7 @@
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
-			"preLaunchTask": "npm: watch",
-			"env" : {"LSDEBUG": "true"}
+			"preLaunchTask": "npm: watch"
 		},
 		{
 			"name": "Extension Tests",

@@ -347,11 +347,13 @@
 		}
 	},
 	"scripts": {
+		"copyLS": "copyfiles -f ../../language-server/org.eclipse.lemminx/target/org.eclipse.lemminx-uber.jar lib",
+		"copyLSExtension": "copyfiles -f ../../language-server-extensions/target/org.eclipse.lsp4xml.extensions.synapse-*.jar lib",
 		"vscode:prepublish": "npm run compile",
 		"lint": "node_modules/.bin/tslint -t stylish --project ",
 		"prebuild": "npm run lint",
-		"compile": "node_modules/.bin/tsc -p ",
-		"watch": "node_modules/.bin/tsc -watch -p ",
+		"compile": "node_modules/.bin/tsc",
+		"watch": "node_modules/.bin/tsc -watch",
 		"test": "npm run compile && node ./node_modules/vscode/bin/test",
 		"package": "node_modules/.bin/vsce package --no-dependencies"
 	},

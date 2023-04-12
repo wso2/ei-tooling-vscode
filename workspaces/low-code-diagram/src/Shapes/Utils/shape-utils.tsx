@@ -1,15 +1,15 @@
-import { Shape } from "../types";
+import { Shape, ShapeType } from "../types";
 
 export class ShapeKindChecker {
     public static isTriangleShape(el: Shape) : boolean {
-        return el.type === 'Triangle';
+        return el.type === ShapeType.TRIANGLE;
     }
 
     public static isCircleShape(el: Shape) : boolean {
-        return el.type === 'Circle';
+        return el.type === ShapeType.CIRCLE;
     }
 
     public static isSquareShape(el: Shape) : boolean {
-        return el.type === 'Square';
+        return el.type === ShapeType.SQUARE;
     }
 }
