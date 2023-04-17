@@ -26,7 +26,12 @@ export function recalculateSizingAndPositioning(st: STNode) {
 }
 
 export function traverse(el: STNode, visitor: Visitor): void {
-    let beginFunction = (visitor as any)[`beginVisit${el.kind}`];
+    let str2 = el.kind;
+    if (el.kind !== undefined) {
+        str2 = el.kind.charAt(0).toUpperCase() + el.kind.slice(1);
+    }
+
+    let beginFunction = (visitor as any)[`beginVisit${str2}`];
 
     if (!beginFunction) { // check if specific visitor exist for shape
         beginFunction = visitor.beginVisitSTNode; // asign the default visit function
@@ -59,7 +64,7 @@ export function traverse(el: STNode, visitor: Visitor): void {
     });
 
 
-    let endFunction = (visitor as any)[`endVisit${el.kind}`];
+    let endFunction = (visitor as any)[`endVisit${str2}`];
 
     if (!endFunction) { // check if specific visit function exist for the element type
         endFunction = visitor.endVisitSTNode;

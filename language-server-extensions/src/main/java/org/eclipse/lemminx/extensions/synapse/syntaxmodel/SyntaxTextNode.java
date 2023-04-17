@@ -1,4 +1,4 @@
-package org.eclipse.lsp4xml.extensions.synapse.syntaxmodel;
+package org.eclipse.lemminx.extensions.synapse.syntaxmodel;
 
 public class SyntaxTextNode {
 

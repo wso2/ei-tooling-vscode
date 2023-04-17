@@ -343,11 +343,12 @@
     {
       "packageName": "@wso2-ei/low-code-diagram",
       "projectFolder": "low-code-diagram"
-    },
-    {
-      "packageName": "wso2ei",
-      "projectFolder": "vscode-plugin"
     }
+//  ,
+//    {
+//      "packageName": "wso2ei",
+//      "projectFolder": "vscode-plugin"
+//    }
     // {
     //   /**
     //    * The NPM package name of the project (must match package.json)

@@ -27,3 +27,5 @@ export function STNode(props: MediatorProps) {
         </g>
     );
 }
+
+export * from "./MediatorSVG";

@@ -1,9 +1,9 @@
 export {SquareComponent as Mediator} from "./square";
-export {SquareComponent as Api} from "./square";
-export {SquareComponent as Proxy} from "./square";
-export {SquareComponent as InSequence} from "./square";
-export {SquareComponent as OutSequence} from "./square";
-export {SquareComponent as Resource} from "./square";
-export {SquareComponent as Send} from "./square";
-export {CircleComponent as Log} from "./circle";
+export {SquareComponent as api} from "./square";
+export {SquareComponent as proxy} from "./square";
+export {SquareComponent as inSequence} from "./square";
+export {SquareComponent as outSequence} from "./square";
+export {SquareComponent as resource} from "./square";
+export {SquareComponent as send} from "./square";
+export {CircleComponent as log} from "./circle";
 export * from "./worker-line"

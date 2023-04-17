@@ -228,21 +228,25 @@ export class SizingVisitor implements Visitor {
             const viewState: ResourceViewState = node.viewState as ResourceViewState;
 
             if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-                let width = 0;
+                let height = 0;
+                let width = COMPONENT_GAP;
 
                 node.children.forEach(child => {
                     const childVS = child.viewState as any;
                     if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                        if (width < childVS.bBox.w) {
-                            width += childVS.bBox.w;
+                        width += childVS.bBox.w + COMPONENT_GAP;
+                        // height += childVS.bBox.h + COMPONENT_GAP;
+                        // if (width < childVS.bBox.w) {
+                        //     width += childVS.bBox.w;
+                        // }
+                        if (height < childVS.bBox.h) {
+                            height = childVS.bBox.h + COMPONENT_GAP;
                         }
                     }
                 })
 
-                viewState.bBox.h = height;
-                viewState.bBox.w = width + COMPONENT_GAP;
+                viewState.bBox.h = height + COMPONENT_GAP;
+                viewState.bBox.w = width;
             } else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;

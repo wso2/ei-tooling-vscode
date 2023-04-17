@@ -1,4 +1,4 @@
-package org.eclipse.lsp4xml.extensions.synapse.syntaxmodel;
+package org.eclipse.lemminx.extensions.synapse.syntaxmodel;
 
 import java.util.ArrayList;
 import java.util.List;

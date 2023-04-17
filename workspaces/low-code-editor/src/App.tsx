@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {AppContextProvider} from "./contexts/AppContext";
+import {AppContextProvider} from "./Contexts/AppContext";
 import { Home } from './Home';
 
 function App() {

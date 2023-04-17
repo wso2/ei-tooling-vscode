@@ -1,6 +1,6 @@
 import { ShapeKindChecker } from "@wso2-ei/low-code-diagram";
 import { Shape } from "@wso2-ei/low-code-diagram/dist/Shapes/types";
-import { useAppContext } from "../contexts/AppContext";
+import { useAppContext } from "../Contexts/AppContext";
 import { getComponent } from "./util";
 
 export function Diagram() {

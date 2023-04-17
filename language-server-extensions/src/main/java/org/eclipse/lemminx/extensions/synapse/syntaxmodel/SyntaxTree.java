@@ -1,11 +1,11 @@
-package org.eclipse.lsp4xml.extensions.synapse.syntaxmodel;
+package org.eclipse.lemminx.extensions.synapse.syntaxmodel;
 
-import org.eclipse.lsp4xml.dom.DOMAttr;
-import org.eclipse.lsp4xml.dom.DOMDocument;
-import org.eclipse.lsp4xml.dom.DOMElement;
-import org.eclipse.lsp4xml.dom.DOMNode;
-import org.eclipse.lsp4xml.dom.DOMProcessingInstruction;
-import org.eclipse.lsp4xml.dom.DOMText;
+import org.eclipse.lemminx.dom.DOMAttr;
+import org.eclipse.lemminx.dom.DOMDocument;
+import org.eclipse.lemminx.dom.DOMElement;
+import org.eclipse.lemminx.dom.DOMNode;
+import org.eclipse.lemminx.dom.DOMProcessingInstruction;
+import org.eclipse.lemminx.dom.DOMText;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +21,7 @@ public class SyntaxTree {
         this.node = node;
     }
 
-    public SyntaxTree getSyntaxTree(DOMDocument document) {
+    public static SyntaxTree getSyntaxTree(DOMDocument document) {
         DOMProcessingInstruction processingInstruction = (DOMProcessingInstruction) document.getChild(0);
         SyntaxProcessingInstructionNode processingInstructionNode = new SyntaxProcessingInstructionNode(
                 processingInstruction.getTarget(), processingInstruction.isProlog(),
@@ -43,7 +43,7 @@ public class SyntaxTree {
         return new SyntaxTree(processingInstructionNode, traverse((DOMElement) document.getChild(1)));
     }
 
-    private SyntaxNode traverse(DOMElement xmlNode) {
+    private static SyntaxNode traverse(DOMElement xmlNode) {
         SyntaxNode node = new SyntaxNode(xmlNode.getStartTagOpenOffset(), xmlNode.getStartTagCloseOffset(),
                 xmlNode.getEndTagOpenOffset(), xmlNode.getEndTagCloseOffset(), xmlNode.getStart(), xmlNode.getEnd(),
                 xmlNode.getTagName(), xmlNode.isSelfClosed());

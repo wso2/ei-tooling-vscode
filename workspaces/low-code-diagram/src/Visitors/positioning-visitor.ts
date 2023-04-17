@@ -57,26 +57,32 @@ export class PositioningVisitor implements Visitor {
                 return;
             }
 
-            node.children.forEach((child, index) => {
+            let width = viewState.bBox.x ;
+
+            node.children.forEach((child) => {
                 const childVS = child.viewState as any;
 
-                childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
+                childVS.bBox.x = width + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
 
-                // set worker line positions
-                switch (index) {
-                    case 0:
-                        viewState.workerLine.x1 = viewState.bBox.x + viewState.bBox.w / 2;
-                        viewState.workerLine.y1 = height;
-                        break;
-                    case node.children.length - 1:
-                        viewState.workerLine.x2 = viewState.bBox.x + viewState.bBox.w / 2;
-                        viewState.workerLine.y2 = height;
-                        break;
-                    default:
-                }
+                width += viewState.bBox.x + childVS.bBox.w + COMPONENT_GAP
 
-                height += childVS.bBox.h + COMPONENT_GAP;
+                // set worker line positions
+                // switch (index) {
+                //     case 0:
+                //         viewState.workerLine.x1 = viewState.bBox.x + viewState.bBox.w / 2;
+                //         viewState.workerLine.y1 = height;
+                //         viewState.workerLine.x2 = viewState.workerLine.x1;
+                //         viewState.workerLine.y2 = viewState.workerLine.y1;
+                //         break;
+                //     case node.children.length - 1:
+                //         viewState.workerLine.x2 = viewState.bBox.x + viewState.bBox.w / 2;
+                //         viewState.workerLine.y2 = height;
+                //         break;
+                //     default:
+                // }
+
+                // height += childVS.bBox.h + COMPONENT_GAP;
             })
         }
     }
@@ -168,6 +174,8 @@ export class PositioningVisitor implements Visitor {
                     case 0:
                         viewState.workerLine.x1 = viewState.bBox.x + viewState.bBox.w / 2;
                         viewState.workerLine.y1 = height;
+                        viewState.workerLine.x2 = viewState.workerLine.x1;
+                        viewState.workerLine.y2 = height + COMPONENT_GAP;
                         break;
                     case node.children.length - 1:
                         viewState.workerLine.x2 = viewState.bBox.x + viewState.bBox.w / 2;
@@ -247,26 +255,31 @@ export class PositioningVisitor implements Visitor {
                 return;
             }
 
-            node.children.forEach((child, index) => {
+            let width = viewState.bBox.x ;
+
+            node.children.forEach((child) => {
                 const childVS = child.viewState as any;
 
-                childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
+                // childVS.bBox.x = width + viewState.bBox.w / 2 - childVS.bBox.w / 2;
+                childVS.bBox.x = width + COMPONENT_GAP;
                 childVS.bBox.y = height;
 
-                // set worker line positions
-                switch (index) {
-                    case 0:
-                        viewState.workerLine.x1 = viewState.bBox.x + viewState.bBox.w / 2;
-                        viewState.workerLine.y1 = height;
-                        break;
-                    case node.children.length - 1:
-                        viewState.workerLine.x2 = viewState.bBox.x + viewState.bBox.w / 2;
-                        viewState.workerLine.y2 = height;
-                        break;
-                    default:
-                }
+                width += viewState.bBox.x + childVS.bBox.w + COMPONENT_GAP
 
-                height += childVS.bBox.h + COMPONENT_GAP;
+                // // set worker line positions
+                // switch (index) {
+                //     case 0:
+                //         viewState.workerLine.x1 = viewState.bBox.x + viewState.bBox.w / 2;
+                //         viewState.workerLine.y1 = height;
+                //         break;
+                //     case node.children.length - 1:
+                //         viewState.workerLine.x2 = viewState.bBox.x + viewState.bBox.w / 2;
+                //         viewState.workerLine.y2 = height;
+                //         break;
+                //     default:
+                // }
+
+                // height += childVS.bBox.h + COMPONENT_GAP;
             })
         }
     }
