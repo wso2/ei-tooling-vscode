@@ -25,7 +25,7 @@ import {
     LanguageConfiguration,
     languages,
     Position,
-    TextDocument,
+    TextDocument, Uri, ViewColumn,
     window,
     workspace
 } from 'vscode';
@@ -40,6 +40,8 @@ import {
 } from 'vscode-languageclient';
 import { activateTagClosing, AutoCloseResult } from './tagClosing';
 import {SyntaxTreeResponse} from "./SyntaxTreeResponse";
+import { activate as activateDiagram } from '../diagram';
+import {ExtendedLangClient} from "../extended-language.client";
 
 export interface ScopeInfo {
     scope: "default" | "global" | "workspace" | "folder";
@@ -51,10 +53,10 @@ namespace TagCloseRequest {
         new RequestType('xml/closeTag');
 }
 
-namespace DiagramHoverRequest {
-    export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any> =
-        new RequestType('xml/hoverDiagram');
-}
+// namespace DiagramHoverRequest {
+//     export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any> =
+//         new RequestType('xml/hoverDiagram');
+// }
 
 namespace SyntaxTreeRequest {
     export const type: RequestType<TextDocumentIdentifier, SyntaxTreeResponse, any> =
@@ -112,7 +114,7 @@ export function launch(context: ExtensionContext, directoryName: string) {
         };
 
         // Create the language client and start the client.
-        let languageClient = new LanguageClient('synapseXML', 'Synapse Language Server',
+        let languageClient = new ExtendedLangClient('synapseXML', 'Synapse Language Server',
             serverOptions, clientOptions);
         let disposable = languageClient.start();
 
@@ -125,10 +127,10 @@ export function launch(context: ExtensionContext, directoryName: string) {
                 return languageClient.sendRequest(TagCloseRequest.type, param);
             };
 
-            let DiagramHoverProvider = (document: TextDocument, position: Position) => {
-                let param = languageClient.code2ProtocolConverter.asTextDocumentPositionParams(document, position);
-                return languageClient.sendRequest(HoverRequest.type, param);
-            };
+            // let DiagramHoverProvider = (document: TextDocument, position: Position) => {
+            //     let param = languageClient.code2ProtocolConverter.asTextDocumentPositionParams(document, position);
+            //     return languageClient.sendRequest(HoverRequest.type, param);
+            // };
 
             let syntaxTreeProvider = (document: TextDocument) => {
                 let param = languageClient.code2ProtocolConverter.asTextDocumentIdentifier(document);
@@ -138,8 +140,11 @@ export function launch(context: ExtensionContext, directoryName: string) {
             disposable = activateTagClosing(tagProvider, { SynapseXml: true, xsl: true },
                 'xml.completion.autoCloseTags');
             context.subscriptions.push(disposable);
+
+
             // context.subscriptions.push(HoverProvider);
         });
+        activateDiagram(languageClient, context);
         languages.setLanguageConfiguration('SynapseXml', getIndentationRules());
     }
 

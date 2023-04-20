@@ -4,6 +4,8 @@ import {InitVisitor} from "../Visitors/init-visitor";
 import {SizingVisitor} from "../Visitors/sizing-visitor";
 import {PositioningVisitor} from "../Visitors/positioning-visitor";
 // import { Shape } from "../Shapes/types";
+import * as ShapeComponents from '../Components/RenderingComponents';
+import React from "react";
 
 export function sizingAndPositioning(st: STNode): STNode {
     traverse(st, new InitVisitor());
@@ -73,5 +75,14 @@ export function traverse(el: STNode, visitor: Visitor): void {
     if (endFunction) {
         endFunction.bind(visitor)(el);
     }
+}
+
+export function getSTComponent(node: any): React.ReactElement {
+    // const ChildComp = (stComponents as any)[node.kind];
+    const ChildComp = (ShapeComponents as any)[node.kind];
+    // if (!ChildComp) {
+    //     return <Statement model={node} />;
+    // }
+    return <ChildComp model={node} />;
 }
 

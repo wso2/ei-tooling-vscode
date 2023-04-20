@@ -1,19 +1,30 @@
-import React from 'react';
+import React, {createElement} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Provider as DiagramProvider } from "./Contexts/diagram";
+import { LowCodeEditorProps as Props } from "./Types";
+import DiagramContainer from "./Diagram/Container";
+import {Diagram, EditorProps} from "./DiagramGenerator/vscode/Diagram";
+import {render} from "react-dom";
+export * from "./DiagramGenerator/vscode";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const LowCodeEditor: React.FC<Props> = (props: Props) => {
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    const newProps = {
+        ...props
+    }
+
+    console.log("inside LowCodeEditor");
+
+    return (
+        <DiagramProvider {...newProps} >
+            <div className="diagram-container">
+                <DiagramContainer />
+            </div>
+        </DiagramProvider>
+    );
+}
+
+export default LowCodeEditor;

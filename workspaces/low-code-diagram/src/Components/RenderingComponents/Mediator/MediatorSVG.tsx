@@ -1,4 +1,3 @@
-import React from "react";
 
 export const START_HOVER_SVG_WIDTH_WITH_SHADOW = 94;
 export const START_HOVER_SVG_HEIGHT_WITH_SHADOW = 52;

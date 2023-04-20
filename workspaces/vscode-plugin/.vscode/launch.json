@@ -10,8 +10,10 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"env":{
-                "LSDEBUG":"true"
-            },
+                "LSDEBUG":"false",
+				"WEB_VIEW_WATCH_MODE": "true",
+				"WEB_VIEW_DEV_HOST": "http://localhost:9000"
+			},
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}"

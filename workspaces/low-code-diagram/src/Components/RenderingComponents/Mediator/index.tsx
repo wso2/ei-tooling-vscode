@@ -1,4 +1,3 @@
-import React from "react";
 import {STNode} from "@wso2-ei/syntax-tree";
 import {MediatorSVG, START_SVG_HEIGHT, START_SVG_WIDTH} from "./MediatorSVG";
 

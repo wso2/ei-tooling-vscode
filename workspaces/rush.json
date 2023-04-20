@@ -341,6 +341,10 @@
       "projectFolder": "syntax-tree"
     },
     {
+      "packageName": "@wso2-ei/low-code-editor-commons",
+      "projectFolder": "low-code-editor-commons"
+    },
+    {
       "packageName": "@wso2-ei/low-code-diagram",
       "projectFolder": "low-code-diagram"
     }
