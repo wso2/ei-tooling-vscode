@@ -71,8 +71,13 @@ export interface GetSyntaxTreeParams {
 }
 
 export interface GetSyntaxTreeResponse {
-    syntaxTree: any;
-    parseSuccess: boolean;
+    syntaxTree: SyntaxTree;
+    defFilePath: string;
+}
+
+export interface SyntaxTree {
+    node: any;
+    syntaxProcessingInstructionNode: any;
 }
 
 export interface DiagramEditorLangClientInterface extends BaseLangClientInterface {

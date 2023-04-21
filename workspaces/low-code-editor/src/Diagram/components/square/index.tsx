@@ -15,7 +15,7 @@ export function SquareComponent(props: SquareProps) {
     const components: JSX.Element[] = [];
 
     model.children.forEach(child => {
-        components.push(getComponent(child.kind, { model: child }));
+        components.push(getComponent(child.tag, { model: child }));
     })
 
     return (

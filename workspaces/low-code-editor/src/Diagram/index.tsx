@@ -57,7 +57,7 @@ export function Diagram() {
     let width = 0;
 
     if (model) {
-        components.push(getComponent(model.kind, { model }));
+        components.push(getComponent(model.tag, { model }));
 
         const viewState = (model as Shape).viewState;
 

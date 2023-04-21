@@ -71,7 +71,7 @@ export class SizingVisitor implements Visitor {
 
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-                let width = 0;
+                let width = COMPONENT_GAP;
 
                 node.children.forEach(child => {
                     const childVS = child.viewState as any;
@@ -80,11 +80,17 @@ export class SizingVisitor implements Visitor {
                         if (width < childVS.bBox.w) {
                             width += childVS.bBox.w;
                         }
+                        // width += childVS.bBox.w + COMPONENT_GAP;
+                        // if (height < childVS.bBox.h) {
+                        //     height = childVS.bBox.h;
+                        // }
                     }
                 })
 
                 viewState.bBox.h = height;
                 viewState.bBox.w = width + COMPONENT_GAP;
+                // viewState.bBox.w = width;
+                // viewState.bBox.h = height + COMPONENT_GAP;
             } else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
@@ -98,7 +104,7 @@ export class SizingVisitor implements Visitor {
 
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-                let width = 0;
+                let width = COMPONENT_GAP;
 
                 node.children.forEach(child => {
                     const childVS = child.viewState as any;
@@ -107,11 +113,17 @@ export class SizingVisitor implements Visitor {
                         if (width < childVS.bBox.w) {
                             width += childVS.bBox.w;
                         }
+                        // width += childVS.bBox.w + COMPONENT_GAP;
+                        // if (height < childVS.bBox.h) {
+                        //     height = childVS.bBox.h;
+                        // }
                     }
                 })
 
                 viewState.bBox.h = height;
                 viewState.bBox.w = width + COMPONENT_GAP;
+                // viewState.bBox.w = width;
+                // viewState.bBox.h = height + COMPONENT_GAP;
             } else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
@@ -119,26 +131,33 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-    endVisitInSequence?(node: Resource) {
+    endVisitInSequence?(node: InSequence) {
         if (node.viewState) {
             const viewState: InSequenceViewState = node.viewState as InSequenceViewState;
 
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-                let width = 0;
+                // let width = 0;
+                let width = COMPONENT_GAP;
 
                 node.children.forEach(child => {
                     const childVS = child.viewState as any;
                     if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                        if (width < childVS.bBox.w) {
-                            width += childVS.bBox.w;
+                        // height += childVS.bBox.h + COMPONENT_GAP;
+                        // if (width < childVS.bBox.w) {
+                        //     width += childVS.bBox.w;
+                        // }
+                        width += childVS.bBox.w + COMPONENT_GAP;
+                        if (height < childVS.bBox.h) {
+                            height = childVS.bBox.h + COMPONENT_GAP;
                         }
                     }
                 })
 
-                viewState.bBox.h = height;
-                viewState.bBox.w = width + COMPONENT_GAP;
+                // viewState.bBox.h = height;
+                // viewState.bBox.w = width + COMPONENT_GAP;
+                viewState.bBox.w = width;
+                viewState.bBox.h = height + COMPONENT_GAP;
             } else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
@@ -146,26 +165,32 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-    endVisitOutSequence?(node: InSequence) {
+    endVisitOutSequence?(node: OutSequence) {
         if (node.viewState) {
             const viewState: OutSequenceViewState = node.viewState as OutSequenceViewState;
 
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-                let width = 0;
+                let width = COMPONENT_GAP;
 
                 node.children.forEach(child => {
                     const childVS = child.viewState as any;
                     if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                        if (width < childVS.bBox.w) {
-                            width += childVS.bBox.w;
+                        // height += childVS.bBox.h + COMPONENT_GAP;
+                        // if (width < childVS.bBox.w) {
+                        //     width += childVS.bBox.w;
+                        // }
+                        width += childVS.bBox.w + COMPONENT_GAP;
+                        if (height < childVS.bBox.h) {
+                            height = childVS.bBox.h;
                         }
                     }
                 })
 
-                viewState.bBox.h = height;
-                viewState.bBox.w = width + COMPONENT_GAP;
+                // viewState.bBox.h = height;
+                // viewState.bBox.w = width + COMPONENT_GAP;
+                viewState.bBox.w = width;
+                viewState.bBox.h = height + COMPONENT_GAP;
             } else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
@@ -173,7 +198,7 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-    endVisitLog?(node: OutSequence) {
+    endVisitLog?(node: Log) {
         if (node.viewState) {
             const viewState: LogViewState = node.viewState as LogViewState;
 
@@ -223,40 +248,9 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-    endVisitResource?(node: Send) {
+    endVisitResource?(node: Resource) {
         if (node.viewState) {
             const viewState: ResourceViewState = node.viewState as ResourceViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = 0;
-                let width = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        width += childVS.bBox.w + COMPONENT_GAP;
-                        // height += childVS.bBox.h + COMPONENT_GAP;
-                        // if (width < childVS.bBox.w) {
-                        //     width += childVS.bBox.w;
-                        // }
-                        if (height < childVS.bBox.h) {
-                            height = childVS.bBox.h + COMPONENT_GAP;
-                        }
-                    }
-                })
-
-                viewState.bBox.h = height + COMPONENT_GAP;
-                viewState.bBox.w = width;
-            } else {
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
-        }
-    }
-
-    endVisitSend?(node: Log) {
-        if (node.viewState) {
-            const viewState: SendViewState = node.viewState as SendViewState;
 
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
@@ -269,11 +263,50 @@ export class SizingVisitor implements Visitor {
                         if (width < childVS.bBox.w) {
                             width += childVS.bBox.w;
                         }
+                        // width += childVS.bBox.w + COMPONENT_GAP;
+                        // if (height < childVS.bBox.h) {
+                        //     height = childVS.bBox.h;
+                        // }
                     }
                 })
 
                 viewState.bBox.h = height;
-                viewState.bBox.w = width + COMPONENT_GAP;
+                viewState.bBox.w = width + COMPONENT_GAP * 2;
+                // viewState.bBox.w = width;
+                // viewState.bBox.h = height + COMPONENT_GAP;
+            } else {
+                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
+                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
+            }
+        }
+    }
+
+    endVisitSend?(node: Send) {
+        if (node.viewState) {
+            const viewState: SendViewState = node.viewState as SendViewState;
+
+            if (node.children !== undefined && node.children.length > 0) {
+                let height = COMPONENT_GAP;
+                let width = 0;
+
+                node.children.forEach(child => {
+                    const childVS = child.viewState as any;
+                    if (childVS !== undefined) {
+                        // height += childVS.bBox.h + COMPONENT_GAP;
+                        // if (width < childVS.bBox.w) {
+                        //     width += childVS.bBox.w;
+                        // }
+                        width += childVS.bBox.w + COMPONENT_GAP;
+                        if (height < childVS.bBox.h) {
+                            height = childVS.bBox.h;
+                        }
+                    }
+                })
+
+                // viewState.bBox.h = height;
+                // viewState.bBox.w = width + COMPONENT_GAP;
+                viewState.bBox.w = width;
+                viewState.bBox.h = height + COMPONENT_GAP;
             } else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;

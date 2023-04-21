@@ -19,7 +19,7 @@ export class ExtendedLangClient extends LanguageClient {
 
     async getSyntaxTree(req: GetSyntaxTreeParams): Promise<GetSyntaxTreeResponse | NOT_SUPPORTED_TYPE> {
         // const isSupported = await this.isExtendedServiceSupported("xml/getSynapseSyntaxTree");
-        return this.sendRequest("xml/getSynapseSyntaxTree", req);
+        return this.sendRequest("xml/getSynapseSyntaxTree", req.documentIdentifier);
     }
 
     didOpen(params: DidOpenParams): void {

@@ -9,7 +9,7 @@ export async function getSyntaxTree(filePath: string, langClient: DiagramEditorL
             uri: monaco.Uri.file(filePath).toString()
         }
     });
-    return resp.syntaxTree;
+    return resp.syntaxTree.node;
 }
 
 // export async function getFunctionSyntaxTree(filePath: string, range: any, langClient: DiagramEditorLangClientInterface) {

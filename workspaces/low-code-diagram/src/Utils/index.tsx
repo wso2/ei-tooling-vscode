@@ -28,9 +28,9 @@ export function recalculateSizingAndPositioning(st: STNode) {
 }
 
 export function traverse(el: STNode, visitor: Visitor): void {
-    let str2 = el.kind;
-    if (el.kind !== undefined) {
-        str2 = el.kind.charAt(0).toUpperCase() + el.kind.slice(1);
+    let str2 = el.tag;
+    if (el.tag !== undefined) {
+        str2 = el.tag.charAt(0).toUpperCase() + el.tag.slice(1);
     }
 
     let beginFunction = (visitor as any)[`beginVisit${str2}`];
@@ -50,7 +50,7 @@ export function traverse(el: STNode, visitor: Visitor): void {
 
         if (Array.isArray(childEl)) { // if the child is a type of collection
             childEl.forEach(obj => { // visit collection children
-                if (!obj.kind) {
+                if (!obj.tag) {
                     return;
                 }
 
@@ -58,7 +58,7 @@ export function traverse(el: STNode, visitor: Visitor): void {
             });
         }
 
-        if (!childEl.kind) {
+        if (!childEl.tag) {
             return;
         }
 
@@ -79,7 +79,7 @@ export function traverse(el: STNode, visitor: Visitor): void {
 
 export function getSTComponent(node: any): React.ReactElement {
     // const ChildComp = (stComponents as any)[node.kind];
-    const ChildComp = (ShapeComponents as any)[node.kind];
+    const ChildComp = (ShapeComponents as any)[node.tag];
     // if (!ChildComp) {
     //     return <Statement model={node} />;
     // }

@@ -4,7 +4,7 @@ import { STNode } from './syntax-tree-interfaces';
 const metaNodes = ['viewState', 'position', 'parent'];
 
 export function traversNode(node: STNode, visitor: Visitor, parent?: STNode) {
-    let beginVisitFn: any = (visitor as any)[`beginVisit${node.kind}`];
+    let beginVisitFn: any = (visitor as any)[`beginVisit${node.tag}`];
     if (!beginVisitFn) {
         beginVisitFn = visitor.beginVisitSTNode && visitor.beginVisitSTNode;
     }
@@ -22,7 +22,7 @@ export function traversNode(node: STNode, visitor: Visitor, parent?: STNode) {
         const childNode = (node as any)[key] as any;
         if (Array.isArray(childNode)) {
             childNode.forEach((elementNode) => {
-                if (!elementNode?.kind) {
+                if (!elementNode?.tag) {
                     return;
                 }
 
@@ -31,14 +31,14 @@ export function traversNode(node: STNode, visitor: Visitor, parent?: STNode) {
             return;
         }
 
-        if (!childNode.kind) {
+        if (!childNode.tag) {
             return;
         }
 
         traversNode(childNode, visitor, node);
     });
 
-    let endVisitFn: any = (visitor as any)[`endVisit${node.kind}`];
+    let endVisitFn: any = (visitor as any)[`endVisit${node.tag}`];
     if (!endVisitFn) {
         endVisitFn = visitor.endVisitSTNode && visitor.endVisitSTNode;
     }
@@ -49,7 +49,7 @@ export function traversNode(node: STNode, visitor: Visitor, parent?: STNode) {
 }
 
 export async function traversNodeAsync(node: STNode, visitor: Visitor, parent?: STNode) {
-    let beginVisitFn: any = (visitor as any)[`beginVisit${node.kind}`];
+    let beginVisitFn: any = (visitor as any)[`beginVisit${node.tag}`];
     if (!beginVisitFn) {
         beginVisitFn = visitor.beginVisitSTNode && visitor.beginVisitSTNode;
     }
@@ -69,7 +69,7 @@ export async function traversNodeAsync(node: STNode, visitor: Visitor, parent?: 
         if (Array.isArray(childNode)) {
             for (let i = 0; i < childNode.length; i++) {
                 const elementNode = childNode[i];
-                if (!elementNode?.kind) {
+                if (!elementNode?.tag) {
                     return;
                 }
                 await traversNodeAsync(elementNode, visitor, node);
@@ -77,13 +77,13 @@ export async function traversNodeAsync(node: STNode, visitor: Visitor, parent?: 
             }
             return;
         }
-        if (!childNode.kind) {
+        if (!childNode.tag) {
             return;
         }
         await traversNodeAsync(childNode, visitor, node);
     }
 
-    let endVisitFn: any = (visitor as any)[`endVisit${node.kind}`];
+    let endVisitFn: any = (visitor as any)[`endVisit${node.tag}`];
     if (!endVisitFn) {
         endVisitFn = visitor.endVisitSTNode && visitor.endVisitSTNode;
     }

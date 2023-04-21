@@ -1,5 +1,5 @@
 export interface STNode {
-    kind: string;
+    tag: string;
     value?: any;
     parent?: STNode;
     viewState?: any;

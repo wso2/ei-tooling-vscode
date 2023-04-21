@@ -9,7 +9,7 @@ export enum ShapeType {
 export interface Shape {
     name: string;
     type: string;
-    kind: string;
+    tag: string;
     viewState: ViewState;
 }
 
