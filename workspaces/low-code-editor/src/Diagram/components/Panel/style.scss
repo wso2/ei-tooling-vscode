@@ -1,0 +1,122 @@
+/*
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.com). All Rights Reserved.
+ *
+ * This software is the property of WSO2 Inc. and its suppliers, if any.
+ * Dissemination of any information or reproduction of any material contained
+ * herein is strictly forbidden, unless permitted by WSO2 in accordance with
+ * the WSO2 Commercial License available at http://wso2.com/licenses.
+ * For specific language governing the permissions and limitations under
+ * this license, please see the license as well as any agreement you’ve
+ * entered into with WSO2 governing the purchase of this software and any
+ * associated services.
+ */
+ .panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: fit-content;
+    background-color: #fff;
+    margin-left: auto;
+    margin-right: 0;
+    z-index: 200;
+    box-shadow: 0 5px 10px 0 rgba(102, 103, 133, 0.27);
+    overflow: scroll;
+
+    &.panel-slide-in {
+        right: -100vh;
+        -webkit-animation: panel-slide-in-keyframe 0.5s forwards;
+        animation: panel-slide-in-keyframe 0.5s forwards;
+        overflow-x: hidden;
+    }
+    
+    @-webkit-keyframes panel-slide-in-keyframe {
+        100% { right: 0; }
+    }
+    
+    @keyframes panel-slide-in-keyframe {
+        100% { right: 0; }
+    }
+
+    &.panel-slide-out {
+        right: 0;
+        -webkit-animation: panel-slide-out-keyframe 0.5s forwards;
+        animation: panel-slide-out-keyframe 0.5s forwards;
+    }
+
+    @-webkit-keyframes panel-slide-out-keyframe {
+        100% { right: -100vh; }
+    }
+    
+    @keyframes panel-slide-out-keyframe {
+        100% { right: -100vh; }
+    }
+
+    &::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #e6e7ec;
+        border-radius: 2px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    .panel-form-wrapper {
+        max-width: fit-content;
+    }
+
+    .datamapper-form-wrapper {
+        width: 100%;
+        height: 100%;
+    }
+
+    .close-btn-wrap {
+        display: flex;
+        justify-content: flex-end;
+        padding: 5px 5px 0 !important;
+        height: 48px;
+        align-items: center;
+    }
+
+    .panel-close-button {
+        width: 12px;
+        height: 12px;
+        padding: 13px;
+        margin-right: 8px;
+        margin-left: 8px;
+        font-size: 16px;
+        stroke-width: 1px;
+        stroke: #cbcedb;
+        opacity: 1;
+        fill: #cbcedb;
+        display: flex;
+        align-items: center;
+    }
+
+    .panel-back-button {
+        width: 12px;
+        height: 12px;
+        padding: 12px;
+        font-size: 16px;
+        stroke-width: 1px;
+        stroke: #cbcedb;
+        opacity: 1;
+        fill: #cbcedb;
+        display: flex;
+        align-items: center;
+    }
+}
+
+.panel-overlay {
+    position: absolute;
+    height: 150vh;
+    top: 0;
+    width: 100vw;
+    background-color: #fff;
+    opacity: 0.5;
+    z-index: 100;
+}

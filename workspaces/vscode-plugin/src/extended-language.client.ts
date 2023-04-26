@@ -1,5 +1,12 @@
-import {LanguageClient} from "vscode-languageclient";
-import {GetSyntaxTreeParams, GetSyntaxTreeResponse} from "./ISynapseLanguageClient";
+import {HoverParams, LanguageClient} from "vscode-languageclient";
+import {
+    CompletionParams,
+    CompletionResponse,
+    GetSyntaxTreeParams,
+    GetSyntaxTreeResponse, HoverResponse, PreCompletionParams
+} from "./ISynapseLanguageClient";
+import * as vscode from "vscode";
+import {Position, Range, TextDocument, Uri, workspace, WorkspaceEdit} from "vscode";
 
 export interface DidOpenParams {
     textDocument: {
@@ -26,6 +33,46 @@ export class ExtendedLangClient extends LanguageClient {
         // debug(`didOpen at ${new Date()} - ${new Date().getTime()}`);
         this.sendNotification("textDocument/didOpen", params);
     }
+
+    async getCompletion(params: PreCompletionParams): Promise<CompletionResponse[]> {
+        let position: Position;
+        const doc = await vscode.workspace.openTextDocument(Uri.file(params.textDocument.fsPath));
+        position = doc.positionAt(235);
+        const completionParams: CompletionParams = {
+                textDocument: {
+                    uri: params.textDocument.uri
+                },
+                position: {
+                    character: position.character,
+                    line: position.line
+                },
+                context: {
+                    triggerKind: params.context.triggerKind
+                }
+            }
+
+        return this.sendRequest("textDocument/completion", completionParams);
+
+    }
+
+    async hover(params: HoverParams): Promise<HoverResponse> {
+        return this.sendRequest("textDocument/hover", params);
+    }
+
+    // async applyChange(params: ApplyEditParams): Promise<void> {
+    //     const url: string = params.textDocument.uri;
+    //     const uri: Uri = Uri.parse(url);
+    //     const document: TextDocument = await workspace.openTextDocument(uri);
+    //     if (document === null) {
+    //         return;
+    //     }
+    //
+    //     const edit = new WorkspaceEdit();
+    //     let startPosition = new Position(params.textEdit.range.start.line, params.textEdit.range.start.character);
+    //     let endPosition = new Position(params.textEdit.range.end.line, params.textEdit.range.end.character);
+    //     let replaceLocation: Position | Range = new Range(startPosition, endPosition);
+    //     edit.replace(Uri.file(url), replaceLocation, params.textEdit.newText);
+    // }
 
     // async isExtendedServiceSupported(serviceName: string): Promise<boolean> {
     //     if (!this.isDynamicRegistrationSupported) {

@@ -1,6 +1,7 @@
 import { monaco } from "react-monaco-editor";
 import { sizingAndPositioning } from "@wso2-ei/low-code-diagram";
 import { DiagramEditorLangClientInterface } from "@wso2-ei/low-code-editor-commons/lib";
+// import { Position } from "@wso2-ei/low-code-editor-commons";
 
 export async function getSyntaxTree(filePath: string, langClient: DiagramEditorLangClientInterface) {
     console.log("getSyntaxTree inside generatorUtils.");
@@ -10,6 +11,33 @@ export async function getSyntaxTree(filePath: string, langClient: DiagramEditorL
         }
     });
     return resp.syntaxTree.node;
+}
+
+export async function getCompletion(fsPath: string, filePath: string, offset: number, langClient: DiagramEditorLangClientInterface) {
+    console.log("getCompletion inside generatorUtils.");
+    let completions = await langClient.getCompletion({
+        textDocument: {
+            fsPath: fsPath,
+            uri: filePath
+        },
+        offset: offset,
+        context: {
+            triggerKind: 0
+        }
+    });
+    return completions;
+}
+
+export async function applyChange(filePath: string, fsPath: string, textEdit: any, langClient: DiagramEditorLangClientInterface) {
+    await langClient.applyChange(
+        {
+            textDocument: {
+                fsPath: fsPath,
+                uri: filePath
+            },
+            textEdit: textEdit
+        }
+    )
 }
 
 // export async function getFunctionSyntaxTree(filePath: string, range: any, langClient: DiagramEditorLangClientInterface) {

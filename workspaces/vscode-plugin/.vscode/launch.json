@@ -10,8 +10,8 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"env":{
-                "LSDEBUG":"false",
-				"WEB_VIEW_WATCH_MODE": "true",
+                "LSDEBUG":"true",
+				"WEB_VIEW_WATCH_MODE": "false",
 				"WEB_VIEW_DEV_HOST": "http://localhost:9000"
 			},
 			"runtimeExecutable": "${execPath}",

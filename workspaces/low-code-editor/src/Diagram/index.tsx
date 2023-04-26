@@ -71,9 +71,12 @@ export function Diagram() {
     }
 
     return (
-        <svg width={width} height={height}>
-            {components}
-        </svg>
+        <>
+            <div id={'canvas-overlay'} className={"overlayContainer"} />
+            <svg width={width} height={height}>
+                {components}
+            </svg>
+        </>
     )
 
 

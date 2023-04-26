@@ -4,14 +4,14 @@ import {getComposerWebViewOptions, getLibraryWebViewContent, WebViewOptions} fro
 import {DiagramFocus} from "./model";
 
 export function render(
-    context: ExtensionContext, filePath: Uri, startLine: number, startColumn: number,
+    context: ExtensionContext, filePath: Uri, fileUri: Uri, startLine: number, startColumn: number,
     webView: Webview, diagramFocus?: DiagramFocus): string {
 
-    return renderDiagram(context, filePath, startLine, startColumn, webView, diagramFocus);
+    return renderDiagram(context, filePath, fileUri, startLine, startColumn, webView, diagramFocus);
 }
 
 function renderDiagram(
-    context: ExtensionContext, filePath: Uri, startLine: number, startColumn: number,
+    context: ExtensionContext, filePath: Uri, fileUri: Uri, startLine: number, startColumn: number,
     webView: Webview, diagramFocus?: DiagramFocus): string {
     console.log('workspace name', workspace.name);
     const body = `
@@ -116,6 +116,7 @@ function renderDiagram(
             }
             function drawDiagram({
                 filePath,
+                fileUri,
                 startLine,
                 startColumn,
                 lastUpdatedAt,
@@ -129,6 +130,7 @@ function renderDiagram(
                         editorProps: {
                             langClientPromise: Promise.resolve(getLangClient()),
                             filePath,
+                            fileUri,
                             lastUpdatedAt,
                             getFileContent,
                             updateFileContent,
@@ -162,6 +164,7 @@ function renderDiagram(
             webViewRPCHandler.addMethod("updateDiagram", (args) => {
                 drawDiagram({
                     filePath: args[0].filePath,
+                    fileUri: args[0].fileUri,
                     startLine: args[0].startLine,
                     startColumn: args[0].startColumn,
                     lastUpdatedAt: (new Date()).toISOString(),
@@ -176,6 +179,7 @@ function renderDiagram(
             });
             drawDiagram({
                 filePath: ${JSON.stringify(ballerinaFilePath)},
+                fileUri: ${JSON.stringify(fileUri)},
                 startLine: ${startLine},
                 startColumn: ${startColumn},
                 lastUpdatedAt: (new Date()).toISOString(),

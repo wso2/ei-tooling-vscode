@@ -213,6 +213,7 @@ class DiagramPanel {
                 this.webviewPanel.webview.html = render(
                     diagramContext,
                     diagramElement!.fileUri!,
+                    diagramElement!.fileUri!,
                     diagramElement!.startLine!,
                     diagramElement!.startColumn!,
                     this.webviewPanel.webview,
@@ -237,6 +238,13 @@ function getCurrentFileName(): string | undefined {
         return undefined;
     }
     return diagramElement!.fileUri!.fsPath.split(sep).pop();
+}
+
+function getCurrentFileUri(): Uri | undefined {
+    if (!diagramElement || !diagramElement!.fileUri) {
+        return undefined;
+    }
+    return diagramElement!.fileUri!;
 }
 
 export function updateDiagramElement(element: DiagramOptions | undefined) {
@@ -274,9 +282,11 @@ export function callUpdateDiagramMethod() {
     performDidOpen();
     let ballerinaFilePath = diagramElement!.fileUri!.fsPath;
     const fileName: string | undefined = getCurrentFileName();
+    const fileUri: Uri | undefined = getCurrentFileUri();
     DiagramPanel.currentPanel?.updateTitle(fileName ? `${fileName} Diagram` : `Synapse Diagram`);
     const args = [{
         filePath: ballerinaFilePath,
+        fileUri: fileUri,
         startLine: diagramElement!.startLine,
         startColumn: diagramElement!.startColumn
     }];

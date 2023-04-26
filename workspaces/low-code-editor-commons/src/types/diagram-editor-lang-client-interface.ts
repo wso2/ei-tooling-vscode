@@ -80,8 +80,69 @@ export interface SyntaxTree {
     syntaxProcessingInstructionNode: any;
 }
 
+export interface GetCompletionParams {
+    textDocument: {
+        fsPath: string;
+        uri: string;
+    };
+    offset: number;
+    context: {
+        triggerKind: any;
+    };
+}
+
+export interface ApplyEditParams {
+    textDocument: {
+        fsPath: string;
+        uri: string;
+    };
+    textEdit: TextEdit;
+}
+
+export interface GetCompletionResponse {
+    detail: string;
+    insertText: string;
+    insertTextFormat: number;
+    kind: number;
+    label: string;
+    additionalTextEdits?: TextEdit[];
+    documentation?: string;
+    sortText?: string;
+    filterText?: string;
+    textEdit?: TextEdit;
+}
+
+export interface CompletionResponse {
+    items: GetCompletionResponse[]
+}
+
+export interface TextEdit {
+    newText: string,
+    range: {
+        end: {
+            character: number;
+            line: number;
+        },
+        start: {
+            character: number;
+            line: number;
+        }
+    }
+}
+
+export interface Position {
+    startLine: number;
+    startColumn: number;
+}
+
 export interface DiagramEditorLangClientInterface extends BaseLangClientInterface {
     getSyntaxTree: (
         params: GetSyntaxTreeParams
     ) => Thenable<GetSyntaxTreeResponse>;
+    getCompletion: (
+        params: GetCompletionParams
+    ) => Thenable<CompletionResponse>;
+    applyChange: (
+        params: ApplyEditParams
+    ) => Thenable<void>;
 }

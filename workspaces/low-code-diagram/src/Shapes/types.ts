@@ -11,6 +11,15 @@ export interface Shape {
     type: string;
     tag: string;
     viewState: ViewState;
+    start: number;
+    end: number;
+    startTagOpenOffset: number;
+    startTagOffOffset: number;
+    endTagOpenOffset: number;
+    endTagOffOffset: number;
+    hasTextNode: boolean;
+    selfClosed: boolean;
+
 }
 
 export interface Square extends Shape {

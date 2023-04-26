@@ -24,6 +24,7 @@ export interface WorkspaceFolder {
 
 export interface EditorState {
     filePath: string;
+    fileUri: Uri;
     // projectPaths: WorkspaceFolder[],
     langClientPromise: Promise<DiagramEditorLangClientInterface>;
     // startColumn: number; // TODO: remove

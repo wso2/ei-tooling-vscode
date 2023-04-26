@@ -101,6 +101,24 @@ function getLangClient() {
                 });
             });
         },
+        applyChange: (params) => {
+            return new Promise((resolve, _reject) => {
+                const start = new Date();
+                webViewRPCHandler.invokeRemoteMethod('applyChange', [params], (resp) => {
+                    consoleLog(start, 'applyChange');
+                    resolve(resp);
+                });
+            });
+        },
+        hover: (params) => {
+            return new Promise(resolve => {
+                const start = new Date();
+                webViewRPCHandler.invokeRemoteMethod('hover', [params], (resp) => {
+                    consoleLog(start, 'hover');
+                    resolve(resp);
+                })
+            });
+        },
         getType: (params) => {
             return new Promise((resolve, _reject) => {
                 const start = new Date();

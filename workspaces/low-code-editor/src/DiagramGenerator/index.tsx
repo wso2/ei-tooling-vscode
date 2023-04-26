@@ -26,6 +26,7 @@ export function LowCodeDiagramGenerator(props: DiagramGeneratorProps) {
     const {
         langClientPromise,
         filePath,
+        fileUri,
         lastUpdatedAt
     } = props;
     const classes = useGeneratorStyles();
@@ -237,6 +238,7 @@ export function LowCodeDiagramGenerator(props: DiagramGeneratorProps) {
                 currentFile={{
                     content: fileContent,
                     path: filePath,
+                    uri: fileUri,
                     size: 1,
                     type: "File"
                 }}

@@ -26,12 +26,13 @@ export interface Uri {
     fsPath: string
     external: string
     path: string;
-    sheme: string;
+    scheme: string;
 }
 
 export interface CurrentFile {
     content: string;
     path: string;
+    uri: Uri
     size: number;
 }
 

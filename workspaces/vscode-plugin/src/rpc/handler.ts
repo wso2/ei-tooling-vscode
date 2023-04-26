@@ -2,7 +2,18 @@ import {WebViewMethod, WebViewRPCMessage} from "./model";
 import {deflateSync} from "zlib";
 import {ExtendedLangClient} from "../extended-language.client";
 import {debug} from "../utils/logger";
-import {commands, WebviewPanel, WebviewView} from "vscode";
+import {
+    commands,
+    Position,
+    Range,
+    TextDocument,
+    Uri,
+    WebviewPanel,
+    WebviewView,
+    workspace,
+    WorkspaceEdit
+} from "vscode";
+import {ApplyEditParams} from "../ISynapseLanguageClient";
 
 const getLangClientMethods = (langClient: ExtendedLangClient): WebViewMethod[] => {
     return [{
@@ -20,7 +31,44 @@ const getLangClientMethods = (langClient: ExtendedLangClient): WebViewMethod[] =
 
             });
         }
+    },
+    {
+        methodName: 'getCompletion',
+        handler: (args: any[]) => {
+            const start = new Date().getTime();
+            return langClient.getCompletion(args[0]).then(result => {
+                consoleLog(start, 'getCompletion');
+                return result;
+            });
+        }
+    },
+    {
+        methodName: 'applyChange',
+        handler: (args: any[]) => {
+            const start = new Date().getTime();
+            return applyChange(args[0]).then(result => {
+                consoleLog(start, 'getCompletion');
+                return result;
+            });
+        }
     }];
+}
+
+async function applyChange(params: ApplyEditParams): Promise<boolean> {
+    const url: string = params.textDocument.uri;
+    const uri: Uri = Uri.parse(url);
+    const document: TextDocument = await workspace.openTextDocument(uri);
+    if (document === null) {
+        return false;
+    }
+
+    const edit = new WorkspaceEdit();
+    let startPosition = new Position(params.textEdit.range.start.line, params.textEdit.range.start.character);
+    let endPosition = new Position(params.textEdit.range.end.line, params.textEdit.range.end.character);
+    let replaceLocation: Position | Range = new Range(startPosition, endPosition);
+    edit.replace(Uri.file(params.textDocument.fsPath), replaceLocation, params.textEdit.newText);
+    await workspace.applyEdit(edit);
+    return true;
 }
 
 function consoleLog(start: number, fnName: string) {
