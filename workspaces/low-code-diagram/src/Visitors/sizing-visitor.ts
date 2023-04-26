@@ -1,3 +1,22 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import {Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Respond, Send, Visitor} from '@wso2-ei/syntax-tree';
 import { MediatorViewState } from '../ViewState';
 import { ApiViewState } from '../ViewState/api';
@@ -11,36 +30,8 @@ import { SendViewState } from '../ViewState/send';
 
 export const DEFAULT_SHAPE_DIMENSION = 50;
 export const COMPONENT_GAP = 20;
-export const NAME_GAP = 5;
-export const NAME_HEIGHT = 13;
 
 export class SizingVisitor implements Visitor {
-
-    // private getConnectorSize() {
-    //     let size = 0;
-    //     return size;
-    // }
-
-    // private getConnectorGap() {
-    //     // const rw = (this.getConnectorSize() * (DefaultConfig.connectorEPWidth)) + (this.foundParentConnectors.size > 0 ? (this.getConnectorSize() === 1 ? DefaultConfig.epGap : 0) : DefaultConfig.epGap);
-    //     const rw = this.getConnectorSize() * DefaultConfig.connectorEPWidth + DefaultConfig.epGap;
-    //     if (this.getConnectorSize() > 0) {
-    //         return rw;
-    //     } else {
-    //         return 0;
-    //     }
-    // }
-
-    // endVisitSTNode?(node: STNode) {
-    //     if (!node.viewState) {
-    //         return;
-    //     }
-    //     // this.sizeStatement(node);
-    // }
-    //
-    // beginVisitMediator?(node: Mediator) {
-    //
-    // }
 
     endVisitMediator?(node: Mediator) {
         if (node.viewState) {
@@ -80,17 +71,11 @@ export class SizingVisitor implements Visitor {
                         if (width < childVS.bBox.w) {
                             width += childVS.bBox.w;
                         }
-                        // width += childVS.bBox.w + COMPONENT_GAP;
-                        // if (height < childVS.bBox.h) {
-                        //     height = childVS.bBox.h;
-                        // }
                     }
                 })
 
                 viewState.bBox.h = height;
                 viewState.bBox.w = width + COMPONENT_GAP;
-                // viewState.bBox.w = width;
-                // viewState.bBox.h = height + COMPONENT_GAP;
             } else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
@@ -113,17 +98,11 @@ export class SizingVisitor implements Visitor {
                         if (width < childVS.bBox.w) {
                             width += childVS.bBox.w;
                         }
-                        // width += childVS.bBox.w + COMPONENT_GAP;
-                        // if (height < childVS.bBox.h) {
-                        //     height = childVS.bBox.h;
-                        // }
                     }
                 })
 
                 viewState.bBox.h = height;
                 viewState.bBox.w = width + COMPONENT_GAP;
-                // viewState.bBox.w = width;
-                // viewState.bBox.h = height + COMPONENT_GAP;
             } else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
@@ -137,16 +116,11 @@ export class SizingVisitor implements Visitor {
 
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-                // let width = 0;
                 let width = COMPONENT_GAP;
 
                 node.children.forEach(child => {
                     const childVS = child.viewState as any;
                     if (childVS !== undefined) {
-                        // height += childVS.bBox.h + COMPONENT_GAP;
-                        // if (width < childVS.bBox.w) {
-                        //     width += childVS.bBox.w;
-                        // }
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h + COMPONENT_GAP;
@@ -154,8 +128,6 @@ export class SizingVisitor implements Visitor {
                     }
                 })
 
-                // viewState.bBox.h = height;
-                // viewState.bBox.w = width + COMPONENT_GAP;
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
             } else {
@@ -176,10 +148,6 @@ export class SizingVisitor implements Visitor {
                 node.children.forEach(child => {
                     const childVS = child.viewState as any;
                     if (childVS !== undefined) {
-                        // height += childVS.bBox.h + COMPONENT_GAP;
-                        // if (width < childVS.bBox.w) {
-                        //     width += childVS.bBox.w;
-                        // }
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
@@ -187,8 +155,6 @@ export class SizingVisitor implements Visitor {
                     }
                 })
 
-                // viewState.bBox.h = height;
-                // viewState.bBox.w = width + COMPONENT_GAP;
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
             } else {
@@ -263,17 +229,11 @@ export class SizingVisitor implements Visitor {
                         if (width < childVS.bBox.w) {
                             width += childVS.bBox.w;
                         }
-                        // width += childVS.bBox.w + COMPONENT_GAP;
-                        // if (height < childVS.bBox.h) {
-                        //     height = childVS.bBox.h;
-                        // }
                     }
                 })
 
                 viewState.bBox.h = height;
                 viewState.bBox.w = width + COMPONENT_GAP * 2;
-                // viewState.bBox.w = width;
-                // viewState.bBox.h = height + COMPONENT_GAP;
             } else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
@@ -292,10 +252,6 @@ export class SizingVisitor implements Visitor {
                 node.children.forEach(child => {
                     const childVS = child.viewState as any;
                     if (childVS !== undefined) {
-                        // height += childVS.bBox.h + COMPONENT_GAP;
-                        // if (width < childVS.bBox.w) {
-                        //     width += childVS.bBox.w;
-                        // }
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
@@ -303,8 +259,6 @@ export class SizingVisitor implements Visitor {
                     }
                 })
 
-                // viewState.bBox.h = height;
-                // viewState.bBox.w = width + COMPONENT_GAP;
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
             } else {
@@ -313,5 +267,4 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
 }

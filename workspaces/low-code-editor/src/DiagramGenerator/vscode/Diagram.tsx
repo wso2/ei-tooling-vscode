@@ -1,3 +1,22 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import React from "react";
 import {LowCodeDiagramGenerator} from "..";
 import { DiagramGenErrorBoundary } from "../ErrorBoundary";
@@ -13,7 +32,7 @@ export interface Uri {
     fsPath: string
     external: string
     path: string;
-    sheme: string;
+    scheme: string;
 }
 
 export interface WorkspaceFolder {
@@ -38,35 +57,9 @@ export interface EditorAPI {
     getFileContent: (url: string) => Promise<string>;
     updateFileContent: (filePath: string, content: string, skipForceSave?: boolean) => Promise<boolean>;
     gotoSource: (filePath: string, position: { startLine: number, startColumn: number }) => Promise<boolean>;
-    // showPerformanceGraph: () => Promise<boolean>;
-    // getAllFiles?: (regex?: string, ignoreGlob?: string) => Promise<Uri[]>; // TODO: make this not optional, added to get rid of test failures
-    // // TODO: move to a seperate interface
-    // getPerfDataFromChoreo: (data: any, analyzeType: ANALYZE_TYPE) => Promise<PerformanceAnalyzerRealtimeResponse | PerformanceAnalyzerAdvancedResponse | undefined>;
-    // showMessage: () => Promise<boolean>;
-    // resolveMissingDependency: (filePath: string, fileContent: string) => Promise<GetSyntaxTreeResponse>;
-    // resolveMissingDependencyByCodeAction: (filePath: string, fileContent: string, diagnostic: any) => Promise<boolean>;
-    // runCommand: (command: PALETTE_COMMANDS, args: any[]) => Promise<boolean>;
-    // runBackgroundTerminalCommand?: (command: string) => Promise<CommandResponse>;
-    // openArchitectureView?: (nodeId: string) => Promise<boolean>;
-    // sendTelemetryEvent: (event: LowcodeEvent) => Promise<void>;
-    // getLibrariesList: (kind?: LibraryKind) => Promise<LibraryDocResponse | undefined>;
-    // getLibrariesData: () => Promise<LibrarySearchResponse | undefined>;
-    // getLibraryData: (orgName: string, moduleName: string, version: string) => Promise<LibraryDataResponse | undefined>;
-    // getSentryConfig: () => Promise<SentryConfig | undefined>;
-    // getBallerinaVersion: () => Promise<string | undefined>;
-    // getEnv: (name: string) => Promise<any>;
-    // openExternalUrl: (url: string) => Promise<boolean>;
 }
 
 export type EditorProps = EditorState & EditorAPI;
-
-// export const WorkspaceOverview: React.FC<EditorProps> = (props: EditorProps) => {
-//     return (
-//         <OverviewDiagramGenerator
-//             {...props}
-//         />
-//     )
-// }
 
 export const Diagram: React.FC<EditorProps> = (props: EditorProps) => {
 

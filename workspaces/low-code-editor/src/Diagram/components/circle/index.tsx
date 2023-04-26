@@ -1,3 +1,22 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import React, {useContext, useState} from "react";
 import {Circle} from "@wso2-ei/low-code-diagram";
 import {getComponent} from "../../util";
@@ -11,9 +30,6 @@ import {
     GetCompletionResponse
 } from "@wso2-ei/low-code-editor-commons";
 import ItemList from "./ItemList";
-// import * as vscode from "vscode";
-// import {Position} from "vscode";
-// import * as vscode from "vscode";
 
 interface SquareProps {
     model: Circle;
@@ -50,9 +66,6 @@ export function CircleComponent(props: SquareProps) {
 
     const [newFormConfig, setNewFormConfig] = useState<NewFormGeneratorProps>();
 
-    // const optionList: string[] = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
-    // const optionList: string[] = await getCompletionList();
-
     async function getCompletionList(): Promise<string[]> {
         try {
             if (!getDiagramEditorLangClient) {
@@ -81,8 +94,6 @@ export function CircleComponent(props: SquareProps) {
             return [];
         }
     }
-
-
 
     const handleButtonClick = async () => {
         console.log("clicked!")
@@ -196,13 +207,7 @@ export function NewFormGenerator(props: NewFormGeneratorProps) {
     );
 }
 
-export interface FormProps {
-    items: any
-}
-
 const CompletionListForm: React.FC<NewFormGeneratorProps> = (props: NewFormGeneratorProps) => {
     const { getDiagramEditorLangClient, optionList, textDocumentUrl, textDocumentFsPath } = props;
     return <ItemList items={optionList} textDocumentUrl={textDocumentUrl} textDocumentFsPath={textDocumentFsPath} getDiagramEditorLangClient={getDiagramEditorLangClient} />;
 };
-
-

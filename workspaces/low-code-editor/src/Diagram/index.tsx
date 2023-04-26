@@ -1,9 +1,26 @@
-import {LowCodeDiagram, ShapeKindChecker} from "@wso2-ei/low-code-diagram";
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
+import {ShapeKindChecker} from "@wso2-ei/low-code-diagram";
 import { Shape } from "@wso2-ei/low-code-diagram";
-import { useAppContext } from "../Contexts/AppContext";
 import { getComponent } from "./util";
-import React, {useContext, useState} from "react";
-import {useStyles} from "./styles";
+import React, {useContext} from "react";
 import { Context as DiagramContext } from "../Contexts/diagram";
 
 export function Diagram() {
@@ -11,43 +28,16 @@ export function Diagram() {
     const {
         api: {
             code: {
-                // modifyDiagram,
                 gotoSource
-                // getFunctionDef
             },
-            // webView: {
-            //     showTryitView,
-            //     showDocumentationView
-            // },
-            // project: {
-            //     run
-            // },
-            // insights: {
-            //     onEvent
-            // },
             ls: {
                 getDiagramEditorLangClient
             }
-            // ,
-            // navigation
         },
         props: {
-            syntaxTree,
-            fullST,
-            isLoadingAST,
-            isReadOnly,
-            // stSymbolInfo,
-            error,
-            selectedPosition,
-            zoomStatus,
-            ballerinaVersion,
-            experimentalEnabled,
-            openInDiagram,
-            currentFile
+            syntaxTree
         },
     } = useContext(DiagramContext);
-
-    // const { state: { syntaxTree } } = useAppContext();
 
     const model = syntaxTree;
 

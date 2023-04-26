@@ -1,9 +1,26 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import {STNode, Visitor} from "@wso2-ei/syntax-tree";
-// import {traversNode} from "@wso2-ei/syntax-tree";
 import {InitVisitor} from "../Visitors/init-visitor";
 import {SizingVisitor} from "../Visitors/sizing-visitor";
 import {PositioningVisitor} from "../Visitors/positioning-visitor";
-// import { Shape } from "../Shapes/types";
 import * as ShapeComponents from '../Components/RenderingComponents';
 import React from "react";
 
@@ -18,11 +35,6 @@ export function sizingAndPositioning(st: STNode): STNode {
 export function recalculateSizingAndPositioning(st: STNode) {
     traverse(st, new SizingVisitor());
     traverse(st, new PositioningVisitor());
-    // if (STKindChecker.isFunctionDefinition(st) && st?.viewState?.onFail) {
-    //     const viewState = st.viewState as FunctionViewState;
-    //     traversNode(viewState.onFail, new SizingVisitor(experimentalEnabled));
-    //     traversNode(viewState.onFail, new PositioningVisitor());
-    // }
     const clone = { ...st };
     return clone;
 }
@@ -78,11 +90,6 @@ export function traverse(el: STNode, visitor: Visitor): void {
 }
 
 export function getSTComponent(node: any): React.ReactElement {
-    // const ChildComp = (stComponents as any)[node.kind];
     const ChildComp = (ShapeComponents as any)[node.tag];
-    // if (!ChildComp) {
-    //     return <Statement model={node} />;
-    // }
     return <ChildComp model={node} />;
 }
-
