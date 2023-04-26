@@ -1,7 +1,6 @@
-
 import { getComponent } from "../../util";
-import {WorkerLine} from "../worker-line";
-import {Circle} from "../../../Shapes";
+import { WorkerLine } from "../worker-line";
+import { Circle } from "../../../Shapes";
 
 interface SquareProps {
     model: Circle;
@@ -25,7 +24,7 @@ export function CircleComponent(props: SquareProps) {
                 r={viewState.bBox.r}
                 stroke="black"
                 stroke-width="3"
-                fill="#fff"
+                fill="#3D84B8"
             />
 
             <WorkerLine

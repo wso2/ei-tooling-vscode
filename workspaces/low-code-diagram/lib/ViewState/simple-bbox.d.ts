@@ -15,4 +15,8 @@ export declare class SimpleBBox {
     labelWidth: number;
     offsetFromBottom: number;
     offsetFromTop: number;
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
 }

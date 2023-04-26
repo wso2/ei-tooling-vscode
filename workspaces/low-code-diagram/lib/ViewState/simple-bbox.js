@@ -17,6 +17,10 @@ export class SimpleBBox {
         this.labelWidth = 0;
         this.offsetFromBottom = DefaultConfig.offSet;
         this.offsetFromTop = DefaultConfig.offSet;
+        this.x1 = 0;
+        this.x2 = 0;
+        this.y1 = 0;
+        this.y2 = 0;
     }
 }
 //# sourceMappingURL=simple-bbox.js.map

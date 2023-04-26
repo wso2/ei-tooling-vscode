@@ -1,4 +1,4 @@
-import React from "react";
+import { jsx as _jsx } from "react/jsx-runtime";
 import { MediatorSVG, START_SVG_HEIGHT, START_SVG_WIDTH } from "./MediatorSVG";
 export function STNode(props) {
     // const diagramContext = useContext(Context);
@@ -9,7 +9,7 @@ export function STNode(props) {
     const cy = viewState.trigger.cy;
     return (
     // hide edit button for triggers and expression bodied functions
-    React.createElement("g", { className: "mediator-wrapper" },
-        React.createElement(MediatorSVG, { x: cx - (START_SVG_WIDTH / 2), y: cy - (START_SVG_HEIGHT / 2), text: "START" })));
+    _jsx("g", Object.assign({ className: "mediator-wrapper" }, { children: _jsx(MediatorSVG, { x: cx - (START_SVG_WIDTH / 2), y: cy - (START_SVG_HEIGHT / 2), text: "START" }) })));
 }
+export * from "./MediatorSVG";
 //# sourceMappingURL=index.js.map

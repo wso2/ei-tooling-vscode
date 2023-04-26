@@ -355,12 +355,12 @@
 		"copyLS": "copyfiles -f ../../language-server/org.eclipse.lemminx/target/org.eclipse.lemminx-uber.jar lib",
 		"copyLSExtension": "copyfiles -f ../../language-server-extensions/target/org.eclipse.lsp4xml.extensions.synapse-*.jar lib",
 		"vscode:prepublish": "npm run compile",
-		"lint": "node_modules/.bin/tslint -t stylish --project ",
+		"lint": "C:/Wso2_API_Manager/wso2EI_Tooling_Test31/ei-tooling-vscode/workspaces/vscode-plugin/node_modules/.bin/tslint -t stylish --project ",
 		"prebuild": "npm run lint",
-		"compile": "node_modules/.bin/tsc",
-		"watch": "node_modules/.bin/tsc -watch",
+		"compile": "C:/Wso2_API_Manager/wso2EI_Tooling_Test31/ei-tooling-vscode/workspaces/vscode-plugin/node_modules/.bin/tsc",
+		"watch": "C:/Wso2_API_Manager/wso2EI_Tooling_Test31/ei-tooling-vscode/workspaces/vscode-plugin/node_modules/.bin/tsc -watch",
 		"test": "npm run compile && node ./node_modules/vscode/bin/test",
-		"package": "node_modules/.bin/vsce package --no-dependencies"
+		"package": "C:/Wso2_API_Manager/wso2EI_Tooling_Test31/ei-tooling-vscode/workspaces/vscode-plugin/node_modules/.bin/vsce package --no-dependencies"
 	},
 	"devDependencies": {
 		"@types/archiver": "^2.1.3",
