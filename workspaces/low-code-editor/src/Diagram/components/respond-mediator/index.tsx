@@ -7,7 +7,7 @@ interface SquareProps {
     model: Circle;
 }
 
-export function CircleComponent(props: SquareProps) {
+export function RespondComponent(props: SquareProps) {
     const { model } = props;
 
     const viewState = model.viewState;
@@ -19,15 +19,6 @@ export function CircleComponent(props: SquareProps) {
 
     return (
         <>
-            {/* <circle
-                cx={viewState.bBox.cx}
-                cy={viewState.bBox.cy}
-                r={viewState.bBox.r}
-                stroke="black"
-                stroke-width="3"
-                fill="#fff"
-            /> */}
-
             <svg>
 
                 <circle id="Ellipse 1" cx={viewState.bBox.cx} cy={viewState.bBox.cy} r={viewState.bBox.r} fill="#3D84B8" />
@@ -39,12 +30,10 @@ export function CircleComponent(props: SquareProps) {
 
 
 
-
             <WorkerLine
                 model={model}
             />
             {components}
-            {/*<NameComponent model={model} />*/}
         </>
     )
 }

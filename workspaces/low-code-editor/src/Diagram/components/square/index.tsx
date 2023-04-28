@@ -29,6 +29,8 @@ export function SquareComponent(props: SquareProps) {
                 stroke="black"
                 stroke-width="3"
             />
+            
+
             <WorkerLine
                 model={model}
             />

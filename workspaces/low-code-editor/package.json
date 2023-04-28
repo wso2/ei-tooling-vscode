@@ -33,6 +33,7 @@
     "copyfiles": "^2.4.1",
     "web-vitals": "^2.1.4",
     "@wso2-ei/low-code-editor-commons": "workspace:*"
+    
   },
   "scripts": {
     "prebuild": "pnpm run lint",
@@ -79,6 +80,7 @@
     "css-loader": "^5.2.7",
     "source-map-loader": "^4.0.1",
     "ts-loader": "^9.4.1",
+    "svg-url-loader": "^8.0.0",
     "sass": "^1.56.1",
     "sass-loader": "^12.1.0"
   }

@@ -1,4 +1,4 @@
-export const DEFAULT_SHAPE_DIMENSION = 50;
+export const DEFAULT_SHAPE_DIMENSION = 100;
 export const COMPONENT_GAP = 20;
 export const NAME_GAP = 5;
 export const NAME_HEIGHT = 13;

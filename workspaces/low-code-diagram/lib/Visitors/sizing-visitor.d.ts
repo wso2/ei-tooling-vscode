@@ -1,5 +1,5 @@
 import { Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Respond, Send, Visitor } from '@wso2-ei/syntax-tree';
-export declare const DEFAULT_SHAPE_DIMENSION = 50;
+export declare const DEFAULT_SHAPE_DIMENSION = 100;
 export declare const COMPONENT_GAP = 20;
 export declare const NAME_GAP = 5;
 export declare const NAME_HEIGHT = 13;

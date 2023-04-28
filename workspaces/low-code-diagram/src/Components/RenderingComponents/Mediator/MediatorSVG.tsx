@@ -28,7 +28,7 @@ export function MediatorSVG(props: { x: number, y: number, text: string }) {
                         <rect id="StartRectangle" width={START_SVG_WIDTH} height={START_SVG_HEIGHT} rx="20" transform="translate(6 5)" fill="#dce1ff" />
                     </g>
                     <g id="Rectangle-4" className="start-rect-fill" >
-                        <rect width="82" height="40" rx="20" stroke="none" fill="#dce1ff" />
+                        <rect width="82" height="40" rx="20" stroke="none" fill="#3D84B8" />
                         <rect x="0.5" y="0.5" width="81" height="39" rx="19.5" fill="none" />
                     </g>
                 </g>

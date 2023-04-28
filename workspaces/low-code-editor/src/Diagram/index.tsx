@@ -66,7 +66,7 @@ export function Diagram() {
             width = viewState.bBox.r * 2 + 10;
         } else {
             height = viewState.bBox.h;
-            width = viewState.bBox.h;
+            width = viewState.bBox.w;
         }
     }
 
