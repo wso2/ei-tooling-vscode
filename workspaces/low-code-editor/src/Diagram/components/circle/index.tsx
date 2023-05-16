@@ -23,13 +23,17 @@ import {getComponent} from "../../util";
 import {WorkerLine} from "../worker-line";
 import {Panel} from "../Panel";
 import {Context as DiagramContext} from "../../../Contexts/diagram";
-import {getCompletion} from "../../../DiagramGenerator/generatorUtil";
+import {getCompletion, hover} from "../../../DiagramGenerator/generatorUtil";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ReactTooltip from "react-tooltip";
 import {
     CompletionResponse,
     DiagramEditorLangClientInterface,
-    GetCompletionResponse
+    GetCompletionResponse, HoverResponse
 } from "@wso2-ei/low-code-editor-commons";
-import ItemList from "./ItemList";
+import ItemList, {HoverPanel} from "./ItemList";
 
 interface SquareProps {
     model: Circle;
@@ -39,6 +43,9 @@ export function CircleComponent(props: SquareProps) {
     const {model} = props;
 
     const viewState = model.viewState;
+    const startPosition = model.start;
+    const endPosition = model.end;
+    const startTagOpenOffset = model.startTagOpenOffset
     const components: JSX.Element[] = [];
 
     model.children.forEach(child => {
@@ -66,20 +73,9 @@ export function CircleComponent(props: SquareProps) {
 
     const [newFormConfig, setNewFormConfig] = useState<NewFormGeneratorProps>();
 
-    async function getCompletionList(): Promise<string[]> {
-        try {
-            if (!getDiagramEditorLangClient) {
-                return [];
-            }
-            const langClient = await getDiagramEditorLangClient();
-            let completionList: CompletionResponse = await getCompletion(currentFile.path, currentFile.uri.external, 233, langClient);
-            let list: GetCompletionResponse[] = completionList.items;
-            return list.map(item => item.label);
+    const [isShown, setIsShown] = useState(false);
 
-        } catch (err) {
-            return [];
-        }
-    }
+    const [hoverConfig, setHoverConfig] = useState<HoverProps>();
 
     async function getNewCompletionList(): Promise<GetCompletionResponse[]> {
         try {
@@ -87,7 +83,7 @@ export function CircleComponent(props: SquareProps) {
                 return [];
             }
             const langClient = await getDiagramEditorLangClient();
-            let completionList: CompletionResponse = await getCompletion(currentFile.path, currentFile.uri.external, 233, langClient);
+            let completionList: CompletionResponse = await getCompletion(currentFile.path, currentFile.uri.external, endPosition, langClient);
             return completionList.items;
 
         } catch (err) {
@@ -99,24 +95,65 @@ export function CircleComponent(props: SquareProps) {
         console.log("clicked!")
 
         // const list =
-        setIsDropdownOpen(!isDropdownOpen);
+        setIsDropdownOpen(true);
         // setFormConfig({
         //     optionList: await getCompletionList(),
         //     isDropdownOpen: !isDropdownOpen
         // });
         setNewFormConfig({
+            previousComponentStartPosition: startPosition,
             getDiagramEditorLangClient,
             textDocumentUrl: currentFile.uri.external,
             textDocumentFsPath: currentFile.uri.fsPath,
             optionList: await getNewCompletionList(),
-            isDropdownOpen: !isDropdownOpen
+            isDropdownOpen: isDropdownOpen
         })
     };
 
+    async function getHoverResult(): Promise<HoverResponse | null> {
+        try {
+            if (!getDiagramEditorLangClient) {
+                return null;
+            }
+            const langClient = await getDiagramEditorLangClient();
+            let result: HoverResponse = await hover(currentFile.path, currentFile.uri.external, startTagOpenOffset + 1, langClient)
+            return result;
 
-    // console.log(formConfig);
+        } catch (err) {
+            return null;
+        }
+    }
+
+    const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+    const handlerHover = async  () => {
+        console.log("hover!")
+        setIsShown(true);
+        await sleep(2000);
+        if (getDiagramEditorLangClient) {
+            setHoverConfig({
+                description: await getHoverResult()
+            })
+
+        }
+    };
+
+    const handlerHoverClose = async  () => {
+        console.log("hoverClose!")
+        setIsShown(false);
+    };
+
+    var renderTooltip = <span>Hello World</span>;
+
     return (
         <>
+            {/*<Tooltip*/}
+            {/*    title="Tooltip for the register button"*/}
+            {/*    placement="top"*/}
+            {/*    enterDelay={1000}*/}
+            {/*    leaveDelay={200}*/}
+
+            {/*>*/}
             <circle
                 cx={viewState.bBox.cx}
                 cy={viewState.bBox.cy}
@@ -125,11 +162,15 @@ export function CircleComponent(props: SquareProps) {
                 stroke-width="3"
                 fill="#fff"
                 onClick={handleButtonClick}
+                onMouseOver={handlerHover}
+                onMouseLeave={handlerHoverClose}
             />
 
-            {/*{formConfig && <FormGenerator {...formConfig} />}*/}
+            {/*</Tooltip>*/}
 
             {newFormConfig && <NewFormGenerator {...newFormConfig} />}
+
+            {isShown && <HoverGenerator {...hoverConfig} />}
 
             <WorkerLine
                 model={model}
@@ -166,6 +207,7 @@ export interface FormGeneratorProps {
 }
 
 export interface NewFormGeneratorProps {
+    previousComponentStartPosition: number;
     getDiagramEditorLangClient?: () => Promise<DiagramEditorLangClientInterface>;
     textDocumentUrl: string;
     textDocumentFsPath: string;
@@ -174,6 +216,10 @@ export interface NewFormGeneratorProps {
     onCancel?: () => void;
     onSave?: () => void;
     onBack?: () => void;
+}
+
+export interface HoverProps {
+    description?: HoverResponse | null;
 }
 
 export function FormGenerator(props: FormGeneratorProps) {
@@ -207,7 +253,27 @@ export function NewFormGenerator(props: NewFormGeneratorProps) {
     );
 }
 
+export function HoverGenerator(props: HoverProps) {
+
+    return (
+        <div>
+            <Panel>
+                <>
+                    <div color={"#3d3b3b"}>
+                        <HoverForm {...props}></HoverForm>
+                    </div>
+                </>
+            </Panel>
+        </div>
+    );
+}
+
+const HoverForm: React.FC<HoverProps> = (props: HoverProps) => {
+    const { description } = props;
+    return <HoverPanel description={description}/>;
+}
+
 const CompletionListForm: React.FC<NewFormGeneratorProps> = (props: NewFormGeneratorProps) => {
-    const { getDiagramEditorLangClient, optionList, textDocumentUrl, textDocumentFsPath } = props;
-    return <ItemList items={optionList} textDocumentUrl={textDocumentUrl} textDocumentFsPath={textDocumentFsPath} getDiagramEditorLangClient={getDiagramEditorLangClient} />;
+    const { previousComponentStartPosition, getDiagramEditorLangClient, optionList, textDocumentUrl, textDocumentFsPath } = props;
+    return <ItemList items={optionList} textDocumentUrl={textDocumentUrl} textDocumentFsPath={textDocumentFsPath} getDiagramEditorLangClient={getDiagramEditorLangClient} previousComponentStartPosition={previousComponentStartPosition}/>;
 };

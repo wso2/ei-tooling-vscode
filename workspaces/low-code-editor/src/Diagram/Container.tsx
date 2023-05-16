@@ -19,10 +19,10 @@
 
 import React from "react";
 
-import { Diagram } from "./";
+import { LowCodeDiagram } from "./";
 
 export default function DiagramContainer() {
     return (
-        <Diagram />
+        <LowCodeDiagram />
     )
 }

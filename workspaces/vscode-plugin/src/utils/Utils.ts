@@ -27,8 +27,7 @@ import { ConnectorModule } from "../connector/ConnectorModule";
 import { XMLSerializer as XMLSerializer } from 'xmldom';
 
 let DOM = require('xmldom').DOMParser;
-var fileSystem = require('fs');
-import * as xml2js from "xml2js";
+const fileSystem = require('fs');
 import { ArtifactModule } from "../artifacts/ArtifactModule";
 import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
 import { TerminalModule } from "../logging/TerminalModule";
@@ -57,20 +56,20 @@ export namespace Utils {
     const DEPENDENCIES_TAG = Common.DEPENDENCIES_TAG;
     const PLUGIN_TAG = Common.PLUGIN_TAG;
 
-    export async function parseXmlContent(xmlString: string, options?: xml2js.OptionsV2): Promise<{}> {
-        const opts: {} = Object.assign({ explicitArray: true }, options);
-        return new Promise<{}>(
-            (resolve: (value: {}) => void, reject: (e: Error) => void): void => {
-                xml2js.parseString(xmlString, opts, (err: Error, res: {}) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(res);
-                    }
-                });
-            }
-        );
-    }
+    // export async function parseXmlContent(xmlString: string, options?: xml2js.OptionsV2): Promise<{}> {
+    //     const opts: {} = Object.assign({ explicitArray: true }, options);
+    //     return new Promise<{}>(
+    //         (resolve: (value: {}) => void, reject: (e: Error) => void): void => {
+    //             xml2js.parseString(xmlString, opts, (err: Error, res: {}) => {
+    //                 if (err) {
+    //                     reject(err);
+    //                 } else {
+    //                     resolve(res);
+    //                 }
+    //             });
+    //         }
+    //     );
+    // }
 
     export function validate(str: string) {
         checkWhiteSpaces(str);

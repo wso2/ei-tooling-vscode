@@ -34,7 +34,7 @@ export interface Connector extends STNode {
 }
 
 export interface Api extends STNode {
-    children: STNode[];
+    children: Resource[];
 }
 
 export interface Proxy extends STNode {

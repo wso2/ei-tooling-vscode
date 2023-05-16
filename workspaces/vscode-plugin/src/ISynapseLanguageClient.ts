@@ -1,9 +1,40 @@
-import {MarkupContent, Range} from "vscode-languageserver-protocol";
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
+import {MarkedString, MarkupContent, MarkupKind, Range} from "vscode-languageserver-protocol";
 
 export interface GetSyntaxTreeParams {
     documentIdentifier: {
         uri: string;
     };
+}
+
+export interface LogSnippetCompletionRequest {
+    logLevel: string;
+    logCategory: string;
+    logSeparator: string;
+    description: string;
+    properties: any;
+}
+
+export interface LogSnippet {
+    snippet: string;
 }
 
 export interface GetSyntaxTreeResponse {
@@ -67,7 +98,8 @@ export interface ApplyEditParams {
         fsPath: string;
         uri: string;
     },
-    textEdit: TextEdit
+    textEdit: TextEdit,
+    previousComponentStartPosition: number
 }
 
 export interface LinePosition {
@@ -75,7 +107,7 @@ export interface LinePosition {
     offset: number;
 }
 
-export interface HoverParams {
+export interface ds {
     textDocument: {
         uri: string;
     };
@@ -85,7 +117,18 @@ export interface HoverParams {
     };
 }
 
+export interface PreHoverParams {
+    textDocument: {
+        fsPath: string;
+        uri: string;
+    };
+    offset: number;
+}
+
 export interface HoverResponse {
-    contents: MarkupContent;
+    contents: {
+        kind: MarkupKind,
+        value: string
+    };
     range: Range
 }

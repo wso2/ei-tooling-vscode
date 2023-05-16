@@ -1,6 +1,24 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import {ExtensionContext, Uri, Webview, workspace} from "vscode";
 import {getComposerWebViewOptions, getLibraryWebViewContent, WebViewOptions} from "../utils/webview-utils";
-// import {getComposerWebViewOptions, getLibraryWebViewContent, WebViewOptions} from "../utils/webview-utils";
 import {DiagramFocus} from "./model";
 
 export function render(
@@ -15,7 +33,7 @@ function renderDiagram(
     webView: Webview, diagramFocus?: DiagramFocus): string {
     console.log('workspace name', workspace.name);
     const body = `
-        <div class="ballerina-editor design-view-container" id="diagram"><div class="loader" /></div>
+        <div class="synapse-editor design-view-container" id="diagram"><div class="loader" /></div>
     `;
 
     const bodyCss = "diagram";
@@ -76,7 +94,7 @@ function renderDiagram(
         }
     `;
 
-    let ballerinaFilePath = diagramFocus?.fileUri;
+    let synapseFilePath = diagramFocus?.fileUri;
 
     const scripts = `
         function loadedScript() {
@@ -137,8 +155,6 @@ function renderDiagram(
                             gotoSource
                         }
                     };
-                    console.log("SLCEditor");
-                    console.log(SLCEditor);
                     SLCEditor.renderDiagramEditor(options);
                 } catch(e) {
                     if (e.message === 'ballerinaComposer is not defined') {
@@ -178,7 +194,7 @@ function renderDiagram(
                 return Promise.resolve({});
             });
             drawDiagram({
-                filePath: ${JSON.stringify(ballerinaFilePath)},
+                filePath: ${JSON.stringify(synapseFilePath)},
                 fileUri: ${JSON.stringify(fileUri)},
                 startLine: ${startLine},
                 startColumn: ${startColumn},
@@ -187,7 +203,7 @@ function renderDiagram(
                 diagramFocus: ${
                     diagramFocus ?
                         `{
-                            filePath: ${JSON.stringify(ballerinaFilePath)}
+                            filePath: ${JSON.stringify(synapseFilePath)}
                         }`
                     : `undefined`
                 },

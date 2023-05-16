@@ -18,8 +18,15 @@
  */
 
 import React, { useState } from "react";
-import {DiagramEditorLangClientInterface, GetCompletionResponse, TextEdit} from "@wso2-ei/low-code-editor-commons";
+import {
+    DiagramEditorLangClientInterface,
+    GetCompletionResponse,
+    HoverResponse,
+    TextEdit
+} from "@wso2-ei/low-code-editor-commons";
 import {applyChange} from "../../../DiagramGenerator/generatorUtil";
+import "./style.scss"
+import {LogMediatorProperty} from "./logMediatorProperty";
 
 interface Item {
     detail: string;
@@ -38,39 +45,58 @@ interface Props {
     textDocumentUrl: string;
     textDocumentFsPath: string;
     items: GetCompletionResponse[];
+    previousComponentStartPosition: number
 }
 
-const ItemList: React.FC<Props> = ({ items , textDocumentUrl, textDocumentFsPath, getDiagramEditorLangClient}) => {
+const ItemList: React.FC<Props> = ({ items , textDocumentUrl, textDocumentFsPath, getDiagramEditorLangClient, previousComponentStartPosition}) => {
     const [selectedItem, setSelectedItem] = useState<GetCompletionResponse | null>(null);
+    const [isClicked, setIsClicked] = useState<boolean>(false);
+    const [languageClient, setLangClient] = useState<DiagramEditorLangClientInterface | null>(null);
+    let langClient;
 
     const handleItemClick = async (item: GetCompletionResponse) => {
         console.log("form item clicked!");
         setSelectedItem(item);
+        setIsClicked(true);
         if (!item.textEdit) {
             return;
         }
         if (!getDiagramEditorLangClient) {
             return
         }
-        const langClient = await getDiagramEditorLangClient();
-        await modifyTextOnComponentSelection(textDocumentUrl, textDocumentFsPath, item.textEdit, langClient);
+        langClient = await getDiagramEditorLangClient();
+        setLangClient(langClient);
+        // await modifyTextOnComponentSelection(textDocumentUrl, textDocumentFsPath, item.textEdit, previousComponentStartPosition, langClient);
     };
 
     return (
         <div>
-            <ul>
+            {!isClicked && <ul>
                 {items.map((item, index) => (
-                    <li key={index} onClick={() => handleItemClick(item)}>
+                    <li className={"list-item"} key={index} onClick={() => handleItemClick(item)}>
                         {item.label}
                     </li>
                 ))}
-            </ul>
+            </ul>}
+            {isClicked && selectedItem && <LogMediatorProperty textEdit={selectedItem.textEdit} textDocumentUrl={textDocumentUrl} textDocumentFsPath={textDocumentFsPath} previousComponentStartPosition={previousComponentStartPosition}/> }
         </div>
     );
 };
 
-async function modifyTextOnComponentSelection(url: string, fsPath: string, text: TextEdit, langClient: any) {
-    await applyChange(url, fsPath, text, langClient);
+async function modifyTextOnComponentSelection(url: string, fsPath: string, text: TextEdit, previousComponentStartPosition: number, langClient: any) {
+    await applyChange(url, fsPath, text, previousComponentStartPosition, langClient);
 }
 
 export default ItemList;
+
+export interface HoverProps {
+    description?: HoverResponse | null;
+}
+
+export const HoverPanel: React.FC<HoverProps> = ({description}) => {
+    return (
+        <div className={"list-item"}>
+            {description?.contents.value}
+        </div>
+    );
+}

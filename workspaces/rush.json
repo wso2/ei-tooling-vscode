@@ -347,6 +347,10 @@
     {
       "packageName": "@wso2-ei/low-code-diagram",
       "projectFolder": "low-code-diagram"
+    },
+    {
+      "packageName": "wso2ei",
+      "projectFolder": "vscode-plugin"
     }
 //  ,
 //    {

@@ -36,12 +36,13 @@ import {
     LanguageClientOptions,
     RequestType,
     ServerOptions, TextDocumentIdentifier,
-    TextDocumentPositionParams
+    TextDocumentPositionParams, UniquenessLevel
 } from 'vscode-languageclient';
 import { activateTagClosing, AutoCloseResult } from './tagClosing';
 import {SyntaxTreeResponse} from "./SyntaxTreeResponse";
-import { activate as activateDiagram } from '../diagram';
+import {activate as activateDiagram, callUpdateDiagramMethod} from '../diagram';
 import {ExtendedLangClient} from "../extended-language.client";
+import document = UniquenessLevel.document;
 
 export interface ScopeInfo {
     scope: "default" | "global" | "workspace" | "folder";
@@ -52,11 +53,6 @@ namespace TagCloseRequest {
     export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any> =
         new RequestType('xml/closeTag');
 }
-
-// namespace DiagramHoverRequest {
-//     export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any> =
-//         new RequestType('xml/hoverDiagram');
-// }
 
 namespace SyntaxTreeRequest {
     export const type: RequestType<TextDocumentIdentifier, SyntaxTreeResponse, any> =
@@ -127,24 +123,15 @@ export function launch(context: ExtensionContext, directoryName: string) {
                 return languageClient.sendRequest(TagCloseRequest.type, param);
             };
 
-            // let DiagramHoverProvider = (document: TextDocument, position: Position) => {
-            //     let param = languageClient.code2ProtocolConverter.asTextDocumentPositionParams(document, position);
-            //     return languageClient.sendRequest(HoverRequest.type, param);
-            // };
-
-            let syntaxTreeProvider = (document: TextDocument) => {
-                let param = languageClient.code2ProtocolConverter.asTextDocumentIdentifier(document);
-                return languageClient.sendRequest(SyntaxTreeRequest.type, param);
-            };
-
             disposable = activateTagClosing(tagProvider, { SynapseXml: true, xsl: true },
                 'xml.completion.autoCloseTags');
             context.subscriptions.push(disposable);
 
-
-            // context.subscriptions.push(HoverProvider);
         });
         activateDiagram(languageClient, context);
+        workspace.onDidSaveTextDocument((document) => {
+            callUpdateDiagramMethod();
+        })
         languages.setLanguageConfiguration('SynapseXml', getIndentationRules());
     }
 

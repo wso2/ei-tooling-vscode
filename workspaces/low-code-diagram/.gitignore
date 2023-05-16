@@ -2,6 +2,6 @@
 .DS_Store
 node_modules
 dist
-lib
 low-code-diagram.build.log
 yarn.lock
+/lib/

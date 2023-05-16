@@ -20,7 +20,7 @@
 import { useGeneratorStyles } from "./styles";
 import { EditorProps } from "./vscode";
 import React from "react";
-import { getLowcodeST, getSyntaxTree } from "./generatorUtil";
+import { getLowCodeST, getSyntaxTree } from "./generatorUtil";
 import { STNode } from "@wso2-ei/syntax-tree";
 import { MuiThemeProvider } from "@material-ui/core";
 import { DiagramGenErrorBoundary } from "./ErrorBoundary";
@@ -49,14 +49,13 @@ export function LowCodeDiagramGenerator(props: DiagramGeneratorProps) {
     const [isDiagramError, setIsDiagramError] = React.useState(false);
 
     React.useEffect(() => {
-        // TODO: move this to view manager
         (async () => {
             let showDiagramError = false;
             try {
                 const langClient = await langClientPromise;
                 let genSyntaxTree: any = await getSyntaxTree(filePath, langClient);
                 const content = await props.getFileContent(filePath);
-                const visitedSyntaxTree: STNode = await getLowcodeST(genSyntaxTree);
+                const visitedSyntaxTree: STNode = await getLowCodeST(genSyntaxTree);
                 if (!visitedSyntaxTree) {
                     return (<div><h1>Parse error...!</h1></div>);
                 }
@@ -81,7 +80,7 @@ export function LowCodeDiagramGenerator(props: DiagramGeneratorProps) {
                 let genSyntaxTree: any = await getSyntaxTree(filePath, langClient);
                 const content = await props.getFileContent(filePath);
 
-                const visitedSyntaxTree: STNode = await getLowcodeST(genSyntaxTree);
+                const visitedSyntaxTree: STNode = await getLowCodeST(genSyntaxTree);
                 if (!visitedSyntaxTree) {
                     return (<div><h1>Parse error...!</h1></div>);
                 }

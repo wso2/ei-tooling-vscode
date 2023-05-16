@@ -18,8 +18,8 @@
  */
 
 import {monaco} from "react-monaco-editor";
-import {sizingAndPositioning} from "@wso2-ei/low-code-diagram";
 import {DiagramEditorLangClientInterface} from "@wso2-ei/low-code-editor-commons/lib";
+import {sizingAndPositioning} from "../Diagram/util";
 
 export async function getSyntaxTree(filePath: string, langClient: DiagramEditorLangClientInterface) {
     console.log("getSyntaxTree inside generatorUtils.");
@@ -45,19 +45,45 @@ export async function getCompletion(fsPath: string, filePath: string, offset: nu
     });
 }
 
-export async function applyChange(filePath: string, fsPath: string, textEdit: any, langClient: DiagramEditorLangClientInterface) {
+export async function getSnippetCompletion(logLevel: string, logCategory: string, logSeparator: string, description: string, properties: any, langClient: DiagramEditorLangClientInterface) {
+    console.log("getSnippetCompletion inside generatorUtils.");
+    return langClient.getSnippetCompletion({
+        logLevel: logLevel,
+        logCategory: logCategory,
+        logSeparator: logSeparator,
+        description: description,
+        properties: properties
+    });
+}
+
+export async function applyChange(filePath: string, fsPath: string, textEdit: any, previousComponentStartPosition: number,
+                                  langClient: DiagramEditorLangClientInterface) {
     await langClient.applyChange(
         {
             textDocument: {
                 fsPath: fsPath,
                 uri: filePath
             },
-            textEdit: textEdit
+            textEdit: textEdit,
+            previousComponentStartPosition: previousComponentStartPosition
         }
     )
 }
 
-export async function getLowcodeST(payload: any) {
+export async function hover(fsPath: string, filePath: string, offset: number,
+                                  langClient: DiagramEditorLangClientInterface) {
+    return langClient.hover(
+        {
+            textDocument: {
+                fsPath: fsPath,
+                uri: filePath
+            },
+            offset: offset
+        }
+    )
+}
+
+export async function getLowCodeST(payload: any) {
 
     return sizingAndPositioning(payload);
 }

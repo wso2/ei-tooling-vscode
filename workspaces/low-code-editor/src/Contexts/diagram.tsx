@@ -20,7 +20,7 @@
 import React from "react";
 import {LowCodeEditorContext, LowCodeEditorProps, LowCodeEditorState} from "../Types";
 import {NodePosition, STNode} from "@wso2-ei/syntax-tree";
-import {recalculateSizingAndPositioning, sizingAndPositioning} from "@wso2-ei/low-code-diagram";
+import {recalculateSizingAndPositioning, sizingAndPositioning} from "../Diagram/util";
 
 const reducer = (state: LowCodeEditorState, action: any) => {
     switch (action.type) {

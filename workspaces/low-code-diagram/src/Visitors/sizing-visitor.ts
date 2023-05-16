@@ -28,7 +28,7 @@ import { ResourceViewState } from '../ViewState/resource';
 import { RespondViewState } from '../ViewState/respond';
 import { SendViewState } from '../ViewState/send';
 
-export const DEFAULT_SHAPE_DIMENSION = 50;
+export const DEFAULT_SHAPE_DIMENSION = 70;
 export const COMPONENT_GAP = 20;
 
 export class SizingVisitor implements Visitor {

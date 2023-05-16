@@ -1,9 +1,28 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import {HoverParams, LanguageClient} from "vscode-languageclient";
 import {
     CompletionParams,
     CompletionResponse,
     GetSyntaxTreeParams,
-    GetSyntaxTreeResponse, HoverResponse, PreCompletionParams
+    GetSyntaxTreeResponse, PreHoverParams, HoverResponse, PreCompletionParams, LogSnippetCompletionRequest, LogSnippet
 } from "./ISynapseLanguageClient";
 import * as vscode from "vscode";
 import {Position, Range, TextDocument, Uri, workspace, WorkspaceEdit} from "vscode";
@@ -29,6 +48,10 @@ export class ExtendedLangClient extends LanguageClient {
         return this.sendRequest("xml/getSynapseSyntaxTree", req.documentIdentifier);
     }
 
+    async getSnippetCompletion(req: LogSnippetCompletionRequest): Promise<LogSnippet | NOT_SUPPORTED_TYPE> {
+        return this.sendRequest("xml/getSnippetCompletion", req);
+    }
+
     didOpen(params: DidOpenParams): void {
         // debug(`didOpen at ${new Date()} - ${new Date().getTime()}`);
         this.sendNotification("textDocument/didOpen", params);
@@ -37,13 +60,13 @@ export class ExtendedLangClient extends LanguageClient {
     async getCompletion(params: PreCompletionParams): Promise<CompletionResponse[]> {
         let position: Position;
         const doc = await vscode.workspace.openTextDocument(Uri.file(params.textDocument.fsPath));
-        position = doc.positionAt(235);
+        position = doc.positionAt(params.offset + 1);
         const completionParams: CompletionParams = {
                 textDocument: {
                     uri: params.textDocument.uri
                 },
                 position: {
-                    character: position.character,
+                    character: position.character + 1,
                     line: position.line
                 },
                 context: {
@@ -55,8 +78,20 @@ export class ExtendedLangClient extends LanguageClient {
 
     }
 
-    async hover(params: HoverParams): Promise<HoverResponse> {
-        return this.sendRequest("textDocument/hover", params);
+    async hover(params: PreHoverParams): Promise<HoverResponse> {
+        let position: Position;
+        const doc = await vscode.workspace.openTextDocument(Uri.file(params.textDocument.fsPath));
+        position = doc.positionAt(params.offset);
+        const hoverParams: HoverParams = {
+            textDocument: {
+                uri: params.textDocument.uri
+            },
+            position: {
+                character: position.character,
+                line: position.line
+            }
+        }
+        return this.sendRequest("textDocument/hover", hoverParams);
     }
 
     // async applyChange(params: ApplyEditParams): Promise<void> {

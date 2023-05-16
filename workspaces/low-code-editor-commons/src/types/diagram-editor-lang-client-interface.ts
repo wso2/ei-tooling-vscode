@@ -18,6 +18,7 @@
  */
 
 import { BaseLangClientInterface } from "./base-lang-client-interface";
+import {MarkedString, MarkupContent, MarkupKind, Range} from "vscode-languageserver-protocol";
 
 export interface GetSyntaxTreeParams {
     documentIdentifier: {
@@ -46,12 +47,29 @@ export interface GetCompletionParams {
     };
 }
 
+export interface GetSnippetCompletionParams {
+    logLevel: string;
+    logCategory: string;
+    logSeparator: string;
+    description: string;
+    properties: any;
+}
+
 export interface ApplyEditParams {
     textDocument: {
         fsPath: string;
         uri: string;
     };
     textEdit: TextEdit;
+    previousComponentStartPosition: number
+}
+
+export interface HoverParams {
+    textDocument: {
+        uri: string;
+        fsPath: string;
+    };
+    offset: number;
 }
 
 export interface GetCompletionResponse {
@@ -67,8 +85,20 @@ export interface GetCompletionResponse {
     textEdit?: TextEdit;
 }
 
+export interface SnippetCompletionResponse {
+    snippet: string
+}
+
 export interface CompletionResponse {
     items: GetCompletionResponse[]
+}
+
+export interface HoverResponse {
+    contents: {
+        kind: MarkupKind,
+        value: string
+    },
+    range: Range
 }
 
 export interface TextEdit {
@@ -97,7 +127,13 @@ export interface DiagramEditorLangClientInterface extends BaseLangClientInterfac
     getCompletion: (
         params: GetCompletionParams
     ) => Thenable<CompletionResponse>;
+    getSnippetCompletion: (
+        params: GetSnippetCompletionParams
+    ) => Thenable<SnippetCompletionResponse>;
     applyChange: (
         params: ApplyEditParams
     ) => Thenable<void>;
+    hover: (
+        params: HoverParams
+    ) => Thenable<HoverResponse>;
 }

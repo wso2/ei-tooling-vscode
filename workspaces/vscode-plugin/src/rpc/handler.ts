@@ -1,5 +1,23 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import {WebViewMethod, WebViewRPCMessage} from "./model";
-import {deflateSync} from "zlib";
 import {ExtendedLangClient} from "../extended-language.client";
 import {debug} from "../utils/logger";
 import {
@@ -14,19 +32,17 @@ import {
     WorkspaceEdit
 } from "vscode";
 import {ApplyEditParams} from "../ISynapseLanguageClient";
+import {callUpdateDiagramMethod} from "../diagram";
 
 const getLangClientMethods = (langClient: ExtendedLangClient): WebViewMethod[] => {
     return [{
         methodName: 'getSyntaxTree',
         handler: (args: any[]) => {
             const start = new Date().getTime();
-            // const res = "{\n    \"startTagOpenOffset\": 39,\n    \"startTagOffOffset\": 125,\n    \"endTagOpenOffset\": 394,\n    \"endTagOffOffset\": 399,\n    \"start\": 39,\n    \"end\": 400,\n    \"kind\": \"api\",\n    \"selfClosed\": false,\n    \"hasTextNode\": false,\n    \"children\": [\n      {\n        \"startTagOpenOffset\": 131,\n        \"startTagOffOffset\": 175,\n        \"endTagOpenOffset\": 382,\n        \"endTagOffOffset\": 392,\n        \"start\": 131,\n        \"end\": 393,\n        \"kind\": \"resource\",\n        \"selfClosed\": false,\n        \"hasTextNode\": false,\n        \"children\": [\n          {\n            \"startTagOpenOffset\": 185,\n            \"startTagOffOffset\": 196,\n            \"endTagOpenOffset\": 274,\n            \"endTagOffOffset\": 286,\n            \"start\": 185,\n            \"end\": 287,\n            \"kind\": \"inSequence\",\n            \"selfClosed\": false,\n            \"hasTextNode\": false,\n            \"children\": [\n              {\n                \"startTagOpenOffset\": 210,\n                \"startTagOffOffset\": -1,\n                \"endTagOpenOffset\": -1,\n                \"endTagOffOffset\": -1,\n                \"start\": 210,\n                \"end\": 216,\n                \"kind\": \"log\",\n                \"selfClosed\": true,\n                \"hasTextNode\": false,\n                \"children\": [],\n                \"attributes\": []\n              },\n              {\n                \"startTagOpenOffset\": 255,\n                \"startTagOffOffset\": -1,\n                \"endTagOpenOffset\": -1,\n                \"endTagOffOffset\": -1,\n                \"start\": 255,\n                \"end\": 265,\n                \"kind\": \"respond\",\n                \"selfClosed\": true,\n                \"hasTextNode\": false,\n                \"children\": [],\n                \"attributes\": []\n              }\n            ],\n            \"attributes\": []\n          },\n          {\n            \"startTagOpenOffset\": 296,\n            \"startTagOffOffset\": 308,\n            \"endTagOpenOffset\": 338,\n            \"endTagOffOffset\": 351,\n            \"start\": 296,\n            \"end\": 352,\n            \"kind\": \"outSequence\",\n            \"selfClosed\": false,\n            \"hasTextNode\": false,\n            \"children\": [\n              {\n                \"startTagOpenOffset\": 322,\n                \"startTagOffOffset\": -1,\n                \"endTagOpenOffset\": -1,\n                \"endTagOffOffset\": -1,\n                \"start\": 322,\n                \"end\": 329,\n                \"kind\": \"send\",\n                \"selfClosed\": true,\n                \"hasTextNode\": false,\n                \"children\": [],\n                \"attributes\": []\n              }\n            ],\n            \"attributes\": []\n          }\n        ]\n      }\n    ]\n  }";
-            // return Promise.resolve(res);
             return langClient.getSyntaxTree(args[0]).then((result) => {
                 consoleLog(start, 'getSyntaxTree');
                 // const zippedResult = deflateSync(Buffer.from(JSON.stringify(result)));
                 // return Promise.resolve(zippedResult);
-                // const res = "{\n    \"startTagOpenOffset\": 39,\n    \"startTagOffOffset\": 125,\n    \"endTagOpenOffset\": 394,\n    \"endTagOffOffset\": 399,\n    \"start\": 39,\n    \"end\": 400,\n    \"kind\": \"api\",\n    \"selfClosed\": false,\n    \"hasTextNode\": false,\n    \"children\": [\n      {\n        \"startTagOpenOffset\": 131,\n        \"startTagOffOffset\": 175,\n        \"endTagOpenOffset\": 382,\n        \"endTagOffOffset\": 392,\n        \"start\": 131,\n        \"end\": 393,\n        \"kind\": \"resource\",\n        \"selfClosed\": false,\n        \"hasTextNode\": false,\n        \"children\": [\n          {\n            \"startTagOpenOffset\": 185,\n            \"startTagOffOffset\": 196,\n            \"endTagOpenOffset\": 274,\n            \"endTagOffOffset\": 286,\n            \"start\": 185,\n            \"end\": 287,\n            \"kind\": \"inSequence\",\n            \"selfClosed\": false,\n            \"hasTextNode\": false,\n            \"children\": [\n              {\n                \"startTagOpenOffset\": 210,\n                \"startTagOffOffset\": -1,\n                \"endTagOpenOffset\": -1,\n                \"endTagOffOffset\": -1,\n                \"start\": 210,\n                \"end\": 216,\n                \"kind\": \"log\",\n                \"selfClosed\": true,\n                \"hasTextNode\": false,\n                \"children\": [],\n                \"attributes\": []\n              },\n              {\n                \"startTagOpenOffset\": 255,\n                \"startTagOffOffset\": -1,\n                \"endTagOpenOffset\": -1,\n                \"endTagOffOffset\": -1,\n                \"start\": 255,\n                \"end\": 265,\n                \"kind\": \"respond\",\n                \"selfClosed\": true,\n                \"hasTextNode\": false,\n                \"children\": [],\n                \"attributes\": []\n              }\n            ],\n            \"attributes\": []\n          },\n          {\n            \"startTagOpenOffset\": 296,\n            \"startTagOffOffset\": 308,\n            \"endTagOpenOffset\": 338,\n            \"endTagOffOffset\": 351,\n            \"start\": 296,\n            \"end\": 352,\n            \"kind\": \"outSequence\",\n            \"selfClosed\": false,\n            \"hasTextNode\": false,\n            \"children\": [\n              {\n                \"startTagOpenOffset\": 322,\n                \"startTagOffOffset\": -1,\n                \"endTagOpenOffset\": -1,\n                \"endTagOffOffset\": -1,\n                \"start\": 322,\n                \"end\": 329,\n                \"kind\": \"send\",\n                \"selfClosed\": true,\n                \"hasTextNode\": false,\n                \"children\": [],\n                \"attributes\": []\n              }\n            ],\n            \"attributes\": []\n          }\n        ]\n      }\n    ]\n  }";
                 return Promise.resolve(result);
 
             });
@@ -51,6 +67,26 @@ const getLangClientMethods = (langClient: ExtendedLangClient): WebViewMethod[] =
                 return result;
             });
         }
+    },
+    {
+        methodName: 'hover',
+        handler: (args: any[]) => {
+            const start = new Date().getTime();
+            return langClient.hover(args[0]).then(result => {
+                consoleLog(start, 'hover');
+                return result;
+            });
+        }
+    },
+    {
+        methodName: 'getSnippetCompletion',
+        handler: (args: any[]) => {
+            const start = new Date().getTime();
+            return langClient.getSnippetCompletion(args[0]).then(result => {
+                consoleLog(start, 'getSnippetCompletion');
+                return result;
+            });
+        }
     }];
 }
 
@@ -61,14 +97,31 @@ async function applyChange(params: ApplyEditParams): Promise<boolean> {
     if (document === null) {
         return false;
     }
-
+    const previousComponentStartPosition = params.previousComponentStartPosition;
+    const previousPosition = document.positionAt(previousComponentStartPosition);
+    const previousStartCharacter = previousPosition.character;
     const edit = new WorkspaceEdit();
     let startPosition = new Position(params.textEdit.range.start.line, params.textEdit.range.start.character);
     let endPosition = new Position(params.textEdit.range.end.line, params.textEdit.range.end.character);
     let replaceLocation: Position | Range = new Range(startPosition, endPosition);
-    edit.replace(Uri.file(params.textDocument.fsPath), replaceLocation, params.textEdit.newText);
+    let replaceText = params.textEdit.newText;
+    // if (!replaceText.startsWith("\n")) {
+    replaceText = formatReplaceText(replaceText, previousStartCharacter);
+    // }
+    // formatReplaceText(params.textEdit.newText, previousStartCharacter);
+    edit.replace(Uri.file(params.textDocument.fsPath), replaceLocation, replaceText);
     await workspace.applyEdit(edit);
+    callUpdateDiagramMethod();
     return true;
+}
+
+function formatReplaceText(targetText: string, indentation: number): string {
+    const lines: string[] = targetText.split(/\r?\n/);
+    let result: string = "";
+    lines.map((item, index) => {
+        result += " ".repeat(indentation) + item + "\n"
+    })
+    return result;
 }
 
 function consoleLog(start: number, fnName: string) {
