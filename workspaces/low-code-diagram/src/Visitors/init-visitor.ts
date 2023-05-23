@@ -17,7 +17,11 @@
  *
  */
 
-import {Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, STNode, Connector, Call, CallTemplate, Drop, LoopBack, Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, Validate, Bean, Class, Command, Ejb, Script, Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite, XQuery, XSLT, DataMapper, FastXSLT, JsonTransform, DataServiceCall, Cache, DBLookup, DBReport, Enqueue, Event, Throttle, Transaction, Aggregate, Callout, Clone, Iterate, ForEach, Entitlement, Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond } from "@wso2-ei/syntax-tree";
+import {Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, STNode, Connector, Call, 
+    CallTemplate, Drop, LoopBack, Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, 
+    Validate, Bean, Class, Command, Ejb, Script, Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite,
+     XQuery, XSLT, DataMapper, FastXSLT, JsonTransform, DataServiceCall, Cache, DBLookup, DBReport, Enqueue, Event, 
+     Throttle, Transaction, Aggregate, Callout, Clone, Iterate, ForEach, Entitlement, Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond } from "@wso2-ei/syntax-tree";
 import {MediatorViewState} from "../ViewState";
 import {ConnectorViewState} from "../ViewState";
 import {ViewState} from "../ViewState";
@@ -78,9 +82,6 @@ import { BuilderViewState } from "../ViewState/builder";
 import { RuleViewState } from "../ViewState/rule";
 import { BamViewState } from "../ViewState/bam";
 import { PublishViewState } from "../ViewState/publish";
-
-
-
 
 export class InitVisitor implements Visitor {
 
