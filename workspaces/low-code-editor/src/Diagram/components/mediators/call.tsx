@@ -7,7 +7,7 @@ interface SquareProps {
     model: Square;
 }
 
-export function SendComponent(props: SquareProps) {
+export function Call(props: SquareProps) {
     const { model } = props;
 
     const viewState = model.viewState;
