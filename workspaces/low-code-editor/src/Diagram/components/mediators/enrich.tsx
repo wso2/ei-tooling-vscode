@@ -7,7 +7,7 @@ interface SquareProps {
     model: Circle;
 }
 
-export function LogComponent(props: SquareProps) {
+export function Enrich(props: SquareProps) {
     const { model } = props;
 
     const viewState = model.viewState;
