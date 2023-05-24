@@ -40,7 +40,7 @@ export {Send as send} from "./mediators/send";
 //validate, filter, switch, conditionalRouter
 export {Validate as validate} from "./mediators/validate";
 export {Filter as filter} from "./mediators/filter";
-export {Switch as switchMediator} from "./mediators/switch";
+export {Switch as switch} from "./mediators/switch";
 export {ConditionalRouter as conditionalRouter} from "./mediators/conditionalRouter";
 
 //class, command, spring, ejb, script, bean

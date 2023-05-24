@@ -16,90 +16,19 @@
  * under the License.
  *
  */
-
-import {
-    Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, Call, CallTemplate, Drop, LoopBack,
-    Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, Validate, Bean, Class, Command, Ejb, Script,
-    Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite, XQuery, XSLT, DataMapper, FastXSLT, JsonTransform, DataServiceCall,
-    Cache, DBLookup, DBReport, Enqueue, Event, Throttle, Transaction, Aggregate, Callout, Clone, Iterate, ForEach, Entitlement,
-    Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond } from "@wso2-ei/syntax-tree";
-import { MediatorViewState } from "../ViewState";
-import { ApiViewState } from "../ViewState/api";
-import { ProxyViewState } from "../ViewState/proxy";
-import { SendViewState } from "../ViewState/send";
-import { LogViewState } from "../ViewState/log";
-import { ResourceViewState } from "../ViewState/resource";
-import { RespondViewState } from "../ViewState/respond";
-import { InSequenceViewState } from "../ViewState/in-sequence";
-import { OutSequenceViewState } from "../ViewState/out-sequence";
-import { CallViewState } from "../ViewState/call";
-import { CallTemplateViewState } from "../ViewState/callTemplate";
-import { DropViewState } from "../ViewState/drop";
-import { LoopBackViewState } from "../ViewState/loopback";
-import { PropertyViewState } from "../ViewState/property";
-import { PropertyGroupViewState } from "../ViewState/propertygroup";
-import { SequenceViewState } from "../ViewState/sequence";
-import { StoreViewState } from "../ViewState/store";
-import { ConditionalRouterViewState } from "../ViewState/conditionalrouter";
-import { FilterViewState } from "../ViewState/filter";
-import { SwitchViewState } from "../ViewState/switch";
-import { ValidateViewState } from "../ViewState/validate";
-import { BeanViewState } from "../ViewState/bean";
-import { ClassViewState } from "../ViewState/class";
-import { CommandViewState } from "../ViewState/command";
-import { EjbViewState } from "../ViewState/ejb";
-import { ScriptViewState } from "../ViewState/script";
-import { SpringViewState } from "../ViewState/spring";
-import { EnrichViewState } from "../ViewState/enrich";
-import { FaultViewState } from "../ViewState/fault";
-import { HeaderViewState } from "../ViewState/header";
-import { PayloadFactoryViewState } from "../ViewState/payloadfactory";
-import { SmooksViewState } from "../ViewState/smooks";
-import { URLrewriteViewState } from "../ViewState/urlrewrite";
-import { XQueryViewState } from "../ViewState/xquery";
-import { XSLTViewState } from "../ViewState/xslt";
-import { DataMapperViewState } from "../ViewState/datamapper";
-import { FastXSLTViewState } from "../ViewState/fastxslt";
-import { JsonTransformViewState } from "../ViewState/jsontransform";
-import { DataServiceCallViewState } from "../ViewState/dataservicecall";
-import { CacheViewState } from "../ViewState/cache";
-import { DBLookupViewState } from "../ViewState/dblookup";
-import { DBReportViewState } from "../ViewState/dbreport";
-import { EnqueueViewState } from "../ViewState/enqueue";
-import { EventViewState } from "../ViewState/event";
-import { ThrottleViewState } from "../ViewState/throttle";
-import { TransactionViewState } from "../ViewState/transaction";
-import { AggregateViewState } from "../ViewState/aggregate";
-import { CalloutViewState } from "../ViewState/callout";
-import { CloneViewState } from "../ViewState/clone";
-import { IterateViewState } from "../ViewState/iterate";
-import { ForEachViewState } from "../ViewState/foreach";
-import { EntitlementViewState } from "../ViewState/entitlement";
-import { OauthViewState } from "../ViewState/oauth";
-import { NtlmViewState } from "../ViewState/ntlm";
-import { BuilderViewState } from "../ViewState/builder";
-import { RuleViewState } from "../ViewState/rule";
-import { BamViewState } from "../ViewState/bam";
-import { PublishViewState } from "../ViewState/publish";
 import { COMPONENT_GAP } from "./sizing-visitor";
-
-export class PositioningVisitor implements Visitor {
-
-    beginVisitMediator(el: Mediator) {
+export class PositioningVisitor {
+    beginVisitMediator(el) {
         if (el.viewState) {
-            const viewState: MediatorViewState = el.viewState as MediatorViewState;
-
+            const viewState = el.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (el.children === undefined) {
                 return;
             }
-
             el.children.forEach((child, index) => {
-                const childVS: MediatorViewState = child.viewState as MediatorViewState;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -112,50 +41,37 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-    beginVisitApi?(node: Api) {
+    beginVisitApi(node) {
         if (node.viewState) {
-            const viewState: ApiViewState = node.viewState as ApiViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             let width = viewState.bBox.x;
-
             node.children.forEach((child) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = width + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 width += viewState.bBox.x + childVS.bBox.w + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-    beginVisitProxy?(node: Proxy) {
+    beginVisitProxy(node) {
         if (node.viewState) {
-            const viewState: ProxyViewState = node.viewState as ProxyViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -168,31 +84,23 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-    beginVisitInSequence?(node: InSequence) {
+    beginVisitInSequence(node) {
         if (node.viewState) {
-            const viewState: InSequenceViewState = node.viewState as InSequenceViewState;
-
+            const viewState = node.viewState;
             // let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
             let width = viewState.bBox.x;
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = width + COMPONENT_GAP;
                 childVS.bBox.y = viewState.bBox.y + viewState.bBox.h / 2 - childVS.bBox.h / 2;
-
                 width = childVS.bBox.x + childVS.bBox.w;
-
                 if (index == 0) {
                     viewState.workerLine.x1 = viewState.bBox.x;
                     viewState.workerLine.y1 = childVS.bBox.y + childVS.bBox.h / 2;
@@ -201,27 +109,21 @@ export class PositioningVisitor implements Visitor {
                     viewState.workerLine.x2 = childVS.bBox.x;
                     viewState.workerLine.y2 = childVS.bBox.y + childVS.bBox.h / 2;
                 }
-            })
+            });
         }
     }
-
-    beginVisitOutSequence?(node: OutSequence) {
+    beginVisitOutSequence(node) {
         if (node.viewState) {
-            const viewState: OutSequenceViewState = node.viewState as OutSequenceViewState;
-
+            const viewState = node.viewState;
             if (node.children === undefined) {
                 return;
             }
             let width = viewState.bBox.x;
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = width + COMPONENT_GAP;
                 childVS.bBox.y = viewState.bBox.y + viewState.bBox.h / 2 - childVS.bBox.h / 2;
-
                 width = childVS.bBox.x + childVS.bBox.w;
-
                 if (index == 0) {
                     viewState.workerLine.x1 = viewState.bBox.x;
                     viewState.workerLine.y1 = childVS.bBox.y + childVS.bBox.h / 2;
@@ -230,63 +132,50 @@ export class PositioningVisitor implements Visitor {
                     viewState.workerLine.x2 = childVS.bBox.x;
                     viewState.workerLine.y2 = childVS.bBox.y + childVS.bBox.h / 2;
                 }
-
-            })
+            });
         }
     }
-
-    beginVisitLog?(node: Log) {
+    beginVisitLog(node) {
         if (node.viewState) {
-            const viewState: LogViewState = node.viewState as LogViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitRespond?(node: Respond) {
+    beginVisitRespond(node) {
         if (node.viewState) {
-            const viewState: RespondViewState = node.viewState as RespondViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitResource?(node: Resource) {
+    beginVisitResource(node) {
         if (node.viewState) {
-            const viewState: ResourceViewState = node.viewState as ResourceViewState;
-
+            const viewState = node.viewState;
             if (node.children === undefined) {
                 return;
             }
             let height = viewState.bBox.y;
             let width = viewState.bBox.x;
-
             node.children.forEach((child) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = width + COMPONENT_GAP;
                 childVS.bBox.y = height + COMPONENT_GAP;
-
                 height = childVS.bBox.y + childVS.bBox.h;
-            })
+            });
         }
     }
-
-    beginVisitSend?(node: Send) {
+    beginVisitSend(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as SendViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -299,332 +188,280 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-    beginVisitProperty?(node: Property) {
+    beginVisitProperty(node) {
         if (node.viewState) {
-            const viewState: PropertyViewState = node.viewState as PropertyViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitPropertyGroup?(node: PropertyGroup) {
+    beginVisitPropertyGroup(node) {
         if (node.viewState) {
-            const viewState: PropertyGroupViewState = node.viewState as PropertyGroupViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitPublish?(node: Publish) {
+    beginVisitPublish(node) {
         if (node.viewState) {
-            const viewState: PublishViewState = node.viewState as PublishViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitScript?(node: Script) {
+    beginVisitScript(node) {
         if (node.viewState) {
-            const viewState: ScriptViewState = node.viewState as ScriptViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-
-    beginVisitSequence?(node: Sequence) {
+    beginVisitSequence(node) {
         if (node.viewState) {
-            const viewState: SequenceViewState = node.viewState as SequenceViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitSmooks?(node: Smooks) {
+    beginVisitSmooks(node) {
         if (node.viewState) {
-            const viewState: SmooksViewState = node.viewState as SmooksViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitSpring?(node: Spring) {
+    beginVisitSpring(node) {
         if (node.viewState) {
-            const viewState: SpringViewState = node.viewState as SpringViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitStore?(node: Store) {
+    beginVisitStore(node) {
         if (node.viewState) {
-            const viewState: StoreViewState = node.viewState as StoreViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-
-    beginVisitTransaction?(node: Transaction) {
+    beginVisitTransaction(node) {
         if (node.viewState) {
-            const viewState: TransactionViewState = node.viewState as TransactionViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitURLrewrite?(node: URLrewrite) {
+    beginVisitURLrewrite(node) {
         if (node.viewState) {
-            const viewState: URLrewriteViewState = node.viewState as URLrewriteViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitXQuery?(node: XQuery) {
+    beginVisitXQuery(node) {
         if (node.viewState) {
-            const viewState: XQueryViewState = node.viewState as XQueryViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitXSLT?(node: XSLT) {
+    beginVisitXSLT(node) {
         if (node.viewState) {
-            const viewState: XSLTViewState = node.viewState as XSLTViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitBam?(node: Bam) {
+    beginVisitBam(node) {
         if (node.viewState) {
-            const viewState: BamViewState = node.viewState as BamViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitBean?(node: Bean) {
+    beginVisitBean(node) {
         if (node.viewState) {
-            const viewState: BeanViewState = node.viewState as BeanViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitBuilder?(node: Builder) {
+    beginVisitBuilder(node) {
         if (node.viewState) {
-            const viewState: BuilderViewState = node.viewState as BuilderViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitCallout?(node: Callout) {
+    beginVisitCallout(node) {
         if (node.viewState) {
-            const viewState: CalloutViewState = node.viewState as CalloutViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-
-    beginVisitCallTemplate?(node: CallTemplate) {
+    beginVisitCallTemplate(node) {
         if (node.viewState) {
-            const viewState: CallTemplateViewState = node.viewState as CallTemplateViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitClass?(node: Class) {
+    beginVisitClass(node) {
         if (node.viewState) {
-            const viewState: ClassViewState = node.viewState as ClassViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitCommand?(node: Command) {
+    beginVisitCommand(node) {
         if (node.viewState) {
-            const viewState: CommandViewState = node.viewState as CommandViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitConditionalRouter?(node: ConditionalRouter) {
+    beginVisitConditionalRouter(node) {
         if (node.viewState) {
-            const viewState: ConditionalRouterViewState = node.viewState as ConditionalRouterViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitDataMapper?(node: DataMapper) {
+    beginVisitDataMapper(node) {
         if (node.viewState) {
-            const viewState: DataMapperViewState = node.viewState as DataMapperViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-
-    beginVisitDataServiceCall?(node: DataServiceCall) {
+    beginVisitDataServiceCall(node) {
         if (node.viewState) {
-            const viewState: DataServiceCallViewState = node.viewState as DataServiceCallViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitDBLookup?(node: DBLookup) {
+    beginVisitDBLookup(node) {
         if (node.viewState) {
-            const viewState: DBLookupViewState = node.viewState as DBLookupViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-
-    beginVisitDBReport?(node: DBReport) {
+    beginVisitDBReport(node) {
         if (node.viewState) {
-            const viewState: DBReportViewState = node.viewState as DBReportViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-
-    beginVisitDrop?(node: Drop) {
+    beginVisitDrop(node) {
         if (node.viewState) {
-            const viewState: DropViewState = node.viewState as DropViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitEjb?(node: Ejb) {
+    beginVisitEjb(node) {
         if (node.viewState) {
-            const viewState: EjbViewState = node.viewState as EjbViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitEnqueue?(node: Enqueue) {
+    beginVisitEnqueue(node) {
         if (node.viewState) {
-            const viewState: EnqueueViewState = node.viewState as EnqueueViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitEnrich?(node: Enrich) {
+    beginVisitEnrich(node) {
         if (node.viewState) {
-            const viewState: EnrichViewState = node.viewState as EnrichViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitEvent?(node: Event) {
+    beginVisitEvent(node) {
         if (node.viewState) {
-            const viewState: EventViewState = node.viewState as EventViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitFastXSLT?(node: FastXSLT) {
+    beginVisitFastXSLT(node) {
         if (node.viewState) {
-            const viewState: FastXSLTViewState = node.viewState as FastXSLTViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitFault?(node: Fault) {
+    beginVisitFault(node) {
         if (node.viewState) {
-            const viewState: FaultViewState = node.viewState as FaultViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitHeader?(node: Header) {
+    beginVisitHeader(node) {
         if (node.viewState) {
-            const viewState: HeaderViewState = node.viewState as HeaderViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitJsonTransform?(node: JsonTransform) {
+    beginVisitJsonTransform(node) {
         if (node.viewState) {
-            const viewState: JsonTransformViewState = node.viewState as JsonTransformViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-
-    beginVisitLoopBack?(node: LoopBack) {
+    beginVisitLoopBack(node) {
         if (node.viewState) {
-            const viewState: LoopBackViewState = node.viewState as LoopBackViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitNtlm?(node: Ntlm) {
+    beginVisitNtlm(node) {
         if (node.viewState) {
-            const viewState: NtlmViewState = node.viewState as NtlmViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitOauth?(node: Oauth) {
+    beginVisitOauth(node) {
         if (node.viewState) {
-            const viewState: OauthViewState = node.viewState as OauthViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-    beginVisitPayloadFactory?(node: PayloadFactory) {
+    beginVisitPayloadFactory(node) {
         if (node.viewState) {
-            const viewState: PayloadFactoryViewState = node.viewState as PayloadFactoryViewState;
+            const viewState = node.viewState;
             viewState.bBox.cx = viewState.bBox.x + viewState.bBox.r;
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-
-    beginVisitIterate?(node: Iterate) {
+    beginVisitIterate(node) {
         if (node.viewState) {
-            const viewState: IterateViewState = node.viewState as IterateViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -637,29 +474,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitRule?(node: Rule) {
+    beginVisitRule(node) {
         if (node.viewState) {
-            const viewState: RuleViewState = node.viewState as RuleViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -672,29 +501,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitSwitch?(node: Switch) {
+    beginVisitSwitch(node) {
         if (node.viewState) {
-            const viewState: SwitchViewState = node.viewState as SwitchViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -707,29 +528,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitThrottle?(node: Throttle) {
+    beginVisitThrottle(node) {
         if (node.viewState) {
-            const viewState: ThrottleViewState = node.viewState as ThrottleViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -742,29 +555,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitValidate?(node: Validate) {
+    beginVisitValidate(node) {
         if (node.viewState) {
-            const viewState: ValidateViewState = node.viewState as ValidateViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -777,29 +582,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitAggregate?(node: Aggregate) {
+    beginVisitAggregate(node) {
         if (node.viewState) {
-            const viewState: AggregateViewState = node.viewState as AggregateViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -812,29 +609,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitCache?(node: Cache) {
+    beginVisitCache(node) {
         if (node.viewState) {
-            const viewState: CacheViewState = node.viewState as CacheViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -847,29 +636,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitCall?(node: Call) {
+    beginVisitCall(node) {
         if (node.viewState) {
-            const viewState: CallViewState = node.viewState as CallViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -882,29 +663,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitClone?(node: Clone) {
+    beginVisitClone(node) {
         if (node.viewState) {
-            const viewState: CloneViewState = node.viewState as CloneViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -917,29 +690,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitEntitlement?(node: Entitlement) {
+    beginVisitEntitlement(node) {
         if (node.viewState) {
-            const viewState: EntitlementViewState = node.viewState as EntitlementViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -952,29 +717,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitFilter?(node: Filter) {
+    beginVisitFilter(node) {
         if (node.viewState) {
-            const viewState: FilterViewState = node.viewState as FilterViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -987,29 +744,21 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-    beginVisitForEach?(node: ForEach) {
+    beginVisitForEach(node) {
         if (node.viewState) {
-            const viewState: ForEachViewState = node.viewState as ForEachViewState;
-
+            const viewState = node.viewState;
             let height = viewState.bBox.y + COMPONENT_GAP;
             if (node.children === undefined) {
                 return;
             }
-
             node.children.forEach((child, index) => {
-                const childVS = child.viewState as any;
-
+                const childVS = child.viewState;
                 childVS.bBox.x = viewState.bBox.x + viewState.bBox.w / 2 - childVS.bBox.w / 2;
                 childVS.bBox.y = height;
-
                 // set worker line positions
                 switch (index) {
                     case 0:
@@ -1022,13 +771,9 @@ export class PositioningVisitor implements Visitor {
                         break;
                     default:
                 }
-
                 height += childVS.bBox.h + COMPONENT_GAP;
-            })
+            });
         }
     }
-
-
-
-
 }
+//# sourceMappingURL=positioning-visitor.js.map

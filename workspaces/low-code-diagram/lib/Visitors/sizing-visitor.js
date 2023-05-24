@@ -16,1664 +16,1318 @@
  * under the License.
  *
  */
-
-import {
-    Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, Call, CallTemplate, Drop, LoopBack,
-    Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, Validate, Bean, Class, Command, Ejb, Script,
-    Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite, XQuery, XSLT, DataMapper, FastXSLT, JsonTransform, DataServiceCall,
-    Cache, DBLookup, DBReport, Enqueue, Event, Throttle, Transaction, Aggregate, Callout, Clone, Iterate, ForEach, Entitlement,
-    Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond } from "@wso2-ei/syntax-tree";
-import { MediatorViewState } from "../ViewState";
-import { ApiViewState } from "../ViewState/api";
-import { ProxyViewState } from "../ViewState/proxy";
-import { SendViewState } from "../ViewState/send";
-import { LogViewState } from "../ViewState/log";
-import { ResourceViewState } from "../ViewState/resource";
-import { RespondViewState } from "../ViewState/respond";
-import { InSequenceViewState } from "../ViewState/in-sequence";
-import { OutSequenceViewState } from "../ViewState/out-sequence";
-import { CallViewState } from "../ViewState/call";
-import { CallTemplateViewState } from "../ViewState/callTemplate";
-import { DropViewState } from "../ViewState/drop";
-import { LoopBackViewState } from "../ViewState/loopback";
-import { PropertyViewState } from "../ViewState/property";
-import { PropertyGroupViewState } from "../ViewState/propertygroup";
-import { SequenceViewState } from "../ViewState/sequence";
-import { StoreViewState } from "../ViewState/store";
-import { ConditionalRouterViewState } from "../ViewState/conditionalrouter";
-import { FilterViewState } from "../ViewState/filter";
-import { SwitchViewState } from "../ViewState/switch";
-import { ValidateViewState } from "../ViewState/validate";
-import { BeanViewState } from "../ViewState/bean";
-import { ClassViewState } from "../ViewState/class";
-import { CommandViewState } from "../ViewState/command";
-import { EjbViewState } from "../ViewState/ejb";
-import { ScriptViewState } from "../ViewState/script";
-import { SpringViewState } from "../ViewState/spring";
-import { EnrichViewState } from "../ViewState/enrich";
-import { FaultViewState } from "../ViewState/fault";
-import { HeaderViewState } from "../ViewState/header";
-import { PayloadFactoryViewState } from "../ViewState/payloadfactory";
-import { SmooksViewState } from "../ViewState/smooks";
-import { URLrewriteViewState } from "../ViewState/urlrewrite";
-import { XQueryViewState } from "../ViewState/xquery";
-import { XSLTViewState } from "../ViewState/xslt";
-import { DataMapperViewState } from "../ViewState/datamapper";
-import { FastXSLTViewState } from "../ViewState/fastxslt";
-import { JsonTransformViewState } from "../ViewState/jsontransform";
-import { DataServiceCallViewState } from "../ViewState/dataservicecall";
-import { CacheViewState } from "../ViewState/cache";
-import { DBLookupViewState } from "../ViewState/dblookup";
-import { DBReportViewState } from "../ViewState/dbreport";
-import { EnqueueViewState } from "../ViewState/enqueue";
-import { EventViewState } from "../ViewState/event";
-import { ThrottleViewState } from "../ViewState/throttle";
-import { TransactionViewState } from "../ViewState/transaction";
-import { AggregateViewState } from "../ViewState/aggregate";
-import { CalloutViewState } from "../ViewState/callout";
-import { CloneViewState } from "../ViewState/clone";
-import { IterateViewState } from "../ViewState/iterate";
-import { ForEachViewState } from "../ViewState/foreach";
-import { EntitlementViewState } from "../ViewState/entitlement";
-import { OauthViewState } from "../ViewState/oauth";
-import { NtlmViewState } from "../ViewState/ntlm";
-import { BuilderViewState } from "../ViewState/builder";
-import { RuleViewState } from "../ViewState/rule";
-import { BamViewState } from "../ViewState/bam";
-import { PublishViewState } from "../ViewState/publish";
-
 export const DEFAULT_SHAPE_DIMENSION = 70;
 export const COMPONENT_GAP = 20;
-
-export class SizingVisitor implements Visitor {
-
-    endVisitMediator?(node: Mediator) {
+export class SizingVisitor {
+    endVisitMediator(node) {
         if (node.viewState) {
-            const viewState: MediatorViewState = node.viewState as MediatorViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS: MediatorViewState = child.viewState as MediatorViewState;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-    endVisitApi?(node: Api) {
+    endVisitApi(node) {
         if (node.viewState) {
-            const viewState: ApiViewState = node.viewState as ApiViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                         if (width < childVS.bBox.w) {
                             width += childVS.bBox.w;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.h = height;
                 viewState.bBox.w = width + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-    endVisitProxy?(node: Proxy) {
+    endVisitProxy(node) {
         if (node.viewState) {
-            const viewState: ProxyViewState = node.viewState as ProxyViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                         if (width < childVS.bBox.w) {
                             width += childVS.bBox.w;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.h = height;
                 viewState.bBox.w = width + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-    endVisitInSequence?(node: InSequence) {
+    endVisitInSequence(node) {
         if (node.viewState) {
-            const viewState: InSequenceViewState = node.viewState as InSequenceViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h + COMPONENT_GAP;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-    endVisitOutSequence?(node: OutSequence) {
+    endVisitOutSequence(node) {
         if (node.viewState) {
-            const viewState: OutSequenceViewState = node.viewState as OutSequenceViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-    endVisitResource?(node: Resource) {
+    endVisitResource(node) {
         if (node.viewState) {
-            const viewState: ResourceViewState = node.viewState as ResourceViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                         if (width < childVS.bBox.w) {
                             width += childVS.bBox.w;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.h = height;
                 viewState.bBox.w = width + COMPONENT_GAP * 2;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-    endVisitLog?(node: Log) {
+    endVisitLog(node) {
         if (node.viewState) {
-            const viewState: LogViewState = node.viewState as LogViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-    endVisitRespond?(node: Respond) {
+    endVisitRespond(node) {
         if (node.viewState) {
-            const viewState: RespondViewState = node.viewState as RespondViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-    endVisitSend?(node: Send) {
+    endVisitSend(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as SendViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitPublish?(node: Publish) {
+    endVisitPublish(node) {
         if (node.viewState) {
-            const viewState: PublishViewState = node.viewState as PublishViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitScript?(node: Script) {
+    endVisitScript(node) {
         if (node.viewState) {
-            const viewState: ScriptViewState = node.viewState as ScriptViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-    endVisitSequence?(node: Sequence) {
+    endVisitSequence(node) {
         if (node.viewState) {
-            const viewState: SequenceViewState = node.viewState as SequenceViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitSmooks?(node: Smooks) {
+    endVisitSmooks(node) {
         if (node.viewState) {
-            const viewState: SmooksViewState = node.viewState as SmooksViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-
-    endVisitSpring?(node: Spring) {
+    endVisitSpring(node) {
         if (node.viewState) {
-            const viewState: SpringViewState = node.viewState as SpringViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-
-    endVisitStore?(node: Store) {
+    endVisitStore(node) {
         if (node.viewState) {
-            const viewState: StoreViewState = node.viewState as StoreViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitTransaction?(node: Transaction) {
+    endVisitTransaction(node) {
         if (node.viewState) {
-            const viewState: TransactionViewState = node.viewState as TransactionViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitURLrewrite?(node: URLrewrite) {
+    endVisitURLrewrite(node) {
         if (node.viewState) {
-            const viewState: URLrewriteViewState = node.viewState as URLrewriteViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitXQuery?(node: XQuery) {
+    endVisitXQuery(node) {
         if (node.viewState) {
-            const viewState: XQueryViewState = node.viewState as XQueryViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitXSLT?(node: XSLT) {
+    endVisitXSLT(node) {
         if (node.viewState) {
-            const viewState: XSLTViewState = node.viewState as XSLTViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitBam?(node: Bam) {
+    endVisitBam(node) {
         if (node.viewState) {
-            const viewState: BamViewState = node.viewState as BamViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitBean?(node: Bean) {
+    endVisitBean(node) {
         if (node.viewState) {
-            const viewState: BeanViewState = node.viewState as BeanViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitBuilder?(node: Builder) {
+    endVisitBuilder(node) {
         if (node.viewState) {
-            const viewState: BuilderViewState = node.viewState as BuilderViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitCallout?(node: Callout) {
+    endVisitCallout(node) {
         if (node.viewState) {
-            const viewState: CalloutViewState = node.viewState as CalloutViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitCallTemplate?(node: CallTemplate) {
+    endVisitCallTemplate(node) {
         if (node.viewState) {
-            const viewState: CallTemplateViewState = node.viewState as CallTemplateViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitClass?(node: Class) {
+    endVisitClass(node) {
         if (node.viewState) {
-            const viewState: ClassViewState = node.viewState as ClassViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitCommand?(node: Command) {
+    endVisitCommand(node) {
         if (node.viewState) {
-            const viewState: CommandViewState = node.viewState as CommandViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitConditionalRouter?(node: ConditionalRouter) {
+    endVisitConditionalRouter(node) {
         if (node.viewState) {
-            const viewState: ConditionalRouterViewState = node.viewState as ConditionalRouterViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitDataMapper?(node: DataMapper) {
+    endVisitDataMapper(node) {
         if (node.viewState) {
-            const viewState: DataMapperViewState = node.viewState as DataMapperViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitDataServiceCall?(node: DataServiceCall) {
+    endVisitDataServiceCall(node) {
         if (node.viewState) {
-            const viewState: DataServiceCallViewState = node.viewState as DataServiceCallViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitDBLookup?(node: DBLookup) {
+    endVisitDBLookup(node) {
         if (node.viewState) {
-            const viewState: DBLookupViewState = node.viewState as DBLookupViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitDBReport?(node: DBReport) {
+    endVisitDBReport(node) {
         if (node.viewState) {
-            const viewState: DBReportViewState = node.viewState as DBReportViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitDrop?(node: Drop) {
+    endVisitDrop(node) {
         if (node.viewState) {
-            const viewState: DropViewState = node.viewState as DropViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitEjb?(node: Ejb) {
+    endVisitEjb(node) {
         if (node.viewState) {
-            const viewState: EjbViewState = node.viewState as EjbViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitEnqueue?(node: Enqueue) {
+    endVisitEnqueue(node) {
         if (node.viewState) {
-            const viewState: EnqueueViewState = node.viewState as EnqueueViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitEnrich?(node: Enrich) {
+    endVisitEnrich(node) {
         if (node.viewState) {
-            const viewState: EnrichViewState = node.viewState as EnrichViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitEvent?(node: Event) {
+    endVisitEvent(node) {
         if (node.viewState) {
-            const viewState: EventViewState = node.viewState as EventViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitFastXSLT?(node: FastXSLT) {
+    endVisitFastXSLT(node) {
         if (node.viewState) {
-            const viewState: FastXSLTViewState = node.viewState as FastXSLTViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitFault?(node: Fault) {
+    endVisitFault(node) {
         if (node.viewState) {
-            const viewState: FaultViewState = node.viewState as FaultViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitHeader?(node: Header) {
+    endVisitHeader(node) {
         if (node.viewState) {
-            const viewState: HeaderViewState = node.viewState as HeaderViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitJsonTransform?(node: JsonTransform) {
+    endVisitJsonTransform(node) {
         if (node.viewState) {
-            const viewState: JsonTransformViewState = node.viewState as JsonTransformViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitLoopBack?(node: LoopBack) {
+    endVisitLoopBack(node) {
         if (node.viewState) {
-            const viewState: LoopBackViewState = node.viewState as LoopBackViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitNtlm?(node: Ntlm) {
+    endVisitNtlm(node) {
         if (node.viewState) {
-            const viewState: NtlmViewState = node.viewState as NtlmViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitOauth?(node: Oauth) {
+    endVisitOauth(node) {
         if (node.viewState) {
-            const viewState: OauthViewState = node.viewState as OauthViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitPayloadFactory?(node: PayloadFactory) {
+    endVisitPayloadFactory(node) {
         if (node.viewState) {
-            const viewState: PayloadFactoryViewState = node.viewState as PayloadFactoryViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitProperty?(node: Property) {
+    endVisitProperty(node) {
         if (node.viewState) {
-            const viewState: PropertyViewState = node.viewState as PropertyViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitPropertyGroup?(node: PropertyGroup) {
+    endVisitPropertyGroup(node) {
         if (node.viewState) {
-            const viewState: PropertyGroupViewState = node.viewState as PropertyGroupViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         height += childVS.bBox.h + COMPONENT_GAP;
                     }
-                })
-
+                });
                 viewState.bBox.r = height / 2;
                 viewState.bBox.h = height;
                 viewState.bBox.w = height;
-            } else {
+            }
+            else {
                 viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitForEach?(node: ForEach) {
+    endVisitForEach(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as ForEachViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitIterate?(node: Iterate) {
+    endVisitIterate(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as IterateViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitRule?(node: Rule) {
+    endVisitRule(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as RuleViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-
-    endVisitSwitch?(node: Switch) {
+    endVisitSwitch(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as SwitchViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitThrottle?(node: Throttle) {
+    endVisitThrottle(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as ThrottleViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitValidate?(node: Validate) {
+    endVisitValidate(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as ValidateViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitAggregate?(node: Aggregate) {
+    endVisitAggregate(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as AggregateViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitCache?(node: Cache) {
+    endVisitCache(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as CacheViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitCall?(node: Call) {
+    endVisitCall(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as CallViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitClone?(node: Clone) {
+    endVisitClone(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as CloneViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitEntitlement?(node: Entitlement) {
+    endVisitEntitlement(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as EntitlementViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-    endVisitFilter?(node: Filter) {
+    endVisitFilter(node) {
         if (node.viewState) {
-            const viewState: SendViewState = node.viewState as FilterViewState;
-
+            const viewState = node.viewState;
             if (node.children !== undefined && node.children.length > 0) {
                 let height = COMPONENT_GAP;
                 let width = 0;
-
                 node.children.forEach(child => {
-                    const childVS = child.viewState as any;
+                    const childVS = child.viewState;
                     if (childVS !== undefined) {
                         width += childVS.bBox.w + COMPONENT_GAP;
                         if (height < childVS.bBox.h) {
                             height = childVS.bBox.h;
                         }
                     }
-                })
-
+                });
                 viewState.bBox.w = width;
                 viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
+            }
+            else {
                 viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
                 viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
             }
         }
     }
-
-
-
-
-
-
 }
+//# sourceMappingURL=sizing-visitor.js.map
