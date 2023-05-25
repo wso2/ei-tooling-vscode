@@ -1,3 +1,22 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import {ExtendedLangClient} from "../extended-language.client";
 import {
     commands,
@@ -17,6 +36,7 @@ import {existsSync, readFileSync} from "fs";
 import {render} from "./renderer";
 import {getCommonWebViewOptions} from "../utils/webview-utils";
 import {WebViewMethod} from "../rpc/model";
+import {SYNAPSE_LANGUAGE_ID} from "../language/languageUtils";
 
 let diagramElement: DiagramOptions | undefined = undefined;
 let langClient: ExtendedLangClient;
@@ -53,7 +73,6 @@ export function activate(extendedLangClient: ExtendedLangClient, context: Extens
         }
 
         //editor-lowcode-editor
-        // sendTelemetryEvent(ballerinaExtInstance, TM_EVENT_OPEN_LOW_CODE, CMP_DIAGRAM_VIEW);
         showDiagramEditor(0, 0, path, !ignoreFileCheck);
     });
 
@@ -64,13 +83,9 @@ export function activate(extendedLangClient: ExtendedLangClient, context: Extens
 export async function showDiagramEditor(startLine: number, startColumn: number, filePath: string,
                                         isCommand: boolean = false): Promise<void> {
 
-    // if (openInDiagram) {
-    //     openNodeInDiagram = openInDiagram;
-    // }
-
     const editor = window.activeTextEditor;
     if (isCommand) {
-        if (!editor || !editor.document.fileName.endsWith('.xml')) {
+        if (!editor || editor.document.languageId !== SYNAPSE_LANGUAGE_ID) {
             const message = 'Current file is not a Synapse XML file.';
             // sendTelemetryEvent(ballerinaExtension, TM_EVENT_ERROR_EXECUTE_DIAGRAM_OPEN, CMP_DIAGRAM_VIEW, getMessageObject(message));
             window.showErrorMessage(message);
@@ -133,7 +148,6 @@ class DiagramPanel {
             && DiagramPanel.currentPanel.webviewPanel.viewColumn == viewColumn) {
             DiagramPanel.currentPanel.webviewPanel.reveal();
             DiagramPanel.currentPanel.update();
-            // ballerinaExtension.setDiagramActiveContext(true);
             return;
         } else if (DiagramPanel.currentPanel) {
             DiagramPanel.currentPanel.dispose();
@@ -141,23 +155,12 @@ class DiagramPanel {
 
         const fileName: string | undefined = getCurrentFileName();
         const panel = window.createWebviewPanel(
-            'ballerinaDiagram',
+            'SynapseDiagram',
             `Overview Diagram`,
             { viewColumn, preserveFocus: false },
             getCommonWebViewOptions(diagramContext)
         );
         hasDiagram = true;
-        // ballerinaExtension.setDiagramActiveContext(true);
-        // panel.iconPath = {
-        //     light: Uri.file(join(ballerinaExtension.context!.extensionPath, 'resources/images/icons/design-view.svg')),
-        //     dark: Uri.file(join(ballerinaExtension.context!.extensionPath,
-        //         'resources/images/icons/design-view-inverse.svg'))
-        // };
-
-        // panel.onDidChangeViewState(event => {
-        //     event.webviewPanel.active ? ballerinaExtension.setDiagramActiveContext(true) :
-        //         ballerinaExtension.setDiagramActiveContext(false);
-        // });
 
         const remoteMethods: WebViewMethod[] = [
             {
@@ -197,7 +200,6 @@ class DiagramPanel {
     }
 
     public dispose() {
-        // ballerinaExtension.setDiagramActiveContext(false);
         DiagramPanel.currentPanel = undefined;
         this.webviewPanel.dispose();
         this.disposables.forEach(disposable => {
@@ -212,6 +214,7 @@ class DiagramPanel {
                 performDidOpen();
                 this.webviewPanel.webview.html = render(
                     diagramContext,
+                    diagramElement!.fileUri!,
                     diagramElement!.fileUri!,
                     diagramElement!.startLine!,
                     diagramElement!.startColumn!,
@@ -237,6 +240,13 @@ function getCurrentFileName(): string | undefined {
         return undefined;
     }
     return diagramElement!.fileUri!.fsPath.split(sep).pop();
+}
+
+function getCurrentFileUri(): Uri | undefined {
+    if (!diagramElement || !diagramElement!.fileUri) {
+        return undefined;
+    }
+    return diagramElement!.fileUri!;
 }
 
 export function updateDiagramElement(element: DiagramOptions | undefined) {
@@ -272,11 +282,13 @@ function performDidOpen() {
 
 export function callUpdateDiagramMethod() {
     performDidOpen();
-    let ballerinaFilePath = diagramElement!.fileUri!.fsPath;
+    let synapseFilePath = diagramElement!.fileUri!.fsPath;
     const fileName: string | undefined = getCurrentFileName();
+    const fileUri: Uri | undefined = getCurrentFileUri();
     DiagramPanel.currentPanel?.updateTitle(fileName ? `${fileName} Diagram` : `Synapse Diagram`);
     const args = [{
-        filePath: ballerinaFilePath,
+        filePath: synapseFilePath,
+        fileUri: fileUri,
         startLine: diagramElement!.startLine,
         startColumn: diagramElement!.startColumn
     }];

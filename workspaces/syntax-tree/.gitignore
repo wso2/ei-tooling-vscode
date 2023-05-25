@@ -2,3 +2,5 @@
 .DS_Store
 node_modules
 dist
+syntax-tree.build.error.log
+syntax-tree.build.log

@@ -51,7 +51,6 @@
     <module>language-server</module>
     <module>language-server-extensions</module>
     <module>workspaces</module>
-<!--    <module>diagrams</module>-->
   </modules>
 
   <properties>
