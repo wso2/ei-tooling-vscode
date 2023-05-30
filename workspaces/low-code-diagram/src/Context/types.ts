@@ -16,8 +16,9 @@
  * under the License.
  *
  */
+import {NodePosition, STNode} from "@wso2-ei/syntax-tree/lib";
 
-import {NodePosition, STNode} from "@wso2-ei/syntax-tree";
+// import {NodePosition, STNode} from "@wso2-ei/syntax-tree/lib";
 
 export interface LowCodeDiagramProps extends LowCodeDiagramProperties {
     api?: LowCodeDiagramAPI;

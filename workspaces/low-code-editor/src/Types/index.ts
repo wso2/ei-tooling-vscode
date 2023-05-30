@@ -17,7 +17,7 @@
  *
  */
 
-import { NodePosition, STNode } from "@wso2-ei/syntax-tree";
+import { NodePosition, STNode } from "@wso2-ei/syntax-tree/lib";
 import { DiagramEditorLangClientInterface } from "@wso2-ei/low-code-editor-commons/lib";
 
 export interface LowCodeEditorState {

@@ -20,7 +20,7 @@
 import React from "react";
 import {LowCodeDiagramGenerator} from "..";
 import { DiagramGenErrorBoundary } from "../ErrorBoundary";
-import {NodePosition} from "@wso2-ei/syntax-tree";
+import {NodePosition} from "@wso2-ei/syntax-tree/lib";
 import {DiagramEditorLangClientInterface} from "@wso2-ei/low-code-editor-commons/lib";
 
 export interface DiagramFocus {

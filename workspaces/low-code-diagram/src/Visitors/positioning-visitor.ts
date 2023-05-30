@@ -28,7 +28,7 @@ import {
     Respond,
     Send,
     Visitor
-} from "@wso2-ei/syntax-tree";
+} from "@wso2-ei/syntax-tree/lib";
 import { MediatorViewState } from "../ViewState";
 import {COMPONENT_GAP} from "./sizing-visitor";
 import {ApiViewState} from "../ViewState/api";

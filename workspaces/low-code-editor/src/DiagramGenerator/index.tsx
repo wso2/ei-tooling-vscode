@@ -21,7 +21,7 @@ import { useGeneratorStyles } from "./styles";
 import { EditorProps } from "./vscode";
 import React from "react";
 import { getLowCodeST, getSyntaxTree } from "./generatorUtil";
-import { STNode } from "@wso2-ei/syntax-tree";
+import { STNode } from "@wso2-ei/syntax-tree/lib";
 import { MuiThemeProvider } from "@material-ui/core";
 import { DiagramGenErrorBoundary } from "./ErrorBoundary";
 import { CirclePreloader } from "../PreLoader/CirclePreLoader";

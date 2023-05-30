@@ -20,7 +20,7 @@
 import React from "react";
 import { getComponent } from "../../util";
 import { WorkerLine } from "../worker-line";
-import { Square } from "@wso2-ei/low-code-diagram";
+import { Square } from "@wso2-ei/low-code-diagram/lib";
 
 interface SquareProps {
     model: Square;

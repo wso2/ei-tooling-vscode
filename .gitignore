@@ -219,9 +219,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-### VisualStudioCode ###
-.vscode
-
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history

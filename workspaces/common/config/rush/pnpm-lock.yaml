@@ -239,7 +239,6 @@ importers:
       archiver: 3.1.1
       axios: 0.26.1
       chokidar: 2.1.8
-      copyfiles: 2.4.1
       dom-parser: 0.1.6
       extract-zip: 2.0.1
       fernflower: 1.1.0
@@ -265,6 +264,7 @@ importers:
       '@types/xml2js': 0.4.11
       '@types/xmldom': 0.1.31
       '@vscode/vsce': 2.19.0
+      copyfiles: 2.4.1
       husky: 7.0.4
       lint-staged: 11.2.6
       pako: 2.1.0
@@ -6696,8 +6696,8 @@ packages:
   /csstype/3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
 
-  /current-module-paths/1.1.0:
-    resolution: {integrity: sha512-HGhLUszcgprjKmzvQoCQda8iEWsQn3sWVzPdttyJVR5cjfVDYcoyozQA5D1YXgab9v84SPMpSuD+YrPX6i1IMQ==}
+  /current-module-paths/1.1.1:
+    resolution: {integrity: sha512-8Ga5T8oMXBaSsHq9Gj+bddX7kHSaJKsl2vaAd3ep51eQLkr4W18eFEmEZM5bLo1zrz8tt3jE1U8QK9QGhaLR4g==}
     engines: {node: '>=12.17'}
     dev: false
 
@@ -14101,7 +14101,7 @@ packages:
       chalk: 4.1.2
       command-line-args: 5.2.1
       command-line-usage: 6.1.3
-      current-module-paths: 1.1.0
+      current-module-paths: 1.1.1
       fast-diff: 1.2.0
       file-set: 5.1.3
       global-dirs: 3.0.1

@@ -18,10 +18,8 @@
  */
 
 import * as ShapeComponents from '../components/index';
-import {STNode, Visitor} from "@wso2-ei/syntax-tree";
-import {InitVisitor} from "@wso2-ei/low-code-diagram";
-import {SizingVisitor} from "@wso2-ei/low-code-diagram";
-import {PositioningVisitor} from "@wso2-ei/low-code-diagram";
+import {STNode, Visitor} from "@wso2-ei/syntax-tree/lib";
+import {InitVisitor, PositioningVisitor, SizingVisitor} from "@wso2-ei/low-code-diagram";
 
 export function getComponent(type: string, args: any) {
     console.log(ShapeComponents);

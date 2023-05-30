@@ -18,7 +18,7 @@
  */
 
 import React, {useContext, useState} from "react";
-import {Circle} from "@wso2-ei/low-code-diagram";
+import {Circle} from "@wso2-ei/low-code-diagram/lib";
 import {getComponent} from "../../util";
 import {WorkerLine} from "../worker-line";
 import {Panel} from "../Panel";

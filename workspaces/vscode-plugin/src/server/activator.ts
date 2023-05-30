@@ -50,7 +50,7 @@ export interface ScopeInfo {
 }
 
 namespace TagCloseRequest {
-    export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any, any> =
+    export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any> =
         new RequestType('xml/closeTag');
 }
 
@@ -118,7 +118,7 @@ export function launch(context: ExtensionContext, directoryName: string) {
 
         languageClient.onReady().then(() => {
             //Setup autoCloseTags
-            let tagProvider = (document: TextDocument, position: Position) => {
+            let tagProvider: (document: TextDocument, position: Position) => Thenable<AutoCloseResult> = (document: TextDocument, position: Position) => {
                 let param = languageClient.code2ProtocolConverter.asTextDocumentPositionParams(document, position);
                 return languageClient.sendRequest(TagCloseRequest.type, param);
             };

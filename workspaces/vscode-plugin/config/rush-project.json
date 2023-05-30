@@ -1,0 +1,14 @@
+{
+  "operationSettings": [
+    {
+      "operationName": "build",
+      "outputFolderNames": [
+        "dist",
+        "build",
+        "build-app",
+        "lib",
+        "out"
+      ]
+    }
+  ]
+}

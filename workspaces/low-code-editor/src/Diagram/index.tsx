@@ -17,8 +17,8 @@
  *
  */
 
-import {ShapeKindChecker} from "@wso2-ei/low-code-diagram";
-import { Shape } from "@wso2-ei/low-code-diagram";
+import {ShapeKindChecker} from "@wso2-ei/low-code-diagram/lib";
+import { Shape } from "@wso2-ei/low-code-diagram/lib";
 import { getComponent } from "./util";
 import React, {useContext} from "react";
 import { Context as DiagramContext } from "../Contexts/diagram";

@@ -17,7 +17,7 @@
  *
  */
 
-import {Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, STNode, Connector} from "@wso2-ei/syntax-tree";
+import {Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, STNode, Connector} from "@wso2-ei/syntax-tree/lib";
 import {MediatorViewState} from "../ViewState";
 import {ConnectorViewState} from "../ViewState";
 import {ViewState} from "../ViewState";

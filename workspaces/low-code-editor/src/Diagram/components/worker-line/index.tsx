@@ -17,7 +17,7 @@
  *
  */
 
-import { Shape } from "@wso2-ei/low-code-diagram";
+import { Shape } from "@wso2-ei/low-code-diagram/lib";
 
 interface WorkerLineProps {
     model: Shape;

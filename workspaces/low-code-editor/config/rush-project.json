@@ -1,0 +1,3 @@
+{
+    "extends": "../../syntax-tree/config/rush-project.json"
+}
