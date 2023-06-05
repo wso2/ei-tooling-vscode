@@ -18,44 +18,35 @@
  */
 
 import React from "react";
+import { Circle } from "@wso2-ei/low-code-diagram";
 import { getComponent } from "../../util";
 import { WorkerLine } from "../worker-line";
-import { Circle, Square } from "@wso2-ei/low-code-diagram";
 
 interface SquareProps {
-    model: Square;
+    model: Circle;
 }
 
-export function OutSequence(props: SquareProps) {
+export function rightArrow(props: SquareProps) {
     const { model } = props;
 
     const viewState = model.viewState;
-
     const components: JSX.Element[] = [];
 
     model.children.forEach(child => {
-        components.push(getComponent(child.tag, { model: child }));
+        components.push(getComponent(child.type, { model: child }));
     })
 
     return (
         <>
-            <svg>
-                <rect
-                    x={viewState.bBox.x}
-                    y={viewState.bBox.y}
-                    width={viewState.bBox.w}
-                    height={viewState.bBox.h}
-                    fill='#fff'
-                    stroke="#fff"
-                    stroke-width="4"
-                />
+
+            <svg width="151" height="175" viewBox="0 0 151 175" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M150.421 87.4214L0.421358 174.024V0.818816L150.421 87.4214Z" fill="black" />
             </svg>
 
             <WorkerLine
                 model={model}
             />
             {components}
-
         </>
     )
 }

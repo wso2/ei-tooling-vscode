@@ -1671,9 +1671,4 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
-
-
-
 }
