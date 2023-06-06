@@ -28,6 +28,12 @@ export const portStyles = makeStyles(() => createStyles({
         display: "flex",
         justifyContent: "stretch",
         alignItems: "center",
+    },
+    LabelRight: {
+        paddingRight:'2px'
+    },
+    LabelLeft :{
+        paddingLeft:'2px'
     }
 })
 );
