@@ -145,7 +145,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -172,7 +172,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -199,7 +199,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -226,7 +226,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -253,7 +253,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -280,7 +280,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -307,7 +307,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -334,7 +334,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -361,7 +361,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -388,7 +388,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>
@@ -415,7 +415,7 @@
               <goal>pom-gen</goal>
             </goals>
             <configuration>
-              <artifactLocation></artifactLocation>
+              <artifactLocation>.</artifactLocation>
               <typeList>${artifact.types}</typeList>
             </configuration>
           </execution>

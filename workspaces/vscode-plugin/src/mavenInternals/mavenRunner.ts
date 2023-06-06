@@ -34,14 +34,14 @@ export class Runner {
 
         this._process = spawn(command, args, { cwd: cwd, shell: true });
 
-        // this._process.stdout.on('data', (data) => {
-        //     mavenOutputChannel.append(data.toString());
-        // });
+        this._process.stdout.on('data', (data) => {
+            mavenOutputChannel.append(data.toString());
+        });
 
-        // this._process.stderr.on('data', (data) => {
-        //     mavenOutputChannel.append(data.toString());
-        //     TerminalModule.printLogMessage(data.toString());
-        // });
+        this._process.stderr.on('data', (data) => {
+            mavenOutputChannel.append(data.toString());
+            TerminalModule.printLogMessage(data.toString());
+        });
 
         this._process.on("exit", (code) => {
             if (code === 0) {

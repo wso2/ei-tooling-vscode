@@ -47,6 +47,7 @@ import { SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
 import { Utils } from './utils/Utils';
 import { TerminalModule } from './logging/TerminalModule';
+import dataMapper from './datamapper/datamapper';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
@@ -240,14 +241,20 @@ function registerSynapseCommands(context: ExtensionContext) {
         await addNewConnectorFromStore();
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.connector.import", async () => {
-        await addNewConnectorFromFileSystem()
+        await addNewConnectorFromFileSystem();
     }));
+    
     context.subscriptions.push(commands.registerCommand("wso2ei.connector.create.project", async () => {
         await addNewConnectorExporter();
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.car.create.zip", async () => {
         await createProjectFromCar();
     }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.datamapper.view", async () => {
+        window.showInformationMessage("DataMapper Graphical View");
+        await dataMapper.render(context.extensionPath);
+    }));
+    
 }
 
 function checkUriExistence(uri: Uri | undefined) {
@@ -258,3 +265,4 @@ function checkUriExistence(uri: Uri | undefined) {
 // this method is called when your extension is deactivated
 export function deactivate() {
 }
+

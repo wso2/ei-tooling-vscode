@@ -60,16 +60,9 @@
                         <phase>initialize</phase>
                         <configuration>
                             <target>
-<!--                                <mkdir dir="${basedir}/lib" />-->
-                                <copy file="../../language-server/org.eclipse.lemminx/target/org.eclipse.lemminx-uber.jar" todir="${project.basedir}/lib" />
-                                <copy file="../../language-server-extensions/target/org.eclipse.lsp4xml.extensions.synapse-${project.version}.jar" todir="${project.basedir}/lib" />
+                                <copy file="../language-server/org.eclipse.lsp4xml/target/org.eclipse.lsp4xml-uber.jar" todir="${project.basedir}/lib" />
+                                <copy file="../language-server-extensions/target/org.eclipse.lsp4xml.extensions.synapse-${project.version}.jar" todir="${project.basedir}/lib" />
                             </target>
-<!--                            <target>-->
-<!--                                <mkdir dir="${basedir}/lib" />-->
-<!--                                <copy todir="${basedir}/lib">-->
-<!--                                    <fileset dir="${basedir}/source-files" includes="foo.txt" />-->
-<!--                                </copy>-->
-<!--                            </target>-->
                         </configuration>
                         <goals>
                             <goal>run</goal>
@@ -115,3 +108,4 @@
         </plugins>
     </build>
 </project>
+

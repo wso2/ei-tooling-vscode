@@ -5,7 +5,7 @@
 	"publisher": "WSO2",
 	"version": "0.7.5",
 	"engines": {
-		"vscode": "^1.73.0"
+		"vscode": "^1.31.0"
 	},
 	"categories": [
 		"Extension Packs",
@@ -48,6 +48,7 @@
 		"onCommand:wso2ei.connector.import",
 		"onCommand:wso2ei.connector.create.project",
 		"onCommand:wso2ei.car.create.zip",
+		"onCommand:wso2ei.test",
 		"workspaceContains:src/main/synapse-config",
 		"workspaceContains:**/.classpath"
 	],
@@ -56,7 +57,7 @@
 		"url": "https://github.com/wso2/ei-tooling-vscode.git"
 	},
 	"icon": "resources/images/vscode-marketplace-ei-icon.png",
-	"main": "out/extension.js",
+	"main": "./out/extension.js",
 	"contributes": {
 		"configuration": [
 			{
@@ -121,11 +122,6 @@
 			{
 				"command": "wso2ei.project.create",
 				"title": "Create New Integration Project",
-				"category": "WSO2EI"
-			},
-			{
-				"command": "synapse.show.diagram",
-				"title": "Show Diagram",
 				"category": "WSO2EI"
 			},
 			{
@@ -252,6 +248,11 @@
 				"command": "wso2ei.project.unzip",
 				"title": "Import Zip Archive",
 				"category": "WSO2EI"
+			},
+			{
+				"command": "wso2ei.datamapper.view",
+				"title": "Open DataMapper View",
+				"category": "WSO2EI"
 			}
 		],
 		"languages": [
@@ -346,39 +347,29 @@
 		}
 	},
 	"scripts": {
-		"copy:ls": "copyfiles -f ../../language-server/org.eclipse.lemminx/target/org.eclipse.lemminx-uber.jar lib",
-		"copy:lsextension": "copyfiles -f ../../language-server-extensions/target/org.eclipse.lsp4xml.extensions.synapse-*.jar lib",
 		"vscode:prepublish": "npm run compile",
-		"lint": "tslint -t stylish --project ",
+		"lint": "tslint -t stylish --project .",
 		"prebuild": "npm run lint",
-		"compile": "tsc",
-		"watch": "tsc -watch",
-		"build": "npm run copy:ls && npm run copy:lsextension && npm run package",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install",
 		"test": "npm run compile && node ./node_modules/vscode/bin/test",
-		"package": "vsce package --no-dependencies"
+		"package": "vsce package"
 	},
 	"devDependencies": {
 		"@types/archiver": "^2.1.3",
 		"@types/fs-extra": "^4.0.8",
 		"@types/md5": "^2.1.33",
 		"@types/mocha": "^2.2.42",
-		"@types/node": "^12.11.7",
-		"@types/vscode": "^1.73.0",
+		"@types/node": "^8.10.66",
+		"@types/to-json-schema": "^0.2.1",
 		"@types/xml2js": "^0.4.3",
 		"@types/xmldom": "^0.1.29",
-		"@vscode/vsce": "^2.17.0",
-		"husky": "^7.0.1",
-		"lint-staged": "^11.1.2",
-		"prettier": "^2.4.1",
-		"rimraf": "^3.0.2",
 		"tslint": "^5.12.1",
-		"typescript": "^4.1.3",
-		"webpack": "^5.56.0",
-		"webpack-cli": "^4.10.0",
-		"webpack-merge-and-include-globally": "^2.3.4",
-		"ts-loader": "^9.4.1",
-		"pako": "^2.0.4",
-		"copyfiles": "^2.4.1"
+		"typescript": "^3.9.10",
+		"vsce": "^1.36.2",
+		"vscode": "^1.1.37",
+		"webpack-cli": "^5.0.1"
 	},
 	"dependencies": {
 		"adm-zip": "^0.5.9",
@@ -394,11 +385,12 @@
 		"js-yaml": "^4.1.0",
 		"md5": "^2.2.1",
 		"node-downloader-helper": "^2.1.1",
-		"renamer": "^4.0.0",
+		"to-json-schema": "^0.2.5",
+		"ts-loader": "^9.4.2",
 		"vscode-extension-telemetry-wrapper": "^0.3.9",
 		"vscode-languageclient": "^4.1.4",
-		"vscode-languageserver-protocol": "^3.17.2",
-		"xml2js": "^0.4.19",
+		"webpack": "^5.75.0",
+		"xml2js": "^0.4.23",
 		"xmldom": "^0.1.27"
 	}
 }

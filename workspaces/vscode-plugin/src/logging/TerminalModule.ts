@@ -65,13 +65,13 @@ export namespace TerminalModule {
 
         let childProcess: ChildProcess = spawn(command, [], { cwd: targetLocation, shell: true });
 
-        // childProcess.stdout.on('data', (data) => {
-        //     terminal.sendText(`echo ${data}`);
-        // });
-        //
-        // childProcess.stderr.on('data', (data) => {
-        //     terminal.sendText(`echo ${data}`);
-        // });
+        childProcess.stdout.on('data', (data) => {
+            terminal.sendText(`echo ${data}`);
+        });
+
+        childProcess.stderr.on('data', (data) => {
+            terminal.sendText(`echo ${data}`);
+        });
 
         childProcess.on("exit", (code) => {
             if (code === 0) {

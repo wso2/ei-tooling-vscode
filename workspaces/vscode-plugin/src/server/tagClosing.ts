@@ -37,7 +37,7 @@ export function activateTagClosing(tagProvider: (document: TextDocument, positio
     updateEnabledState();
     window.onDidChangeActiveTextEditor(updateEnabledState, null, disposables);
 
-    let timeout: NodeJS.Timer | undefined = void 0;
+    let timeout: NodeJS.Timer | undefined;
 
     function updateEnabledState() {
         isEnabled = false;
@@ -55,7 +55,7 @@ export function activateTagClosing(tagProvider: (document: TextDocument, positio
         isEnabled = true;
     }
 
-    function onDidChangeTextDocument(document: TextDocument, changes: readonly TextDocumentContentChangeEvent[]) {
+    function onDidChangeTextDocument(document: TextDocument, changes: TextDocumentContentChangeEvent[]) {
         if (!isEnabled) {
             return;
         }
@@ -64,6 +64,9 @@ export function activateTagClosing(tagProvider: (document: TextDocument, positio
             return;
         }
         if (typeof timeout !== 'undefined') {
+            clearTimeout(timeout);
+        }
+        if(typeof timeout === 'number'){
             clearTimeout(timeout);
         }
         let lastChange = changes[changes.length - 1];

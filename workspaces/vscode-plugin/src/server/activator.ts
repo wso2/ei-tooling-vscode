@@ -25,24 +25,20 @@ import {
     LanguageConfiguration,
     languages,
     Position,
-    TextDocument, Uri, ViewColumn,
+    TextDocument,
     window,
     workspace
 } from 'vscode';
 import * as path from 'path';
 import {
-    DidChangeConfigurationNotification, Hover,
+    DidChangeConfigurationNotification,
     LanguageClient,
     LanguageClientOptions,
     RequestType,
-    ServerOptions, TextDocumentIdentifier,
-    TextDocumentPositionParams, UniquenessLevel
+    ServerOptions,
+    TextDocumentPositionParams
 } from 'vscode-languageclient';
 import { activateTagClosing, AutoCloseResult } from './tagClosing';
-import {SyntaxTreeResponse} from "./SyntaxTreeResponse";
-import {activate as activateDiagram, callUpdateDiagramMethod} from '../diagram';
-import {ExtendedLangClient} from "../extended-language.client";
-import document = UniquenessLevel.document;
 
 export interface ScopeInfo {
     scope: "default" | "global" | "workspace" | "folder";
@@ -50,19 +46,14 @@ export interface ScopeInfo {
 }
 
 namespace TagCloseRequest {
-    export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any> =
+    export const type: RequestType<TextDocumentPositionParams, AutoCloseResult, any, any> =
         new RequestType('xml/closeTag');
-}
-
-namespace SyntaxTreeRequest {
-    export const type: RequestType<TextDocumentIdentifier, SyntaxTreeResponse, any> =
-        new RequestType('xml/getSynapseSyntaxTree');
 }
 
 let ignoreAutoCloseTags = false;
 let vmArgsCache: any;
 let ignoreVMArgs = false;
-const main: string = 'org.eclipse.lemminx.XMLServerLauncher';
+const main: string = 'org.eclipse.lsp4xml.XMLServerLauncher';
 
 export function launch(context: ExtensionContext, directoryName: string) {
     const { JAVA_HOME } = process.env;
@@ -110,7 +101,7 @@ export function launch(context: ExtensionContext, directoryName: string) {
         };
 
         // Create the language client and start the client.
-        let languageClient = new ExtendedLangClient('synapseXML', 'Synapse Language Server',
+        let languageClient = new LanguageClient('synapseXML', 'Synapse Language Server',
             serverOptions, clientOptions);
         let disposable = languageClient.start();
 
@@ -118,7 +109,7 @@ export function launch(context: ExtensionContext, directoryName: string) {
 
         languageClient.onReady().then(() => {
             //Setup autoCloseTags
-            let tagProvider: (document: TextDocument, position: Position) => Thenable<AutoCloseResult> = (document: TextDocument, position: Position) => {
+            let tagProvider = (document: TextDocument, position: Position) => {
                 let param = languageClient.code2ProtocolConverter.asTextDocumentPositionParams(document, position);
                 return languageClient.sendRequest(TagCloseRequest.type, param);
             };
@@ -126,12 +117,7 @@ export function launch(context: ExtensionContext, directoryName: string) {
             disposable = activateTagClosing(tagProvider, { SynapseXml: true, xsl: true },
                 'xml.completion.autoCloseTags');
             context.subscriptions.push(disposable);
-
         });
-        activateDiagram(languageClient, context);
-        workspace.onDidSaveTextDocument((document) => {
-            callUpdateDiagramMethod();
-        })
         languages.setLanguageConfiguration('SynapseXml', getIndentationRules());
     }
 
