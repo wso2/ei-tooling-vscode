@@ -185,7 +185,7 @@ class DiagramPanel {
                 methodName: "getFileContent",
                 handler: async (args: any[]): Promise<string | undefined> => {
                     // Get the active text editor
-                    const filePath = args[0];
+                    const filePath = 'C:/Users/Chevon/Documents/vscodeAPI/extension.xml';
                     const doc = workspace.textDocuments.find((doc) => doc.fileName === filePath);
                     if (doc) {
                         return doc.getText();
