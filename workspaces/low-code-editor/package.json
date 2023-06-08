@@ -91,6 +91,7 @@
     "sass-loader": "^12.1.0",
     "vscode-languageserver-protocol": "^3.16.0",
     "vscode": "^1.1.29",
-    "@types/react-bootstrap": "^0.32.32"
+    "@types/react-bootstrap": "^0.32.32",
+    "rimraf": "^3.0.2"
   }
 }

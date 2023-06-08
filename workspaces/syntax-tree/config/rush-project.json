@@ -6,7 +6,8 @@
         "dist",
         "build",
         "build-app",
-        "lib"
+        "lib",
+        "out"
       ]
     }
   ]
