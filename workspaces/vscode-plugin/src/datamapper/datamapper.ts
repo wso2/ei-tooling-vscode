@@ -1,8 +1,8 @@
 import { readFile, readdirSync } from "fs";
 import { join, dirname } from "path";
-import { Disposable, WebviewPanel, window, ViewColumn, Uri,workspace} from "vscode";
+import { Disposable, WebviewPanel, window, ViewColumn, Uri, workspace } from "vscode";
 import * as vscode from 'vscode';
-import DMCFile from "./DMC_test";
+import DMCFile from "./DMCFileGenerator";
 import datamapperFileUpload from "./datamapperFileUpload";
 
 
@@ -16,8 +16,7 @@ export default class dataMapper {
         this._panel = panel;
         this._extensionPath = extensionPath;
 
-        // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
-        // the panel or when the panel is closed programmatically)
+        // Set an event listener to listen for when the panel is disposed 
         this._panel.onDidDispose(this.dispose, null, this._disposables);
 
         // Set the HTML content for the webview panel
@@ -71,6 +70,7 @@ export default class dataMapper {
 
     private _getWebviewContent(webview: any) {
 
+        //settting the path of build files
         const buildPath = join(this._extensionPath, 'datamapper', 'build', 'static');
 
         const cssFile = readdirSync(join(buildPath, 'css')).find(file => file.endsWith('.css'));
@@ -88,8 +88,6 @@ export default class dataMapper {
 
         this._panel.webview.postMessage({ vscode })
 
-        //<meta http-equiv="Content-Security-Policy" content="default-src 'none'; frame-src vscode-resource: https: http:; script-src vscode-resource: https: http: 'unsafe-inline';">
-        // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
         return /*html*/ `
         <!DOCTYPE html>
         <html lang="en">
@@ -104,6 +102,7 @@ export default class dataMapper {
             <noscript>You need to enable JavaScript to run this app.</noscript>
             <div id="root"></div>
             <script>
+            // connection point of extension with react frontend
             const vscode = acquireVsCodeApi();
             window.onload = function() {
                 vscode.postMessage({ command: 'success_alert' });
@@ -141,26 +140,24 @@ export default class dataMapper {
                         }
                     case "serializing":
                         {
-                            datamapperFileUpload.serializingDiagram(message.fileContent)
+                            datamapperFileUpload.serializingDiagram(message.fileContent);
+                            break;
                         }
                     case "DMC": {
-                        window.showInformationMessage("DMC file Updated");
                         DMCFile.fileCreation(message.linkData);
                         break;
                     }
                     case "deserializing": {
                         var currentFolder = workspace.workspaceFolders?.[0];
-                        if(currentFolder){
+                        if (currentFolder) {
                             var filePath = join(currentFolder.uri.fsPath, "data.json");
                             readFile(filePath, 'utf8', (err, data) => {
                                 if (err) {
                                     window.showErrorMessage(`Unable to read file: ${err.message}`);
-                                    console.log("error mesg passed")
                                     return;
                                 }
-    
+
                                 const message = { command: 'serialized', data: data };
-                                console.log("mesg passed")
                                 this._panel.webview.postMessage(message);
                             });
                         }
@@ -171,8 +168,6 @@ export default class dataMapper {
             undefined,
             this._disposables
         );
-
-
 
     }
 }

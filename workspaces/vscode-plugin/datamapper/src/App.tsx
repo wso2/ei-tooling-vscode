@@ -5,7 +5,7 @@ import DataMapper from "./Components/DataMapper";
 function App() {
   return (
     <FileContextProvider>
-      <DataMapper/>
+      <DataMapper />
     </FileContextProvider>
   );
 }
