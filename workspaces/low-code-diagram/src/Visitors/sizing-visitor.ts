@@ -23,7 +23,7 @@ import {
     Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite, XQuery, XSLT, DataMapper, FastXSLT, JsonTransform, DataServiceCall,
     Cache, DBLookup, DBReport, Enqueue, Event, Throttle, Transaction, Aggregate, Callout, Clone, Iterate, ForEach, Entitlement,
     Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond
-} from "@wso2-ei/syntax-tree";
+} from "@wso2-ei/syntax-tree/lib";
 import { MediatorViewState } from "../ViewState";
 import { ApiViewState } from "../ViewState/api";
 import { ProxyViewState } from "../ViewState/proxy";
