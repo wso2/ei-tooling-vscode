@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -183,37 +182,6 @@ export function RuleMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        sourceValue,
-        sourceXPath,
-        targetValue,
-        selectedTargetAction,
-        // targetXPath,
-        // targetResultXPath,
-        // selectedRuleSetType,
-        // selectedRuleSetSourceType,
-        // ruleSetSourceCode,
-        // inlineRegistryKey,
-        // ruleSetURL,
-        // inputWrapperName,
-        // inputNamespace,
-        // factsConfiguration,
-        // outputWrapperName,
-        // outputNamespace,
-        // resultsConfiguration,
-        description,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setDescription("");

@@ -207,38 +207,6 @@ export function CalloutMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        selectedEndpointType,
-        soapAction,
-        pathToAxis2Repository,
-        pathToAxis2XML,
-        // selectedAxis2ClientOptionsMethod,
-        // serviceURL,
-        // addressEndpointType,
-        // selectedPayloadType,
-        // payloadMessageXPath,
-        // payloadProperty,
-        // selectedResultType,
-        // resultMessageXPath,
-        // resultContextProperty,
-        // selectedSecurityType,
-        // selectedPolicies,
-        // policyKey,
-        // outboundPolicyKey,
-        // inboundPolicyKey,
-        description,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setSelectedEndpointType("URL");

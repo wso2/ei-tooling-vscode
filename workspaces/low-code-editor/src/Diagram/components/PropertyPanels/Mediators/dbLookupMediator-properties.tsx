@@ -43,7 +43,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -297,46 +296,6 @@ export function DBLookupMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        selectedConnectionType,
-        selectedConnectionDbType,
-        selectedRegBDriConfigKey,
-        connectionDbDriver,
-        // selectedConnectionDsType,
-        // connectionDsName,
-        // connectionDsInitialContext,
-        // regBUrlConfigKey,
-        // connectionURL,
-        // regBUserConfigKey,
-        // connectionUserName,
-        // regBPassConfigKey,
-        // connectionPassword,
-        // selectedProAutocommit,
-        // selectedProIsolation,
-        // propertyMaxactive,
-        // propertyMaxidle,
-        // propertyMaxopenstatements,
-        // propertyMaxwait,
-        // propertyMinidle,
-        // selectedProPoolstatements,
-        // selectedProTestonborrow,
-        // selectedProTestwhileidle,
-        // propertyValidationquery,
-        // propertyInitialsize,
-        // sqlStatement,
-        description,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = () => {
     setSelectedConnectionType("DB_CONNECTION");

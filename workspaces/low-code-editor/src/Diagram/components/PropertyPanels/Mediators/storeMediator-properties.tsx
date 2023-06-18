@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -108,25 +107,6 @@ export function StoreMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        selectedSpecifyAs,
-        selectedAvaiMessageStore,
-        onStoreSequence,
-        messageStore,
-        dynReferenceKey,
-        // description,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setSelectedSpecifyAs("Value");

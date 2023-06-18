@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -121,27 +120,6 @@ export function DataServiceCallMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        selectedAvaDataServices,
-        serviceName,
-        selectedSourceType,
-        selectedOperationType,
-        // inlineSource,
-        // selectedTargetType,
-        // targetProperty,
-        description,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setSelectedAvaDataServices("SelectAvaDataServices");

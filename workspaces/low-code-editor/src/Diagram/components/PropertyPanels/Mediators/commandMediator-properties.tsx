@@ -83,23 +83,7 @@ export function CommandMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    // const langClient = await getDiagramEditorLangClient();
-    // let snippetCompletionResponse: SnippetCompletionResponse =
-    //   await getSnippetCompletion(
-    //     className,
-    //     properties,
-    //     description,
-    //     langClient
-    //   );
-    // textEdit.newText = snippetCompletionResponse.snippet;
-    // await modifyTextOnComponentSelection(
-    //   textDocumentUrl,
-    //   textDocumentFsPath,
-    //   textEdit,
-    //   previousComponentStartPosition,
-    //   langClient
-    // );
-  };
+    };
   const handleCancelClick = async () => {
     setClassName("");
     setProperties("");

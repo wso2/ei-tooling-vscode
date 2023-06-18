@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -125,28 +124,6 @@ export function ScriptMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        selectedScriptLanguage,
-        selectedScriptType,
-        scriptBody,
-        functionName,
-        // selectedKeyType,
-        // scriptKeys,
-        // scriptStaticKey,
-        // scriptDynamicKey,
-        description,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setSelectedScriptLanguage("js");

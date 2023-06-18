@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -162,32 +161,6 @@ export function AggregateMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        aggregateID,
-        enclosingElementProperty,
-        correlationExpression,
-        selectedAggElementType,
-        description,
-        // completionTimeout,
-        // selectedCompletionMinMsgType,
-        // completionMinMsgValues,
-        // selectedCompletionMaxMsgType,
-        // completionMaxMsgValues,
-        // aggregationExpression,
-        // selectedSequenceType,
-        // sequenceKey,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setAggregateID("");

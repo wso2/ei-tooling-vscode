@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -90,23 +89,6 @@ export function EventMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    // const langClient = await getDiagramEditorLangClient();
-    // let snippetCompletionResponse: SnippetCompletionResponse =
-    //   await getSnippetCompletion(
-    //     selectedTopicType,
-    //     staticTopic,
-    //     dynamicTopic,
-    //     description,
-    //     langClient
-    //   );
-    // textEdit.newText = snippetCompletionResponse.snippet;
-    // await modifyTextOnComponentSelection(
-    //   textDocumentUrl,
-    //   textDocumentFsPath,
-    //   textEdit,
-    //   previousComponentStartPosition,
-    //   langClient
-    // );
   };
   const handleCancelClick = async () => {
     setDescription("");

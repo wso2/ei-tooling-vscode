@@ -45,7 +45,6 @@ import { Context as DiagramContext } from "../../../../Contexts";
 import { _handler } from "@sentry/browser/types/integrations/linkederrors";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -86,22 +85,6 @@ export function SwitchMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    // const langClient = await getDiagramEditorLangClient();
-    // let snippetCompletionResponse: SnippetCompletionResponse =
-    //   await getSnippetCompletion(
-    //     sourceXPath,
-    //     caseBranches,
-    //     description,
-    //     langClient
-    //   );
-    // textEdit.newText = snippetCompletionResponse.snippet;
-    // await modifyTextOnComponentSelection(
-    //   textDocumentUrl,
-    //   textDocumentFsPath,
-    //   textEdit,
-    //   previousComponentStartPosition,
-    //   langClient
-    // );
   };
   const handleCancelClick = async () => {
     setSourceXPath("");

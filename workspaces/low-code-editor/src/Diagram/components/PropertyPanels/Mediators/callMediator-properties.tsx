@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -170,34 +169,6 @@ export function CallMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        selectedCheckboxMethod,
-        selectedEndpointType,
-        selectedSourceType,
-        selectedTargetType,
-        endpointRegistryKey,
-        // endpointXPATH,
-        // sourceProperty,
-        // sourcePropertyContentType,
-        // sourcePayload,
-        // sourcePayloadContentType,
-        // sourceXPath,
-        // sourceXPathContentType,
-        // targetProperty,
-        // targetPropertyContentType,
-        // description,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setSelectedCheckboxMethod("EnableBlockingCalls");

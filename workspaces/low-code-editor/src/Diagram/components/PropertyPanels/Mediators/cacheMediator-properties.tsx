@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -200,39 +199,6 @@ export function CacheMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        selectedCacheMImp,
-        selectedCacheType,
-        cacheTimeout,
-        maxMsgSize,
-        // maxEntryCount,
-        // selectedSequenceType,
-        // sequenceKey,
-        // selectedCacheProtocolType,
-        // cacheProtocolMethods,
-        // headersToExcludeInHash,
-        // headersToIncludeInHash,
-        // responseCodes,
-        // selectedEnableCacheControlMethod,
-        // selectedIncludeAgeHeaderMethod,
-        // hashGenerator,
-        // cacheTypeId,
-        // hashGeneratorAttr,
-        // selectedScope,
-        // selectedImpType,
-        description,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setSelectedCacheMImp("Default");

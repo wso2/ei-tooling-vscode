@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -204,39 +203,6 @@ export function ResourceProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        selectedURLStyleType,
-        urlTemplate,
-        urlMapping,
-        selectedProtocolType,
-        selectedGETMethod,
-        // selectedPOSTMethod,
-        // selectedPutMethod,
-        // selectedDeleteMethod,
-        // selectedOptionsMethod,
-        // selectedHeadMethod,
-        // selectedPatchMethod,
-        // selectedInSequenceType,
-        // inSequenceKey,
-        // inSequenceName,
-        // selectedOutSequenceType,
-        // outSequenceKey,
-        // outSequenceName,
-        // selectedFaultSequenceType,
-        // faultSequenceKey,
-        // faultSequenceName,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setSelectedURLStyleType("None");

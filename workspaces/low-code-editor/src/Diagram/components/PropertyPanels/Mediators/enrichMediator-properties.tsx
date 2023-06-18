@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -188,37 +187,6 @@ export function EnrichMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        selectedCloneSource,
-        selectedSourceType,
-        sourceXpath,
-        sourceProperty,
-        // sourcePropertyContentType,
-        // sourcePayload,
-        // sourcePayloadContentType,
-        // sourceXPath,
-        // sourceXPathContentType,
-        // selectedInlineType,
-        // sourceXML,
-        // inlineRegistryKey,
-        // selectedTargetAction,
-        // selectedTargetType,
-        // targetProperty,
-        // targetPropertyContentType,
-        // targetXorJPath,
-        description,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setSelectedCloneSource("CloneSource");

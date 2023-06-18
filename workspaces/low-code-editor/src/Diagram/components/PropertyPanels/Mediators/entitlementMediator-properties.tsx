@@ -44,7 +44,6 @@ import {
 import { Context as DiagramContext } from "../../../../Contexts";
 
 type Props = {
-  // langClient: DiagramEditorLangClientInterface;
   textDocumentUrl: string;
   textDocumentFsPath: string;
   previousComponentStartPosition: number;
@@ -177,36 +176,6 @@ export function EntitlementMediatorProperty(props: Props) {
     if (!getDiagramEditorLangClient || !textEdit) {
       return [];
     }
-    const langClient = await getDiagramEditorLangClient();
-    let snippetCompletionResponse: SnippetCompletionResponse =
-      await getSnippetCompletion(
-        entitlementServerURL,
-        userName,
-        password,
-        selectedCallbackHandler,
-        // callbackClassName,
-        // selectedEntitlementClientType,
-        // thriftHost,
-        // thriftPort,
-        description,
-        // selectedOnAcceptSeqType,
-        // onAcceptSeqKey,
-        // selectedOnRejectSeqType,
-        // onRejectSeqKey,
-        // selectedObligationSeqType,
-        // obligationSeqKey,
-        // selectedAdviceSeqType,
-        // adviceSeqKey,
-        langClient
-      );
-    textEdit.newText = snippetCompletionResponse.snippet;
-    await modifyTextOnComponentSelection(
-      textDocumentUrl,
-      textDocumentFsPath,
-      textEdit,
-      previousComponentStartPosition,
-      langClient
-    );
   };
   const handleCancelClick = async () => {
     setCallbackClassName("");
