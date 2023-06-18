@@ -230,3 +230,7 @@ lib/
 build
 # End of https://www.gitignore.io/api/java,macos,intellij+all,visualstudiocode,node
 
+# ignore pnpm-lock.yaml, SLCEditor.js, package-lock.json
+.workspaces/common/config/rush/pnpm-lock.yaml
+.workspaces/vscode-plugin/resources/jslibs/SLCEditor.js
+.workspaces/vscode-plugin/package-lock.json

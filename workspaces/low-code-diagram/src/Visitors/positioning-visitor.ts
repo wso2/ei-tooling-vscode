@@ -19,10 +19,10 @@
 
 import {
     Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, Call, CallTemplate, Drop, LoopBack,
-    Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, Validate, Bean, Class, Command, Ejb, Script,
-    Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite, XQuery, XSLT, DataMapper, FastXSLT, JsonTransform, DataServiceCall,
-    Cache, DBLookup, DBReport, Enqueue, Event, Throttle, Transaction, Aggregate, Callout, Clone, Iterate, ForEach, Entitlement,
-    Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond
+    Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, Validate, Bean, Class, Command, Ejb,
+    Script, Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite, XQuery, XSLT, DataMapper, FastXSLT,
+    JsonTransform, DataServiceCall, Cache, DBLookup, DBReport, Enqueue, Event, Throttle, Transaction, Aggregate,
+    Callout, Clone, Iterate, ForEach, Entitlement, Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond
 } from "@wso2-ei/syntax-tree/lib";
 import { MediatorViewState } from "../ViewState";
 import { ApiViewState } from "../ViewState/api";
@@ -339,7 +339,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
     beginVisitSequence?(node: Sequence) {
         if (node.viewState) {
             const viewState: SequenceViewState = node.viewState as SequenceViewState;
@@ -371,7 +370,6 @@ export class PositioningVisitor implements Visitor {
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
 
     beginVisitTransaction?(node: Transaction) {
         if (node.viewState) {
@@ -436,8 +434,6 @@ export class PositioningVisitor implements Visitor {
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
-
     beginVisitCallTemplate?(node: CallTemplate) {
         if (node.viewState) {
             const viewState: CallTemplateViewState = node.viewState as CallTemplateViewState;
@@ -478,7 +474,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
     beginVisitDataServiceCall?(node: DataServiceCall) {
         if (node.viewState) {
             const viewState: DataServiceCallViewState = node.viewState as DataServiceCallViewState;
@@ -495,7 +490,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
     beginVisitDBReport?(node: DBReport) {
         if (node.viewState) {
             const viewState: DBReportViewState = node.viewState as DBReportViewState;
@@ -503,7 +497,6 @@ export class PositioningVisitor implements Visitor {
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
 
     beginVisitDrop?(node: Drop) {
         if (node.viewState) {
@@ -577,7 +570,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
     beginVisitLoopBack?(node: LoopBack) {
         if (node.viewState) {
             const viewState: LoopBackViewState = node.viewState as LoopBackViewState;
@@ -609,7 +601,6 @@ export class PositioningVisitor implements Visitor {
             viewState.bBox.cy = viewState.bBox.y + viewState.bBox.r;
         }
     }
-
 
     beginVisitIterate?(node: Iterate) {
         if (node.viewState) {
@@ -644,8 +635,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
-
     beginVisitRule?(node: Rule) {
         if (node.viewState) {
             const viewState: RuleViewState = node.viewState as RuleViewState;
@@ -678,8 +667,6 @@ export class PositioningVisitor implements Visitor {
             })
         }
     }
-
-
 
     beginVisitSwitch?(node: Switch) {
         if (node.viewState) {
@@ -714,8 +701,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
-
     beginVisitThrottle?(node: Throttle) {
         if (node.viewState) {
             const viewState: ThrottleViewState = node.viewState as ThrottleViewState;
@@ -748,8 +733,6 @@ export class PositioningVisitor implements Visitor {
             })
         }
     }
-
-
 
     beginVisitValidate?(node: Validate) {
         if (node.viewState) {
@@ -784,8 +767,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
-
     beginVisitAggregate?(node: Aggregate) {
         if (node.viewState) {
             const viewState: AggregateViewState = node.viewState as AggregateViewState;
@@ -818,8 +799,6 @@ export class PositioningVisitor implements Visitor {
             })
         }
     }
-
-
 
     beginVisitCache?(node: Cache) {
         if (node.viewState) {
@@ -854,8 +833,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
-
     beginVisitCall?(node: Call) {
         if (node.viewState) {
             const viewState: CallViewState = node.viewState as CallViewState;
@@ -888,8 +865,6 @@ export class PositioningVisitor implements Visitor {
             })
         }
     }
-
-
 
     beginVisitClone?(node: Clone) {
         if (node.viewState) {
@@ -924,8 +899,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
-
     beginVisitEntitlement?(node: Entitlement) {
         if (node.viewState) {
             const viewState: EntitlementViewState = node.viewState as EntitlementViewState;
@@ -958,8 +931,6 @@ export class PositioningVisitor implements Visitor {
             })
         }
     }
-
-
 
     beginVisitFilter?(node: Filter) {
         if (node.viewState) {
@@ -994,8 +965,6 @@ export class PositioningVisitor implements Visitor {
         }
     }
 
-
-
     beginVisitForEach?(node: ForEach) {
         if (node.viewState) {
             const viewState: ForEachViewState = node.viewState as ForEachViewState;
@@ -1028,8 +997,4 @@ export class PositioningVisitor implements Visitor {
             })
         }
     }
-
-
-
-
 }

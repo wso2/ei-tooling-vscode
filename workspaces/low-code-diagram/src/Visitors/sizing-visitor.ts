@@ -19,10 +19,10 @@
 
 import {
     Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, Call, CallTemplate, Drop, LoopBack,
-    Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, Validate, Bean, Class, Command, Ejb, Script,
-    Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite, XQuery, XSLT, DataMapper, FastXSLT, JsonTransform, DataServiceCall,
-    Cache, DBLookup, DBReport, Enqueue, Event, Throttle, Transaction, Aggregate, Callout, Clone, Iterate, ForEach, Entitlement,
-    Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond
+    Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, Validate, Bean, Class, Command, Ejb, 
+    Script, Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite, XQuery, XSLT, DataMapper, FastXSLT,
+    JsonTransform, DataServiceCall, Cache, DBLookup, DBReport, Enqueue, Event, Throttle, Transaction, Aggregate,
+    Callout, Clone, Iterate, ForEach, Entitlement, Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond
 } from "@wso2-ei/syntax-tree/lib";
 import { MediatorViewState } from "../ViewState";
 import { ApiViewState } from "../ViewState/api";
@@ -323,8 +323,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitPublish?(node: Publish) {
         if (node.viewState) {
             const viewState: PublishViewState = node.viewState as PublishViewState;
@@ -349,8 +347,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitScript?(node: Script) {
         if (node.viewState) {
@@ -377,7 +373,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
     endVisitSequence?(node: Sequence) {
         if (node.viewState) {
             const viewState: SequenceViewState = node.viewState as SequenceViewState;
@@ -402,8 +397,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitSmooks?(node: Smooks) {
         if (node.viewState) {
@@ -430,9 +423,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
-
     endVisitSpring?(node: Spring) {
         if (node.viewState) {
             const viewState: SpringViewState = node.viewState as SpringViewState;
@@ -457,9 +447,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
-
 
     endVisitStore?(node: Store) {
         if (node.viewState) {
@@ -486,8 +473,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitTransaction?(node: Transaction) {
         if (node.viewState) {
             const viewState: TransactionViewState = node.viewState as TransactionViewState;
@@ -512,8 +497,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitURLrewrite?(node: URLrewrite) {
         if (node.viewState) {
@@ -540,8 +523,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitXQuery?(node: XQuery) {
         if (node.viewState) {
             const viewState: XQueryViewState = node.viewState as XQueryViewState;
@@ -566,8 +547,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitXSLT?(node: XSLT) {
         if (node.viewState) {
@@ -594,8 +573,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitBam?(node: Bam) {
         if (node.viewState) {
             const viewState: BamViewState = node.viewState as BamViewState;
@@ -620,8 +597,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitBean?(node: Bean) {
         if (node.viewState) {
@@ -648,8 +623,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitBuilder?(node: Builder) {
         if (node.viewState) {
             const viewState: BuilderViewState = node.viewState as BuilderViewState;
@@ -674,8 +647,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitCallout?(node: Callout) {
         if (node.viewState) {
@@ -702,8 +673,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitCallTemplate?(node: CallTemplate) {
         if (node.viewState) {
             const viewState: CallTemplateViewState = node.viewState as CallTemplateViewState;
@@ -728,8 +697,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitClass?(node: Class) {
         if (node.viewState) {
@@ -756,8 +723,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitCommand?(node: Command) {
         if (node.viewState) {
             const viewState: CommandViewState = node.viewState as CommandViewState;
@@ -782,8 +747,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitConditionalRouter?(node: ConditionalRouter) {
         if (node.viewState) {
@@ -810,8 +773,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitDataMapper?(node: DataMapper) {
         if (node.viewState) {
             const viewState: DataMapperViewState = node.viewState as DataMapperViewState;
@@ -836,8 +797,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitDataServiceCall?(node: DataServiceCall) {
         if (node.viewState) {
@@ -864,8 +823,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitDBLookup?(node: DBLookup) {
         if (node.viewState) {
             const viewState: DBLookupViewState = node.viewState as DBLookupViewState;
@@ -890,8 +847,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitDBReport?(node: DBReport) {
         if (node.viewState) {
@@ -918,8 +873,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitDrop?(node: Drop) {
         if (node.viewState) {
             const viewState: DropViewState = node.viewState as DropViewState;
@@ -944,8 +897,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitEjb?(node: Ejb) {
         if (node.viewState) {
@@ -972,8 +923,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitEnqueue?(node: Enqueue) {
         if (node.viewState) {
             const viewState: EnqueueViewState = node.viewState as EnqueueViewState;
@@ -998,8 +947,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitEnrich?(node: Enrich) {
         if (node.viewState) {
@@ -1026,8 +973,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitEvent?(node: Event) {
         if (node.viewState) {
             const viewState: EventViewState = node.viewState as EventViewState;
@@ -1052,8 +997,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitFastXSLT?(node: FastXSLT) {
         if (node.viewState) {
@@ -1080,8 +1023,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitFault?(node: Fault) {
         if (node.viewState) {
             const viewState: FaultViewState = node.viewState as FaultViewState;
@@ -1106,8 +1047,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitHeader?(node: Header) {
         if (node.viewState) {
@@ -1134,8 +1073,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitJsonTransform?(node: JsonTransform) {
         if (node.viewState) {
             const viewState: JsonTransformViewState = node.viewState as JsonTransformViewState;
@@ -1160,8 +1097,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitLoopBack?(node: LoopBack) {
         if (node.viewState) {
@@ -1188,8 +1123,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitNtlm?(node: Ntlm) {
         if (node.viewState) {
             const viewState: NtlmViewState = node.viewState as NtlmViewState;
@@ -1214,8 +1147,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitOauth?(node: Oauth) {
         if (node.viewState) {
@@ -1242,8 +1173,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitPayloadFactory?(node: PayloadFactory) {
         if (node.viewState) {
             const viewState: PayloadFactoryViewState = node.viewState as PayloadFactoryViewState;
@@ -1268,8 +1197,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitProperty?(node: Property) {
         if (node.viewState) {
@@ -1296,8 +1223,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitPropertyGroup?(node: PropertyGroup) {
         if (node.viewState) {
             const viewState: PropertyGroupViewState = node.viewState as PropertyGroupViewState;
@@ -1322,8 +1247,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitForEach?(node: ForEach) {
         if (node.viewState) {
@@ -1352,8 +1275,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitIterate?(node: Iterate) {
         if (node.viewState) {
             const viewState: SendViewState = node.viewState as IterateViewState;
@@ -1380,8 +1301,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitRule?(node: Rule) {
         if (node.viewState) {
@@ -1410,9 +1329,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
-
     endVisitSwitch?(node: Switch) {
         if (node.viewState) {
             const viewState: SendViewState = node.viewState as SwitchViewState;
@@ -1439,8 +1355,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitThrottle?(node: Throttle) {
         if (node.viewState) {
@@ -1469,8 +1383,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitValidate?(node: Validate) {
         if (node.viewState) {
             const viewState: SendViewState = node.viewState as ValidateViewState;
@@ -1497,8 +1409,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitAggregate?(node: Aggregate) {
         if (node.viewState) {
@@ -1527,8 +1437,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitCache?(node: Cache) {
         if (node.viewState) {
             const viewState: SendViewState = node.viewState as CacheViewState;
@@ -1555,8 +1463,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitCall?(node: Call) {
         if (node.viewState) {
@@ -1585,8 +1491,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitClone?(node: Clone) {
         if (node.viewState) {
             const viewState: SendViewState = node.viewState as CloneViewState;
@@ -1613,8 +1517,6 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
 
     endVisitEntitlement?(node: Entitlement) {
         if (node.viewState) {
@@ -1643,8 +1545,6 @@ export class SizingVisitor implements Visitor {
         }
     }
 
-
-
     endVisitFilter?(node: Filter) {
         if (node.viewState) {
             const viewState: SendViewState = node.viewState as FilterViewState;
@@ -1671,10 +1571,4 @@ export class SizingVisitor implements Visitor {
             }
         }
     }
-
-
-
-
-
-
 }

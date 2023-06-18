@@ -1,5 +1,3 @@
-
-
 /**
  * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
  *
@@ -23,6 +21,5 @@ import {ViewState} from "./view-state";
 import {SimpleBBox} from "./simple-bbox";
 
 export class BamViewState extends ViewState {
-
     public dataProcess: SimpleBBox = new SimpleBBox();
 }

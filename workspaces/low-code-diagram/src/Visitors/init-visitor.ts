@@ -20,8 +20,9 @@
 import {Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, STNode, Connector, Call, 
     CallTemplate, Drop, LoopBack, Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, 
     Validate, Bean, Class, Command, Ejb, Script, Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite,
-     XQuery, XSLT, DataMapper, FastXSLT, JsonTransform, DataServiceCall, Cache, DBLookup, DBReport, Enqueue, Event, 
-     Throttle, Transaction, Aggregate, Callout, Clone, Iterate, ForEach, Entitlement, Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond } from "@wso2-ei/syntax-tree/lib";
+    XQuery, XSLT, DataMapper, FastXSLT, JsonTransform, DataServiceCall, Cache, DBLookup, DBReport, Enqueue, Event, 
+    Throttle, Transaction, Aggregate, Callout, Clone, Iterate, ForEach, Entitlement, Oauth, Ntlm, Builder, Rule,
+    Bam, Publish, Respond } from "@wso2-ei/syntax-tree/lib";
 import {MediatorViewState} from "../ViewState";
 import {ConnectorViewState} from "../ViewState";
 import {ViewState} from "../ViewState";
@@ -210,6 +211,7 @@ export class InitVisitor implements Visitor {
             node.viewState = new FilterViewState();
         }
     }
+    
     beginVisitSwitch?(node: Switch) {
         if(!node.viewState) {
             node.viewState = new SwitchViewState();
@@ -416,28 +418,24 @@ export class InitVisitor implements Visitor {
 
     }
 
-    //NLTM
     beginVisitNTLM?(node: Ntlm) {
         if(!node.viewState) {
             node.viewState = new NtlmViewState();
         }
     }
 
-    //Builder
     beginVisitBuilder?(node: Builder) {
         if(!node.viewState) {
             node.viewState = new BuilderViewState();
         }
     }
 
-    //Rule
     beginVisitRule?(node: Rule) {
         if(!node.viewState) {
             node.viewState = new RuleViewState();
         }
     }
 
-    //Bam
     beginVisitBAM?(node: Bam) {
         if(!node.viewState) {
             node.viewState = new BamViewState();
@@ -451,7 +449,4 @@ export class InitVisitor implements Visitor {
     }
 }
                                                                                                   
-
-
-
 export const initVisitor = new InitVisitor();
