@@ -23,39 +23,36 @@ import { WorkerLine } from "../worker-line";
 import { Circle, Square } from "@wso2-ei/low-code-diagram";
 
 interface SquareProps {
-    model: Square;
+  model: Square;
 }
 
 export function OutSequence(props: SquareProps) {
-    const { model } = props;
+  const { model } = props;
 
-    const viewState = model.viewState;
+  const viewState = model.viewState;
 
-    const components: JSX.Element[] = [];
+  const components: JSX.Element[] = [];
 
-    model.children.forEach(child => {
-        components.push(getComponent(child.tag, { model: child }));
-    })
+  model.children.forEach((child) => {
+    components.push(getComponent(child.tag, { model: child }));
+  });
 
-    return (
-        <>
-            <svg>
-                <rect
-                    x={viewState.bBox.x}
-                    y={viewState.bBox.y}
-                    width={viewState.bBox.w}
-                    height={viewState.bBox.h}
-                    fill='#fff'
-                    stroke="#fff"
-                    stroke-width="4"
-                />
-            </svg>
+  return (
+    <>
+      <svg>
+        <rect
+          x={viewState.bBox.x}
+          y={viewState.bBox.y}
+          width={viewState.bBox.w}
+          height={viewState.bBox.h}
+          fill="#fff"
+          stroke="#fff"
+          stroke-width="4"
+        />
+      </svg>
 
-            <WorkerLine
-                model={model}
-            />
-            {components}
-
-        </>
-    )
+      <WorkerLine model={model} />
+      {components}
+    </>
+  );
 }
