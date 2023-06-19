@@ -104,7 +104,8 @@ export namespace DataServiceModule {
         if (workspace.workspaceFolders) {
 
             //check for artifact.xml and composite pom.xml
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            let dataServiceFolder: string = subDirectoryPath.substring(0, subDirectoryPath.lastIndexOf(path.sep));
+            let rootDirectory: string = dataServiceFolder.substring(0, dataServiceFolder.lastIndexOf(path.sep));
             let artifactXmlFilePath: string = path.join(subDirectoryPath, "..", ARTIFACT_FILE);
             let compositePomFilePath: string = path.join(Utils.getDirectoryFromDirectoryType(SubDirectories.COMPOSITE_EXPORTER, rootDirectory), POM_FILE);
             if ((!fse.existsSync(artifactXmlFilePath)) || (!fse.existsSync(compositePomFilePath))) {

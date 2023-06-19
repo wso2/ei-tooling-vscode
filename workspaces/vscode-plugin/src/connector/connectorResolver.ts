@@ -32,7 +32,14 @@ export async function addNewConnectorExporter() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-        ConnectorModule.createNewConnectorExporter(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+        var rootDirectory: string = "";
+        await Utils.selectFolderFromWorkspace('Select a root project to add the connector')
+            .then((result) => rootDirectory = result)
+            .catch((error) => {
+                window.showErrorMessage(String(error));
+                throw String(error);
+            })
+        ConnectorModule.createNewConnectorExporter(rootDirectory, projectName.trim());
     }
 }
 
@@ -46,7 +53,14 @@ export async function addNewConnectorFromStore() {
     }
 
     if (connectorName && workspace.workspaceFolders) {
-        ConnectorModule.getSuggestedConnectors(connectorName.trim(), workspace.workspaceFolders[0].uri.fsPath);
+        var rootDirectory: string = "";
+        await Utils.selectFolderFromWorkspace('Select a root project to add the connector')
+            .then((result) => rootDirectory = result)
+            .catch((error) => {
+                window.showErrorMessage(String(error));
+                throw String(error);
+            })
+        ConnectorModule.getSuggestedConnectors(connectorName.trim(), rootDirectory);
     }
 }
 
@@ -61,7 +75,14 @@ export async function addNewConnectorFromFileSystem() {
         const targetLocation: string | null = await chooseTargetFile(targetFolderHint, "Select a connector...", { 'ZIP files': ['zip'] });
 
         if (targetLocation && workspace.workspaceFolders) {
-            ConnectorModule.importConnectorFromFileSystem(targetLocation, workspace.workspaceFolders[0].uri.fsPath);
+            var rootDirectory: string = "";
+            await Utils.selectFolderFromWorkspace('Select a root project to add the connector')
+            .then((result) => rootDirectory = result)
+            .catch((error) => {
+                window.showErrorMessage(String(error));
+                throw String(error);
+            })
+            ConnectorModule.importConnectorFromFileSystem(targetLocation, rootDirectory);
         }
 
     } catch (err) {

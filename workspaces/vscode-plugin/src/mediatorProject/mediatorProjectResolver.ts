@@ -47,7 +47,13 @@ export async function createMediatorProject() {
     }
 
     if (projectName && packageName && className && workspace.workspaceFolders) {
-        let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+        var rootDirectory: string = "";
+        await Utils.selectFolderFromWorkspace('Select a root project to add the custom mediator')
+        .then((result) => rootDirectory = result)
+        .catch((error) => {
+            window.showErrorMessage(String(error));
+            throw String(error);
+        })
         MediatorProjectModule.createProject(rootDirectory, projectName.trim(), packageName.trim(), "1.0.0", ServerRoleInfo.ENTERPRISE_INTEGRATOR, className.trim());
     }
 }

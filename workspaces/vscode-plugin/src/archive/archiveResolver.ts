@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import { workspace, Uri, window, commands } from "vscode";
+import { workspace, Uri, window, commands, WorkspaceFolder, FileType } from "vscode";
 import * as path from 'path';
 import { executeProjectBuildCommand } from "../mavenInternals/commandHandler";
 import { Common, SubDirectories } from "../artifacts/artifactUtils";
@@ -34,7 +34,24 @@ var AdmZip = require('adm-zip');
 /*
 * Build the project and create the .car file in the target folder
 * */
-export function createDeployableArchive() {
+export async function createDeployableArchive(cappProjectPath: string | undefined) {
+
+    var rootDirectory: string = "";
+
+    if (cappProjectPath) {
+        rootDirectory = cappProjectPath.substring(0, cappProjectPath.lastIndexOf('/'));
+    } else if (workspace.workspaceFolders) {
+        await Utils.selectFolderFromWorkspace('Select a project folder to build')
+            .then((result) => rootDirectory = result)
+            .catch((error) => {
+                window.showErrorMessage(String(error));
+                throw String(error);
+            })
+
+    } else {
+        window.showErrorMessage("Did not find any project in the workspace, project build aborted.");
+        return;
+    }
 
     const PROJECT_FILE = Common.PROJECT_FILE;
     const POM_FILE = Common.POM_FILE;
@@ -43,40 +60,36 @@ export function createDeployableArchive() {
     SubDirectories.REGISTRY_RESOURCES, SubDirectories.DATA_SERVICE, SubDirectories.MEDIATOR_PROJECT];
 
 
-    if (workspace.workspaceFolders) {
-        let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
-
-        //check build plugins in root pom.xml
-        let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
-        if (!fse.existsSync(rootPomFilePath)) {
-            window.showErrorMessage("No root pom.xml found, project build aborted.");
-            TerminalModule.printLogMessage(`${rootPomFilePath} does not exists. Project build aborted.`);
-            return;
-        }
-        Utils.checkBuildPlugins(rootPomFilePath, SubDirectories.MULTI_MODULE);
-
-        fileSystem.readdir(rootDirectory, (err: any, files: any) => {
-            if (err)
-                TerminalModule.printLogMessage(err);
-            else {
-                files.forEach((file: any) => {
-                    let projConfigFilePath: string = path.join(rootDirectory, file, PROJECT_FILE);
-                    let pomFilePath: string = path.join(rootDirectory, file, POM_FILE);
-                    Utils.checkPathExistence(pomFilePath).then(exists => {
-                        if (exists) {
-                            let directoryType: string = Utils.getDirectoryType(projConfigFilePath);
-
-                            if (directoryTypes.indexOf(directoryType) !== -1) {
-                                Utils.checkBuildPlugins(pomFilePath, directoryType);
-                            }
-                        }
-                    });
-
-                })
-            }
-            executeProjectBuildCommand(rootDirectory);
-        });
+    let rootPomFilePath: string = path.join(rootDirectory, POM_FILE);
+    if (!fse.existsSync(rootPomFilePath)) {
+        window.showErrorMessage("No root pom.xml found, project build aborted.");
+        TerminalModule.printLogMessage(`${rootPomFilePath} does not exists. Project build aborted.`);
+        return;
     }
+    Utils.checkBuildPlugins(rootPomFilePath, SubDirectories.MULTI_MODULE);
+
+    fileSystem.readdir(rootDirectory, (err: any, files: any) => {
+        if (err)
+            TerminalModule.printLogMessage(err);
+        else {
+            files.forEach((file: any) => {
+                let projConfigFilePath: string = path.join(rootDirectory, file, PROJECT_FILE);
+                let pomFilePath: string = path.join(rootDirectory, file, POM_FILE);
+                Utils.checkPathExistence(pomFilePath).then(exists => {
+                    if (exists) {
+                        let directoryType: string = Utils.getDirectoryType(projConfigFilePath);
+
+                        if (directoryTypes.indexOf(directoryType) !== -1) {
+                            Utils.checkBuildPlugins(pomFilePath, directoryType);
+                        }
+                    }
+                });
+
+            })
+        }
+        executeProjectBuildCommand(rootDirectory);
+    });
+
 }
 
 export async function createZipArchive() {
@@ -92,7 +105,7 @@ export async function createZipArchive() {
     }
 
     //get the destination folder
-    const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
+    const targetLocation: string | null = await chooseTargetFolder(targetFolderHint, "Select Destination Folder");
 
     if (workspace.workspaceFolders && targetLocation) {
 
@@ -137,7 +150,7 @@ export async function unzipArchive() {
         if (targetLocation) {
 
             //get the destination directory
-            const destinationLocation: string | null = await chooseTargetFolder(targetFolderHint);
+            const destinationLocation: string | null = await chooseTargetFolder(targetFolderHint, "Select Destination Folder");
 
             if (destinationLocation) {
                 await extract(targetLocation, { dir: destinationLocation })
@@ -187,7 +200,7 @@ export async function createProjectFromCar() {
             }
 
             //get the destination directory
-            const newProjectLocation: string | null = await chooseTargetFolder(targetFolderHint);
+            const newProjectLocation: string | null = await chooseTargetFolder(targetFolderHint, "Select Destination Folder");
 
             if (newProjectLocation) {
                 ArchiveModule.createProject(targetCarFileLocation, newProjectLocation, artifactId, groupId);
@@ -199,3 +212,4 @@ export async function createProjectFromCar() {
 
     }
 }
+

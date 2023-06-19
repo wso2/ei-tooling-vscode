@@ -16,16 +16,24 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import { Uri, window, commands, workspace, WorkspaceEdit } from "vscode";
-import { chooseTargetFolder, showInputBoxForArtifactId, showInputBoxForGroupId } from "../utils/uiUtils";
+import { Uri, window, commands, workspace } from "vscode";
+import { chooseTargetFolder } from "../utils/uiUtils";
 import { Utils } from "../utils/Utils";
-import { executeProjectCreateCommand } from "../mavenInternals/commandHandler";
-import { ARCHETYPE_ARTIFACT_ID, ARCHETYPE_GROUP_ID, ARCHETYPE_VERSION, GROUP_ID_PREFIX } from "./archetypeUtils";
-import * as fse from "fs-extra";
 import * as path from 'path';
+import { Common } from "../artifacts/artifactUtils";
+import { ArtifactModule } from "../artifacts/ArtifactModule";
+import { ConnectorModule } from "../connector/ConnectorModule";
+import { DataServiceModule } from "../dataService/DataServiceModule";
+import { MediatorProjectModule } from "../mediatorProject/MediatorProjectModule";
+import { ServerRoleInfo } from "../artifacts/artifactUtils";
+let DOM = require('xmldom').DOMParser;
+const fs = require('fs');
 
 export namespace ArchetypeModule {
 
+    const POM = Common.POM;
+    const CONF = Common.CONF;
+    const TEMPLATES = Common.TEMPLATES;
     export interface ESBProject {
         archetypeGroupId: string;
         archetypeArtifactId: string;
@@ -38,49 +46,42 @@ export namespace ArchetypeModule {
     /**
      * Create new ESB Project from esb-project-archetype.
      */
-    export async function createESBProject(): Promise<void> {
-        let artifactID: string | undefined = await showInputBoxForArtifactId();
-        let groupID: string | undefined = await showInputBoxForGroupId();
-
-        // Ensure that artifactID name is valid.
-        while (typeof artifactID !== "undefined" && !Utils.validate(artifactID)) {
-            window.showErrorMessage("Enter valid ArtifactId!!");
-            artifactID = await showInputBoxForArtifactId();
-        }
-
-        // Ensure that groupID name is valid.
-        while (typeof groupID !== "undefined" && !Utils.validateGroupId(groupID)) {
-            window.showErrorMessage("Enter valid GroupId!!");
-            groupID = await showInputBoxForGroupId();
-        }
-
-        if (typeof artifactID === "undefined" || typeof groupID === "undefined") {
-            return;
-        }
-
-        // Set home dir as the target folder hint.
-        const homedir: string = require('os').homedir();
-        const targetFolderHint = Uri.file(homedir);
-        const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
-
-        if (artifactID && artifactID.length > 0 && groupID && groupID.length > 0 && targetLocation) {
-
-            const newProject: ESBProject = {
-                archetypeGroupId: ARCHETYPE_GROUP_ID,
-                archetypeArtifactId: ARCHETYPE_ARTIFACT_ID,
-                archetypeVersion: ARCHETYPE_VERSION,
-                groupId: groupID,
-                artifactId: artifactID
-            };
-
-            let newProjectDirectory: string = path.join(targetLocation, artifactID);
-            if(fse.existsSync(newProjectDirectory)){
+    export async function createESBProject(message: any): Promise<void> {
+        const targetLocation: string = String(workspace.getConfiguration('wso2').get('workspace'));
+        if (message.artifactID && message.artifactID.length > 0 && message.groupID && message.groupID.length > 0 && targetLocation) {
+            let newProjectDirectory: string = path.join(targetLocation, message.artifactID);
+            if (fs.existsSync(newProjectDirectory)) {
                 window.showErrorMessage("Project name already exists...!");
                 return;
             }
+            let templatePomFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, POM, "rootPom.xml");
+            let templateProjNatureFilePath: string = path.join(__dirname, "..", "..", TEMPLATES, CONF, "multiModuleProject.xml");
+            await Utils.createRootProject(targetLocation, message.artifactID, templatePomFilePath,
+                templateProjNatureFilePath, message.groupID, message.version);
 
-            // Execute command handler that runs maven project generate.
-            await executeProjectCreateCommand(newProject, targetLocation);
+            // create sub modules
+            let rootDirectory: string = path.join(targetLocation, message.artifactID);
+            let projectName: string = message.artifactID.trim();
+            if (message.enableEsbConfigs === true && message.configsProjectName) {
+                ArtifactModule.CreateNewESBConfigProject(rootDirectory, message.configsProjectName.trim());
+            }
+            if (message.enableComposite === true && message.compositeProjectName) {
+                Utils.CreateNewCompositeExporterProject(rootDirectory, message.compositeProjectName.trim());
+            }
+            if (message.enableRegistry === true && message.registryProjectName) {
+                ArtifactModule.CreateNewRegistryResourcesProject(rootDirectory, message.registryProjectName.trim());
+            }
+            if (message.enableConnector === true && message.connectorProjectName) {
+                ConnectorModule.createNewConnectorExporter(rootDirectory, message.connectorProjectName.trim());
+            }
+            if(message.enableDataService === true && message.dataServiceProjectName){
+                DataServiceModule.createProject(message.dataServiceProjectName.trim(), rootDirectory);
+            }
+            if(message.enableMediator === true && message.mediatorProjectName && message.classGroupId && message.className){
+                MediatorProjectModule.createProject(rootDirectory, message.mediatorProjectName.trim(), message.classGroupId.trim(), "1.0.0", ServerRoleInfo.ENTERPRISE_INTEGRATOR, message.className.trim());
+            }
+            // switch to file explorer view
+            commands.executeCommand('workbench.view.explorer');
         }
     }
 
@@ -89,7 +90,7 @@ export namespace ArchetypeModule {
         const targetFolderHint = Uri.file(homedir);
 
         //get the target folder
-        const targetLocation: string | null = await chooseTargetFolder(targetFolderHint);
+        const targetLocation: string | null = await chooseTargetFolder(targetFolderHint, "Select Destination Folder");
 
         if (targetLocation) {
 

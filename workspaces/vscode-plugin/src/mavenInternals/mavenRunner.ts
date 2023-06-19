@@ -47,8 +47,9 @@ export class Runner {
             if (code === 0) {
                 window.showInformationMessage("Maven process successfully executed");
                 if (nwd && goal === this.CreateProject) {
-                    Utils.createVsCodeSettingsFile(nwd);
-                    commands.executeCommand('vscode.openFolder', Uri.file(nwd), true);
+                    // one config file created for the workspace
+                    //Utils.createVsCodeSettingsFile(nwd);
+                    //commands.executeCommand('vscode.openFolder', Uri.file(nwd), false);
                 }
             } else if (code === 1) {
                 window.showInformationMessage("Maven process failed.");

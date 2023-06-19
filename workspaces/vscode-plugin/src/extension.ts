@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import { commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace } from 'vscode';
+import { commands, ExtensionContext, RelativePattern, TextDocument, Uri, window, workspace, StatusBarAlignment, ConfigurationTarget, WorkspaceConfiguration } from 'vscode';
 import { changeLanguageToSynapse, setLanguageToSynapse } from './language';
 import { launch as launchServer } from './server';
 import { ArchetypeModule } from "./archetype/ArchetypeModule";
@@ -47,12 +47,21 @@ import { SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
 import { Utils } from './utils/Utils';
 import { TerminalModule } from './logging/TerminalModule';
+import { GettingStarted } from './webviews/forms_wizards/GettingStarted';
+import { NewIntegrationWizard } from './webviews/forms_wizards/NewIntegrationWizard';
+import { SampleWizard } from './webviews/forms_wizards/SampleWizard';
+import * as fs from 'fs';
+import { WorkspaceFolder } from 'vscode-languageserver-protocol';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
 const chokidar = require('chokidar');
+var gettingStartedProvider: GettingStarted;
 
 export function activate(context: ExtensionContext) {
+
+    // set pluing path in global variable since we only have access to context in activate method
+    (global as any).pluginPath = context.extensionPath;
 
     // register commands
     registerSynapseCommands(context);
@@ -133,9 +142,83 @@ export function activate(context: ExtensionContext) {
         }
     }
 
+    const item = window.createStatusBarItem(StatusBarAlignment.Right);
+    item.text = "$(flame)"
+    item.command = "ShowGettingStartedPage"
+    item.tooltip = "Getting Started"
+    item.show()
+
+    const sampleItem = window.createStatusBarItem(StatusBarAlignment.Right);
+    sampleItem.text = "$(symbol-event)"
+    sampleItem.command = "CreateNewSamplePage"
+    sampleItem.tooltip = "Samples"
+    sampleItem.show()
+
+    const buildItem = window.createStatusBarItem(StatusBarAlignment.Right);
+    buildItem.text = "$(settings-gear)"
+    buildItem.command = "wso2ei.project.build"
+    buildItem.tooltip = "Build CAPP"
+    buildItem.show()
+
+    gettingStartedProvider = new GettingStarted(context.extensionPath);
+    context.subscriptions.push(
+        window.registerWebviewViewProvider(GettingStarted.viewType, gettingStartedProvider));
+}
+
+// update workspace folders when changed
+workspace.onDidChangeWorkspaceFolders((event) => {
+    SampleWizard.currentPanel?._panel.webview.postMessage({ command: 'WorkspaceChanged', data: getWorkspaceFolders() });
+});
+
+// theme change listener
+workspace.onDidChangeConfiguration((event) => {
+    if (event.affectsConfiguration('workbench.colorTheme')) {
+        const choice = window.showInformationMessage(
+            'Theme change detected, Do you want to reload?',
+            'OK',
+            'Cancel'
+        );
+        choice.then((choice) => {
+            if (choice === 'OK') {
+                commands.executeCommand('workbench.action.reloadWindow');
+            }
+        });
+    }
+});
+
+function getWorkspaceFolders() {
+    const folders = workspace.workspaceFolders;
+    var subFolders: string[] = [];
+    if (folders) {
+        // Iterate over the workspace folders
+        for (let i = 0; i < folders.length; i++) {
+            const folderPath = folders[i].uri.fsPath;
+            // Read the contents of the folder
+            fs.readdirSync(folderPath).forEach(file => {
+                // check whether the folder is a sub folder
+                if (fs.statSync(path.join(folderPath, file)).isDirectory()) {
+                    subFolders.push(file);
+                }
+            });
+        }
+    }
+    return subFolders;
 }
 
 function registerSynapseCommands(context: ExtensionContext) {
+
+    context.subscriptions.push(commands.registerCommand("ShowGettingStartedPage", async () => {
+        gettingStartedProvider.view?.show(true);
+    }));
+
+    context.subscriptions.push(commands.registerCommand("CreateNewIntegrationProjectPage", async () => {
+        NewIntegrationWizard.render(context.extensionPath, getWorkspaceFolders());
+    }));
+
+    context.subscriptions.push(commands.registerCommand("CreateNewSamplePage", async () => {
+        SampleWizard.render(context.extensionPath, getWorkspaceFolders());
+    }));
+
     context.subscriptions.push(commands.registerCommand("wso2ei.extension.activate", async () => {
         window.showInformationMessage('Synapse Extension activated!');
     }));
@@ -148,10 +231,11 @@ function registerSynapseCommands(context: ExtensionContext) {
         }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.project.create", async () => {
-        await ArchetypeModule.createESBProject();
+        //await ArchetypeModule.createESBProject();
     }));
-    context.subscriptions.push(commands.registerCommand("wso2ei.project.build", async () => {
-        createDeployableArchive();
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.build", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        createDeployableArchive(filePath);
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.project.create.esb", async () => {
         await createESBProject();
@@ -165,8 +249,9 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2ei.project.import", async () => {
         ArchetypeModule.importProject();
     }));
-    context.subscriptions.push(commands.registerCommand("wso2ei.project.zip", async () => {
-        createZipArchive();
+    context.subscriptions.push(commands.registerCommand("wso2ei.project.zip", async (Uri: Uri | undefined) => {
+        let filePath: string | undefined = checkUriExistence(Uri);
+        await createZipArchive();
     }));
 
     context.subscriptions.push(commands.registerCommand("wso2ei.project.unzip", async () => {

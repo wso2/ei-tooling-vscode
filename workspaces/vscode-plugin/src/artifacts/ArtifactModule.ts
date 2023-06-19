@@ -62,7 +62,10 @@ export namespace ArtifactModule {
             let targetArtifactFolderPath: string;
             let esbConfigsDirectory: string;
             let directoryPattern: string = path.join(SRC, MAIN, SYNAPSE_CONFIG);
-            let rootDirectory: string = workspace.workspaceFolders[0].uri.fsPath;
+            var tempDir = pathToTargetFolder?.replace(path.join(directoryPattern, targetFolder), "") ?? "";
+            // remove configsProject path and get the root directory
+            tempDir = tempDir.substring(0, tempDir.length - 1);
+            let rootDirectory: string = tempDir.substring(0, tempDir.lastIndexOf(path.sep));
             if (typeof pathToTargetFolder === "undefined") {
                 esbConfigsDirectory = Utils.getDirectoryFromDirectoryType(SubDirectories.CONFIGS,
                     rootDirectory).trim();
