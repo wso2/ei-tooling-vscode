@@ -19,7 +19,7 @@
 
 import {
     Api, InSequence, Log, Mediator, OutSequence, Proxy, Resource, Send, Visitor, Call, CallTemplate, Drop, LoopBack,
-    Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, Validate, Bean, Class, Command, Ejb, 
+    Property, PropertyGroup, Sequence, Store, ConditionalRouter, Filter, Switch, Validate, Bean, Class, Command, Ejb,
     Script, Spring, Enrich, Fault, Header, PayloadFactory, Smooks, URLrewrite, XQuery, XSLT, DataMapper, FastXSLT,
     JsonTransform, DataServiceCall, Cache, DBLookup, DBReport, Enqueue, Event, Throttle, Transaction, Aggregate,
     Callout, Clone, Iterate, ForEach, Entitlement, Oauth, Ntlm, Builder, Rule, Bam, Publish, Respond
@@ -85,6 +85,28 @@ import { PublishViewState } from "../ViewState/publish";
 
 export const DEFAULT_SHAPE_DIMENSION = 70;
 export const COMPONENT_GAP = 20;
+
+function updateCircleViewState(node: any, viewState: any) {
+    console.log("test - 1 view state");
+    // if (node.children !== undefined && node.children.length > 0) {
+    //     let height = COMPONENT_GAP;
+
+    //     node.children.forEach((child: any) => {
+    //         const childVS = child.viewState as any;
+    //         if (childVS !== undefined) {
+    //             height += childVS.bBox.h + COMPONENT_GAP;
+    //         }
+    //     });
+
+    //     viewState.bBox.r = height / 2;
+    //     viewState.bBox.h = height;
+    //     viewState.bBox.w = height;
+    // } else {
+    //     viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
+    //     viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
+    //     viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
+    // }
+}
 
 export class SizingVisitor implements Visitor {
 
@@ -249,1002 +271,280 @@ export class SizingVisitor implements Visitor {
     endVisitLog?(node: Log) {
         if (node.viewState) {
             const viewState: LogViewState = node.viewState as LogViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitRespond?(node: Respond) {
         if (node.viewState) {
             const viewState: RespondViewState = node.viewState as RespondViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitSend?(node: Send) {
         if (node.viewState) {
             const viewState: SendViewState = node.viewState as SendViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-                let width = 0;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        width += childVS.bBox.w + COMPONENT_GAP;
-                        if (height < childVS.bBox.h) {
-                            height = childVS.bBox.h;
-                        }
-                    }
-                })
-
-                viewState.bBox.w = width;
-                viewState.bBox.h = height + COMPONENT_GAP;
-            } else {
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitPublish?(node: Publish) {
         if (node.viewState) {
             const viewState: PublishViewState = node.viewState as PublishViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitScript?(node: Script) {
         if (node.viewState) {
             const viewState: ScriptViewState = node.viewState as ScriptViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitSequence?(node: Sequence) {
         if (node.viewState) {
             const viewState: SequenceViewState = node.viewState as SequenceViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitSmooks?(node: Smooks) {
         if (node.viewState) {
             const viewState: SmooksViewState = node.viewState as SmooksViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitSpring?(node: Spring) {
         if (node.viewState) {
             const viewState: SpringViewState = node.viewState as SpringViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitStore?(node: Store) {
         if (node.viewState) {
             const viewState: StoreViewState = node.viewState as StoreViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitTransaction?(node: Transaction) {
         if (node.viewState) {
             const viewState: TransactionViewState = node.viewState as TransactionViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitURLrewrite?(node: URLrewrite) {
         if (node.viewState) {
             const viewState: URLrewriteViewState = node.viewState as URLrewriteViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitXQuery?(node: XQuery) {
         if (node.viewState) {
             const viewState: XQueryViewState = node.viewState as XQueryViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitXSLT?(node: XSLT) {
         if (node.viewState) {
             const viewState: XSLTViewState = node.viewState as XSLTViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitBam?(node: Bam) {
         if (node.viewState) {
             const viewState: BamViewState = node.viewState as BamViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitBean?(node: Bean) {
         if (node.viewState) {
             const viewState: BeanViewState = node.viewState as BeanViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState); 
         }
     }
 
     endVisitBuilder?(node: Builder) {
         if (node.viewState) {
             const viewState: BuilderViewState = node.viewState as BuilderViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitCallout?(node: Callout) {
         if (node.viewState) {
             const viewState: CalloutViewState = node.viewState as CalloutViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitCallTemplate?(node: CallTemplate) {
         if (node.viewState) {
             const viewState: CallTemplateViewState = node.viewState as CallTemplateViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitClass?(node: Class) {
         if (node.viewState) {
             const viewState: ClassViewState = node.viewState as ClassViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitCommand?(node: Command) {
         if (node.viewState) {
             const viewState: CommandViewState = node.viewState as CommandViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitConditionalRouter?(node: ConditionalRouter) {
         if (node.viewState) {
             const viewState: ConditionalRouterViewState = node.viewState as ConditionalRouterViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitDataMapper?(node: DataMapper) {
         if (node.viewState) {
             const viewState: DataMapperViewState = node.viewState as DataMapperViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitDataServiceCall?(node: DataServiceCall) {
         if (node.viewState) {
             const viewState: DataServiceCallViewState = node.viewState as DataServiceCallViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState); 
         }
     }
 
     endVisitDBLookup?(node: DBLookup) {
         if (node.viewState) {
             const viewState: DBLookupViewState = node.viewState as DBLookupViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitDBReport?(node: DBReport) {
         if (node.viewState) {
             const viewState: DBReportViewState = node.viewState as DBReportViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitDrop?(node: Drop) {
         if (node.viewState) {
             const viewState: DropViewState = node.viewState as DropViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitEjb?(node: Ejb) {
         if (node.viewState) {
             const viewState: EjbViewState = node.viewState as EjbViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitEnqueue?(node: Enqueue) {
         if (node.viewState) {
             const viewState: EnqueueViewState = node.viewState as EnqueueViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitEnrich?(node: Enrich) {
         if (node.viewState) {
             const viewState: EnrichViewState = node.viewState as EnrichViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitEvent?(node: Event) {
         if (node.viewState) {
             const viewState: EventViewState = node.viewState as EventViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitFastXSLT?(node: FastXSLT) {
         if (node.viewState) {
             const viewState: FastXSLTViewState = node.viewState as FastXSLTViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitFault?(node: Fault) {
         if (node.viewState) {
             const viewState: FaultViewState = node.viewState as FaultViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitHeader?(node: Header) {
         if (node.viewState) {
             const viewState: HeaderViewState = node.viewState as HeaderViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitJsonTransform?(node: JsonTransform) {
         if (node.viewState) {
             const viewState: JsonTransformViewState = node.viewState as JsonTransformViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitLoopBack?(node: LoopBack) {
         if (node.viewState) {
             const viewState: LoopBackViewState = node.viewState as LoopBackViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitNtlm?(node: Ntlm) {
         if (node.viewState) {
             const viewState: NtlmViewState = node.viewState as NtlmViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitOauth?(node: Oauth) {
         if (node.viewState) {
             const viewState: OauthViewState = node.viewState as OauthViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitPayloadFactory?(node: PayloadFactory) {
         if (node.viewState) {
             const viewState: PayloadFactoryViewState = node.viewState as PayloadFactoryViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitProperty?(node: Property) {
         if (node.viewState) {
             const viewState: PropertyViewState = node.viewState as PropertyViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
     endVisitPropertyGroup?(node: PropertyGroup) {
         if (node.viewState) {
             const viewState: PropertyGroupViewState = node.viewState as PropertyGroupViewState;
-
-            if (node.children !== undefined && node.children.length > 0) {
-                let height = COMPONENT_GAP;
-
-                node.children.forEach(child => {
-                    const childVS = child.viewState as any;
-                    if (childVS !== undefined) {
-                        height += childVS.bBox.h + COMPONENT_GAP;
-                    }
-                })
-
-                viewState.bBox.r = height / 2;
-                viewState.bBox.h = height;
-                viewState.bBox.w = height;
-            } else {
-                viewState.bBox.r = DEFAULT_SHAPE_DIMENSION / 2;
-                viewState.bBox.h = DEFAULT_SHAPE_DIMENSION;
-                viewState.bBox.w = DEFAULT_SHAPE_DIMENSION;
-            }
+            updateCircleViewState(node, viewState);
         }
     }
 
