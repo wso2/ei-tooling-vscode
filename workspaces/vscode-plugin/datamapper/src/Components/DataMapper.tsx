@@ -1,13 +1,13 @@
-import NodeManager from "./Diagram/NodeManager";
-import UploadIcon from "./FileUpload/UploadIcon";
+import NodeManager from './Diagram/NodeManager'
+import UploadIcon from './FileUpload/UploadIcon'
 
 const DataMapper = () => {
-  return (
-    <>
-      <UploadIcon />
-      <NodeManager />
-    </>
-  );
-};
+    return (
+        <>
+            <UploadIcon />
+            <NodeManager/>
+        </>
+    )
+}
 
-export default DataMapper;
+export default DataMapper

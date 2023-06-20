@@ -12,8 +12,6 @@ import { FileContext } from './../ContextProvider/FileContext';
 import { Cached, Delete,FitScreen } from '@mui/icons-material';
 import { DiagramStyles } from './styles';
 import { Button, Tooltip } from '@mui/material';
-import DataMapperPortModel from '../Port/DataMapperPort/DataMapperPortModel';
-import { IntermediatePortModel } from '../Port/IntermediatePort/IntermediatePortModel';
 
 export var TotNodes: CustomNodeModel[] = [];
 const defaultModelOptions = { zoom: 90 };
@@ -22,7 +20,6 @@ interface vscode {
 }
 declare const vscode: vscode;
 
-//Main diagram component
 const DataMapperDiagram = () => {
     const classes = DiagramStyles();
     const [engine, setEngine] = React.useState(createEngine({ registerDefaultZoomCanvasAction: true }));
@@ -57,6 +54,7 @@ const DataMapperDiagram = () => {
                 setTimeout(() => {
                     engine.setModel(model);
                 }, 0);
+                vscode.postMessage({ command: 'success_alert', text: 'diagram updated successfully' });
             }
         };
         vscode.postMessage({ command: "deserializing" });
@@ -72,25 +70,20 @@ const DataMapperDiagram = () => {
             setLinks(AllLinks);
 
             const diagramLink: any = [];
-            const currentLinks = engine.getModel().getLinks().map(link => new DataMapperLinkModel());
+            const currentLinks = engine.getModel().getLinks();
             currentLinks.forEach((link) => {
-                const sourcePort = link.getSourcePort() as DataMapperPortModel| IntermediatePortModel;
-                const targetPort = link.getTargetPort() as DataMapperPortModel| IntermediatePortModel;
-                const sourceNode = sourcePort?.getParent() as CustomNodeModel;
-                const targetNode = targetPort?.getParent() as CustomNodeModel;
-               
                 const Link = {
                     sourcePort: {
-                        nodeId: sourceNode?.getName(),
-                        portId: sourcePort?.getName(),
-                        ID: sourceNode?.getID(),
-                        alignment: sourcePort?.getPortType()
+                        nodeId: link.getSourcePort()?.getParent()?.getName(),
+                        portId: link.getSourcePort()?.getName(),
+                        ID: link.getSourcePort()?.getParent()?.getID(),
+                        alignment: link.getSourcePort()?.getPortType()
                     },
                     targetPort: {
-                        nodeId:targetNode?.getName(),
-                        portId: targetPort?.getName(),
-                        ID: targetNode?.getID(),
-                        alignment: targetPort?.getPortType()
+                        nodeId: link.getTargetPort()?.getParent()?.getName(),
+                        portId: link.getTargetPort()?.getName(),
+                        ID: link.getTargetPort()?.getParent()?.getID(),
+                        alignment: link.getTargetPort()?.getPortType()
                     },
                     isChecked: false,
                     linkId: link.getOptions().id

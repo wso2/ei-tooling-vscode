@@ -1,7 +1,7 @@
-import { IntermediatePortFactory } from "./IntermediatePort/IntermediatePortFactory";
-import { DataMapperPortFactory } from "./DataMapperPort/DataMapperPortFactory";
+import { IntermediatePortFactory } from './IntermediatePort/IntermediatePortFactory';
+import { DataMapperPortFactory } from './DataMapperPort/DataMapperPortFactory';
 
 export const portFactories = [
-  new IntermediatePortFactory(),
-  new DataMapperPortFactory(),
+    new IntermediatePortFactory(),
+    new DataMapperPortFactory(),
 ];

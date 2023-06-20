@@ -6,10 +6,10 @@ import { SubStringNodeFactory } from "./String/SubString/SubStringNodeFactory";
 import { TransformNodeFactory } from "./String_Transform_TypeConversion/TransformNodeFactory";
 
 export const nodeFactories = [
-  new InputsNodeFactory(),
-  new DataMapperNodeFactory(),
-  new JoinNodeFactory(),
-  new TransformNodeFactory(),
-  new SplitNodeFactory(),
-  new SubStringNodeFactory(),
+    new InputsNodeFactory(),
+    new DataMapperNodeFactory(),
+    new JoinNodeFactory(),
+    new TransformNodeFactory(),
+    new SplitNodeFactory(),
+    new SubStringNodeFactory(),
 ];

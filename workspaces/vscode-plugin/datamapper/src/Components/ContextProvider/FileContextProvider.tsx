@@ -20,5 +20,3 @@ const FileContextProvider: React.FC<FileContextProviderProps> = ({ children }) =
 };
 
 export default FileContextProvider;
-
-
