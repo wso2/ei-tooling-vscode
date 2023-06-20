@@ -166,7 +166,7 @@ class DiagramPanel {
             {
                 methodName: "gotoSource",
                 handler: async (args: any[]): Promise<boolean> => {
-                    const filePath = "C:/Users/Chevon/Documents/vscodeAPI/extension.xml";
+                    const filePath = args[0];
                     const position: { startLine: number, startColumn: number } = args[1];
                     if (!existsSync(filePath)) {
                         return false;
@@ -185,7 +185,7 @@ class DiagramPanel {
                 methodName: "getFileContent",
                 handler: async (args: any[]): Promise<string | undefined> => {
                     // Get the active text editor
-                    const filePath = "C:/Users/Chevon/Documents/vscodeAPI/extension.xml";
+                    const filePath = args[0];
                     const doc = workspace.textDocuments.find((doc) => doc.fileName === filePath);
                     if (doc) {
                         return doc.getText();
