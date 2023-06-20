@@ -1,4 +1,4 @@
-import {  MouseEvent } from 'react';
+import { KeyboardEvent, MouseEvent } from 'react';
 import { Action, ActionEvent, InputType, State } from '@projectstorm/react-canvas-core';
 import { DiagramEngine, PortModel } from '@projectstorm/react-diagrams-core';
 import DataMapperPortModel from '../Port/DataMapperPort/DataMapperPortModel';
@@ -38,8 +38,10 @@ export class CreateLinkState extends State<DiagramEngine> {
                                 this.eject();
                             }
                         } else if (element instanceof IntermediatePortModel) {
+                            console.log("Intermediate Port");
                             if (element.portType === "OUT") {
                                 this.sourcePort = element;
+                                console.log("Intermediate port model port type OUT")
                                 element.fireEvent({}, "mappingStartedFrom");
                                 element.linkedPorts.forEach((linkedPort) => {
                                     linkedPort.fireEvent({}, "disableNewLinking")
@@ -48,6 +50,7 @@ export class CreateLinkState extends State<DiagramEngine> {
                                 if (link) {
                                     link.setSourcePort(element);
                                     this.link = link;
+                                    console.log("Intermediate link");
                                 }
                             } else {
                                 element.fireEvent({}, "mappingStartedTo");

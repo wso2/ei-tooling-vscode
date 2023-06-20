@@ -15,6 +15,7 @@ export const IntermediatePortWidget: React.FC<IntermediatePortWidgetProps> = (pr
     const [active, setActive] = React.useState(false);
     const checkedIcon = <RadioButtonChecked color="disabled" sx={{ fontSize: '13px', color: 'white' }} />;
     const uncheckedIcon = <RadioButtonUnchecked color="disabled" sx={{ fontSize: '13px', color: 'white' }} />;
+    //const hasLinks = Object.entries(port.links).length > 0;
 
     React.useEffect(() => {
         port.registerListener({
@@ -29,11 +30,11 @@ export const IntermediatePortWidget: React.FC<IntermediatePortWidgetProps> = (pr
             <div className={classes.joinPort} >
                 {port.portType === 'OUT' ? (
                     <div className={classes.portLabel}>
-                        {port.getName()} <span className={classes.LabelLeft}>{active ? checkedIcon : uncheckedIcon}</span>
+                        {port.getName()} <span style={{paddingLeft :'2px'}}>{active ? checkedIcon : uncheckedIcon}</span>
                     </div>
                 ) : (
                     <div className={classes.portIcon} >
-                        <span className={classes.LabelRight}>{active ? checkedIcon : uncheckedIcon}</span>{port.getName()}
+                        <span style={{paddingRight:'2px'}}>{active ? checkedIcon : uncheckedIcon}</span>{port.getName()}
                     </div>
                 )}
             </div>
