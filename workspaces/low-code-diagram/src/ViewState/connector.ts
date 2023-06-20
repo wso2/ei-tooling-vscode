@@ -17,10 +17,9 @@
  *
  */
 
-import {ViewState} from "./view-state";
-import {SimpleBBox} from "./simple-bbox";
+import { ViewState } from "./view-state";
+import { SimpleBBox } from "./simple-bbox";
 
 export class ConnectorViewState extends ViewState {
-
     public dataProcess: SimpleBBox = new SimpleBBox();
 }
