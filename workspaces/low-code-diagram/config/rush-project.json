@@ -1,13 +1,3 @@
 {
-    "operationSettings": [
-        {
-            "operationName": "build",
-            "outputFolderNames": [
-                "dist",
-                "build",
-                "build-app",
-                "lib"
-            ]
-        }
-    ]
+    "extends": "../../syntax-tree/config/rush-project.json"
 }

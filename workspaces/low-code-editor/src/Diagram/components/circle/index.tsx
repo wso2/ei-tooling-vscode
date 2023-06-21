@@ -162,8 +162,8 @@ export function CircleComponent(props: SquareProps) {
                 stroke-width="3"
                 fill="#fff"
                 onClick={handleButtonClick}
-                onMouseOver={handlerHover}
-                onMouseLeave={handlerHoverClose}
+                // onMouseOver={handlerHover}
+                // onMouseLeave={handlerHoverClose}
             />
 
             {/*</Tooltip>*/}
