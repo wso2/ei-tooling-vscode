@@ -36,7 +36,6 @@ export class SimpleBBox {
     public labelWidth: number = 0;
     public offsetFromBottom: number = DefaultConfig.offSet;
     public offsetFromTop: number = DefaultConfig.offSet;
-
     public x1: number = 0;
     public x2: number = 0;
     public y1: number = 0;

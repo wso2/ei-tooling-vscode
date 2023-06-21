@@ -17,55 +17,48 @@
  *
  */
 
-import {ShapeKindChecker} from "@wso2-ei/low-code-diagram/lib";
+import { ShapeKindChecker } from "@wso2-ei/low-code-diagram/lib";
 import { Shape } from "@wso2-ei/low-code-diagram/lib";
 import { getComponent } from "./util";
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { Context as DiagramContext } from "../Contexts/diagram";
 
 export function LowCodeDiagram() {
+  const {
+    api: {
+      code: { gotoSource },
+      ls: { getDiagramEditorLangClient },
+    },
+    props: { syntaxTree },
+  } = useContext(DiagramContext);
 
-    const {
-        api: {
-            code: {
-                gotoSource
-            },
-            ls: {
-                getDiagramEditorLangClient
-            }
-        },
-        props: {
-            syntaxTree
-        },
-    } = useContext(DiagramContext);
+  const model = syntaxTree;
 
-    const model = syntaxTree;
+  const components: JSX.Element[] = [];
 
-    const components: JSX.Element[] = [];
+  let height = 0;
+  let width = 0;
 
-    let height = 0
-    let width = 0;
+  if (model) {
+    components.push(getComponent(model.tag, { model }));
 
-    if (model) {
-        components.push(getComponent(model.tag, { model }));
+    const viewState = (model as Shape).viewState;
 
-        const viewState = (model as Shape).viewState;
-
-        if (ShapeKindChecker.isCircleShape(model as Shape)) {
-            height = viewState.bBox.h;
-            width = viewState.bBox.r * 2 + 10;
-        } else {
-            height = viewState.bBox.h;
-            width = viewState.bBox.w;
-        }
+    if (ShapeKindChecker.isCircleShape(model as Shape)) {
+      height = viewState.bBox.h;
+      width = viewState.bBox.r * 2 + 10;
+    } else {
+      height = viewState.bBox.h;
+      width = viewState.bBox.w;
     }
+  }
 
-    return (
-        <>
-            <div id={'canvas-overlay'} className={"overlayContainer"} />
-            <svg width={width} height={height}>
-                {components}
-            </svg>
-        </>
-    )
+  return (
+    <>
+      <div id={"canvas-overlay"} className={"overlayContainer"} />
+      <svg width={width} height={height}>
+        {components}
+      </svg>
+    </>
+  );
 }
