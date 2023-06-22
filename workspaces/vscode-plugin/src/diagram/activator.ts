@@ -17,7 +17,7 @@
  *
  */
 
-import {ExtendedLangClient} from "../extended-language.client";
+import { ExtendedLangClient } from "../extended-language.client";
 import {
     commands,
     Disposable,
@@ -29,14 +29,14 @@ import {
     workspace,
     WorkspaceEdit
 } from "vscode";
-import {DiagramOptions} from "./model";
-import {join, sep} from "path";
-import {WebViewRPCHandler} from "../rpc/handler";
-import {existsSync, readFileSync} from "fs";
-import {render} from "./renderer";
-import {getCommonWebViewOptions} from "../utils/webview-utils";
-import {WebViewMethod} from "../rpc/model";
-import {SYNAPSE_LANGUAGE_ID} from "../language/languageUtils";
+import { DiagramOptions } from "./model";
+import { join, sep } from "path";
+import { WebViewRPCHandler } from "../rpc/handler";
+import { existsSync, readFileSync } from "fs";
+import { render } from "./renderer";
+import { getCommonWebViewOptions } from "../utils/webview-utils";
+import { WebViewMethod } from "../rpc/model";
+import { SYNAPSE_LANGUAGE_ID } from "../language/languageUtils";
 
 let diagramElement: DiagramOptions | undefined = undefined;
 let langClient: ExtendedLangClient;
@@ -57,7 +57,7 @@ export function activate(extendedLangClient: ExtendedLangClient, context: Extens
         if (args.length > 0) {
             path = args[0];
         } else {
-            if(window.activeTextEditor) {
+            if (window.activeTextEditor) {
                 path = window.activeTextEditor.document.uri.fsPath;
             } else {
                 path = '';
@@ -81,7 +81,7 @@ export function activate(extendedLangClient: ExtendedLangClient, context: Extens
 }
 
 export async function showDiagramEditor(startLine: number, startColumn: number, filePath: string,
-                                        isCommand: boolean = false): Promise<void> {
+    isCommand: boolean = false): Promise<void> {
 
     const editor = window.activeTextEditor;
     if (isCommand) {
@@ -140,6 +140,7 @@ class DiagramPanel {
     private constructor(panel: WebviewPanel) {
         this.webviewPanel = panel;
         this.update();
+        this._setWebviewMessageListener();
         this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
     }
 
@@ -166,7 +167,7 @@ class DiagramPanel {
             {
                 methodName: "gotoSource",
                 handler: async (args: any[]): Promise<boolean> => {
-                    const filePath = args[0];
+                    const filePath = "C:/Hana/Projects/SampleNew/test.xml";
                     const position: { startLine: number, startColumn: number } = args[1];
                     if (!existsSync(filePath)) {
                         return false;
@@ -185,7 +186,7 @@ class DiagramPanel {
                 methodName: "getFileContent",
                 handler: async (args: any[]): Promise<string | undefined> => {
                     // Get the active text editor
-                    const filePath = args[0];
+                    const filePath = "C:/Hana/Projects/SampleNew/test.xml";
                     const doc = workspace.textDocuments.find((doc) => doc.fileName === filePath);
                     if (doc) {
                         return doc.getText();
@@ -232,6 +233,22 @@ class DiagramPanel {
             return;
         }
         this.webviewPanel.title = title;
+    }
+
+    private _setWebviewMessageListener() {
+        this.webviewPanel.webview.onDidReceiveMessage(
+            (message: any) => {
+                const command = message.command;
+                switch (command) {
+                    case "dataMapperView":
+                        {
+                            commands.executeCommand("wso2ei.datamapper.view")
+                        }
+                        return;
+                }
+            },
+            undefined,
+        );
     }
 }
 
