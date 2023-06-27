@@ -36,64 +36,41 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  selectedSOAPVersion: string;
-  selectedSOAP11: string;
-  selectedCode: string;
-  selectedSerializeResponse: string;
-  selectedDetailType: string;
-  selectedReasonType: string;
-  actor: string;
-  role: string;
-  node: string;
-  detailValue: string;
-  detailExpression: string;
-  reasonValue: string;
-  reasonExpression: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function FaultMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [selectedSOAPVersion, setSelectedSOAPVersion] =
-    useState<string>("soap11");
-  const [selectedSOAP11, setSelectedSOAP11] =
-    useState<string>("VersionMismatch");
-  const [selectedCode, setSelectedCode] = useState<string>("VersionMismatch");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [selectedSOAPVersion, setSelectedSOAPVersion] = useState("soap11");
+  const [selectedSOAP11, setSelectedSOAP11] = useState("VersionMismatch");
+  const [selectedCode, setSelectedCode] = useState("VersionMismatch");
   const [selectedSerializeResponse, setSelectedSerializeResponse] =
-    useState<string>("");
-  const [selectedDetailType, setSelectedDetailType] = useState<string>("VALUE");
-  const [selectedReasonType, setSelectedReasonType] = useState<string>("VALUE");
-  const [actor, setActor] = useState<string>("");
-  const [role, setRole] = useState<string>("");
-  const [node, setNode] = useState<string>("");
-  const [detailValue, setDetailValue] = useState<string>("");
-  const [detailExpression, setDetailExpression] = useState<string>("");
-  const [reasonValue, setReasonValue] = useState<string>("");
-  const [reasonExpression, setReasonExpression] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+    useState("");
+  const [selectedDetailType, setSelectedDetailType] = useState("VALUE");
+  const [selectedReasonType, setSelectedReasonType] = useState("VALUE");
+  const [actor, setActor] = useState("");
+  const [role, setRole] = useState("");
+  const [node, setNode] = useState("");
+  const [detailValue, setDetailValue] = useState("");
+  const [detailExpression, setDetailExpression] = useState("");
+  const [reasonValue, setReasonValue] = useState("");
+  const [reasonExpression, setReasonExpression] = useState("");
+  const [description, setDescription] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handleSOAPVersionSelectChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -153,261 +130,243 @@ export function FaultMediatorProperty(props: Props) {
     setDescription(event.target.value);
   };
 
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setSelectedSOAPVersion("soap11");
-    setSelectedSOAP11("VersionMismatch");
-    setSelectedCode("VersionMismatch");
-    setSelectedSerializeResponse("");
-    setSelectedDetailType("VALUE");
-    setSelectedReasonType("VALUE");
-    setActor("");
-    setRole("");
-    setNode("");
-    setDetailValue("");
-    setDetailExpression("");
-    setReasonValue("");
-    setReasonExpression("");
-    setDescription("");
-  };
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Fault Mediator Properties
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="SOAPVersion">SOAP Version</Form.Label>
-              <Form.Select
-                value={selectedSOAPVersion}
-                onChange={handleSOAPVersionSelectChange}
-              >
-                <option value="soap11">soap11</option>
-                <option value="soap12">soap12</option>
-                <option value="POX">POX</option>
-              </Form.Select>
-              {selectedSOAPVersion === "soap11" && (
-                <>
-                  <Form.Label className="SOAP11">SOAP11</Form.Label>
-                  <Form.Select
-                    value={selectedSOAP11}
-                    onChange={handleSOAP11SelectChange}
-                  >
-                    <option value="VersionMismatch">VersionMismatch</option>
-                    <option value="MustUnderstand">MustUnderstand</option>
-                    <option value="Client">Client</option>
-                    <option value="Server">Server</option>
-                  </Form.Select>
-                  <Form.Label className="Actor">Actor</Form.Label>
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={
-                      <Tooltip id="help-tooltip">
-                        The element of the SOAP fault message which is used to
-                        capture the party which caused the fault
-                      </Tooltip>
-                    }
-                  >
-                    <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                      <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                    </span>
-                  </OverlayTrigger>
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Actor"
-                    value={actor}
-                    onChange={handleActor}
-                  />
-                </>
-              )}
-              {selectedSOAPVersion === "soap12" && (
-                <>
-                  <Form.Label className="Code">Code</Form.Label>
-                  <Form.Select
-                    value={selectedCode}
-                    onChange={handleCodeSelectChange}
-                  >
-                    <option value="VersionMismatch">VersionMismatch</option>
-                    <option value="MustUnderstand">MustUnderstand</option>
-                    <option value="DataEncodingUnknown">
-                      DataEncodingUnknown
-                    </option>
-                    <option value="Sender">Sender</option>
-                    <option value="Receiver">Receiver</option>
-                  </Form.Select>
-                  <Form.Label className="Role">Role</Form.Label>
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={
-                      <Tooltip id="help-tooltip">The SOAP role name</Tooltip>
-                    }
-                  >
-                    <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                      <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                    </span>
-                  </OverlayTrigger>
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Role"
-                    value={role}
-                    onChange={handleRole}
-                  />
-                  <Form.Label className="Node">Node</Form.Label>
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={
-                      <Tooltip id="help-tooltip">The SOAP node name</Tooltip>
-                    }
-                  >
-                    <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                      <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                    </span>
-                  </OverlayTrigger>
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Node"
-                    value={node}
-                    onChange={handleNode}
-                  />
-                </>
-              )}
-              <Form.Check
-                type="checkbox"
-                className="SerializeResponse"
-                style={{ display: "flex", alignItems: "center" }}
-                label={
-                  <span style={{ marginLeft: "10px" }}>Serialize Response</span>
-                }
-                checked={selectedSerializeResponse === "SerializeResponse"}
-                value="SerializeResponse"
-                onChange={handleSerializeResponseChange}
-              />
-              <br />
-              <Row className="mb-4">
-                <Modal.Title className="text-secondary">Detail</Modal.Title>
-                <Form>
-                  <Form.Group>
-                    <Form.Label className="DetailType">Type</Form.Label>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">Fault Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="SOAPVersion">SOAP Version</Form.Label>
+                <Form.Select
+                  value={selectedSOAPVersion}
+                  onChange={handleSOAPVersionSelectChange}
+                >
+                  <option value="soap11">soap11</option>
+                  <option value="soap12">soap12</option>
+                  <option value="POX">POX</option>
+                </Form.Select>
+                {selectedSOAPVersion === "soap11" && (
+                  <>
+                    <Form.Label className="SOAP11">SOAP11</Form.Label>
                     <Form.Select
-                      value={selectedDetailType}
-                      onChange={handleDetailTypeSelectChange}
+                      value={selectedSOAP11}
+                      onChange={handleSOAP11SelectChange}
                     >
-                      <option value="VALUE">VALUE</option>
-                      <option value="EXPRESSION">EXPRESSION</option>
+                      <option value="VersionMismatch">VersionMismatch</option>
+                      <option value="MustUnderstand">MustUnderstand</option>
+                      <option value="Client">Client</option>
+                      <option value="Server">Server</option>
                     </Form.Select>
-                    {selectedDetailType === "VALUE" && (
-                      <>
-                        <Form.Label className="DetailValue">Value</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="eg: Value"
-                          value={detailValue}
-                          onChange={handleDetailValue}
-                        />
-                      </>
-                    )}
-                    {selectedDetailType === "EXPRESSION" && (
-                      <>
-                        <Form.Label className="DetailExpression">
-                          Expression
-                        </Form.Label>
-                        {/*When a user clicks this textbox, the Expression Selector Model appears*/}
-                        <Form.Control
-                          type="text"
-                          readOnly
-                          value={detailExpression}
-                          onChange={handleDetailExpression}
-                        />
-                      </>
-                    )}
-                  </Form.Group>
-                </Form>
-              </Row>
-              <br />
-              <Row className="mb-4">
-                <Modal.Title className="text-secondary">Reason</Modal.Title>
-                <Form>
-                  <Form.Group>
-                    <Form.Label className="ReasonType">Type</Form.Label>
+                    <Form.Label className="Actor">Actor</Form.Label>
+                    <OverlayTrigger
+                      placement="right"
+                      overlay={
+                        <Tooltip id="help-tooltip">
+                          The element of the SOAP fault message which is used to
+                          capture the party which caused the fault
+                        </Tooltip>
+                      }
+                    >
+                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                      </span>
+                    </OverlayTrigger>
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Actor"
+                      value={actor}
+                      onChange={handleActor}
+                    />
+                  </>
+                )}
+                {selectedSOAPVersion === "soap12" && (
+                  <>
+                    <Form.Label className="Code">Code</Form.Label>
                     <Form.Select
-                      value={selectedReasonType}
-                      onChange={handleReasonTypeSelectChange}
+                      value={selectedCode}
+                      onChange={handleCodeSelectChange}
                     >
-                      <option value="VALUE">VALUE</option>
-                      <option value="EXPRESSION">EXPRESSION</option>
+                      <option value="VersionMismatch">VersionMismatch</option>
+                      <option value="MustUnderstand">MustUnderstand</option>
+                      <option value="DataEncodingUnknown">
+                        DataEncodingUnknown
+                      </option>
+                      <option value="Sender">Sender</option>
+                      <option value="Receiver">Receiver</option>
                     </Form.Select>
-                    {selectedReasonType === "VALUE" && (
-                      <>
-                        <Form.Label className="ReasonValue">Value</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="eg: Value"
-                          value={reasonValue}
-                          onChange={handleReasonValue}
-                        />
-                      </>
-                    )}
-                    {selectedReasonType === "EXPRESSION" && (
-                      <>
-                        <Form.Label className="ReasonExpression">
-                          Expression
-                        </Form.Label>
-                        {/*When a user clicks this textbox, the Expression Selector Model appears*/}
-                        <Form.Control
-                          type="text"
-                          readOnly
-                          value={reasonExpression}
-                          onChange={handleReasonExpression}
-                        />
-                      </>
-                    )}
-                  </Form.Group>
-                </Form>
-              </Row>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+                    <Form.Label className="Role">Role</Form.Label>
+                    <OverlayTrigger
+                      placement="right"
+                      overlay={
+                        <Tooltip id="help-tooltip">The SOAP role name</Tooltip>
+                      }
+                    >
+                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                      </span>
+                    </OverlayTrigger>
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Role"
+                      value={role}
+                      onChange={handleRole}
+                    />
+                    <Form.Label className="Node">Node</Form.Label>
+                    <OverlayTrigger
+                      placement="right"
+                      overlay={
+                        <Tooltip id="help-tooltip">The SOAP node name</Tooltip>
+                      }
+                    >
+                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                      </span>
+                    </OverlayTrigger>
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Node"
+                      value={node}
+                      onChange={handleNode}
+                    />
+                  </>
+                )}
+                <Form.Check
+                  type="checkbox"
+                  className="SerializeResponse"
+                  style={{ display: "flex", alignItems: "center" }}
+                  label={
+                    <span style={{ marginLeft: "10px" }}>
+                      Serialize Response
+                    </span>
+                  }
+                  checked={selectedSerializeResponse === "SerializeResponse"}
+                  value="SerializeResponse"
+                  onChange={handleSerializeResponseChange}
+                />
+                <br />
+                <Row className="mb-4">
+                  <Modal.Title className="text-secondary">Detail</Modal.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label className="DetailType">Type</Form.Label>
+                      <Form.Select
+                        value={selectedDetailType}
+                        onChange={handleDetailTypeSelectChange}
+                      >
+                        <option value="VALUE">VALUE</option>
+                        <option value="EXPRESSION">EXPRESSION</option>
+                      </Form.Select>
+                      {selectedDetailType === "VALUE" && (
+                        <>
+                          <Form.Label className="DetailValue">Value</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="eg: Value"
+                            value={detailValue}
+                            onChange={handleDetailValue}
+                          />
+                        </>
+                      )}
+                      {selectedDetailType === "EXPRESSION" && (
+                        <>
+                          <Form.Label className="DetailExpression">
+                            Expression
+                          </Form.Label>
+                          {/*When a user clicks this textbox, the Expression Selector Model appears*/}
+                          <Form.Control
+                            type="text"
+                            readOnly
+                            value={detailExpression}
+                            onChange={handleDetailExpression}
+                          />
+                        </>
+                      )}
+                    </Form.Group>
+                  </Form>
+                </Row>
+                <br />
+                <Row className="mb-4">
+                  <Modal.Title className="text-secondary">Reason</Modal.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label className="ReasonType">Type</Form.Label>
+                      <Form.Select
+                        value={selectedReasonType}
+                        onChange={handleReasonTypeSelectChange}
+                      >
+                        <option value="VALUE">VALUE</option>
+                        <option value="EXPRESSION">EXPRESSION</option>
+                      </Form.Select>
+                      {selectedReasonType === "VALUE" && (
+                        <>
+                          <Form.Label className="ReasonValue">Value</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="eg: Value"
+                            value={reasonValue}
+                            onChange={handleReasonValue}
+                          />
+                        </>
+                      )}
+                      {selectedReasonType === "EXPRESSION" && (
+                        <>
+                          <Form.Label className="ReasonExpression">
+                            Expression
+                          </Form.Label>
+                          {/*When a user clicks this textbox, the Expression Selector Model appears*/}
+                          <Form.Control
+                            type="text"
+                            readOnly
+                            value={reasonExpression}
+                            onChange={handleReasonExpression}
+                          />
+                        </>
+                      )}
+                    </Form.Group>
+                  </Form>
+                </Row>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

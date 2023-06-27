@@ -36,44 +36,31 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  selectedConditionType: string;
-  description: string;
-  regularExpression: string;
-  source: string;
-  xPath: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function FilterMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [selectedConditionType, setSelectedConditionType] =
-    useState<string>("SandREX");
-  const [description, setDescription] = useState<string>("");
-  const [regularExpression, setRegularExpression] = useState<string>("");
-  const [source, setSource] = useState<string>("Source");
-  const [xPath, setXPath] = useState<string>("XPath");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [selectedConditionType, setSelectedConditionType] = useState("SandREX");
+  const [description, setDescription] = useState("");
+  const [regularExpression, setRegularExpression] = useState("");
+  const [source, setSource] = useState("Source");
+  const [xPath, setXPath] = useState("XPath");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handleConditionTypeSelectChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -93,165 +80,157 @@ export function FilterMediatorProperty(props: Props) {
   const handleXPath = (event: React.ChangeEvent<HTMLInputElement>) => {
     setXPath(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setSelectedConditionType("SandREX");
-    setDescription("");
-    setRegularExpression("");
-    setSource("");
-    setXPath("");
-  };
+
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Filter Mediator Properties
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Condition</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="ConditionType">Condition Type</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">
-                    Source and Regular Expression:
-                    <br />
-                    If this option is selected, the Filter mediator matches the
-                    evaluation XPath/JSONPath expression as a string against the
-                    given regular expression
-                    <br />
-                    <br />
-                    XPath:
-                    <br />
-                    If this option is selected, the Filter mediator tests the
-                    given XPath/JSONPath expression as a Boolean expression.
-                    When specifying a JSONPath, use the format
-                    json-eval(&lt;JSON_PATH&gt;), such as
-                    json-eval(getQuote.request.symbol)
-                  </Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">Filter Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Condition</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="ConditionType">
+                  Condition Type
+                </Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">
+                      Source and Regular Expression:
+                      <br />
+                      If this option is selected, the Filter mediator matches
+                      the evaluation XPath/JSONPath expression as a string
+                      against the given regular expression
+                      <br />
+                      <br />
+                      XPath:
+                      <br />
+                      If this option is selected, the Filter mediator tests the
+                      given XPath/JSONPath expression as a Boolean expression.
+                      When specifying a JSONPath, use the format
+                      json-eval(&lt;JSON_PATH&gt;), such as
+                      json-eval(getQuote.request.symbol)
+                    </Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
 
-              <Form.Select
-                onChange={handleConditionTypeSelectChange}
-                value={selectedConditionType}
-              >
-                <option value="SandREX">Source and Regular Expression</option>
-                <option value="XPath">XPath</option>
-              </Form.Select>
-              {selectedConditionType === "SandREX" && (
-                <>
-                  <Form.Label className="RegularExpression">
-                    Regular Expression
-                  </Form.Label>
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={
-                      <Tooltip id="help-tooltip">
-                        The regular expression to match source value
-                      </Tooltip>
-                    }
-                  >
-                    <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                      <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                    </span>
-                  </OverlayTrigger>
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Regular Expression"
-                    value={regularExpression}
-                    onChange={handleRegularExpression}
-                  />
-                  <Form.Label className="Source">Source</Form.Label>
-                  {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={
-                      <Tooltip id="help-tooltip">
-                        The expression to locate the value that matches the
-                        regular expression that you can define in the Regex
-                        parameter
-                      </Tooltip>
-                    }
-                  >
-                    <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                      <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                    </span>
-                  </OverlayTrigger>
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={source}
-                    onChange={handleSource}
-                  />
-                </>
-              )}
-              {selectedConditionType === "XPath" && (
-                <>
-                  <Form.Label className="XPath">XPath</Form.Label>
-                  {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={xPath}
-                    onChange={handleXPath}
-                  />
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+                <Form.Select
+                  onChange={handleConditionTypeSelectChange}
+                  value={selectedConditionType}
+                >
+                  <option value="SandREX">Source and Regular Expression</option>
+                  <option value="XPath">XPath</option>
+                </Form.Select>
+                {selectedConditionType === "SandREX" && (
+                  <>
+                    <Form.Label className="RegularExpression">
+                      Regular Expression
+                    </Form.Label>
+                    <OverlayTrigger
+                      placement="right"
+                      overlay={
+                        <Tooltip id="help-tooltip">
+                          The regular expression to match source value
+                        </Tooltip>
+                      }
+                    >
+                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                      </span>
+                    </OverlayTrigger>
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Regular Expression"
+                      value={regularExpression}
+                      onChange={handleRegularExpression}
+                    />
+                    <Form.Label className="Source">Source</Form.Label>
+                    {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
+                    <OverlayTrigger
+                      placement="right"
+                      overlay={
+                        <Tooltip id="help-tooltip">
+                          The expression to locate the value that matches the
+                          regular expression that you can define in the Regex
+                          parameter
+                        </Tooltip>
+                      }
+                    >
+                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                      </span>
+                    </OverlayTrigger>
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={source}
+                      onChange={handleSource}
+                    />
+                  </>
+                )}
+                {selectedConditionType === "XPath" && (
+                  <>
+                    <Form.Label className="XPath">XPath</Form.Label>
+                    {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={xPath}
+                      onChange={handleXPath}
+                    />
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

@@ -26,62 +26,8 @@ import {
 } from "@wso2-ei/low-code-editor-commons";
 import {applyChange} from "../../DiagramGenerator/generatorUtil";
 import "./style.scss"
-import {
-    ApiProperty,
-    ResourceProperty,
-    CallMediatorProperty,
-    CallTemplateMediatorProperty,
-    DropMediatorProperty,
-    LogMediatorProperty, 
-    LoopBackMediatorProperty,
-    PropertyMediatorProperty,
-    PropertyGroupMediatorProperty,
-    RespondMediatorProperty,
-    SendMediatorProperty,
-    SequenceMediatorProperty,
-    StoreMediatorProperty,
-    ConditionalRouterProperty,
-    FilterMediatorProperty,
-    SwitchMediatorProperty,
-    ValidateMediatorProperty,
-    BeanMediatorProperty,
-    ClassMediatorProperty,
-    CommandMediatorProperty,
-    EJBMediatorProperty,
-    ScriptMediatorProperty,
-    SpringMediatorProperty,
-    EnrichMediatorProperty,
-    FaultMediatorProperty,
-    HeaderMediatorProperty,
-    PayloadFactoryMediatorProperty,
-    SmooksMediatorProperty,
-    URLRewriteMediatorProperty,
-    XQueryMediatorProperty,
-    XSLTMediatorProperty,
-    DataMapperMediatorProperty,
-    FastXSLTMediatorProperty,
-    JsonTransformMediatorProperty,
-    DataServiceCallMediatorProperty,
-    CacheMediatorProperty,
-    DBLookupMediatorProperty,
-    DBReportMediatorProperty,
-    EnqueueMediatorProperty,
-    EventMediatorProperty,
-    ThrottleMediatorProperty,
-    TransactionMediatorProperty,
-    AggregateMediatorProperty,
-    CalloutMediatorProperty,
-    CloneMediatorProperty,
-    IterateMediatorProperty,
-    ForEachMediatorProperty,
-    EntitlementMediatorProperty,
-    OAuthMediatorProperty,
-    NTLMMediatorProperty,
-    BuilderMediatorProperty,
-    RuleMediatorProperty,
-    BAMMediatorProperty,
-    PublishEventMediatorProperty,
-} from "./PropertyPanels/index";
+import { LogMediatorProperty } from "./PropertyPanels/index";
+
 interface Item {
     detail: string;
     insertText: string;
@@ -122,6 +68,7 @@ const ItemList: React.FC<Props> = ({ items , textDocumentUrl, textDocumentFsPath
         setLangClient(langClient);
         // await modifyTextOnComponentSelection(textDocumentUrl, textDocumentFsPath, item.textEdit, previousComponentStartPosition, langClient);
     };
+
     return (
         <div>
             {!isClicked && <ul>
@@ -131,8 +78,7 @@ const ItemList: React.FC<Props> = ({ items , textDocumentUrl, textDocumentFsPath
                     </li>
                 ))}
             </ul>}
-            {isClicked && selectedItem && <LogMediatorProperty textEdit={selectedItem.textEdit} textDocumentUrl={textDocumentUrl} textDocumentFsPath={textDocumentFsPath} previousComponentStartPosition={previousComponentStartPosition}/> }
-            
+            {/* {isClicked && selectedItem && <LogMediatorProperty textEdit={selectedItem.textEdit} textDocumentUrl={textDocumentUrl} textDocumentFsPath={textDocumentFsPath} previousComponentStartPosition={previousComponentStartPosition}/> } */}
         </div>
     );
 };

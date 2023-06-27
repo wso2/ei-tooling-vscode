@@ -36,45 +36,26 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  selectedVersionType: string;
-  apiName: string;
-  apiContext: string;
-  publishSwagger: string;
-  hostName: string;
-  port: string;
-  description: string;
-  apiHandlers: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
 
-export function ApiProperty (props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [selectedVersionType, setSelectedVersionType] = useState<string>("none");
-  const [apiName, setAPIName] = useState<string>("");
-  const [apiContext, setAPIContext] = useState<string>("");
-  const [publishSwagger, setPublishSwagger] = useState<string>("");
-  const [hostName, setHostName] = useState<string>("");
-  const [port, setPort] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [apiHandlers, setAPIHandlers] = useState<string>("");
+export function ApiProperty(props: Props) {
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+  const [selectedVersionType, setSelectedVersionType] = useState("none");
+  const [apiName, setAPIName] = useState("");
+  const [apiContext, setAPIContext] = useState("");
+  const [publishSwagger, setPublishSwagger] = useState("");
+  const [hostName, setHostName] = useState("");
+  const [port, setPort] = useState("");
+  const [description, setDescription] = useState("");
+  const [apiHandlers, setAPIHandlers] = useState("");
   const {
     api: {
       ls: { getDiagramEditorLangClient },
@@ -115,28 +96,18 @@ export function ApiProperty (props: Props) {
   ) => {
     setAPIHandlers(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setSelectedVersionType("none");
-    setAPIName("");
-    setAPIContext("");
-    setPublishSwagger("");
-    setHostName("");
-    setPort("");
-    setDescription("");
-    setAPIHandlers("");
-  };
+
   return (
     <>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      ></Modal>
       <Modal.Header>
-        <Modal.Title className="text-primary">API Property</Modal.Title>
+        <Modal.Title className="text-primary">Synapse API</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <br />
         <Row className="mb-4">
           <Modal.Title className="text-secondary">Properties</Modal.Title>
           <Form>
@@ -145,6 +116,7 @@ export function ApiProperty (props: Props) {
                 <b>Name</b>
               </Form.Label>
               <Form.Control
+                className="custom-form-control"
                 type="text"
                 value={apiName}
                 onChange={handleAPINameChange}
@@ -154,6 +126,7 @@ export function ApiProperty (props: Props) {
                 <b>Context</b>
               </Form.Label>
               <Form.Control
+                className="custom-form-control"
                 type="text"
                 value={apiContext}
                 onChange={handleAPiContextChange}
@@ -162,6 +135,7 @@ export function ApiProperty (props: Props) {
               <Form.Label className="PublishSwagger">PublishSwagger</Form.Label>
               {/* When a user clicks this textbox, the Resource Key Model appears.*/}
               <Form.Control
+                className="custom-form-control"
                 type="text"
                 value={publishSwagger}
                 onChange={handlePublishSwaggerChange}
@@ -169,6 +143,7 @@ export function ApiProperty (props: Props) {
               />
               <Form.Label className="HostName">Host Name</Form.Label>
               <Form.Control
+                className="custom-form-control"
                 type="text"
                 value={hostName}
                 onChange={handleHostNameChange}
@@ -176,6 +151,7 @@ export function ApiProperty (props: Props) {
               />
               <Form.Label className="Port">Port</Form.Label>
               <Form.Control
+                className="custom-form-control"
                 type="text"
                 value={port}
                 onChange={handlePortChange}
@@ -183,6 +159,7 @@ export function ApiProperty (props: Props) {
               />
               <Form.Label className="VersionType">Version Type</Form.Label>
               <Form.Select
+                className="custom-form-control"
                 value={selectedVersionType}
                 onChange={handleVersionTypeSelectChange}
               >
@@ -193,24 +170,24 @@ export function ApiProperty (props: Props) {
               {selectedVersionType !== "none" && (
                 <div>
                   <Form.Label className="Version">Version</Form.Label>
-                  <Form.Control type="text" placeholder="eg: Version" />
+                  <Form.Control
+                    className="custom-form-control"
+                    type="text"
+                    placeholder="eg: Version"
+                  />
                 </div>
               )}
               <br />
               <Form.Check
                 type="checkbox"
-                className="TraceEnabled"
-                style={{ display: "flex", alignItems: "center" }}
-                label={
-                  <span style={{ marginLeft: "10px" }}>Trace Enabled</span>
-                }
+                className="checkbox"
+                label={<span className="checkbox-font">Trace Enabled</span>}
               />
               <Form.Check
                 type="checkbox"
-                className="StatisticsEnabled"
-                style={{ display: "flex", alignItems: "center" }}
+                className="checkbox"
                 label={
-                  <span style={{ marginLeft: "10px" }}>Statistics Enabled</span>
+                  <span className="checkbox-font">Statistics Enabled</span>
                 }
               />
               <Form.Label className="Description">Description</Form.Label>
@@ -220,11 +197,12 @@ export function ApiProperty (props: Props) {
                   <Tooltip id="help-tooltip">Default description</Tooltip>
                 }
               >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                <span className="custom-question-icon">
                   <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                 </span>
               </OverlayTrigger>
               <Form.Control
+                className="custom-form-control"
                 as="textarea"
                 value={description}
                 onChange={handleDescriptionChange}
@@ -241,6 +219,7 @@ export function ApiProperty (props: Props) {
               <Form.Label className="APIHandlers">API Handlers</Form.Label>
               {/* When a user clicks this textbox, the Handler Model appears.*/}
               <Form.Control
+                className="custom-form-control"
                 as="textarea"
                 value={apiHandlers}
                 onChange={handleAPIHandlersChange}
@@ -251,14 +230,12 @@ export function ApiProperty (props: Props) {
         </Row>
       </Modal.Body>
       <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
+        <Button variant="primary" onClick={handleCancelClick}>
+          Close
+        </Button>
+        <Button variant="secondary" onClick={handleCancelClick}>
+          Save
+        </Button>
       </Modal.Footer>
     </>
   );

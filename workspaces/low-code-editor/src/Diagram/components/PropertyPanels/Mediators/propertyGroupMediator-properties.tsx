@@ -36,91 +36,105 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-    textDocumentUrl: string;
-    textDocumentFsPath: string;
-    previousComponentStartPosition: number
-    textEdit?: TextEdit;
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
 }
-type State = {
-    description: string;
-    properties: string;
-};
 
-export function PropertyGroupMediatorProperty (props: Props) {
-    const {textDocumentUrl, textDocumentFsPath, previousComponentStartPosition, textEdit} = props;
-    const [description, setDescription] = useState<string>("");
-    const [properties, setProperties] = useState<string>("");
-    const {
-        api: {
-            ls: {
-                getDiagramEditorLangClient
-            }
-        }
-    } = useContext(DiagramContext);
-const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+export function PropertyGroupMediatorProperty(props: Props) {
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [description, setDescription] = useState("");
+  const [properties, setProperties] = useState("");
+
+  const {
+    api: {
+      ls: { getDiagramEditorLangClient },
+    },
+  } = useContext(DiagramContext);
+
+  const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
-};
-const handleProperties = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setProperties(event.target.value);
-};
-const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
   };
-  const handleCancelClick = async () => {
-    setDescription('');
-    setProperties('');
+  const handleProperties = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setProperties(event.target.value);
   };
 
-            return (
-                <>
-                    <Modal.Header>
-                        <Modal.Title className='text-primary'>Property Group Mediator Properties</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <br />
-                        <Row className='mb-4'>
-                            <Modal.Title className='text-secondary'>
-                                Properties
-                            </Modal.Title>
-                            <Form>
-                                <Form.Group>
-                                    <Form.Label className='Description'>Description</Form.Label>
-                                    <OverlayTrigger placement="right" overlay={<Tooltip id="help-tooltip">Default description</Tooltip>}>
-                                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                                        </span>
-                                    </OverlayTrigger>
-                                    <Form.Control as="textarea" value={description} onChange={handleDescription} placeholder="eg: None" />
-                                    <Form.Label className="Properties">Properties</Form.Label>
-                                    <Form.Control as="textarea" value={properties} onChange={handleProperties} readOnly/>  {/* When a user clicks this textbox, the Property Mediator Model appears.*/}
-                                </Form.Group>
-                            </Form>
-                        </Row>
-                    </Modal.Body>
-                    <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
-                </>
-            )
-        }
-        async function modifyTextOnComponentSelection(url: string, fsPath: string, text: TextEdit, previousComponentStartPosition: number, langClient: any) {
-            await applyChange(url, fsPath, text, previousComponentStartPosition, langClient);
-        }
-        
+  return (
+    <>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">
+            Property Group Mediator
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+                <Form.Label className="Properties">Properties</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  value={properties}
+                  onChange={handleProperties}
+                  readOnly
+                />{" "}
+                {/* When a user clicks this textbox, the Property Mediator Model appears.*/}
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
+async function modifyTextOnComponentSelection(
+  url: string,
+  fsPath: string,
+  text: TextEdit,
+  previousComponentStartPosition: number,
+  langClient: any
+) {
+  await applyChange(
+    url,
+    fsPath,
+    text,
+    previousComponentStartPosition,
+    langClient
+  );
+}

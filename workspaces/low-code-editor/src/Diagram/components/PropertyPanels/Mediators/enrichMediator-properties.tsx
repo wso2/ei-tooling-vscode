@@ -36,78 +36,46 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  selectedCloneSource: string;
-  selectedSourceType: string;
-  sourceXpath: string;
-  sourceProperty: string;
-  sourcePropertyContentType: string;
-  sourcePayload: string;
-  sourcePayloadContentType: string;
-  sourceXPath: string;
-  sourceXPathContentType: string;
-  selectedInlineType: string;
-  sourceXML: string;
-  inlineRegistryKey: string;
-  selectedTargetAction: string;
-  selectedTargetType: string;
-  targetProperty: string;
-  targetPropertyContentType: string;
-  targetXorJPath: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function EnrichMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [selectedCloneSource, setSelectedCloneSource] =
-    useState<string>("CloneSource");
-  const [selectedSourceType, setSelectedSourceType] =
-    useState<string>("property");
-  const [sourceXpath, setSourceXpath] = useState<string>("");
-  const [sourceProperty, setSourceProperty] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [selectedCloneSource, setSelectedCloneSource] = useState("CloneSource");
+  const [selectedSourceType, setSelectedSourceType] = useState("property");
+  const [sourceXpath, setSourceXpath] = useState("");
+  const [sourceProperty, setSourceProperty] = useState("");
   const [sourcePropertyContentType, setSourcePropertyContentType] =
-    useState<string>("");
-  const [sourcePayload, setSourcePayload] = useState<string>("");
-  const [sourcePayloadContentType, setSourcePayloadContentType] =
-    useState<string>("");
-  const [sourceXPath, setSourceXPath] = useState<string>("");
-  const [sourceXPathContentType, setSourceXPathContentType] =
-    useState<string>("");
-  const [selectedInlineType, setSelectedInlineType] =
-    useState<string>("InlineXMLJSON");
-  const [sourceXML, setSourceXML] = useState<string>("");
-  const [inlineRegistryKey, setInlineRegistryKey] = useState<string>("");
-  const [selectedTargetAction, setSelectedTargetAction] =
-    useState<string>("replace");
-  const [selectedTargetType, setSelectedTargetType] =
-    useState<string>("custom");
-  const [targetProperty, setTargetProperty] = useState<string>("");
+    useState("");
+  const [sourcePayload, setSourcePayload] = useState("");
+  const [sourcePayloadContentType, setSourcePayloadContentType] = useState("");
+  const [sourceXPath, setSourceXPath] = useState("");
+  const [sourceXPathContentType, setSourceXPathContentType] = useState("");
+  const [selectedInlineType, setSelectedInlineType] = useState("InlineXMLJSON");
+  const [sourceXML, setSourceXML] = useState("");
+  const [inlineRegistryKey, setInlineRegistryKey] = useState("");
+  const [selectedTargetAction, setSelectedTargetAction] = useState("replace");
+  const [selectedTargetType, setSelectedTargetType] = useState("custom");
+  const [targetProperty, setTargetProperty] = useState("");
   const [targetPropertyContentType, setTargetPropertyContentType] =
-    useState<string>("");
-  const [targetXorJPath, setTargetXorJPath] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+    useState("");
+  const [targetXorJPath, setTargetXorJPath] = useState("");
+  const [description, setDescription] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handleCloneSourceChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -183,291 +151,272 @@ export function EnrichMediatorProperty(props: Props) {
     setDescription(event.target.value);
   };
 
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setSelectedCloneSource("CloneSource");
-    setSelectedSourceType("property");
-    setSourceXpath("");
-    setSourceProperty("");
-    setSourcePropertyContentType("");
-    setSourcePayload("");
-    setSourcePayloadContentType("");
-    setSourceXPath("");
-    setSourceXPathContentType("");
-    setSelectedInlineType("InlineXMLJSON");
-    setSourceXML("");
-    setInlineRegistryKey("");
-    setSelectedTargetAction("replace");
-    setSelectedTargetType("custom");
-    setTargetProperty("");
-    setTargetPropertyContentType("");
-    setTargetXorJPath("");
-    setDescription("");
-  };
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Enrich Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Source</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Group style={{ textAlign: "left" }}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Form.Check
-                    type="checkbox"
-                    className="CloneSource"
-                    label={
-                      <span style={{ marginLeft: "10px" }}>Clone Source</span>
-                    }
-                    checked={selectedCloneSource === "CloneSource"}
-                    value="CloneSource"
-                    onChange={handleCloneSourceChange}
-                    defaultChecked
-                  />
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={
-                      <Tooltip id="help-tooltip">
-                        If checked, the message can be cloned or used as a
-                        reference during enriching
-                      </Tooltip>
-                    }
-                  >
-                    <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                      <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                    </span>
-                  </OverlayTrigger>
-                </div>
-                <br />
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">Enrich Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Source</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Group style={{ textAlign: "left" }}>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Form.Check
+                      type="checkbox"
+                      className="CloneSource"
+                      label={
+                        <span style={{ marginLeft: "10px" }}>Clone Source</span>
+                      }
+                      checked={selectedCloneSource === "CloneSource"}
+                      value="CloneSource"
+                      onChange={handleCloneSourceChange}
+                      defaultChecked
+                    />
+                    <OverlayTrigger
+                      placement="right"
+                      overlay={
+                        <Tooltip id="help-tooltip">
+                          If checked, the message can be cloned or used as a
+                          reference during enriching
+                        </Tooltip>
+                      }
+                    >
+                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                      </span>
+                    </OverlayTrigger>
+                  </div>
+                  <br />
+                </Form.Group>
+                <Form.Label className="SourceType">Source Type</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">
+                      The type that the mediator uses from the original message
+                      to enrich the modified message that passes through the
+                      mediator
+                    </Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Select
+                  value={selectedSourceType}
+                  onChange={handleSourceTypeSelectChange}
+                >
+                  <option value="custom">custom</option>
+                  <option value="body">body</option>
+                  <option value="envelope">envelope</option>
+                  <option value="property">property</option>
+                  <option value="inline">inline</option>
+                </Form.Select>
+                {selectedSourceType === "custom" && (
+                  <>
+                    <Form.Label className="SourceXpath">
+                      Source XPath
+                    </Form.Label>
+                    {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={sourceXpath}
+                      onChange={handleSourceXpath}
+                    />
+                  </>
+                )}
+                {selectedSourceType === "property" && (
+                  <>
+                    <Form.Label className="SourceProperty">
+                      Source Property
+                    </Form.Label>
+                    {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Source Property"
+                      value={sourceProperty}
+                      onChange={handleSourceProperty}
+                    />
+                  </>
+                )}
+                {selectedSourceType === "inline" && (
+                  <>
+                    <Form.Label className="InlineType">Inline Type</Form.Label>
+                    <Form.Select
+                      value={selectedInlineType}
+                      onChange={handleInlineTypeSelectChange}
+                    >
+                      <option value="InlineXMLJSON">Inline XML/JSON</option>
+                      <option value="RegistryKey">RegistryKey</option>
+                    </Form.Select>
+                    {selectedInlineType === "InlineXMLJSON" && (
+                      <>
+                        <Form.Label className="SourceXML">
+                          Source XML
+                        </Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          style={{ minHeight: "200px" }}
+                          value={sourceXML}
+                          onChange={handleSourceXML}
+                        >
+                          &lt;inline/&gt;
+                        </Form.Control>
+                      </>
+                    )}
+                    {selectedInlineType === "RegistryKey" && (
+                      <>
+                        <Form.Label className="InRegistryKey">
+                          Inline Registry Key
+                        </Form.Label>
+                        {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                        <Form.Control
+                          type="text"
+                          readOnly
+                          value={inlineRegistryKey}
+                          onChange={handleInlineRegistryKey}
+                        />
+                      </>
+                    )}
+                  </>
+                )}
               </Form.Group>
-              <Form.Label className="SourceType">Source Type</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">
-                    The type that the mediator uses from the original message to
-                    enrich the modified message that passes through the mediator
-                  </Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Select
-                value={selectedSourceType}
-                onChange={handleSourceTypeSelectChange}
-              >
-                <option value="custom">custom</option>
-                <option value="body">body</option>
-                <option value="envelope">envelope</option>
-                <option value="property">property</option>
-                <option value="inline">inline</option>
-              </Form.Select>
-              {selectedSourceType === "custom" && (
-                <>
-                  <Form.Label className="SourceXpath">Source XPath</Form.Label>
-                  {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={sourceXpath}
-                    onChange={handleSourceXpath}
-                  />
-                </>
-              )}
-              {selectedSourceType === "property" && (
-                <>
-                  <Form.Label className="SourceProperty">
-                    Source Property
-                  </Form.Label>
-                  {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Source Property"
-                    value={sourceProperty}
-                    onChange={handleSourceProperty}
-                  />
-                </>
-              )}
-              {selectedSourceType === "inline" && (
-                <>
-                  <Form.Label className="InlineType">Inline Type</Form.Label>
-                  <Form.Select
-                    value={selectedInlineType}
-                    onChange={handleInlineTypeSelectChange}
-                  >
-                    <option value="InlineXMLJSON">Inline XML/JSON</option>
-                    <option value="RegistryKey">RegistryKey</option>
-                  </Form.Select>
-                  {selectedInlineType === "InlineXMLJSON" && (
-                    <>
-                      <Form.Label className="SourceXML">Source XML</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        style={{ minHeight: "200px" }}
-                        value={sourceXML}
-                        onChange={handleSourceXML}
-                      >
-                        &lt;inline/&gt;
-                      </Form.Control>
-                    </>
-                  )}
-                  {selectedInlineType === "RegistryKey" && (
-                    <>
-                      <Form.Label className="InRegistryKey">
-                        Inline Registry Key
-                      </Form.Label>
-                      {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                      <Form.Control
-                        type="text"
-                        readOnly
-                        value={inlineRegistryKey}
-                        onChange={handleInlineRegistryKey}
-                      />
-                    </>
-                  )}
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Target</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="TargetAction">Target Action</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">
-                    By specifying the action type, the relevant action can be
-                    applied to outgoing messages.
-                    <br />
-                    <br />
-                    Replace:
-                    <br />
-                    Will be used if a specific value for Action is not given.
-                    This replaces the XML message based on the target type
-                    specified on the target configuration
-                    <br />
-                    <br />
-                    Child:
-                    <br />
-                    Adding as a child of the specified target type
-                    <br />
-                    <br />
-                    Sibling:
-                    <br />
-                    Adding as a sibling of the specified target type
-                  </Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Select
-                value={selectedTargetAction}
-                onChange={handleTargetActionSelectChange}
-              >
-                <option value="replace">replace</option>
-                <option value="child">child</option>
-                <option value="sibling">sibling</option>
-                <option value="remove">remove</option>
-              </Form.Select>
-              <Form.Label className="TargetType">Target Type</Form.Label>
-              <Form.Select
-                value={selectedTargetType}
-                onChange={handleTargetTypeSelectChange}
-              >
-                <option value="custom">custom</option>
-                <option value="body">body</option>
-                <option value="property">property</option>
-                <option value="envelope">envelope</option>
-                <option value="key">key</option>
-              </Form.Select>
-              {(selectedTargetType === "custom" ||
-                selectedTargetType === "key") && (
-                <>
-                  <Form.Label className="TargetXorJPath">
-                    Target XPath / JSONPath
-                  </Form.Label>
-                  {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={targetXorJPath}
-                    onChange={handleTargetXorJPath}
-                  />
-                </>
-              )}
-              {selectedTargetType === "property" && (
-                <>
-                  <Form.Label className="TargetProperty">
-                    Target Property
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="target_property"
-                    value={targetProperty}
-                    onChange={handleTargetProperty}
-                  />
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Misc</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+            </Form>
+          </Row>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Target</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="TargetAction">Target Action</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">
+                      By specifying the action type, the relevant action can be
+                      applied to outgoing messages.
+                      <br />
+                      <br />
+                      Replace:
+                      <br />
+                      Will be used if a specific value for Action is not given.
+                      This replaces the XML message based on the target type
+                      specified on the target configuration
+                      <br />
+                      <br />
+                      Child:
+                      <br />
+                      Adding as a child of the specified target type
+                      <br />
+                      <br />
+                      Sibling:
+                      <br />
+                      Adding as a sibling of the specified target type
+                    </Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Select
+                  value={selectedTargetAction}
+                  onChange={handleTargetActionSelectChange}
+                >
+                  <option value="replace">replace</option>
+                  <option value="child">child</option>
+                  <option value="sibling">sibling</option>
+                  <option value="remove">remove</option>
+                </Form.Select>
+                <Form.Label className="TargetType">Target Type</Form.Label>
+                <Form.Select
+                  value={selectedTargetType}
+                  onChange={handleTargetTypeSelectChange}
+                >
+                  <option value="custom">custom</option>
+                  <option value="body">body</option>
+                  <option value="property">property</option>
+                  <option value="envelope">envelope</option>
+                  <option value="key">key</option>
+                </Form.Select>
+                {(selectedTargetType === "custom" ||
+                  selectedTargetType === "key") && (
+                  <>
+                    <Form.Label className="TargetXorJPath">
+                      Target XPath / JSONPath
+                    </Form.Label>
+                    {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={targetXorJPath}
+                      onChange={handleTargetXorJPath}
+                    />
+                  </>
+                )}
+                {selectedTargetType === "property" && (
+                  <>
+                    <Form.Label className="TargetProperty">
+                      Target Property
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="target_property"
+                      value={targetProperty}
+                      onChange={handleTargetProperty}
+                    />
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Misc</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

@@ -36,75 +36,44 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  // langClient: DiagramEditorLangClientInterface;
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  selectedEndpointType: string;
-  soapAction: string;
-  pathToAxis2Repository: string;
-  pathToAxis2XML: string;
-  selectedAxis2ClientOptionsMethod: string;
-  serviceURL: string;
-  addressEndpointType: string;
-  selectedPayloadType: string;
-  payloadMessageXPath: string;
-  payloadProperty: string;
-  selectedResultType: string;
-  resultMessageXPath: string;
-  resultContextProperty: string;
-  selectedSecurityType: string;
-  selectedPolicies: string;
-  policyKey: string;
-  outboundPolicyKey: string;
-  inboundPolicyKey: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
 export function CalloutMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
   const [selectedEndpointType, setSelectedEndpointType] =
-    useState<string>("URL");
-  const [soapAction, setSoapAction] = useState<string>("");
+    useState("URL");
+  const [soapAction, setSoapAction] = useState("");
   const [pathToAxis2Repository, setPathToAxis2Repository] =
-    useState<string>("");
-  const [pathToAxis2XML, setPathToAxis2XML] = useState<string>("");
+    useState("");
+  const [pathToAxis2XML, setPathToAxis2XML] = useState("");
   const [
     selectedAxis2ClientOptionsMethod,
     setSelectedAxis2ClientOptionsMethod,
-  ] = useState<string>("Axis2ClientOptions");
-  const [serviceURL, setServiceURL] = useState<string>("");
-  const [addressEndpointType, setAddressEndpointType] = useState<string>("");
+  ] = useState("Axis2ClientOptions");
+  const [serviceURL, setServiceURL] = useState("");
+  const [addressEndpointType, setAddressEndpointType] = useState("");
   const [selectedPayloadType, setSelectedPayloadType] =
-    useState<string>("XPATH");
-  const [payloadMessageXPath, setPayloadMessageXPath] = useState<string>("");
-  const [payloadProperty, setPayloadProperty] = useState<string>("");
-  const [selectedResultType, setSelectedResultType] = useState<string>("XPATH");
-  const [resultMessageXPath, setResultMessageXPath] = useState<string>("");
+    useState("XPATH");
+  const [payloadMessageXPath, setPayloadMessageXPath] = useState("");
+  const [payloadProperty, setPayloadProperty] = useState("");
+  const [selectedResultType, setSelectedResultType] = useState("XPATH");
+  const [resultMessageXPath, setResultMessageXPath] = useState("");
   const [resultContextProperty, setResultContextProperty] =
-    useState<string>("");
+    useState("");
   const [selectedSecurityType, setSelectedSecurityType] =
-    useState<string>("FALSE");
-  const [selectedPolicies, setSelectedPolicies] = useState<string>("FALSE");
-  const [policyKey, setPolicyKey] = useState<string>("");
-  const [outboundPolicyKey, setOutboundPolicyKey] = useState<string>("");
-  const [inboundPolicyKey, setInboundPolicyKey] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+    useState("FALSE");
+  const [selectedPolicies, setSelectedPolicies] = useState("FALSE");
+  const [policyKey, setPolicyKey] = useState("");
+  const [outboundPolicyKey, setOutboundPolicyKey] = useState("");
+  const [inboundPolicyKey, setInboundPolicyKey] = useState("");
+  const [description, setDescription] = useState("");
   const {
     api: {
       ls: { getDiagramEditorLangClient },
@@ -203,37 +172,13 @@ export function CalloutMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setSelectedEndpointType("URL");
-    setSoapAction("");
-    setPathToAxis2Repository("");
-    setPathToAxis2XML("");
-    setSelectedAxis2ClientOptionsMethod("Axis2ClientOptions");
-    setServiceURL("");
-    setAddressEndpointType("");
-    setSelectedPayloadType("XPATH");
-    setPayloadMessageXPath("");
-    setPayloadProperty("");
-    setSelectedResultType("XPATH");
-    setResultMessageXPath("");
-    setResultContextProperty("");
-    setSelectedSecurityType("FALSE");
-    setSelectedPolicies("FALSE");
-    setPolicyKey("");
-    setOutboundPolicyKey("");
-    setInboundPolicyKey("");
-    setDescription("");
-  };
+
   return (
     <>
+    <Modal show={props.modalOpen} onHide={handleCancelClick}>
       <Modal.Header>
         <Modal.Title className="text-primary">
-          Callout Mediator Property
+          Callout Mediator
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -495,17 +440,18 @@ export function CalloutMediatorProperty(props: Props) {
             </Form.Group>
           </Form>
         </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+             Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+             Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

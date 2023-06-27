@@ -36,34 +36,21 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  className: string;
-  properties: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
 export function ClassMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [className, setClassName] = useState<string>('');
-  const [properties, setProperties] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [className, setClassName] = useState('');
+  const [properties, setProperties] = useState('');
+  const [description, setDescription] = useState('');
   const {
     api: {
       ls: { getDiagramEditorLangClient },
@@ -78,21 +65,13 @@ export function ClassMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setClassName("");
-    setProperties("");
-    setDescription("");
-  };
+
   return (
     <>
+    <Modal show={props.modalOpen} onHide={handleCancelClick}>
       <Modal.Header>
         <Modal.Title className="text-primary">
-          Class Mediator Property
+          Class Mediator
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -111,7 +90,7 @@ export function ClassMediatorProperty(props: Props) {
                 onChange={handleClassName}
               />
               <Form.Label className="Properties">Properties</Form.Label>
-              {/* When a user clicks this textbox, the ClassProperty Model appears.*/}
+              {/* When a user clicks this textbox, the ClassMediatorProperty Model appears.*/}
               <Form.Control
                 as="textarea"
                 style={{ minHeight: "200px" }}
@@ -139,17 +118,18 @@ export function ClassMediatorProperty(props: Props) {
             </Form.Group>
           </Form>
         </Row>
-      </Modal.Body>{" "}
+      </Modal.Body>
       <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+             Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+             Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

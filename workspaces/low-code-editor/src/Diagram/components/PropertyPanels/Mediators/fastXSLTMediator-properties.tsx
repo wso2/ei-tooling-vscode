@@ -36,42 +36,31 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  description: string;
-  selectedFastXSLTSchemaType: string;
-  stXSLTSchemaKey: string;
-  dyXSLTSchemaKey: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function FastXSLTMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [description, setDescription] = useState("");
   const [selectedFastXSLTSchemaType, setSelectedFastXSLTSchemaType] =
-    useState<string>("Static");
-  const [stXSLTSchemaKey, setStXSLTSchemaKey] = useState<string>("");
-  const [dyXSLTSchemaKey, setDyXSLTSchemaKey] = useState<string>("");
+    useState("Static");
+  const [stXSLTSchemaKey, setStXSLTSchemaKey] = useState("");
+  const [dyXSLTSchemaKey, setDyXSLTSchemaKey] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
@@ -90,110 +79,103 @@ export function FastXSLTMediatorProperty(props: Props) {
   ) => {
     setDyXSLTSchemaKey(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setDescription("");
-    setSelectedFastXSLTSchemaType("Static");
-    setStXSLTSchemaKey("");
-    setDyXSLTSchemaKey("");
-  };
+
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          FastXSLT Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-              <br />
-              <Row className="mb-4">
-                <Modal.Title className="text-secondary">Schema Key</Modal.Title>
-                <Form>
-                  <Form.Group>
-                    <Form.Label className="FastXSLTSchemaType">
-                      Fast XSLT Schema Key Type
-                    </Form.Label>
-                    <Form.Select
-                      value={selectedFastXSLTSchemaType}
-                      onChange={handleFastXSLTSchemaTypeSelectChange}
-                    >
-                      <option value="Static">Static</option>
-                      <option value="Dynamic">Dynamic</option>
-                    </Form.Select>
-                    {selectedFastXSLTSchemaType === "Static" && (
-                      <>
-                        <Form.Label className="StXSLTSchemaKey">
-                          XSLT Static Schema Key
-                        </Form.Label>
-                        {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                        <Form.Control
-                          type="text"
-                          readOnly
-                          value={stXSLTSchemaKey}
-                          onChange={handleStXSLTSchemaKey}
-                        />
-                      </>
-                    )}
-                    {selectedFastXSLTSchemaType === "Dynamic" && (
-                      <>
-                        <Form.Label className="DyXSLTSchemaKey">
-                          XSLT Dynamic Schema Key
-                        </Form.Label>
-                        {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
-                        <Form.Control
-                          type="text"
-                          readOnly
-                          value={dyXSLTSchemaKey}
-                          onChange={handleDyXSLTSchemaKey}
-                        />
-                      </>
-                    )}
-                  </Form.Group>
-                </Form>
-              </Row>
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">Fast XSLT Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+                <br />
+                <Row className="mb-4">
+                  <Modal.Title className="text-secondary">
+                    Schema Key
+                  </Modal.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label className="FastXSLTSchemaType">
+                        Fast XSLT Schema Key Type
+                      </Form.Label>
+                      <Form.Select
+                        value={selectedFastXSLTSchemaType}
+                        onChange={handleFastXSLTSchemaTypeSelectChange}
+                      >
+                        <option value="Static">Static</option>
+                        <option value="Dynamic">Dynamic</option>
+                      </Form.Select>
+                      {selectedFastXSLTSchemaType === "Static" && (
+                        <>
+                          <Form.Label className="StXSLTSchemaKey">
+                            XSLT Static Schema Key
+                          </Form.Label>
+                          {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                          <Form.Control
+                            type="text"
+                            readOnly
+                            value={stXSLTSchemaKey}
+                            onChange={handleStXSLTSchemaKey}
+                          />
+                        </>
+                      )}
+                      {selectedFastXSLTSchemaType === "Dynamic" && (
+                        <>
+                          <Form.Label className="DyXSLTSchemaKey">
+                            XSLT Dynamic Schema Key
+                          </Form.Label>
+                          {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
+                          <Form.Control
+                            type="text"
+                            readOnly
+                            value={dyXSLTSchemaKey}
+                            onChange={handleDyXSLTSchemaKey}
+                          />
+                        </>
+                      )}
+                    </Form.Group>
+                  </Form>
+                </Row>
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

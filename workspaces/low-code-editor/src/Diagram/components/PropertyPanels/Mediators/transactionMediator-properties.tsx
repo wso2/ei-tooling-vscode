@@ -36,37 +36,28 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  selectedAction: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function TransactionMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [selectedAction, setSelectedAction] = useState<string>("Action1");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [selectedAction, setSelectedAction] = useState("Action1");
+  const [description, setDescription] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handleActionSelectChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -75,77 +66,72 @@ export function TransactionMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setSelectedAction("Action1");
-    setDescription("");
-  };
+
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Transaction Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="Action">Action</Form.Label>
-              <Form.Select
-                value={selectedAction}
-                onChange={handleActionSelectChange}
-              >
-                <option value="Action1">Commit transaction</option>
-                <option value="Action2">Fault if no transaction</option>
-                <option value="Action3">Initiate new transaction</option>
-                <option value="Action4">Resume transaction</option>
-                <option value="Action5">Suspend transaction</option>
-                <option value="Action6">Rollback transaction</option>
-                <option value="Action7">
-                  Use existing or initiate transaction
-                </option>
-              </Form.Select>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">
+            Transaction Mediator
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Action">Action</Form.Label>
+                <Form.Select
+                  value={selectedAction}
+                  onChange={handleActionSelectChange}
+                >
+                  <option value="Action1">Commit transaction</option>
+                  <option value="Action2">Fault if no transaction</option>
+                  <option value="Action3">Initiate new transaction</option>
+                  <option value="Action4">Resume transaction</option>
+                  <option value="Action5">Suspend transaction</option>
+                  <option value="Action6">Rollback transaction</option>
+                  <option value="Action7">
+                    Use existing or initiate transaction
+                  </option>
+                </Form.Select>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

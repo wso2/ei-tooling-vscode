@@ -36,36 +36,22 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  serverProfileName: string;
-  streamName: string;
-  streamVersion: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function BAMMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [serverProfileName, setServerProfileName] = useState<string>("");
-  const [streamName, setStreamName] = useState<string>("");
-  const [streamVersion, setStreamVersion] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+  const [serverProfileName, setServerProfileName] = useState("");
+  const [streamName, setStreamName] = useState("");
+  const [streamVersion, setStreamVersion] = useState("");
+  const [description, setDescription] = useState("");
   const {
     api: {
       ls: { getDiagramEditorLangClient },
@@ -85,94 +71,91 @@ export function BAMMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setServerProfileName("");
-    setStreamName("");
-    setStreamVersion("");
-    setDescription("");
-  };
+
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          BAM Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="ServerProfileName">
-                Server Profile Name
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="eg: Server Profile Name"
-                value={serverProfileName}
-                onChange={handleServerProfileName}
-              />
-              <br />
-              <Row className="mb-4">
-                <Modal.Title className="text-secondary">Stream</Modal.Title>
-                <Form>
-                  <Form.Group>
-                    <Form.Label className="StreamName">Stream Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="eg: Stream Name"
-                      value={streamName}
-                      onChange={handleStreamName}
-                    />
-                    <Form.Label className="StreamVersion">
-                      Stream Version
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="eg: Stream Version"
-                      value={streamVersion}
-                      onChange={handleStreamVersion}
-                    />
-                  </Form.Group>
-                </Form>
-              </Row>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
+        <Modal.Header>
+          <Modal.Title className="text-primary">BAM Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="ServerProfileName">
+                  Server Profile Name
+                </Form.Label>
+                <Form.Control
+                  className="custom-form-control"
+                  type="text"
+                  placeholder="eg: Server Profile Name"
+                  value={serverProfileName}
+                  onChange={handleServerProfileName}
+                />
+                <br />
+                <Row className="mb-4">
+                  <Modal.Title className="text-secondary">Stream</Modal.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label className="StreamName">
+                        Stream Name
+                      </Form.Label>
+                      <Form.Control
+                        className="custom-form-control"
+                        type="text"
+                        placeholder="eg: Stream Name"
+                        value={streamName}
+                        onChange={handleStreamName}
+                      />
+                      <Form.Label className="StreamVersion">
+                        Stream Version
+                      </Form.Label>
+                      <Form.Control
+                        className="custom-form-control"
+                        type="text"
+                        placeholder="eg: Stream Version"
+                        value={streamVersion}
+                        onChange={handleStreamVersion}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Row>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span className="custom-question-icon">
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  className="custom-form-control"
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
             Save
           </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

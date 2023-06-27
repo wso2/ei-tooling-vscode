@@ -36,49 +36,33 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  selectedPayloadFormat: string;
-  selectedMediaType: string;
-  selectedTemplateType: string;
-  payloadKey: string;
-  payload: string;
-  args: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function PayloadFactoryMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [selectedPayloadFormat, setSelectedPayloadFormat] =
-    useState<string>("Inline");
-  const [selectedMediaType, setSelectedMediaType] = useState<string>("xml");
-  const [selectedTemplateType, setSelectedTemplateType] =
-    useState<string>("Default");
-  const [payloadKey, setPayloadKey] = useState<string>("");
-  const [payload, setPayload] = useState<string>("");
-  const [args, setArgs] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [selectedPayloadFormat, setSelectedPayloadFormat] = useState("Inline");
+  const [selectedMediaType, setSelectedMediaType] = useState("xml");
+  const [selectedTemplateType, setSelectedTemplateType] = useState("Default");
+  const [payloadKey, setPayloadKey] = useState("");
+  const [payload, setPayload] = useState("");
+  const [args, setArgs] = useState("");
+  const [description, setDescription] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handlePayloadFormatSelectChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -108,148 +92,138 @@ export function PayloadFactoryMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setSelectedPayloadFormat("Inline");
-    setSelectedMediaType("xml");
-    setSelectedTemplateType("Default");
-    setPayloadKey("");
-    setPayload("");
-    setArgs("");
-    setDescription("");
-  };
 
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          {" "}
-          PayloadFactory Mediator Properties
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="PayloadFormat">Payload Format</Form.Label>
-              <Form.Select
-                value={selectedPayloadFormat}
-                onChange={handlePayloadFormatSelectChange}
-              >
-                <option value="Inline">Inline</option>
-                <option value="RegistryReference">Registry Reference</option>
-              </Form.Select>
-              <Form.Label className="MediaType">Media Type</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">
-                    Used to specify whether the message payload should be
-                    created in JSON, XML, or text
-                  </Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Select
-                value={selectedMediaType}
-                onChange={handleMediaTypeSelectChange}
-              >
-                <option value="xml">xml</option>
-                <option value="json">json</option>
-                <option value="text">text</option>
-              </Form.Select>
-              <Form.Label className="TemplateType">Template Type</Form.Label>
-              <Form.Select
-                value={selectedTemplateType}
-                onChange={handleTemplateTypeSelectChange}
-              >
-                <option value="xml">Default</option>
-                <option value="json">Freemarker</option>
-              </Form.Select>
-              {selectedPayloadFormat === "RegistryReference" && (
-                <>
-                  <Form.Label className="PayloadKey">Payload Key</Form.Label>
-                  {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={payloadKey}
-                    onChange={handlePayloadKey}
-                  />
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Payload</Modal.Title>
-          <Form>
-            <Form.Group>
-              {selectedPayloadFormat === "Inline" && (
-                <>
-                  <Form.Label className="Payload">Payload</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    style={{ minHeight: "200px" }}
-                    value={payload}
-                    onChange={handlePayloadChange}
-                  >
-                    &lt;inline/&gt;
-                  </Form.Control>
-                </>
-              )}
-              <Form.Label className="Args">Args</Form.Label>
-              {/*When a user clicks this textbox, the Expression Selector Model or Default Model appears*/}
-              <Form.Control
-                type="text"
-                readOnly
-                value={args}
-                onChange={handleArgsChange}
-              />
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">
+            Payload Factory Mediator
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="PayloadFormat">
+                  Payload Format
+                </Form.Label>
+                <Form.Select
+                  value={selectedPayloadFormat}
+                  onChange={handlePayloadFormatSelectChange}
+                >
+                  <option value="Inline">Inline</option>
+                  <option value="RegistryReference">Registry Reference</option>
+                </Form.Select>
+                <Form.Label className="MediaType">Media Type</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">
+                      Used to specify whether the message payload should be
+                      created in JSON, XML, or text
+                    </Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Select
+                  value={selectedMediaType}
+                  onChange={handleMediaTypeSelectChange}
+                >
+                  <option value="xml">xml</option>
+                  <option value="json">json</option>
+                  <option value="text">text</option>
+                </Form.Select>
+                <Form.Label className="TemplateType">Template Type</Form.Label>
+                <Form.Select
+                  value={selectedTemplateType}
+                  onChange={handleTemplateTypeSelectChange}
+                >
+                  <option value="xml">Default</option>
+                  <option value="json">Freemarker</option>
+                </Form.Select>
+                {selectedPayloadFormat === "RegistryReference" && (
+                  <>
+                    <Form.Label className="PayloadKey">Payload Key</Form.Label>
+                    {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={payloadKey}
+                      onChange={handlePayloadKey}
+                    />
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Payload</Modal.Title>
+            <Form>
+              <Form.Group>
+                {selectedPayloadFormat === "Inline" && (
+                  <>
+                    <Form.Label className="Payload">Payload</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      style={{ minHeight: "200px" }}
+                      value={payload}
+                      onChange={handlePayloadChange}
+                    >
+                      &lt;inline/&gt;
+                    </Form.Control>
+                  </>
+                )}
+                <Form.Label className="Args">Args</Form.Label>
+                {/*When a user clicks this textbox, the Expression Selector Model or Default Model appears*/}
+                <Form.Control
+                  type="text"
+                  readOnly
+                  value={args}
+                  onChange={handleArgsChange}
+                />
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

@@ -1,99 +1,3 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Main Property Panel Button Save and Cancel buttons */
-/* Footer Container */
-.footer-button-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative; /* Change position to relative */
-  width: 100%;
-  padding: 20px 0;
-  background-color: transparent;
-  z-index: 9999;
-}
-#secondary-button {
-  display: flex;
-  width: 100px;
-  height: 47px;
-  background-color: #d30000;
-  color: white;
-  margin: 0 50px;
-  border: 2px solid #d30000;
-  justify-content: center;
-  align-items: center;
-}
-#secondary-button:hover {
-  background-color: #fa8074;
-  color: white;
-  font-weight: bold;
-  border: 2px solid #fa8074;
-}
-#primary-button {
-  display: flex;
-  width: 100px;
-  height: 47px;
-  background-color: #0000ff;
-  color: white;
-  margin: 0 120px;
-  border: 2px solid #0000ff;
-  justify-content: center;
-  align-items: center;
-}
-#primary-button:hover {
-  background-color: #3a9bdc;
-  color: white;
-  font-weight: bold;
-  border: 2px solid #3a9bdc;
-}
-@media (max-width: 600px) {
-  .footer-button-container {
-    position: static; /* Change position to static */
-    padding: 20px;
-  }
-  #secondary-button,
-  #primary-button-mainpage {
-    margin: 0 30px;
-  }
-}
-
 /* Property/NTLM Mediator Panel. -> Value */
 .small-text {
   width: 42px; /* Adjust the font size as needed */
@@ -104,4 +8,40 @@
 }
 .large-space {
   margin-bottom: 20px; /* Adjust the margin size as needed */
+}
+
+.modal-dialog {
+  max-width: 300px !important; /* Set your desired width here */
+  width: 75% !important;
+  margin: 1.75rem auto;
+  background-color: #5e6164 !important;
+  font-size: 12px !important;
+}
+
+.text-primary {
+  font-size: 15px !important;
+}
+
+.text-secondary {
+  text-align: center !important;
+  margin-bottom: 8px !important;
+  font-size: 14px !important;
+}
+
+.custom-question-icon {
+  margin-left: 10px !important;
+  cursor: pointer !important;
+}
+
+.custom-form-control {
+  font-size: 12px !important;
+}
+
+.checkbox {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.checkbox-font{
+  margin-left: 10px !important;
 }

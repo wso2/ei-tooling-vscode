@@ -36,54 +36,37 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  groupId: string;
-  selectedOnAcceptBSeqType: string;
-  onAcceptBSeqKey: string;
-  selectedOnRejectBSeqType: string;
-  onRejectBSeqKey: string;
-  selectedPolicyType: string;
-  policyEntries: string;
-  policyKey: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function ThrottleMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [groupId, setGroupId] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [groupId, setGroupId] = useState("");
   const [selectedOnAcceptBSeqType, setSelectedOnAcceptBSeqType] =
-    useState<string>("ANONYMOUS");
-  const [onAcceptBSeqKey, setOnAcceptBSeqKey] = useState<string>("");
+    useState("ANONYMOUS");
+  const [onAcceptBSeqKey, setOnAcceptBSeqKey] = useState("");
   const [selectedOnRejectBSeqType, setSelectedOnRejectBSeqType] =
-    useState<string>("ANONYMOUS");
-  const [onRejectBSeqKey, setOnRejectBSeqKey] = useState<string>("");
-  const [selectedPolicyType, setSelectedPolicyType] =
-    useState<string>("INLINE");
-  const [policyEntries, setPolicyEntries] = useState<string>("");
-  const [policyKey, setPolicyKey] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+    useState("ANONYMOUS");
+  const [onRejectBSeqKey, setOnRejectBSeqKey] = useState("");
+  const [selectedPolicyType, setSelectedPolicyType] = useState("INLINE");
+  const [policyEntries, setPolicyEntries] = useState("");
+  const [policyKey, setPolicyKey] = useState("");
+  const [description, setDescription] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handleGroupIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGroupId(event.target.value);
   };
@@ -125,183 +108,179 @@ export function ThrottleMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setDescription("");
-  };
+
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Throttle Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">General</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="Group Id">Group Id</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="eg: Group Id"
-                value={groupId}
-                onChange={handleGroupIdChange}
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">OnAccept</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="OnAcceptBSeqType">
-                On Accept Branch Sequence Type
-              </Form.Label>
-              <Form.Select
-                value={selectedOnAcceptBSeqType}
-                onChange={handleOnAcceptBSeqTypeSelectChange}
-              >
-                <option value="ANONYMOUS">ANONYMOUS</option>
-                <option value="REGISTRY_REFERENCE">REGISTRY_REFERENCE</option>
-              </Form.Select>
-              {selectedOnAcceptBSeqType === "REGISTRY_REFERENCE" && (
-                <>
-                  <Form.Label className="OnAcceptBSeqKey">
-                    On Accept Branch Sequence Key
-                  </Form.Label>
-                  {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={onAcceptBSeqKey}
-                    onChange={handleOnAcceptBSeqKeyChange}
-                  />
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">OnReject</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="OnRejectBSeqType">
-                On Reject Branch Sequence Type
-              </Form.Label>
-              <Form.Select
-                value={selectedOnRejectBSeqType}
-                onChange={handleOnRejectBSeqTypeSelectChange}
-              >
-                <option value="ANONYMOUS">ANONYMOUS</option>
-                <option value="REGISTRY_REFERENCE">REGISTRY_REFERENCE</option>
-              </Form.Select>
-              {selectedOnRejectBSeqType === "REGISTRY_REFERENCE" && (
-                <>
-                  <Form.Label className="OnRejectBSeqKey">
-                    On Reject Branch Sequence Key
-                  </Form.Label>
-                  {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={onRejectBSeqKey}
-                    onChange={handleOnRejectBSeqKeyChange}
-                  />
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Throttle Policy</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="PolicyType">Policy Type</Form.Label>
-              <Form.Select
-                value={selectedPolicyType}
-                onChange={handlePolicyTypeSelectChange}
-              >
-                <option value="INLINE">INLINE</option>
-                <option value="REGISTRY_REFERENCE">REGISTRY_REFERENCE</option>
-              </Form.Select>
-              {selectedPolicyType === "INLINE" && (
-                <>
-                  <Form.Label className="PolicyEntries">
-                    Policy Entries
-                  </Form.Label>
-                  {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                  <Form.Control
-                    as="textarea"
-                    style={{ minHeight: "200px" }}
-                    readOnly
-                    value={policyEntries}
-                    onChange={handlePolicyEntriesChange}
-                  />
-                </>
-              )}
-              {selectedPolicyType === "REGISTRY_REFERENCE" && (
-                <>
-                  <Form.Label className="PolicyKey">Policy Key</Form.Label>
-                  {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={policyKey}
-                    onChange={handlePolicyKeyChange}
-                  />
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Misc</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">Throttle Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">General</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Group Id">Group Id</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="eg: Group Id"
+                  value={groupId}
+                  onChange={handleGroupIdChange}
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">OnAccept</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="OnAcceptBSeqType">
+                  On Accept Branch Sequence Type
+                </Form.Label>
+                <Form.Select
+                  value={selectedOnAcceptBSeqType}
+                  onChange={handleOnAcceptBSeqTypeSelectChange}
+                >
+                  <option value="ANONYMOUS">ANONYMOUS</option>
+                  <option value="REGISTRY_REFERENCE">REGISTRY_REFERENCE</option>
+                </Form.Select>
+                {selectedOnAcceptBSeqType === "REGISTRY_REFERENCE" && (
+                  <>
+                    <Form.Label className="OnAcceptBSeqKey">
+                      On Accept Branch Sequence Key
+                    </Form.Label>
+                    {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={onAcceptBSeqKey}
+                      onChange={handleOnAcceptBSeqKeyChange}
+                    />
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">OnReject</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="OnRejectBSeqType">
+                  On Reject Branch Sequence Type
+                </Form.Label>
+                <Form.Select
+                  value={selectedOnRejectBSeqType}
+                  onChange={handleOnRejectBSeqTypeSelectChange}
+                >
+                  <option value="ANONYMOUS">ANONYMOUS</option>
+                  <option value="REGISTRY_REFERENCE">REGISTRY_REFERENCE</option>
+                </Form.Select>
+                {selectedOnRejectBSeqType === "REGISTRY_REFERENCE" && (
+                  <>
+                    <Form.Label className="OnRejectBSeqKey">
+                      On Reject Branch Sequence Key
+                    </Form.Label>
+                    {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={onRejectBSeqKey}
+                      onChange={handleOnRejectBSeqKeyChange}
+                    />
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">
+              Throttle Policy
+            </Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="PolicyType">Policy Type</Form.Label>
+                <Form.Select
+                  value={selectedPolicyType}
+                  onChange={handlePolicyTypeSelectChange}
+                >
+                  <option value="INLINE">INLINE</option>
+                  <option value="REGISTRY_REFERENCE">REGISTRY_REFERENCE</option>
+                </Form.Select>
+                {selectedPolicyType === "INLINE" && (
+                  <>
+                    <Form.Label className="PolicyEntries">
+                      Policy Entries
+                    </Form.Label>
+                    {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                    <Form.Control
+                      as="textarea"
+                      style={{ minHeight: "200px" }}
+                      readOnly
+                      value={policyEntries}
+                      onChange={handlePolicyEntriesChange}
+                    />
+                  </>
+                )}
+                {selectedPolicyType === "REGISTRY_REFERENCE" && (
+                  <>
+                    <Form.Label className="PolicyKey">Policy Key</Form.Label>
+                    {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={policyKey}
+                      onChange={handlePolicyKeyChange}
+                    />
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Misc</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

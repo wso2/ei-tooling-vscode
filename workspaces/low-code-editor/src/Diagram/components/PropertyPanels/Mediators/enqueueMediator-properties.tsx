@@ -36,36 +36,23 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  executor: string;
-  priority: string;
-  sequenceKey: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function EnqueueMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [executor, setExecutor] = useState<string>("");
-  const [priority, setPriority] = useState<string>("0");
-  const [sequenceKey, setSequenceKey] = useState<string>("None");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [executor, setExecutor] = useState("");
+  const [priority, setPriority] = useState("0");
+  const [sequenceKey, setSequenceKey] = useState("None");
+  const [description, setDescription] = useState("");
   const {
     api: {
       ls: { getDiagramEditorLangClient },
@@ -83,86 +70,77 @@ export function EnqueueMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setExecutor("");
-    setPriority("");
-    setSequenceKey("None");
-    setDescription("");
-  };
+
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Enqueue Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="Executor">Executor</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="eg: Executor"
-                value={executor}
-                onChange={handleExecutor}
-              />
-              <Form.Label className="Priority">Priority</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="0"
-                value={priority}
-                onChange={handlePriority}
-              />
-              <Form.Label className="SequenceKey">Sequence Key</Form.Label>
-              {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-              <Form.Control
-                type="text"
-                readOnly
-                value={sequenceKey}
-                onChange={handleSequenceKey}
-              />
-              <Form.Label className="mt-2 mb-0">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                placeholder="eg: None"
-                value={description}
-                onChange={handleDescription}
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">Enqueue Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Executor">Executor</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="eg: Executor"
+                  value={executor}
+                  onChange={handleExecutor}
+                />
+                <Form.Label className="Priority">Priority</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="0"
+                  value={priority}
+                  onChange={handlePriority}
+                />
+                <Form.Label className="SequenceKey">Sequence Key</Form.Label>
+                {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                <Form.Control
+                  type="text"
+                  readOnly
+                  value={sequenceKey}
+                  onChange={handleSequenceKey}
+                />
+                <Form.Label className="mt-2 mb-0">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  placeholder="eg: None"
+                  value={description}
+                  onChange={handleDescription}
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

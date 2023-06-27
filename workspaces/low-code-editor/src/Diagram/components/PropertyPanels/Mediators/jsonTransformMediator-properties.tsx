@@ -36,40 +36,31 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  schema: string;
-  jsonTransformProperties: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function JsonTransformMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [schema, setSchema] = useState<string>("Schema");
-  const [jsonTransformProperties, setJsonTransformProperties] =
-    useState<string>("JsonTransformProperties");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [schema, setSchema] = useState("Schema");
+  const [jsonTransformProperties, setJsonTransformProperties] = useState(
+    "JsonTransformProperties"
+  );
+  const [description, setDescription] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handleSchema = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSchema(event.target.value);
   };
@@ -81,82 +72,77 @@ export function JsonTransformMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setSchema("");
-    setJsonTransformProperties("");
-    setDescription("");
-  };
+
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Json Transform Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="Schema">Schema</Form.Label>
-              {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-              <Form.Control
-                type="text"
-                readOnly
-                value={schema}
-                onChange={handleSchema}
-              />
-              <Form.Label className="JTProperties">
-                JsonTransformProperties
-              </Form.Label>
-              {/* When a user clicks this textbox, the JsonTransformMediatorProperty Model appears.*/}
-              <Form.Control
-                as="textarea"
-                style={{ minHeight: "200px" }}
-                readOnly
-                value={jsonTransformProperties}
-                onChange={handleJTProperties}
-              />
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>{" "}
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+      {" "}
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">
+            Json Transform Mediator
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Schema">Schema</Form.Label>
+                {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                <Form.Control
+                  type="text"
+                  readOnly
+                  value={schema}
+                  onChange={handleSchema}
+                />
+                <Form.Label className="JTProperties">
+                  JsonTransformProperties
+                </Form.Label>
+                {/* When a user clicks this textbox, the JsonTransformMediatorProperty Model appears.*/}
+                <Form.Control
+                  as="textarea"
+                  style={{ minHeight: "200px" }}
+                  readOnly
+                  value={jsonTransformProperties}
+                  onChange={handleJTProperties}
+                />
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>{" "}
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

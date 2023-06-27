@@ -17,24 +17,54 @@
  *
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { Circle } from "@wso2-ei/low-code-diagram";
 import { getComponent } from "../../util";
 import { WorkerLine } from "../worker-line";
+import { OAuthMediatorProperty } from "../PropertyPanels/index";
+import {
+  DiagramEditorLangClientInterface,
+  GetCompletionResponse,
+} from "@wso2-ei/low-code-editor-commons";
 
 interface SquareProps {
   model: Circle;
+  getDiagramEditorLangClient?: () => Promise<DiagramEditorLangClientInterface>;
+  textDocumentUrl: string;
+  textDocumentFsPath: string;
+  items: GetCompletionResponse[];
+  previousComponentStartPosition: number;
 }
 
 export function Oauth(props: SquareProps) {
-  const { model } = props;
+  const {
+    model,
+    getDiagramEditorLangClient,
+    textDocumentUrl,
+    textDocumentFsPath,
+    items,
+    previousComponentStartPosition,
+  } = props;
+  const [open, setOpen] = React.useState(false);
 
   const viewState = model.viewState;
+  model.tag;
   const components: JSX.Element[] = [];
 
-  model.children.forEach((child) => {
+  model.children.forEach((child: any) => {
     components.push(getComponent(child.type, { model: child }));
   });
+
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+
+  const handleButtonClick = async () => {
+    setOpen(true);
+    setIsClicked(true);
+  };
+
+  const handleCancelClick = (value: boolean) => {
+    setOpen(value);
+  };
 
   return (
     <>
@@ -46,6 +76,7 @@ export function Oauth(props: SquareProps) {
         viewBox="0 0 600 600"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        onClick={() => handleButtonClick()}
       >
         <ellipse cx="286" cy="277.5" rx="227" ry="235.5" fill="white" />
         <path
@@ -60,6 +91,9 @@ export function Oauth(props: SquareProps) {
 
       <WorkerLine model={model} />
       {components}
+      {isClicked && (
+        <OAuthMediatorProperty modalOpen={open} modalClose={handleCancelClick} />
+      )}
     </>
   );
 }

@@ -16,6 +16,7 @@
  * under the License.
  *
  */
+
 import React, { Component, useContext, useState } from "react";
 import {
   Col,
@@ -35,32 +36,20 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  messageBuilders: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function BuilderMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [messageBuilders, setMessageBuilders] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+  const [messageBuilders, setMessageBuilders] = useState("");
+  const [description, setDescription] = useState("");
   const {
     api: {
       ls: { getDiagramEditorLangClient },
@@ -74,70 +63,63 @@ export function BuilderMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setMessageBuilders("");
-    setDescription("");
-  };
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Builder Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="MessageBuilders">
-                Message Builders
-              </Form.Label>
-              {/* When a user clicks this EX textbox, the MessageBuilder Model appears*/}
-              <Form.Control
-                as="textarea"
-                style={{ minHeight: "200px" }}
-                readOnly
-                value={messageBuilders}
-                onChange={handleMessageBuilders}
-              />
-              <Form.Label className="description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
+        <Modal.Header>
+          <Modal.Title className="text-primary">Builder Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="MessageBuilders">
+                  Message Builders
+                </Form.Label>
+                {/* When a user clicks this EX textbox, the MessageBuilder Model appears*/}
+                <Form.Control
+                  className="custom-form-control"
+                  as="textarea"
+                  readOnly
+                  value={messageBuilders}
+                  onChange={handleMessageBuilders}
+                />
+                <Form.Label className="description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span className="custom-question-icon">
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  className="custom-form-control"
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
             Save
           </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

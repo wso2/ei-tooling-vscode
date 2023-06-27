@@ -36,46 +36,33 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  selectedReSeqType: string;
-  description: string;
-  selectedSkipSerialization: string;
-  selectedBuildMessage: string;
-  stReSeq: string;
-  reSeqExpr: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function SendMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [selectedReSeqType, setSelectedReSeqType] = useState<string>("Default");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [selectedReSeqType, setSelectedReSeqType] = useState("Default");
+  const [description, setDescription] = useState("");
   const [selectedSkipSerialization, setSelectedSkipSerialization] =
-    useState<string>("");
-  const [selectedBuildMessage, setSelectedBuildMessage] = useState<string>("");
-  const [stReSeq, setStReSeq] = useState<string>("");
-  const [reSeqExpr, setReSeqExpr] = useState<string>("");
+    useState("");
+  const [selectedBuildMessage, setSelectedBuildMessage] = useState("");
+  const [stReSeq, setStReSeq] = useState("");
+  const [reSeqExpr, setReSeqExpr] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handleReSeqTypeSelectChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -98,93 +85,55 @@ export function SendMediatorProperty(props: Props) {
   const handleReSeqExpr = (event: React.ChangeEvent<HTMLInputElement>) => {
     setReSeqExpr(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setSelectedReSeqType("Default");
-    setDescription("");
-    setSelectedSkipSerialization("");
-    setSelectedBuildMessage("");
-    setStReSeq("");
-    setReSeqExpr("");
-  };
 
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Send Mediator Properties
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Group style={{ textAlign: "left" }}>
-                <div style={{ marginBottom: "10px" }}>
-                  <Form.Check
-                    type="checkbox"
-                    className="SkipSerialization"
-                    label={
-                      <span style={{ marginLeft: "10px" }}>
-                        Skip Serialization
-                      </span>
-                    }
-                    checked={selectedSkipSerialization === "SkipSerialization"}
-                    value="SkipSerialization"
-                    onChange={handleSkipSerialization}
-                  />
-                </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Form.Check
-                    type="checkbox"
-                    className="BuildMessage"
-                    label={
-                      <span style={{ marginLeft: "10px" }}>
-                        Build Message Before Sending
-                      </span>
-                    }
-                    checked={selectedBuildMessage === "BuildMessage"}
-                    value="BuildMessage"
-                    onChange={handleBuildMessage}
-                  />
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={
-                      <Tooltip id="help-tooltip">
-                        If this is selected, the full message XML is built in
-                        the memory before the message is sent
-                      </Tooltip>
-                    }
-                  >
-                    <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                      <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                    </span>
-                  </OverlayTrigger>
-                </div>
-              </Form.Group>
-              <br />
-              <Row className="mb-4">
-                <Modal.Title className="text-secondary">
-                  Receiving Sequence
-                </Modal.Title>
-                <Form>
-                  <Form.Group>
-                    <Form.Label className="ReSeqType">
-                      Receiving Sequence Type
-                    </Form.Label>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">Send Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Group style={{ textAlign: "left" }}>
+                  <div style={{ marginBottom: "10px" }}>
+                    <Form.Check
+                      type="checkbox"
+                      className="SkipSerialization"
+                      label={
+                        <span style={{ marginLeft: "10px" }}>
+                          Skip Serialization
+                        </span>
+                      }
+                      checked={
+                        selectedSkipSerialization === "SkipSerialization"
+                      }
+                      value="SkipSerialization"
+                      onChange={handleSkipSerialization}
+                    />
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Form.Check
+                      type="checkbox"
+                      className="BuildMessage"
+                      label={
+                        <span style={{ marginLeft: "10px" }}>
+                          Build Message Before Sending
+                        </span>
+                      }
+                      checked={selectedBuildMessage === "BuildMessage"}
+                      value="BuildMessage"
+                      onChange={handleBuildMessage}
+                    />
                     <OverlayTrigger
                       placement="right"
                       overlay={
                         <Tooltip id="help-tooltip">
-                          The sequence to use for handling the response from the
-                          endpoint. If Default selected mediation sequence in
-                          the Out sequence will be used
+                          If this is selected, the full message XML is built in
+                          the memory before the message is sent
                         </Tooltip>
                       }
                     >
@@ -192,69 +141,107 @@ export function SendMediatorProperty(props: Props) {
                         <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                       </span>
                     </OverlayTrigger>
-                    <Form.Select
-                      value={selectedReSeqType}
-                      onChange={handleReSeqTypeSelectChange}
-                    >
-                      <option value="Default">Default</option>
-                      <option value="Static">Static</option>
-                      <option value="Dynamic">Dynamic</option>
-                    </Form.Select>
-                    {selectedReSeqType === "Static" && (
-                      <>
-                        <Form.Label className="StReSeq">
-                          Static Receiving Sequence
-                        </Form.Label>
-                        {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                        <Form.Control
-                          type="text"
-                          value={stReSeq}
-                          onChange={handleStReSeq}
-                          readOnly
-                        />
-                      </>
-                    )}
-                    {selectedReSeqType === "Dynamic" && (
-                      <>
-                        <Form.Label className="ReSeqExpr">
-                          Receiving Sequence Expression
-                        </Form.Label>
-                        {/*When a user clicks this textbox, the Expression Selector appears.*/}
-                        <Form.Control
-                          type="text"
-                          value={reSeqExpr}
-                          onChange={handleReSeqExpr}
-                          readOnly
-                        />
-                      </>
-                    )}
-                  </Form.Group>
-                </Form>
-              </Row>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
+                  </div>
+                </Form.Group>
+                <br />
+                <Row className="mb-4">
+                  <Modal.Title className="text-secondary">
+                    Receiving Sequence
+                  </Modal.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label className="ReSeqType">
+                        Receiving Sequence Type
+                      </Form.Label>
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={
+                          <Tooltip id="help-tooltip">
+                            The sequence to use for handling the response from
+                            the endpoint. If Default selected mediation sequence
+                            in the Out sequence will be used
+                          </Tooltip>
+                        }
+                      >
+                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                          <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                        </span>
+                      </OverlayTrigger>
+                      <Form.Select
+                        value={selectedReSeqType}
+                        onChange={handleReSeqTypeSelectChange}
+                      >
+                        <option value="Default">Default</option>
+                        <option value="Static">Static</option>
+                        <option value="Dynamic">Dynamic</option>
+                      </Form.Select>
+                      {selectedReSeqType === "Static" && (
+                        <>
+                          <Form.Label className="StReSeq">
+                            Static Receiving Sequence
+                          </Form.Label>
+                          {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                          <Form.Control
+                            type="text"
+                            value={stReSeq}
+                            onChange={handleStReSeq}
+                            readOnly
+                          />
+                        </>
+                      )}
+                      {selectedReSeqType === "Dynamic" && (
+                        <>
+                          <Form.Label className="ReSeqExpr">
+                            Receiving Sequence Expression
+                          </Form.Label>
+                          {/*When a user clicks this textbox, the Expression Selector appears.*/}
+                          <Form.Control
+                            type="text"
+                            value={reSeqExpr}
+                            onChange={handleReSeqExpr}
+                            readOnly
+                          />
+                        </>
+                      )}
+                    </Form.Group>
+                  </Form>
+                </Row>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

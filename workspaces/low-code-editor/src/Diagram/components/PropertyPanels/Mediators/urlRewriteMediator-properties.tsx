@@ -36,36 +36,23 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  urlRewriteAction: string;
-  inProperty: string;
-  outProperty: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function URLRewriteMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [urlRewriteAction, setURLRewriteAction] = useState<string>("");
-  const [inProperty, setInProperty] = useState<string>("");
-  const [outProperty, setOutProperty] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+  const [urlRewriteAction, setURLRewriteAction] = useState("");
+  const [inProperty, setInProperty] = useState("");
+  const [outProperty, setOutProperty] = useState("");
+  const [description, setDescription] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
@@ -86,130 +73,128 @@ export function URLRewriteMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setURLRewriteAction("");
-    setInProperty("");
-    setOutProperty("");
-    setDescription("");
-  };
+
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          URL Rewrite Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="URLRewriteAction">
-                URL Rewrite Action
-              </Form.Label>
-              {/* When a user clicks this textbox, the URLRewriteRule Model appears.*/}
-              <Form.Control
-                as="textarea"
-                style={{ minHeight: "200px" }}
-                readOnly
-                value={urlRewriteAction}
-                onChange={handleURLRewriteAction}
-              />
-              <br />
-              <Row className="mb-4">
-                <Modal.Title className="text-secondary">
-                  In-Out Properties
-                </Modal.Title>
-                <Form>
-                  <Form.Group>
-                    <Form.Label className="InProperty">In Property</Form.Label>
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip id="help-tooltip">
-                          The rewrite rules are applied to the value of the
-                          property entered in this parameter to generate the
-                          result URL. If no property is entered,the rewrite
-                          rules will be applied to the To header of the message
-                        </Tooltip>
-                      }
-                    >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                      </span>
-                    </OverlayTrigger>
-                    <Form.Control
-                      type="text"
-                      placeholder="eg: In Property"
-                      value={inProperty}
-                      onChange={handleInProperty}
-                    />
-                    <Form.Label className="OutProperty">In Property</Form.Label>
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip id="help-tooltip">
-                          This parameter is used to enter the property to which
-                          the transformations done via the rewrite rules should
-                          be applied. If no property is entered, the
-                          transformations will be applied to the to header of
-                          the message
-                        </Tooltip>
-                      }
-                    >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                      </span>
-                    </OverlayTrigger>
-                    <Form.Control
-                      type="text"
-                      placeholder="eg: Out Property"
-                      value={outProperty}
-                      onChange={handleOutProperty}
-                    />
-                  </Form.Group>
-                </Form>
-              </Row>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">
+            URL Rewrite Mediator
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="URLRewriteAction">
+                  URL Rewrite Action
+                </Form.Label>
+                {/* When a user clicks this textbox, the URLRewriteRule Model appears.*/}
+                <Form.Control
+                  as="textarea"
+                  style={{ minHeight: "200px" }}
+                  readOnly
+                  value={urlRewriteAction}
+                  onChange={handleURLRewriteAction}
+                />
+                <br />
+                <Row className="mb-4">
+                  <Modal.Title className="text-secondary">
+                    In-Out Properties
+                  </Modal.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label className="InProperty">
+                        In Property
+                      </Form.Label>
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={
+                          <Tooltip id="help-tooltip">
+                            The rewrite rules are applied to the value of the
+                            property entered in this parameter to generate the
+                            result URL. If no property is entered,the rewrite
+                            rules will be applied to the To header of the
+                            message
+                          </Tooltip>
+                        }
+                      >
+                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                          <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                        </span>
+                      </OverlayTrigger>
+                      <Form.Control
+                        type="text"
+                        placeholder="eg: In Property"
+                        value={inProperty}
+                        onChange={handleInProperty}
+                      />
+                      <Form.Label className="OutProperty">
+                        In Property
+                      </Form.Label>
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={
+                          <Tooltip id="help-tooltip">
+                            This parameter is used to enter the property to
+                            which the transformations done via the rewrite rules
+                            should be applied. If no property is entered, the
+                            transformations will be applied to the to header of
+                            the message
+                          </Tooltip>
+                        }
+                      >
+                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                          <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                        </span>
+                      </OverlayTrigger>
+                      <Form.Control
+                        type="text"
+                        placeholder="eg: Out Property"
+                        value={outProperty}
+                        onChange={handleOutProperty}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Row>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

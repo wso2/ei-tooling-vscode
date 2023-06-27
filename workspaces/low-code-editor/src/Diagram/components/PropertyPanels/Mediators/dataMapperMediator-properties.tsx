@@ -36,40 +36,25 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  conLocalPath: string;
-  inSchemaLocalPath: string;
-  outSchemaLocalPath: string;
-  selectedInputType: string;
-  selectedOutputType: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function DataMapperMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [conLocalPath, setConLocalPath] = useState<string>("");
-  const [inSchemaLocalPath, setInSchemaLocalPath] = useState<string>("");
-  const [outSchemaLocalPath, setOutSchemaLocalPath] = useState<string>("");
-  const [selectedInputType, setSelectedInputType] = useState<string>("XML");
-  const [selectedOutputType, setSelectedOutputType] = useState<string>("XML");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [conLocalPath, setConLocalPath] = useState("");
+  const [inSchemaLocalPath, setInSchemaLocalPath] = useState("");
+  const [outSchemaLocalPath, setOutSchemaLocalPath] = useState("");
+  const [selectedInputType, setSelectedInputType] = useState("XML");
+  const [selectedOutputType, setSelectedOutputType] = useState("XML");
+  const [description, setDescription] = useState("");
   const {
     api: {
       ls: { getDiagramEditorLangClient },
@@ -101,169 +86,164 @@ export function DataMapperMediatorProperty(props: Props) {
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setConLocalPath("");
-    setInSchemaLocalPath("");
-    setOutSchemaLocalPath("");
-    setSelectedInputType("XML");
-    setSelectedOutputType("XML");
-    setDescription("");
-  };
+
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          DataMapper Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="ConLocalPath">
-                Configuration Local Path
-              </Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">
-                    Double click on datamapper mediator diagram to load
-                    configurations dialog
-                  </Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-              <Form.Control
-                type="text"
-                readOnly
-                value={conLocalPath}
-                onChange={handleConLocalPath}
-              />
-              <br />
-              <Row className="mb-4">
-                <Modal.Title className="text-secondary">Input Type</Modal.Title>
-                <Form>
-                  <Form.Group>
-                    <Form.Label className="InputType<">Input Type</Form.Label>
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip id="help-tooltip">
-                          Expected input message type &#40;XML/JSON/CSV&#41;
-                        </Tooltip>
-                      }
-                    >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                      </span>
-                    </OverlayTrigger>
-                    <Form.Select
-                      value={selectedInputType}
-                      onChange={handleInputTypeSelectChange}
-                    >
-                      <option value="XML">XML</option>
-                      <option value="CSV">CSV</option>
-                      <option value="JSON">JSON</option>
-                    </Form.Select>
-                    <Form.Label className="InSchemaLocalPath">
-                      InputSchema Local Path
-                    </Form.Label>
-                    {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                    <Form.Control
-                      type="text"
-                      readOnly
-                      value={inSchemaLocalPath}
-                      onChange={handleInSchemaLocalPath}
-                    />
-                  </Form.Group>
-                </Form>
-              </Row>
-              <br />
-              <Row className="mb-4">
-                <Modal.Title className="text-secondary">
-                  Output Type
-                </Modal.Title>
-                <Form>
-                  <Form.Group>
-                    <Form.Label className="OutputType<">Output Type</Form.Label>
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip id="help-tooltip">
-                          Expected output message type &#40;XML/JSON/CSV&#41;
-                        </Tooltip>
-                      }
-                    >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                      </span>
-                    </OverlayTrigger>
-                    <Form.Select
-                      value={selectedOutputType}
-                      onChange={handleOutputTypeSelectChange}
-                    >
-                      <option value="XML">XML</option>
-                      <option value="CSV">CSV</option>
-                      <option value="JSON">JSON</option>
-                    </Form.Select>
-                    <Form.Label className="OutSchemaLocalPath">
-                      OutputSchema Local Path
-                    </Form.Label>
-                    {/* When a user clicks this textbox, the Resource Key Model appears.*/}
-                    <Form.Control
-                      type="text"
-                      readOnly
-                      value={outSchemaLocalPath}
-                      onChange={handleOutSchemaLocalPath}
-                    />
-                  </Form.Group>
-                </Form>
-              </Row>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">
+            Data Mapper Mediator
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="ConLocalPath">
+                  Configuration Local Path
+                </Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">
+                      Double click on datamapper mediator diagram to load
+                      configurations dialog
+                    </Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                <Form.Control
+                  type="text"
+                  readOnly
+                  value={conLocalPath}
+                  onChange={handleConLocalPath}
+                />
+                <br />
+                <Row className="mb-4">
+                  <Modal.Title className="text-secondary">
+                    Input Type
+                  </Modal.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label className="InputType<">Input Type</Form.Label>
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={
+                          <Tooltip id="help-tooltip">
+                            Expected input message type &#40;XML/JSON/CSV&#41;
+                          </Tooltip>
+                        }
+                      >
+                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                          <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                        </span>
+                      </OverlayTrigger>
+                      <Form.Select
+                        value={selectedInputType}
+                        onChange={handleInputTypeSelectChange}
+                      >
+                        <option value="XML">XML</option>
+                        <option value="CSV">CSV</option>
+                        <option value="JSON">JSON</option>
+                      </Form.Select>
+                      <Form.Label className="InSchemaLocalPath">
+                        InputSchema Local Path
+                      </Form.Label>
+                      {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                      <Form.Control
+                        type="text"
+                        readOnly
+                        value={inSchemaLocalPath}
+                        onChange={handleInSchemaLocalPath}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Row>
+                <br />
+                <Row className="mb-4">
+                  <Modal.Title className="text-secondary">
+                    Output Type
+                  </Modal.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label className="OutputType<">
+                        Output Type
+                      </Form.Label>
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={
+                          <Tooltip id="help-tooltip">
+                            Expected output message type &#40;XML/JSON/CSV&#41;
+                          </Tooltip>
+                        }
+                      >
+                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                          <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                        </span>
+                      </OverlayTrigger>
+                      <Form.Select
+                        value={selectedOutputType}
+                        onChange={handleOutputTypeSelectChange}
+                      >
+                        <option value="XML">XML</option>
+                        <option value="CSV">CSV</option>
+                        <option value="JSON">JSON</option>
+                      </Form.Select>
+                      <Form.Label className="OutSchemaLocalPath">
+                        OutputSchema Local Path
+                      </Form.Label>
+                      {/* When a user clicks this textbox, the Resource Key Model appears.*/}
+                      <Form.Control
+                        type="text"
+                        readOnly
+                        value={outSchemaLocalPath}
+                        onChange={handleOutSchemaLocalPath}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Row>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

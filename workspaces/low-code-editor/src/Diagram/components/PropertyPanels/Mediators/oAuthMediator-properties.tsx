@@ -36,112 +36,126 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-    remoteServiceUrl: string;
-    username: string;
-    password: string;
-  description: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function OAuthMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-    const [remoteServiceUrl, setRemoteServiceUrl] = useState<string>("");
-    const [username, setUsername] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [remoteServiceUrl, setRemoteServiceUrl] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [description, setDescription] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
-    const handleRemoteServiceUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRemoteServiceUrl(event.target.value);
-    };
-    const handleUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUsername(event.target.value);
-    };
-    const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(event.target.value);
-    };
+
+  const handleRemoteServiceUrl = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRemoteServiceUrl(event.target.value);
+  };
+  const handleUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  };
+  const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
   const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setRemoteServiceUrl("");
-    setUsername("");
-    setPassword("");
-    setDescription("");
-  };
-    return (
-        <>
-            <Modal.Header>
-                <Modal.Title className='text-primary'>OAuth Mediator Property</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+
+  return (
+    <>
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">OAuth Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="RemoteServiceUrl">
+                  Remote Service Url
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="eg: Remote Service Url"
+                  value={remoteServiceUrl}
+                  onChange={handleRemoteServiceUrl}
+                />
                 <br />
-                <Row className='mb-4'>
-                    <Modal.Title className='text-secondary'>
-                      Properties
-                    </Modal.Title>
-                    <Form>
-                        <Form.Group>
-                            <Form.Label className="RemoteServiceUrl">Remote Service Url</Form.Label>
-                            <Form.Control type="text" placeholder="eg: Remote Service Url" value={remoteServiceUrl} onChange={handleRemoteServiceUrl} />
-                            <br />
-                            <Row className='mb-4'>
-                                <Modal.Title className='text-secondary'>
-                                    Credentials
-                                </Modal.Title>
-                                <Form>
-                                    <Form.Group>
-                                        <Form.Label className="Username">Username</Form.Label>
-                                        <Form.Control type="text" placeholder="eg: Username" value={username} onChange={handleUsername} />
-                                        <Form.Label className="Password">Password</Form.Label>
-                                        <Form.Control type="text" placeholder="eg: Password" value={password} onChange={handlePassword} />
-                                    </Form.Group>
-                                </Form>
-                            </Row>
-                            <Form.Label className='description'>Description</Form.Label>
-                                <OverlayTrigger placement="right" overlay={<Tooltip id="help-tooltip">Default description</Tooltip>}>
-                                    <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                                    </span>
-                                </OverlayTrigger>
-                                <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />                          
-                        </Form.Group>
-                    </Form>
-                </Row>          
-            </Modal.Body>
-        </> 
-    )
-  }
+                <Row className="mb-4">
+                  <Modal.Title className="text-secondary">
+                    Credentials
+                  </Modal.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label className="Username">Username</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="eg: Username"
+                        value={username}
+                        onChange={handleUsername}
+                      />
+                      <Form.Label className="Password">Password</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="eg: Password"
+                        value={password}
+                        onChange={handlePassword}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Row>
+                <Form.Label className="description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,

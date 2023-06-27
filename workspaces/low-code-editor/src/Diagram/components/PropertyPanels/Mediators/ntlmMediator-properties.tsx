@@ -36,55 +36,37 @@ import {
   SnippetCompletionResponse,
   TextEdit,
 } from "@wso2-ei/low-code-editor-commons";
-import {
-  applyChange,
-  getCompletion,
-  getSnippetCompletion,
-} from "../../../../DiagramGenerator/generatorUtil";
+import { applyChange } from "../../../../DiagramGenerator/generatorUtil";
 import { Context as DiagramContext } from "../../../../Contexts";
 
-type Props = {
-  textDocumentUrl: string;
-  textDocumentFsPath: string;
-  previousComponentStartPosition: number;
-  textEdit?: TextEdit;
-};
-type State = {
-  description: string;
-  userName: string;
-  password: string;
-  host: string;
-  domain: string;
-  ntlmVersion: string;
-  UserNameEx: string;
-  passwordEx: string;
-  hostEx: string;
-  domainEx: string;
-  ntlmVersionEx: string;
-};
+interface Props {
+  modalOpen: boolean;
+  modalClose: (value: boolean) => void;
+}
+
 export function NTLMMediatorProperty(props: Props) {
-  const {
-    textDocumentUrl,
-    textDocumentFsPath,
-    previousComponentStartPosition,
-    textEdit,
-  } = props;
-  const [description, setDescription] = useState<string>("");
-  const [userName, setUserName] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [host, setHost] = useState<string>("");
-  const [domain, setDomain] = useState<string>("");
-  const [ntlmVersion, setNtlmVersion] = useState<string>("");
-  const [UserNameEx, setUserNameEx] = useState<string>("");
-  const [passwordEx, setPasswordEx] = useState<string>("");
-  const [hostEx, setHostEx] = useState<string>("");
-  const [domainEx, setDomainEx] = useState<string>("");
-  const [ntlmVersionEx, setNtlmVersionEx] = useState<string>("");
+  const handleCancelClick = () => {
+    props.modalClose(false);
+  };
+
+  const [description, setDescription] = useState("");
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [host, setHost] = useState("");
+  const [domain, setDomain] = useState("");
+  const [ntlmVersion, setNtlmVersion] = useState("");
+  const [UserNameEx, setUserNameEx] = useState("");
+  const [passwordEx, setPasswordEx] = useState("");
+  const [hostEx, setHostEx] = useState("");
+  const [domainEx, setDomainEx] = useState("");
+  const [ntlmVersionEx, setNtlmVersionEx] = useState("");
+
   const {
     api: {
       ls: { getDiagramEditorLangClient },
     },
   } = useContext(DiagramContext);
+
   const handleDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
   };
@@ -118,187 +100,170 @@ export function NTLMMediatorProperty(props: Props) {
   const handleNtlmVersionEx = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNtlmVersionEx(event.target.value);
   };
-  const handleSubmit = async () => {
-    if (!getDiagramEditorLangClient || !textEdit) {
-      return [];
-    }
-  };
-  const handleCancelClick = async () => {
-    setDescription("");
-    setUserName("");
-    setPassword("");
-    setHost("");
-    setDomain("");
-    setNtlmVersion("");
-    setUserNameEx("");
-    setPasswordEx("");
-    setHostEx("");
-    setDomainEx("");
-    setNtlmVersionEx("");
-  };
 
   return (
     <>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          NTLM Mediator Property
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Properties</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-              <Form.Label className="UserName">User Name</Form.Label>
-              <div className="row">
-                <div className="col-auto">
-                  <Form.Control
-                    type="text"
-                    placeholder="Ex"
-                    readOnly
-                    className="small-text"
-                    value={UserNameEx}
-                    onChange={handleUserNameEx}
-                  />{" "}
-                  {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
+      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+        <Modal.Header>
+          <Modal.Title className="text-primary">NTLM Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <br />
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Properties</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <Form.Control
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+                <Form.Label className="UserName">User Name</Form.Label>
+                <div className="row">
+                  <div className="col-auto">
+                    <Form.Control
+                      type="text"
+                      placeholder="Ex"
+                      readOnly
+                      className="small-text"
+                      value={UserNameEx}
+                      onChange={handleUserNameEx}
+                    />{" "}
+                    {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
+                  </div>
+                  <div className="col">
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Username"
+                      className="large-space"
+                      value={userName}
+                      onChange={handleUserName}
+                    />
+                  </div>
                 </div>
-                <div className="col">
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Username"
-                    className="large-space"
-                    value={userName}
-                    onChange={handleUserName}
-                  />
+                <Form.Label className="Password">Password</Form.Label>
+                <div className="row">
+                  <div className="col-auto">
+                    <Form.Control
+                      type="text"
+                      placeholder="Ex"
+                      readOnly
+                      className="small-text"
+                      value={passwordEx}
+                      onChange={handlePasswordEx}
+                    />{" "}
+                    {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
+                  </div>
+                  <div className="col">
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Password"
+                      className="large-space"
+                      value={password}
+                      onChange={handlePassword}
+                    />
+                  </div>
                 </div>
-              </div>
-              <Form.Label className="Password">Password</Form.Label>
-              <div className="row">
-                <div className="col-auto">
-                  <Form.Control
-                    type="text"
-                    placeholder="Ex"
-                    readOnly
-                    className="small-text"
-                    value={passwordEx}
-                    onChange={handlePasswordEx}
-                  />{" "}
-                  {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
+                <Form.Label className="Host">Host</Form.Label>
+                <div className="row">
+                  <div className="col-auto">
+                    <Form.Control
+                      type="text"
+                      placeholder="Ex"
+                      readOnly
+                      className="small-text"
+                      value={hostEx}
+                      onChange={handleHostEx}
+                    />{" "}
+                    {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
+                  </div>
+                  <div className="col">
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Host"
+                      className="large-space"
+                      value={host}
+                      onChange={handleHost}
+                    />
+                  </div>
                 </div>
-                <div className="col">
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Password"
-                    className="large-space"
-                    value={password}
-                    onChange={handlePassword}
-                  />
+                <Form.Label className="Domain">Domain</Form.Label>
+                <div className="row">
+                  <div className="col-auto">
+                    <Form.Control
+                      type="text"
+                      placeholder="Ex"
+                      readOnly
+                      className="small-text"
+                      value={domainEx}
+                      onChange={handleDoaminEx}
+                    />{" "}
+                    {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
+                  </div>
+                  <div className="col">
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Domain"
+                      className="large-space"
+                      value={domain}
+                      onChange={handleDomain}
+                    />
+                  </div>
                 </div>
-              </div>
-              <Form.Label className="Host">Host</Form.Label>
-              <div className="row">
-                <div className="col-auto">
-                  <Form.Control
-                    type="text"
-                    placeholder="Ex"
-                    readOnly
-                    className="small-text"
-                    value={hostEx}
-                    onChange={handleHostEx}
-                  />{" "}
-                  {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
+                <Form.Label className="NtlmVersion">Ntlm Version</Form.Label>
+                <div className="row">
+                  <div className="col-auto">
+                    <Form.Control
+                      type="text"
+                      placeholder="Ex"
+                      readOnly
+                      className="small-text"
+                      value={ntlmVersionEx}
+                      onChange={handleNtlmVersionEx}
+                    />
+                    {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
+                  </div>
+                  <div className="col">
+                    <Form.Control
+                      type="text"
+                      placeholder="eg: Ntlm Version"
+                      className="large-space"
+                      value={ntlmVersion}
+                      onChange={handleNtlmVersion}
+                    />
+                  </div>
                 </div>
-                <div className="col">
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Host"
-                    className="large-space"
-                    value={host}
-                    onChange={handleHost}
-                  />
-                </div>
-              </div>
-              <Form.Label className="Domain">Domain</Form.Label>
-              <div className="row">
-                <div className="col-auto">
-                  <Form.Control
-                    type="text"
-                    placeholder="Ex"
-                    readOnly
-                    className="small-text"
-                    value={domainEx}
-                    onChange={handleDoaminEx}
-                  />{" "}
-                  {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
-                </div>
-                <div className="col">
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Domain"
-                    className="large-space"
-                    value={domain}
-                    onChange={handleDomain}
-                  />
-                </div>
-              </div>
-              <Form.Label className="NtlmVersion">Ntlm Version</Form.Label>
-              <div className="row">
-                <div className="col-auto">
-                  <Form.Control
-                    type="text"
-                    placeholder="Ex"
-                    readOnly
-                    className="small-text"
-                    value={ntlmVersionEx}
-                    onChange={handleNtlmVersionEx}
-                  />
-                  {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
-                </div>
-                <div className="col">
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Ntlm Version"
-                    className="large-space"
-                    value={ntlmVersion}
-                    onChange={handleNtlmVersion}
-                  />
-                </div>
-              </div>
-            </Form.Group>
-          </Form>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="footer-button-container">
-          <Button id="primary-button" onClick={handleSubmit}>
-            Save
-          </Button>
-          <Button id="secondary-button" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-        </div>
-      </Modal.Footer>
+              </Form.Group>
+            </Form>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="footer-button-container">
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Save
+            </Button>
+            <Button variant="primary" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
 async function modifyTextOnComponentSelection(
   url: string,
   fsPath: string,
