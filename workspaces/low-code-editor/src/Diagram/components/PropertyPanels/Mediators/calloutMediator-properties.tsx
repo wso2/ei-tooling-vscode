@@ -47,11 +47,9 @@ export function CalloutMediatorProperty(props: Props) {
   const handleCancelClick = () => {
     props.modalClose(false);
   };
-  const [selectedEndpointType, setSelectedEndpointType] =
-    useState("URL");
+  const [selectedEndpointType, setSelectedEndpointType] = useState("URL");
   const [soapAction, setSoapAction] = useState("");
-  const [pathToAxis2Repository, setPathToAxis2Repository] =
-    useState("");
+  const [pathToAxis2Repository, setPathToAxis2Repository] = useState("");
   const [pathToAxis2XML, setPathToAxis2XML] = useState("");
   const [
     selectedAxis2ClientOptionsMethod,
@@ -59,16 +57,13 @@ export function CalloutMediatorProperty(props: Props) {
   ] = useState("Axis2ClientOptions");
   const [serviceURL, setServiceURL] = useState("");
   const [addressEndpointType, setAddressEndpointType] = useState("");
-  const [selectedPayloadType, setSelectedPayloadType] =
-    useState("XPATH");
+  const [selectedPayloadType, setSelectedPayloadType] = useState("XPATH");
   const [payloadMessageXPath, setPayloadMessageXPath] = useState("");
   const [payloadProperty, setPayloadProperty] = useState("");
   const [selectedResultType, setSelectedResultType] = useState("XPATH");
   const [resultMessageXPath, setResultMessageXPath] = useState("");
-  const [resultContextProperty, setResultContextProperty] =
-    useState("");
-  const [selectedSecurityType, setSelectedSecurityType] =
-    useState("FALSE");
+  const [resultContextProperty, setResultContextProperty] = useState("");
+  const [selectedSecurityType, setSelectedSecurityType] = useState("FALSE");
   const [selectedPolicies, setSelectedPolicies] = useState("FALSE");
   const [policyKey, setPolicyKey] = useState("");
   const [outboundPolicyKey, setOutboundPolicyKey] = useState("");
@@ -175,281 +170,293 @@ export function CalloutMediatorProperty(props: Props) {
 
   return (
     <>
-    <Modal show={props.modalOpen} onHide={handleCancelClick}>
-      <Modal.Header>
-        <Modal.Title className="text-primary">
-          Callout Mediator
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Service</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="EndpointType">Endpoint Type</Form.Label>
-              <Form.Select
-                value={selectedEndpointType}
-                onChange={handleEndpointTypeSelectChange}
-              >
-                <option value="URL">URL</option>
-                <option value="AddressEndpoint">Address Endpoint</option>
-              </Form.Select>
-              <Form.Label className="SOAPAction">SOAP Action</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="eg: SOAP Action"
-                value={soapAction}
-                onChange={handleSoapActionChange}
-              />
-              <Form.Label className="PathAxis2Repository">
-                Path to Axis2 Repository
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="eg: Path to Axis2 Repository"
-                value={pathToAxis2Repository}
-                onChange={handlePathToAxis2RepositoryChange}
-              />
-              <Form.Label className="PathAxis2XML">
-                Path to Axis2 XML
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="eg: Path to Axis2 XML"
-                value={pathToAxis2XML}
-                onChange={handlePathToAxis2XMLChange}
-              />
-              <br />
-              <Form.Check
-                type="checkbox"
-                className="Axis2ClientOptions"
-                style={{ display: "flex", alignItems: "center" }}
-                label={
-                  <span style={{ marginLeft: "10px" }}>
-                    Init Axis2 Client Options
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
+        <Modal.Header>
+          <Modal.Title className="text-primary">Callout Mediator</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Service</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="EndpointType">Endpoint Type</Form.Label>
+                <Form.Select
+                  className="custom-form-control"
+                  value={selectedEndpointType}
+                  onChange={handleEndpointTypeSelectChange}
+                >
+                  <option value="URL">URL</option>
+                  <option value="AddressEndpoint">Address Endpoint</option>
+                </Form.Select>
+                <Form.Label className="SOAPAction">SOAP Action</Form.Label>
+                <Form.Control
+                  className="custom-form-control"
+                  type="text"
+                  placeholder="eg: SOAP Action"
+                  value={soapAction}
+                  onChange={handleSoapActionChange}
+                />
+                <Form.Label className="PathAxis2Repository">
+                  Path to Axis2 Repository
+                </Form.Label>
+                <Form.Control
+                  className="custom-form-control"
+                  type="text"
+                  placeholder="eg: Path to Axis2 Repository"
+                  value={pathToAxis2Repository}
+                  onChange={handlePathToAxis2RepositoryChange}
+                />
+                <Form.Label className="PathAxis2XML">
+                  Path to Axis2 XML
+                </Form.Label>
+                <Form.Control
+                  className="custom-form-control"
+                  type="text"
+                  placeholder="eg: Path to Axis2 XML"
+                  value={pathToAxis2XML}
+                  onChange={handlePathToAxis2XMLChange}
+                />
+                <br />
+                <Form.Check
+                  type="checkbox"
+                  className="Axis2ClientOptions"
+                  label={
+                    <span className="checkbox-font">
+                      Init Axis2 Client Options
+                    </span>
+                  }
+                  checked={
+                    selectedAxis2ClientOptionsMethod === "Axis2ClientOptions"
+                  }
+                  value="Axis2ClientOptions"
+                  onChange={handleAxis2ClientOptionsMethodChange}
+                />
+                {selectedEndpointType === "URL" && (
+                  <>
+                    <Form.Label className="ServiceURL">Service URL</Form.Label>
+                    <Form.Control
+                      className="custom-form-control"
+                      type="text"
+                      placeholder="eg: Service URL"
+                      value={serviceURL}
+                      onChange={handleServiceURLChange}
+                    />
+                  </>
+                )}
+                {selectedEndpointType === "AddressEndpoint" && (
+                  <>
+                    <Form.Label className="AddressEndpointType">
+                      Address Endpoint
+                    </Form.Label>
+                    {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
+                    <Form.Control
+                      className="custom-form-control"
+                      type="text"
+                      readOnly
+                      value={addressEndpointType}
+                      onChange={handleAddressEndpointTypeChange}
+                    />
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Source</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="PayloadType">Payload Type</Form.Label>
+                <Form.Select
+                  className="custom-form-control"
+                  value={selectedPayloadType}
+                  onChange={handlePayloadTypeSelectChange}
+                >
+                  <option value="XPATH">XPATH</option>
+                  <option value="Property">Property</option>
+                  <option value="ENVELOP">ENVELOP</option>
+                </Form.Select>
+                {selectedPayloadType === "XPATH" && (
+                  <>
+                    <Form.Label className="PayloadMessageXPath">
+                      Payload Message Xpath
+                    </Form.Label>
+                    {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
+                    <Form.Control
+                      className="custom-form-control"
+                      type="text"
+                      readOnly
+                      value={payloadMessageXPath}
+                      onChange={handlePayloadMessageXPathChange}
+                    />
+                  </>
+                )}
+                {selectedPayloadType === "Property" && (
+                  <>
+                    <Form.Label className="PayloadProperty">
+                      Payload Property
+                    </Form.Label>
+                    <Form.Control
+                      className="custom-form-control"
+                      type="text"
+                      placeholder="eg: Payload Property"
+                      value={payloadProperty}
+                      onChange={handlePayloadPropertyChange}
+                    />
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Target</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="ResultType">Result Type</Form.Label>
+                <Form.Select
+                  className="custom-form-control"
+                  value={selectedResultType}
+                  onChange={handleResultTypeSelectChange}
+                >
+                  <option value="XPATH">XPATH</option>
+                  <option value="Property">Property</option>
+                </Form.Select>
+                {selectedResultType === "XPATH" && (
+                  <>
+                    <Form.Label className="ResultMessageXPath">
+                      Result Message Xpath
+                    </Form.Label>
+                    {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={resultMessageXPath}
+                      onChange={handleResultMessageXPathChange}
+                    />
+                  </>
+                )}
+                {selectedResultType === "Property" && (
+                  <>
+                    <Form.Label className="ResultContextProperty">
+                      Result Context Property
+                    </Form.Label>
+                    <Form.Control
+                      className="custom-form-control"
+                      type="text"
+                      placeholder="eg: context_property_name"
+                      value={resultContextProperty}
+                      onChange={handleResultContextPropertyChange}
+                    />
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">WS</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="SecurityType">Security Type</Form.Label>
+                <Form.Select
+                  className="custom-form-control"
+                  value={selectedSecurityType}
+                  onChange={handleSecurityTypeSelectChange}
+                >
+                  <option value="FALSE">FALSE</option>
+                  <option value="TRUE">TRUE</option>
+                </Form.Select>
+                {selectedSecurityType === "TRUE" && (
+                  <>
+                    <Form.Label className="Policies">Policies</Form.Label>
+                    <Form.Select
+                      className="custom-form-control"
+                      value={selectedPolicies}
+                      onChange={handlePoliciesSelectChange}
+                    >
+                      <option value="FALSE">FALSE</option>
+                      <option value="TRUE">TRUE</option>
+                    </Form.Select>
+                    {selectedPolicies === "FALSE" && (
+                      <>
+                        <Form.Label className="PolicyKey">
+                          Policy Key
+                        </Form.Label>
+                        {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
+                        <Form.Control
+                          type="text"
+                          readOnly
+                          value={policyKey}
+                          onChange={handlePolicyKeyChange}
+                        />
+                      </>
+                    )}
+                    {selectedPolicies === "TRUE" && (
+                      <>
+                        <Form.Label className="OutboundPolicyKey">
+                          Outbound Policy Key
+                        </Form.Label>
+                        {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
+                        <Form.Control
+                          className="custom-form-control"
+                          type="text"
+                          readOnly
+                          value={outboundPolicyKey}
+                          onChange={handleOutboundPolicyKeyChange}
+                        />
+                        <Form.Label className="InboundPolicyKey">
+                          Inbound Policy Key
+                        </Form.Label>
+                        {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
+                        <Form.Control
+                          className="custom-form-control"
+                          type="text"
+                          readOnly
+                          value={inboundPolicyKey}
+                          onChange={handleInboundPolicyKeyChange}
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+              </Form.Group>
+            </Form>
+          </Row>
+          <Row className="mb-4">
+            <Modal.Title className="text-secondary">Misc</Modal.Title>
+            <Form>
+              <Form.Group>
+                <Form.Label className="Description">Description</Form.Label>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">Default description</Tooltip>
+                  }
+                >
+                  <span className="custom-question-icon">
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
-                }
-                checked={
-                  selectedAxis2ClientOptionsMethod === "Axis2ClientOptions"
-                }
-                value="Axis2ClientOptions"
-                onChange={handleAxis2ClientOptionsMethodChange}
-              />
-              {selectedEndpointType === "URL" && (
-                <>
-                  <Form.Label className="ServiceURL">Service URL</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Service URL"
-                    value={serviceURL}
-                    onChange={handleServiceURLChange}
-                  />
-                </>
-              )}
-              {selectedEndpointType === "AddressEndpoint" && (
-                <>
-                  <Form.Label className="AddressEndpointType">
-                    Address Endpoint
-                  </Form.Label>
-                  {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={addressEndpointType}
-                    onChange={handleAddressEndpointTypeChange}
-                  />
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Source</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="PayloadType">Payload Type</Form.Label>
-              <Form.Select
-                value={selectedPayloadType}
-                onChange={handlePayloadTypeSelectChange}
-              >
-                <option value="XPATH">XPATH</option>
-                <option value="Property">Property</option>
-                <option value="ENVELOP">ENVELOP</option>
-              </Form.Select>
-              {selectedPayloadType === "XPATH" && (
-                <>
-                  <Form.Label className="PayloadMessageXPath">
-                    Payload Message Xpath
-                  </Form.Label>
-                  {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={payloadMessageXPath}
-                    onChange={handlePayloadMessageXPathChange}
-                  />
-                </>
-              )}
-              {selectedPayloadType === "Property" && (
-                <>
-                  <Form.Label className="PayloadProperty">
-                    Payload Property
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: Payload Property"
-                    value={payloadProperty}
-                    onChange={handlePayloadPropertyChange}
-                  />
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Target</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="ResultType">Result Type</Form.Label>
-              <Form.Select
-                value={selectedResultType}
-                onChange={handleResultTypeSelectChange}
-              >
-                <option value="XPATH">XPATH</option>
-                <option value="Property">Property</option>
-              </Form.Select>
-              {selectedResultType === "XPATH" && (
-                <>
-                  <Form.Label className="ResultMessageXPath">
-                    Result Message Xpath
-                  </Form.Label>
-                  {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
-                  <Form.Control
-                    type="text"
-                    readOnly
-                    value={resultMessageXPath}
-                    onChange={handleResultMessageXPathChange}
-                  />
-                </>
-              )}
-              {selectedResultType === "Property" && (
-                <>
-                  <Form.Label className="ResultContextProperty">
-                    Result Context Property
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="eg: context_property_name"
-                    value={resultContextProperty}
-                    onChange={handleResultContextPropertyChange}
-                  />
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">WS</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="SecurityType">Security Type</Form.Label>
-              <Form.Select
-                value={selectedSecurityType}
-                onChange={handleSecurityTypeSelectChange}
-              >
-                <option value="FALSE">FALSE</option>
-                <option value="TRUE">TRUE</option>
-              </Form.Select>
-              {selectedSecurityType === "TRUE" && (
-                <>
-                  <Form.Label className="Policies">Policies</Form.Label>
-                  <Form.Select
-                    value={selectedPolicies}
-                    onChange={handlePoliciesSelectChange}
-                  >
-                    <option value="FALSE">FALSE</option>
-                    <option value="TRUE">TRUE</option>
-                  </Form.Select>
-                  {selectedPolicies === "FALSE" && (
-                    <>
-                      <Form.Label className="PolicyKey">Policy Key</Form.Label>
-                      {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
-                      <Form.Control
-                        type="text"
-                        readOnly
-                        value={policyKey}
-                        onChange={handlePolicyKeyChange}
-                      />
-                    </>
-                  )}
-                  {selectedPolicies === "TRUE" && (
-                    <>
-                      <Form.Label className="OutboundPolicyKey">
-                        Outbound Policy Key
-                      </Form.Label>
-                      {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
-                      <Form.Control
-                        type="text"
-                        readOnly
-                        value={outboundPolicyKey}
-                        onChange={handleOutboundPolicyKeyChange}
-                      />
-                      <Form.Label className="InboundPolicyKey">
-                        Inbound Policy Key
-                      </Form.Label>
-                      {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
-                      <Form.Control
-                        type="text"
-                        readOnly
-                        value={inboundPolicyKey}
-                        onChange={handleInboundPolicyKeyChange}
-                      />
-                    </>
-                  )}
-                </>
-              )}
-            </Form.Group>
-          </Form>
-        </Row>
-        <br />
-        <Row className="mb-4">
-          <Modal.Title className="text-secondary">Misc</Modal.Title>
-          <Form>
-            <Form.Group>
-              <Form.Label className="Description">Description</Form.Label>
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="help-tooltip">Default description</Tooltip>
-                }
-              >
-                <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                </span>
-              </OverlayTrigger>
-              <Form.Control
-                as="textarea"
-                value={description}
-                onChange={handleDescription}
-                placeholder="eg: None"
-              />
-            </Form.Group>
-          </Form>
-        </Row>
+                </OverlayTrigger>
+                <Form.Control
+                  className="custom-form-control"
+                  as="textarea"
+                  value={description}
+                  onChange={handleDescription}
+                  placeholder="eg: None"
+                />
+              </Form.Group>
+            </Form>
+          </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-             Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-             Cancel
-            </Button>
-          </div>
+        <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

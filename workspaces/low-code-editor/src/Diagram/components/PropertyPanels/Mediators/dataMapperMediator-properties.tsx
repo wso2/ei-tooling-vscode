@@ -89,14 +89,17 @@ export function DataMapperMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">
             Data Mapper Mediator
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
@@ -113,18 +116,18 @@ export function DataMapperMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   readOnly
                   value={conLocalPath}
                   onChange={handleConLocalPath}
                 />
-                <br />
                 <Row className="mb-4">
                   <Modal.Title className="text-secondary">
                     Input Type
@@ -140,11 +143,12 @@ export function DataMapperMediatorProperty(props: Props) {
                           </Tooltip>
                         }
                       >
-                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <span className="custom-question-icon">
                           <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                         </span>
                       </OverlayTrigger>
                       <Form.Select
+                        className="custom-form-control"
                         value={selectedInputType}
                         onChange={handleInputTypeSelectChange}
                       >
@@ -157,6 +161,7 @@ export function DataMapperMediatorProperty(props: Props) {
                       </Form.Label>
                       {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                       <Form.Control
+                        className="custom-form-control"
                         type="text"
                         readOnly
                         value={inSchemaLocalPath}
@@ -165,7 +170,6 @@ export function DataMapperMediatorProperty(props: Props) {
                     </Form.Group>
                   </Form>
                 </Row>
-                <br />
                 <Row className="mb-4">
                   <Modal.Title className="text-secondary">
                     Output Type
@@ -183,11 +187,12 @@ export function DataMapperMediatorProperty(props: Props) {
                           </Tooltip>
                         }
                       >
-                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <span className="custom-question-icon">
                           <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                         </span>
                       </OverlayTrigger>
                       <Form.Select
+                        className="custom-form-control"
                         value={selectedOutputType}
                         onChange={handleOutputTypeSelectChange}
                       >
@@ -200,6 +205,7 @@ export function DataMapperMediatorProperty(props: Props) {
                       </Form.Label>
                       {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                       <Form.Control
+                        className="custom-form-control"
                         type="text"
                         readOnly
                         value={outSchemaLocalPath}
@@ -215,11 +221,12 @@ export function DataMapperMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -230,14 +237,12 @@ export function DataMapperMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

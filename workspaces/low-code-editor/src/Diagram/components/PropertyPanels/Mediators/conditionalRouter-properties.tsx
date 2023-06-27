@@ -74,61 +74,56 @@ export function ConditionalRouterProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">
             Conditional Router Mediator
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
               <Form.Group>
-                <Form.Group style={{ textAlign: "left" }}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Form.Check
-                      type="checkbox"
-                      className="ContinueAfterRoute"
-                      label={
-                        <span style={{ marginLeft: "10px" }}>
-                          Continue After Route
-                        </span>
-                      }
-                      checked={
-                        selectedContinueAfterRoute === "ContinueAfterRoute"
-                      }
-                      value="ContinueAfterRoute"
-                      onChange={handleContinueAfterRoute}
-                    />
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip id="help-tooltip">
-                          If this is selected, mediation continues to execute
-                          (any other mediators specified) after the conditional
-                          router mediator
-                        </Tooltip>
-                      }
-                    >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                      </span>
-                    </OverlayTrigger>
-                  </div>
-                  <br />
-                </Form.Group>
+                <Form.Check
+                  type="checkbox"
+                  className="checkbox"
+                  label={
+                    <span className="checkbox-font">Continue After Route</span>
+                  }
+                  checked={selectedContinueAfterRoute === "ContinueAfterRoute"}
+                  value="ContinueAfterRoute"
+                  onChange={handleContinueAfterRoute}
+                />
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="help-tooltip">
+                      If this is selected, mediation continues to execute (any
+                      other mediators specified) after the conditional router
+                      mediator
+                    </Tooltip>
+                  }
+                >
+                  <span className="custom-question-icon">
+                    <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                  </span>
+                </OverlayTrigger>
+                <br />
                 <Form.Label className="Conditional Route Branches">
                   Conditional Route Branches
                 </Form.Label>
                 {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   readOnly
                   value={conditionalRouteBranches}
                   onChange={handleConditionalRouteBranches}
-                  style={{ minHeight: "200px" }}
                 />
                 <Form.Label className="Description">Description</Form.Label>
                 <OverlayTrigger
@@ -137,11 +132,12 @@ export function ConditionalRouterProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -152,14 +148,12 @@ export function ConditionalRouterProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

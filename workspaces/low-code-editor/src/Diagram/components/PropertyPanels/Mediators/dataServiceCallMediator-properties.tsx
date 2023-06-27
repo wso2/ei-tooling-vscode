@@ -100,12 +100,15 @@ export function DataServiceCallMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">DSS Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
@@ -114,6 +117,7 @@ export function DataServiceCallMediatorProperty(props: Props) {
                   Available Data Services
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedAvaDataServices}
                   onChange={handleAvaDataServicesSelectChange}
                 >
@@ -123,6 +127,7 @@ export function DataServiceCallMediatorProperty(props: Props) {
                 </Form.Select>
                 <Form.Label className="ServiceName">Service Name</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Service Name"
                   value={serviceName}
@@ -130,6 +135,7 @@ export function DataServiceCallMediatorProperty(props: Props) {
                 />
                 <Form.Label className="SourceType">Source Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedSourceType}
                   onChange={handleSourceTypeSelectChange}
                 >
@@ -140,6 +146,7 @@ export function DataServiceCallMediatorProperty(props: Props) {
                   Operation Type
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedOperationType}
                   onChange={handleOperationTypeSelectChange}
                 >
@@ -152,8 +159,8 @@ export function DataServiceCallMediatorProperty(props: Props) {
                     <Form.Label className="InlineSource">Operations</Form.Label>
                     {/* When a user clicks this textbox, the AbstractDSSOperation Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       as="textarea"
-                      style={{ minHeight: "200px" }}
                       readOnly
                       value={inlineSource}
                       onChange={handleInlineSource}
@@ -162,6 +169,7 @@ export function DataServiceCallMediatorProperty(props: Props) {
                 )}
                 <Form.Label className="TargetType">Target Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedTargetType}
                   onChange={handleTargetTypeSelectChange}
                 >
@@ -174,6 +182,7 @@ export function DataServiceCallMediatorProperty(props: Props) {
                       Target Property
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Target Property"
                       value={targetProperty}
@@ -193,6 +202,7 @@ export function DataServiceCallMediatorProperty(props: Props) {
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -203,14 +213,12 @@ export function DataServiceCallMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

@@ -262,7 +262,6 @@ export function DBReportMediatorProperty(props: Props) {
           <Modal.Title className="text-primary">DB Lookup Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Connection</Modal.Title>
             <Form>
@@ -271,6 +270,7 @@ export function DBReportMediatorProperty(props: Props) {
                   ConnectionType
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedConnectionType}
                   onChange={handleConnectionTypeSelectChange}
                 >
@@ -283,11 +283,16 @@ export function DBReportMediatorProperty(props: Props) {
                       Database Configuration
                     </Form.Label>
                     {/* When a user clicks this textbox, Database Configuration Model appears*/}
-                    <Form.Control type="text" readOnly />
+                    <Form.Control
+                      className="custom-form-control"
+                      type="text"
+                      readOnly
+                    />
                     <Form.Label className="ConnectionDbType">
                       Connection Db Type
                     </Form.Label>
                     <Form.Select
+                      className="custom-form-control"
                       value={selectedConnectionDbType}
                       onChange={handleConnectionDbTypeSelectChange}
                     >
@@ -300,10 +305,9 @@ export function DBReportMediatorProperty(props: Props) {
                     <br />
                     <Form.Check
                       type="checkbox"
-                      className="RegBasedDriverConfig"
-                      style={{ display: "flex", alignItems: "center" }}
+                      className="checkbox"
                       label={
-                        <span style={{ marginLeft: "10px" }}>
+                        <span className="checkbox-font">
                           Is Registry Based Driver Config
                         </span>
                       }
@@ -316,6 +320,7 @@ export function DBReportMediatorProperty(props: Props) {
                         </Form.Label>
                         {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                         <Form.Control
+                          className="custom-form-control"
                           type="text"
                           readOnly
                           value={selectedRegBDriConfigKey}
@@ -328,6 +333,7 @@ export function DBReportMediatorProperty(props: Props) {
                           Connection Db Driver
                         </Form.Label>
                         <Form.Control
+                          className="custom-form-control"
                           type="text"
                           placeholder={
                             selectedConnectionDbType === "MYSQL"
@@ -353,6 +359,7 @@ export function DBReportMediatorProperty(props: Props) {
                       Connection Ds Type
                     </Form.Label>
                     <Form.Select
+                      className="custom-form-control"
                       value={selectedConnectionDsType}
                       onChange={handleConnectionDsTypeSelectChange}
                     >
@@ -363,6 +370,7 @@ export function DBReportMediatorProperty(props: Props) {
                       Connection Ds Name
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Connection Ds Name"
                       value={connectionDsName}
@@ -374,6 +382,7 @@ export function DBReportMediatorProperty(props: Props) {
                           Connection Ds Initial Context
                         </Form.Label>
                         <Form.Control
+                          className="custom-form-control"
                           type="text"
                           placeholder="eg: Connection Ds Initial Context"
                           value={connectionDsInitialContext}
@@ -389,10 +398,9 @@ export function DBReportMediatorProperty(props: Props) {
                     <br />
                     <Form.Check
                       type="checkbox"
-                      className="RegBasedUrlConfig"
-                      style={{ display: "flex", alignItems: "center" }}
+                      className="checkbox"
                       label={
-                        <span style={{ marginLeft: "10px" }}>
+                        <span className="checkbox-font">
                           Is Registry Based Url Config
                         </span>
                       }
@@ -405,6 +413,7 @@ export function DBReportMediatorProperty(props: Props) {
                         </Form.Label>
                         {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                         <Form.Control
+                          className="custom-form-control"
                           type="text"
                           readOnly
                           value={regBUrlConfigKey}
@@ -441,10 +450,9 @@ export function DBReportMediatorProperty(props: Props) {
                     <br />
                     <Form.Check
                       type="checkbox"
-                      className="RegBasedUserConfig"
-                      style={{ display: "flex", alignItems: "center" }}
+                      className="checkbox"
                       label={
-                        <span style={{ marginLeft: "10px" }}>
+                        <span className="checkbox-font">
                           Is Registry Based User Config
                         </span>
                       }
@@ -457,6 +465,7 @@ export function DBReportMediatorProperty(props: Props) {
                         </Form.Label>
                         {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                         <Form.Control
+                          className="custom-form-control"
                           type="text"
                           readOnly
                           value={regBUserConfigKey}
@@ -469,6 +478,7 @@ export function DBReportMediatorProperty(props: Props) {
                           Connection Username
                         </Form.Label>
                         <Form.Control
+                          className="custom-form-control"
                           type="text"
                           placeholder={
                             selectedConnectionType === "DB_CONNECTION" &&
@@ -493,10 +503,9 @@ export function DBReportMediatorProperty(props: Props) {
                     <br />
                     <Form.Check
                       type="checkbox"
-                      className="RegBasedPassConfig"
-                      style={{ display: "flex", alignItems: "center" }}
+                      className="checkbox"
                       label={
-                        <span style={{ marginLeft: "10px" }}>
+                        <span className="checkbox-font">
                           Is Registry Based Password Config
                         </span>
                       }
@@ -509,6 +518,7 @@ export function DBReportMediatorProperty(props: Props) {
                         </Form.Label>
                         {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                         <Form.Control
+                          className="custom-form-control"
                           type="text"
                           readOnly
                           value={regBPassConfigKey}
@@ -521,6 +531,7 @@ export function DBReportMediatorProperty(props: Props) {
                           Connection Password
                         </Form.Label>
                         <Form.Control
+                          className="custom-form-control"
                           type="text"
                           placeholder="eg: Connection Password"
                           value={connectionPassword}
@@ -528,7 +539,6 @@ export function DBReportMediatorProperty(props: Props) {
                         />
                       </>
                     )}
-                    <br />
                     <Row className="mb-4">
                       <Modal.Title className="text-secondary">
                         Properties
@@ -539,6 +549,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Autocommit
                           </Form.Label>
                           <Form.Select
+                            className="custom-form-control"
                             value={selectedProAutocommit}
                             onChange={handleProAutocommitSelectChange}
                           >
@@ -550,6 +561,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Isolation
                           </Form.Label>
                           <Form.Select
+                            className="custom-form-control"
                             value={selectedProIsolation}
                             onChange={handleProIsolationSelectChange}
                           >
@@ -574,6 +586,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Maxactive
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="-1"
                             value={propertyMaxactive}
@@ -583,6 +596,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Maxidle
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="-1"
                             value={propertyMaxidle}
@@ -592,6 +606,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Maxopenstatements
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="-1"
                             value={propertyMaxopenstatements}
@@ -601,6 +616,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Maxwait
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="-1"
                             value={propertyMaxwait}
@@ -610,6 +626,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Minidle
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="-1"
                             value={propertyMinidle}
@@ -619,6 +636,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Poolstatements
                           </Form.Label>
                           <Form.Select
+                            className="custom-form-control"
                             value={selectedProPoolstatements}
                             onChange={handleProPoolstatementsSelectChange}
                           >
@@ -630,6 +648,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Testonborrow
                           </Form.Label>
                           <Form.Select
+                            className="custom-form-control"
                             value={selectedProTestonborrow}
                             onChange={handleProTestonborrowSelectChange}
                           >
@@ -641,6 +660,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Testwhileidle
                           </Form.Label>
                           <Form.Select
+                            className="custom-form-control"
                             value={selectedProTestwhileidle}
                             onChange={handleProTestwhileidleSelectChange}
                           >
@@ -652,6 +672,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Validationquery
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="eg: Property Validationquery"
                             value={propertyValidationquery}
@@ -661,6 +682,7 @@ export function DBReportMediatorProperty(props: Props) {
                             Property Initialsize
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="-1"
                             value={propertyInitialsize}
@@ -674,7 +696,6 @@ export function DBReportMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Statements</Modal.Title>
             <Form>
@@ -682,8 +703,8 @@ export function DBReportMediatorProperty(props: Props) {
                 <Form.Label className="SQLStatement">SQLStatement</Form.Label>
                 {/* When a user clicks this textbox, the SQLStatement Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
-                  style={{ minHeight: "200px" }}
                   readOnly
                   value={sqlStatement}
                   onChange={handleSQLStatement}
@@ -691,7 +712,6 @@ export function DBReportMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Misc</Modal.Title>
             <Form>
@@ -703,11 +723,12 @@ export function DBReportMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -718,14 +739,12 @@ export function DBReportMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

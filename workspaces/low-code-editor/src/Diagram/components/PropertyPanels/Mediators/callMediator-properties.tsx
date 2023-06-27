@@ -140,25 +140,25 @@ export function CallMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
-          <Modal.Title className="text-primary">
-            Call Mediator
-          </Modal.Title>
+          <Modal.Title className="text-primary">Call Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Check
                   type="checkbox"
-                  className="EnableBlockingCalls"
-                  style={{ display: "flex", alignItems: "center" }}
+                  className="checkbox"
                   label={
                     <>
-                      <span style={{ marginLeft: "10px" }}>
+                      <span className="checkbox-font">
                         Enable Blocking Calls
                       </span>
                       <OverlayTrigger
@@ -169,7 +169,7 @@ export function CallMediatorProperty(props: Props) {
                           </Tooltip>
                         }
                       >
-                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <span className="custom-question-icon">
                           <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                         </span>
                       </OverlayTrigger>
@@ -182,7 +182,6 @@ export function CallMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Endpoint Type</Modal.Title>
             <Form>
@@ -197,11 +196,12 @@ export function CallMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedEndpointType}
                   onChange={handleEndpointSelectChange}
                 >
@@ -217,6 +217,7 @@ export function CallMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={endpointRegistryKey}
                       onChange={handleEndpointRegistryKey}
@@ -238,12 +239,13 @@ export function CallMediatorProperty(props: Props) {
                         </Tooltip>
                       }
                     >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                      <span className="custom-question-icon">
                         <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                       </span>
                     </OverlayTrigger>
                     {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={endpointXPATH}
                       onChange={handleEndpointXPATH}
@@ -253,6 +255,7 @@ export function CallMediatorProperty(props: Props) {
                 )}
                 <Form.Label className="SourceType">Source Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedSourceType}
                   onChange={handleSourceSelectChange}
                 >
@@ -268,6 +271,7 @@ export function CallMediatorProperty(props: Props) {
                       SourceProperty
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={sourceProperty}
                       onChange={handleSourceProperty}
@@ -277,6 +281,7 @@ export function CallMediatorProperty(props: Props) {
                       Content Type
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={sourcePropertyContentType}
                       onChange={handleSourcePropertyContentType}
@@ -287,13 +292,15 @@ export function CallMediatorProperty(props: Props) {
                 {selectedSourceType === "inline" && (
                   <>
                     <Form.Label className="SourcePayload">
-                      SourcePayload
+                      Source Payload
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       as="textarea"
-                      style={{ minHeight: "200px" }}
                       value={sourcePayload}
                       onChange={handleSourcePayload}
+                      placeholder="<inline>"
+                      rows={7}
                     >
                       &lt;inline/&gt;
                     </Form.Control>
@@ -301,6 +308,7 @@ export function CallMediatorProperty(props: Props) {
                       Content Type
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={sourcePayloadContentType}
                       onChange={handleSourcePayloadContentType}
@@ -313,6 +321,7 @@ export function CallMediatorProperty(props: Props) {
                     <Form.Label className="SourceXPath">SourceXPath</Form.Label>
                     {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={sourceXPath}
                       onChange={handleSourceXPath}
@@ -322,6 +331,7 @@ export function CallMediatorProperty(props: Props) {
                       Content Type
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={sourceXPathContentType}
                       onChange={handleSourceXPathContentType}
@@ -331,6 +341,7 @@ export function CallMediatorProperty(props: Props) {
                 )}
                 <Form.Label className="TargetType">Target Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedTargetType}
                   onChange={handleTargetSelectChange}
                 >
@@ -344,6 +355,7 @@ export function CallMediatorProperty(props: Props) {
                       Target Property
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={targetProperty}
                       onChange={handleTargetProperty}
@@ -353,6 +365,7 @@ export function CallMediatorProperty(props: Props) {
                       Content Type
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={targetPropertyContentType}
                       onChange={handleTargetPropertyContentType}
@@ -367,11 +380,12 @@ export function CallMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -382,14 +396,12 @@ export function CallMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
