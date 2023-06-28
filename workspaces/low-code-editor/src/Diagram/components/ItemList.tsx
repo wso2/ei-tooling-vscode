@@ -78,7 +78,6 @@ const ItemList: React.FC<Props> = ({ items , textDocumentUrl, textDocumentFsPath
                     </li>
                 ))}
             </ul>}
-            {/* {isClicked && selectedItem && <LogMediatorProperty textEdit={selectedItem.textEdit} textDocumentUrl={textDocumentUrl} textDocumentFsPath={textDocumentFsPath} previousComponentStartPosition={previousComponentStartPosition}/> } */}
         </div>
     );
 };
