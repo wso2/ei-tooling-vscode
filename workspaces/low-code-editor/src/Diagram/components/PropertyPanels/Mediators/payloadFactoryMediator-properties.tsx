@@ -95,14 +95,17 @@ export function PayloadFactoryMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">
             Payload Factory Mediator
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
@@ -111,6 +114,7 @@ export function PayloadFactoryMediatorProperty(props: Props) {
                   Payload Format
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedPayloadFormat}
                   onChange={handlePayloadFormatSelectChange}
                 >
@@ -127,11 +131,12 @@ export function PayloadFactoryMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedMediaType}
                   onChange={handleMediaTypeSelectChange}
                 >
@@ -141,6 +146,7 @@ export function PayloadFactoryMediatorProperty(props: Props) {
                 </Form.Select>
                 <Form.Label className="TemplateType">Template Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedTemplateType}
                   onChange={handleTemplateTypeSelectChange}
                 >
@@ -152,6 +158,7 @@ export function PayloadFactoryMediatorProperty(props: Props) {
                     <Form.Label className="PayloadKey">Payload Key</Form.Label>
                     {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={payloadKey}
@@ -162,7 +169,6 @@ export function PayloadFactoryMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Payload</Modal.Title>
             <Form>
@@ -171,18 +177,18 @@ export function PayloadFactoryMediatorProperty(props: Props) {
                   <>
                     <Form.Label className="Payload">Payload</Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       as="textarea"
-                      style={{ minHeight: "200px" }}
-                      value={payload}
                       onChange={handlePayloadChange}
-                    >
-                      &lt;inline/&gt;
-                    </Form.Control>
+                      placeholder="<inline>"
+                      rows={5}
+                    />
                   </>
                 )}
                 <Form.Label className="Args">Args</Form.Label>
                 {/*When a user clicks this textbox, the Expression Selector Model or Default Model appears*/}
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   readOnly
                   value={args}
@@ -195,11 +201,12 @@ export function PayloadFactoryMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -210,14 +217,12 @@ export function PayloadFactoryMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

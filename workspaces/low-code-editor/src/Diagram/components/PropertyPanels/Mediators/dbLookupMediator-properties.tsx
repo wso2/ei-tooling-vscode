@@ -709,7 +709,6 @@ export function DBLookupMediatorProperty(props: Props) {
                 <Form.Control
                   className="custom-form-control"
                   as="textarea"
-                  style={{ minHeight: "200px" }}
                   readOnly
                   value={sqlStatement}
                   onChange={handleSQLStatement}

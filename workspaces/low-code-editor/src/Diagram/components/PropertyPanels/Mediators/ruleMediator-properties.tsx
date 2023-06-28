@@ -154,18 +154,22 @@ export function RuleMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Rule Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Source</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="SourceValue">Source Value</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Source Value"
                   value={sourceValue}
@@ -174,6 +178,7 @@ export function RuleMediatorProperty(props: Props) {
                 <Form.Label className="SourceXPath">Source XPath</Form.Label>
                 {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   readOnly
                   value={sourceXPath}
@@ -182,13 +187,13 @@ export function RuleMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Target</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="TargetValue">Target Value</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Target Value"
                   value={targetValue}
@@ -196,6 +201,7 @@ export function RuleMediatorProperty(props: Props) {
                 />
                 <Form.Label className="TargetAction">Target Action</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedTargetAction}
                   onChange={handleTargetActionSelectChange}
                 >
@@ -206,6 +212,7 @@ export function RuleMediatorProperty(props: Props) {
                 <Form.Label className="TargetXPath">Target XPath</Form.Label>
                 {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   readOnly
                   value={targetXPath}
@@ -216,6 +223,7 @@ export function RuleMediatorProperty(props: Props) {
                 </Form.Label>
                 {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   readOnly
                   value={targetResultXPath}
@@ -224,13 +232,13 @@ export function RuleMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Rule Set</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="RuleSetType">Rule Set Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedRuleSetType}
                   onChange={handleRuleSetTypeSelectChange}
                 >
@@ -241,6 +249,7 @@ export function RuleMediatorProperty(props: Props) {
                   Rule Set Source Type
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedRuleSetSourceType}
                   onChange={handleRuleSetSourceTypeSelectChange}
                 >
@@ -254,8 +263,8 @@ export function RuleMediatorProperty(props: Props) {
                       Rule Set Source Code
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       as="textarea"
-                      style={{ minHeight: "200px" }}
                       value={ruleSetSourceCode}
                       onChange={handleRuleSetSourceCode}
                     >
@@ -270,6 +279,7 @@ export function RuleMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={inlineRegistryKey}
@@ -281,6 +291,7 @@ export function RuleMediatorProperty(props: Props) {
                   <>
                     <Form.Label className="RuleSetURL">Rule Set URL</Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Rule Set URL"
                       value={ruleSetURL}
@@ -291,7 +302,6 @@ export function RuleMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Input Facts</Modal.Title>
             <Form>
@@ -300,6 +310,7 @@ export function RuleMediatorProperty(props: Props) {
                   Input Wrapper Name
                 </Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Input Wrapper Name"
                   value={inputWrapperName}
@@ -309,6 +320,7 @@ export function RuleMediatorProperty(props: Props) {
                   Input Namespace
                 </Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Input Namespace"
                   value={inputNamespace}
@@ -319,8 +331,8 @@ export function RuleMediatorProperty(props: Props) {
                 </Form.Label>
                 {/* When a user clicks this textbox, the RuleFactsConfiguration Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
-                  style={{ minHeight: "200px" }}
                   readOnly
                   value={factsConfiguration}
                   onChange={handleFactsConfiguration}
@@ -328,7 +340,6 @@ export function RuleMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Output Facts</Modal.Title>
             <Form>
@@ -337,6 +348,7 @@ export function RuleMediatorProperty(props: Props) {
                   Output Wrapper Name
                 </Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Output Wrapper Name"
                   value={outputWrapperName}
@@ -346,6 +358,7 @@ export function RuleMediatorProperty(props: Props) {
                   Output Namespace
                 </Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Output Namespace"
                   value={outputNamespace}
@@ -356,8 +369,8 @@ export function RuleMediatorProperty(props: Props) {
                 </Form.Label>
                 {/* When a user clicks this textbox, the RuleResultsConfiguration Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
-                  style={{ minHeight: "200px" }}
                   readOnly
                   value={resultsConfiguration}
                   onChange={handleResultsConfiguration}
@@ -365,7 +378,6 @@ export function RuleMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Misc</Modal.Title>
             <Form>
@@ -377,11 +389,12 @@ export function RuleMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -392,14 +405,12 @@ export function RuleMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

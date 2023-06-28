@@ -268,12 +268,11 @@ export function EnrichMediatorProperty(props: Props) {
                         <Form.Control
                           className="custom-form-control"
                           as="textarea"
-                          style={{ minHeight: "200px" }}
                           value={sourceXML}
                           onChange={handleSourceXML}
-                        >
-                          &lt;inline/&gt;
-                        </Form.Control>
+                          placeholder="<inline>"
+                          rows={5}
+                        />
                       </>
                     )}
                     {selectedInlineType === "RegistryKey" && (

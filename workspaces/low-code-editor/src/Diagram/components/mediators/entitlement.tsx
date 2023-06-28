@@ -18,7 +18,7 @@
  */
 
 import React, { useState } from "react";
-import { Square } from "@wso2-ei/low-code-diagram";
+import { Circle, Square } from "@wso2-ei/low-code-diagram";
 import { getComponent } from "../../util";
 import { WorkerLine } from "../worker-line";
 import { EntitlementMediatorProperty } from "../PropertyPanels/index";
@@ -62,8 +62,8 @@ export function Entitlement(props: SquareProps) {
       <svg
         x={viewState.bBox.x}
         y={viewState.bBox.y}
-        width={viewState.bBox.r * 2}
-        height={viewState.bBox.r * 2}
+        width={viewState.bBox.w}
+        height={viewState.bBox.h}
         viewBox="0 0 800 600"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

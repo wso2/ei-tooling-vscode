@@ -92,12 +92,15 @@ export function StoreMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Store Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
@@ -115,27 +118,28 @@ export function StoreMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   value={onStoreSequence}
                   onChange={handleOnStoreSequence}
                   readOnly
-                />{" "}
+                />
                 {/* When user click it going to the Resource Key Model*/}
               </Form.Group>
             </Form>
           </Row>
           <Row className="mb-4">
-            <br />
             <Modal.Title className="text-secondary">Message Store</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="SpecifyAs">Specify As</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedSpecifyAs}
                   onChange={handleSpecifyAsSelectChange}
                 >
@@ -148,6 +152,7 @@ export function StoreMediatorProperty(props: Props) {
                       Available Message Store
                     </Form.Label>
                     <Form.Select
+                      className="custom-form-control"
                       value={selectedAvaiMessageStore}
                       onChange={handleAvaiMessageStoreSelectChange}
                     >
@@ -168,11 +173,12 @@ export function StoreMediatorProperty(props: Props) {
                         </Tooltip>
                       }
                     >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                      <span className="custom-question-icon">
                         <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                       </span>
                     </OverlayTrigger>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={messageStore}
                       onChange={handleMessageStore}
@@ -186,11 +192,12 @@ export function StoreMediatorProperty(props: Props) {
                       Dynamic Reference Key
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={dynReferenceKey}
                       onChange={handleDynReferenceKey}
                       readOnly
-                    />{" "}
+                    />
                     {/* When user click it going to the Expression Selector Model*/}
                   </>
                 )}
@@ -201,11 +208,12 @@ export function StoreMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -216,14 +224,12 @@ export function StoreMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

@@ -105,12 +105,15 @@ export function ScriptMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Script Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
@@ -141,11 +144,12 @@ export function ScriptMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedScriptLanguage}
                   onChange={handleScriptLanguageSelectChange}
                 >
@@ -165,6 +169,7 @@ export function ScriptMediatorProperty(props: Props) {
                         Script Type
                       </Form.Label>
                       <Form.Select
+                        className="custom-form-control"
                         value={selectedScriptType}
                         onChange={handleScriptTypeSelectChange}
                       >
@@ -179,8 +184,8 @@ export function ScriptMediatorProperty(props: Props) {
                             Script Body
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             as="textarea"
-                            style={{ minHeight: "200px" }}
                             value={scriptBody}
                             onChange={handleScriptBody}
                           >
@@ -194,6 +199,7 @@ export function ScriptMediatorProperty(props: Props) {
                             Function Name
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="Function Name"
                             value={functionName}
@@ -201,6 +207,7 @@ export function ScriptMediatorProperty(props: Props) {
                           />
                           <Form.Label className="KeyType">Key Type</Form.Label>
                           <Form.Select
+                            className="custom-form-control"
                             value={selectedKeyType}
                             onChange={handleKeyTypeSelectChange}
                           >
@@ -212,8 +219,8 @@ export function ScriptMediatorProperty(props: Props) {
                           </Form.Label>
                           {/* When a user clicks this textbox, the RegisrtyKeyProperty Model appears.*/}
                           <Form.Control
+                            className="custom-form-control"
                             as="textarea"
-                            style={{ minHeight: "200px" }}
                             readOnly
                             value={scriptKeys}
                             onChange={handleScriptKeys}
@@ -225,6 +232,7 @@ export function ScriptMediatorProperty(props: Props) {
                               </Form.Label>
                               {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                               <Form.Control
+                                className="custom-form-control"
                                 type="text"
                                 readOnly
                                 value={scriptStaticKey}
@@ -239,6 +247,7 @@ export function ScriptMediatorProperty(props: Props) {
                               </Form.Label>
                               {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                               <Form.Control
+                                className="custom-form-control"
                                 type="text"
                                 readOnly
                                 value={scriptDynamicKey}
@@ -258,11 +267,12 @@ export function ScriptMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -273,14 +283,12 @@ export function ScriptMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

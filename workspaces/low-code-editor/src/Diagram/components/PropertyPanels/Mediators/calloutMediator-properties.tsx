@@ -223,7 +223,7 @@ export function CalloutMediatorProperty(props: Props) {
                 <br />
                 <Form.Check
                   type="checkbox"
-                  className="Axis2ClientOptions"
+                  className="checkbox"
                   label={
                     <span className="checkbox-font">
                       Init Axis2 Client Options

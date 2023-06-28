@@ -456,18 +456,13 @@ export function CacheMediatorProperty(props: Props) {
                               onChange={handleResponseCodes}
                             />
                             <br />
-                            <Form.Group style={{ textAlign: "left" }}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Form.Check
+                            <Form.Group className="custom-form-group">
+                              <div className="checkbox-wrapper">
+                                 <Form.Check
                                   type="checkbox"
                                   className="EnableCacheControl"
                                   label={
-                                    <span style={{ marginLeft: "10px" }}>
+                                    <span className="checkbox-font">
                                       Enable Cache Control
                                     </span>
                                   }
@@ -499,18 +494,13 @@ export function CacheMediatorProperty(props: Props) {
                                 </OverlayTrigger>
                               </div>
                             </Form.Group>
-                            <Form.Group style={{ textAlign: "left" }}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
+                            <Form.Group className="custom-form-group">
+                              <div className="checkbox-wrapper">
                                 <Form.Check
                                   type="checkbox"
-                                  className="IncludeAgeHeader"
+                                  className="checkbox"
                                   label={
-                                    <span style={{ marginLeft: "10px" }}>
+                                    <span className="checkbox-font">
                                       Include Age Header
                                     </span>
                                   }

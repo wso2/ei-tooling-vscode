@@ -176,7 +176,7 @@ export function EJBMediatorProperty(props: Props) {
                 />
                 <Form.Group style={{ textAlign: "left" }}>
                   <br />
-                  <div>
+                  <div className="checkbox-wrapper">
                     <Form.Check
                       type="checkbox"
                       className="checkbox"

@@ -109,20 +109,24 @@ export function PublishEventMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">
             Publish Event Mediator
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="StreamName">Stream Name</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Stream Name"
                   value={streamName}
@@ -132,6 +136,7 @@ export function PublishEventMediatorProperty(props: Props) {
                   Stream Version
                 </Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Stream Version"
                   value={streamVersion}
@@ -139,6 +144,7 @@ export function PublishEventMediatorProperty(props: Props) {
                 />
                 <Form.Label className="EventSink">Event Sink</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Event Sink"
                   value={eventSink}
@@ -147,7 +153,7 @@ export function PublishEventMediatorProperty(props: Props) {
                 <br />
                 <Form.Check
                   type="checkbox"
-                  className="Async"
+                  className="checkbox"
                   style={{ display: "flex", alignItems: "center" }}
                   label={<span style={{ marginLeft: "10px" }}>Async</span>}
                   checked={selectedAsyncMethod === "Async"}
@@ -157,6 +163,7 @@ export function PublishEventMediatorProperty(props: Props) {
                 />
                 <Form.Label className="AsyncTimeout">Async Timeout</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Async Timeout"
                   value={asyncTimeout}
@@ -174,8 +181,8 @@ export function PublishEventMediatorProperty(props: Props) {
                       </Form.Label>
                       {/* When a user clicks this EX textbox, the PublishEventMediatorAttribute Model appears*/}
                       <Form.Control
+                        className="custom-form-control"
                         as="textarea"
-                        style={{ minHeight: "200px" }}
                         readOnly
                         value={metaAttributes}
                         onChange={handleMetaAttributes}
@@ -183,7 +190,6 @@ export function PublishEventMediatorProperty(props: Props) {
                     </Form.Group>
                   </Form>
                 </Row>
-                <br />
                 <Row className="mb-4">
                   <Modal.Title className="text-secondary">
                     Correlation Attributes
@@ -195,8 +201,8 @@ export function PublishEventMediatorProperty(props: Props) {
                       </Form.Label>
                       {/* When a user clicks this EX textbox, the PublishEventMediatorAttribute Model appears*/}
                       <Form.Control
+                        className="custom-form-control"
                         as="textarea"
-                        style={{ minHeight: "200px" }}
                         readOnly
                         value={correlationAttributes}
                         onChange={handleCorrelationAttributes}
@@ -204,7 +210,6 @@ export function PublishEventMediatorProperty(props: Props) {
                     </Form.Group>
                   </Form>
                 </Row>
-                <br />
                 <Row className="mb-4">
                   <Modal.Title className="text-secondary">
                     Payload Attributes
@@ -216,8 +221,8 @@ export function PublishEventMediatorProperty(props: Props) {
                       </Form.Label>
                       {/* When a user clicks this EX textbox, the PublishEventMediatorAttribute Model appears*/}
                       <Form.Control
+                        className="custom-form-control"
                         as="textarea"
-                        style={{ minHeight: "200px" }}
                         readOnly
                         value={payloadAttributes}
                         onChange={handlePayloadAttributes}
@@ -225,7 +230,6 @@ export function PublishEventMediatorProperty(props: Props) {
                     </Form.Group>
                   </Form>
                 </Row>
-                <br />
                 <Row className="mb-4">
                   <Modal.Title className="text-secondary">
                     Arbitrary Attributes
@@ -237,8 +241,8 @@ export function PublishEventMediatorProperty(props: Props) {
                       </Form.Label>
                       {/* When a user clicks this EX textbox, the PublishEventMediatorAttribute Model appears*/}
                       <Form.Control
+                        className="custom-form-control"
                         as="textarea"
-                        style={{ minHeight: "200px" }}
                         readOnly
                         value={arbitraryAttributes}
                         onChange={handleArbitraryAttributes}
@@ -253,11 +257,12 @@ export function PublishEventMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -268,14 +273,12 @@ export function PublishEventMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

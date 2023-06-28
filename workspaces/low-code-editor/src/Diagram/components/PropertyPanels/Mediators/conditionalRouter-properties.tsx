@@ -89,6 +89,7 @@ export function ConditionalRouterProperty(props: Props) {
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
               <Form.Group>
+              <div className="checkbox-wrapper">
                 <Form.Check
                   type="checkbox"
                   className="checkbox"
@@ -113,6 +114,7 @@ export function ConditionalRouterProperty(props: Props) {
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
+                </div>
                 <br />
                 <Form.Label className="Conditional Route Branches">
                   Conditional Route Branches

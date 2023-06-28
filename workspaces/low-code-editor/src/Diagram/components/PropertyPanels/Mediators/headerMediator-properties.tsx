@@ -145,7 +145,7 @@ export function HeaderMediatorProperty(props: Props) {
                   overlay={
                     <Tooltip id="help-tooltip">
                       Set: <br />
-                      if you want to set the header as a new header <br />{" "}
+                      if you want to set the header as a new header <br />
                       <br />
                       Remove: <br /> if you want to remove the header from the
                       incoming message

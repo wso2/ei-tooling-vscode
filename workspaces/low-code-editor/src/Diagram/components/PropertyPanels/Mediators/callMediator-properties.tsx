@@ -300,10 +300,8 @@ export function CallMediatorProperty(props: Props) {
                       value={sourcePayload}
                       onChange={handleSourcePayload}
                       placeholder="<inline>"
-                      rows={7}
-                    >
-                      &lt;inline/&gt;
-                    </Form.Control>
+                      rows={5}
+                    />
                     <Form.Label className="ContentType">
                       Content Type
                     </Form.Label>

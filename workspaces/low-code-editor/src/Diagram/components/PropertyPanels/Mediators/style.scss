@@ -1,21 +1,32 @@
 /* Property/NTLM Mediator Panel. -> Value */
 .small-text {
-  width: 42px; /* Adjust the font size as needed */
-  background-color: #3a9bdc;
+  width: 40px !important; /* Adjust the font size as needed */
+  height: 32px !important;
+  background-color: #3a9bdc !important;
 }
 .small-text::placeholder {
-  color: black;
+  color: black !important;
+  font-size: 12px !important;
 }
 .large-space {
-  margin-bottom: 20px; /* Adjust the margin size as needed */
+  margin-bottom: 20px !important; /* Adjust the margin size as needed */
+  font-size: 12px !important;
 }
 
 .modal-dialog {
   max-width: 300px !important; /* Set your desired width here */
   width: 75% !important;
   margin: 1.75rem auto;
-  background-color: #d1d4d6 !important;
   font-size: 12px !important;
+}
+
+.modal-content {
+  background-color: #cad1d8 !important;
+  border: 4px solid #ffffff !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2) !important;
+  background-clip: padding-box !important;
+  outline: 0 !important;
 }
 
 .text-primary {

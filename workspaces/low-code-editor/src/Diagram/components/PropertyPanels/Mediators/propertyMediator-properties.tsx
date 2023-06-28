@@ -120,12 +120,15 @@ export function PropertyMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Property Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
@@ -137,11 +140,12 @@ export function PropertyMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">A name for the property</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedPropertyName}
                   onChange={handlePropertyNameSelectChange}
                 >
@@ -282,6 +286,7 @@ export function PropertyMediatorProperty(props: Props) {
                       New Property Name
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       value={newPropertyName}
                       onChange={handleNewPropertyNameChange}
@@ -303,11 +308,12 @@ export function PropertyMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedPropertyAction}
                   onChange={handlePropertyActionSelectChange}
                 >
@@ -320,6 +326,7 @@ export function PropertyMediatorProperty(props: Props) {
                       Property Data Type
                     </Form.Label>
                     <Form.Select
+                      className="custom-form-control"
                       value={selectedPropertyDataType}
                       onChange={handlePropertyDataTypeSelectChange}
                     >
@@ -339,6 +346,7 @@ export function PropertyMediatorProperty(props: Props) {
                   Property Scope
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedPropertyScope}
                   onChange={handlePropertyScopeSelectChange}
                 >
@@ -378,7 +386,7 @@ export function PropertyMediatorProperty(props: Props) {
                                 value="Ex"
                                 readOnly
                                 className="small-text"
-                              />{" "}
+                              />
                               {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
                             </div>
                             <div className="col">
@@ -395,21 +403,23 @@ export function PropertyMediatorProperty(props: Props) {
                             Value String Pattern
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             value={valueStringPattern}
                             onChange={handleValueStringPatternChange}
                             placeholder="eg: None"
-                          />{" "}
+                          />
                           {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
                           <Form.Label className="ValueStringCapturingGroup">
                             Value String Capturing Group
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="eg: 0"
                             value={valueStringCapturingGroup}
                             onChange={handleValueStringCapturingGroupChange}
-                          />{" "}
+                          />
                           {/* When a user clicks this EX textbox, the Expression Selector Model appears*/}
                         </Form.Group>
                       </Form>
@@ -432,7 +442,7 @@ export function PropertyMediatorProperty(props: Props) {
                                 value="Ex"
                                 readOnly
                                 className="small-text"
-                              />{" "}
+                              />
                               {/* When user click on EX, going to the Expression Selector*/}
                             </div>
                             <div className="col">
@@ -457,11 +467,12 @@ export function PropertyMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -472,14 +483,12 @@ export function PropertyMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

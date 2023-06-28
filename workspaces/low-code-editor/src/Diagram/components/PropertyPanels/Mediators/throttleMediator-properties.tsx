@@ -111,18 +111,22 @@ export function ThrottleMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Throttle Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">General</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="Group Id">Group Id</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Group Id"
                   value={groupId}
@@ -131,7 +135,6 @@ export function ThrottleMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">OnAccept</Modal.Title>
             <Form>
@@ -140,6 +143,7 @@ export function ThrottleMediatorProperty(props: Props) {
                   On Accept Branch Sequence Type
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedOnAcceptBSeqType}
                   onChange={handleOnAcceptBSeqTypeSelectChange}
                 >
@@ -153,6 +157,7 @@ export function ThrottleMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={onAcceptBSeqKey}
@@ -163,7 +168,6 @@ export function ThrottleMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">OnReject</Modal.Title>
             <Form>
@@ -172,6 +176,7 @@ export function ThrottleMediatorProperty(props: Props) {
                   On Reject Branch Sequence Type
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedOnRejectBSeqType}
                   onChange={handleOnRejectBSeqTypeSelectChange}
                 >
@@ -185,6 +190,7 @@ export function ThrottleMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={onRejectBSeqKey}
@@ -195,7 +201,6 @@ export function ThrottleMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">
               Throttle Policy
@@ -204,6 +209,7 @@ export function ThrottleMediatorProperty(props: Props) {
               <Form.Group>
                 <Form.Label className="PolicyType">Policy Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedPolicyType}
                   onChange={handlePolicyTypeSelectChange}
                 >
@@ -217,8 +223,8 @@ export function ThrottleMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       as="textarea"
-                      style={{ minHeight: "200px" }}
                       readOnly
                       value={policyEntries}
                       onChange={handlePolicyEntriesChange}
@@ -230,6 +236,7 @@ export function ThrottleMediatorProperty(props: Props) {
                     <Form.Label className="PolicyKey">Policy Key</Form.Label>
                     {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={policyKey}
@@ -240,7 +247,6 @@ export function ThrottleMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Misc</Modal.Title>
             <Form>
@@ -252,11 +258,12 @@ export function ThrottleMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -267,14 +274,12 @@ export function ThrottleMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

@@ -233,7 +233,6 @@ export function ResourceProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Methods</Modal.Title>
             <Form>
@@ -316,7 +315,6 @@ export function ResourceProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">InSequence</Modal.Title>
             <Form>
@@ -363,7 +361,6 @@ export function ResourceProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">OutSequence</Modal.Title>
             <Form>
@@ -408,7 +405,6 @@ export function ResourceProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">FaultSequence</Modal.Title>
             <Form>

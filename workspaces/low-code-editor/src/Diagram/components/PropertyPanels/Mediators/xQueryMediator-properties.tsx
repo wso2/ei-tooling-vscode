@@ -89,7 +89,11 @@ export function XQueryMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">XQuery Mediator</Modal.Title>
         </Modal.Header>
@@ -111,11 +115,12 @@ export function XQueryMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedScriptKeyType}
                   onChange={handleScriptKeyTypeSelectChange}
                 >
@@ -135,12 +140,13 @@ export function XQueryMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   readOnly
                   value={targetXPath}
@@ -159,12 +165,13 @@ export function XQueryMediatorProperty(props: Props) {
                         </Tooltip>
                       }
                     >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                      <span className="custom-question-icon">
                         <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                       </span>
                     </OverlayTrigger>
                     {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Static Script Key"
                       value={staticScriptKey}
@@ -179,6 +186,7 @@ export function XQueryMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource Key Model Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={dynamicScriptKey}
@@ -186,7 +194,6 @@ export function XQueryMediatorProperty(props: Props) {
                     />
                   </>
                 )}
-                <br />
                 <Row className="mb-4">
                   <Modal.Title className="text-secondary">
                     Variables
@@ -196,8 +203,8 @@ export function XQueryMediatorProperty(props: Props) {
                       <Form.Label className="Variables">Variables</Form.Label>
                       {/* When a user clicks this textbox, the XQueryVariable Model appears.*/}
                       <Form.Control
+                        className="custom-form-control"
                         as="textarea"
-                        style={{ minHeight: "200px" }}
                         readOnly
                         value={variables}
                         onChange={handleVariables}
@@ -212,11 +219,12 @@ export function XQueryMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -227,14 +235,12 @@ export function XQueryMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

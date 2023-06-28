@@ -109,18 +109,22 @@ export function SmooksMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Smooks Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Input</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="InputType">Input Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedInputType}
                   onChange={handleInputTypeSelectChange}
                 >
@@ -131,6 +135,7 @@ export function SmooksMediatorProperty(props: Props) {
                   Input Expression
                 </Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Input Expression"
                   value={inputExpression}
@@ -157,12 +162,13 @@ export function SmooksMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   readOnly
                   value={configurationKey}
@@ -171,13 +177,13 @@ export function SmooksMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Output</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="OutputType">Output Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedOutputType}
                   onChange={handleOutputTypeSelectChange}
                 >
@@ -187,6 +193,7 @@ export function SmooksMediatorProperty(props: Props) {
                 </Form.Select>
                 <Form.Label className="OutputMethod">Output Method</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedOutputMethod}
                   onChange={handleOutputMethodSelectChange}
                 >
@@ -200,6 +207,7 @@ export function SmooksMediatorProperty(props: Props) {
                       Output Property
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Output Property"
                       value={outputProperty}
@@ -213,6 +221,7 @@ export function SmooksMediatorProperty(props: Props) {
                       Output Action
                     </Form.Label>
                     <Form.Select
+                      className="custom-form-control"
                       value={selectedOutputAction}
                       onChange={handleOutputActionSelectChange}
                     >
@@ -225,6 +234,7 @@ export function SmooksMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={outputExpression}
@@ -247,11 +257,12 @@ export function SmooksMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -262,14 +273,12 @@ export function SmooksMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
