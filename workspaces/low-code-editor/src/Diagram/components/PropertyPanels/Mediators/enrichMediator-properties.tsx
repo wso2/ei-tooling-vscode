@@ -153,44 +153,45 @@ export function EnrichMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Enrich Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Source</Modal.Title>
             <Form>
               <Form.Group>
-                <Form.Group style={{ textAlign: "left" }}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Form.Check
-                      type="checkbox"
-                      className="CloneSource"
-                      label={
-                        <span style={{ marginLeft: "10px" }}>Clone Source</span>
-                      }
-                      checked={selectedCloneSource === "CloneSource"}
-                      value="CloneSource"
-                      onChange={handleCloneSourceChange}
-                      defaultChecked
-                    />
-                    <OverlayTrigger
-                      placement="right"
-                      overlay={
-                        <Tooltip id="help-tooltip">
-                          If checked, the message can be cloned or used as a
-                          reference during enriching
-                        </Tooltip>
-                      }
-                    >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
-                        <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
-                      </span>
-                    </OverlayTrigger>
-                  </div>
+                <Form.Group className="custom-form-group">
+                <div className="checkbox-wrapper">
+                  <Form.Check
+                    type="checkbox"
+                    className="checkbox"
+                    label={<span className="checkbox-font">Clone Source</span>}
+                    checked={selectedCloneSource === "CloneSource"}
+                    value="CloneSource"
+                    onChange={handleCloneSourceChange}
+                    defaultChecked
+                  />
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={
+                      <Tooltip id="help-tooltip">
+                        If checked, the message can be cloned or used as a
+                        reference during enriching
+                      </Tooltip>
+                    }
+                  >
+                    <span className="custom-question-icon">
+                      <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
+                    </span>
+                  </OverlayTrigger>
                   <br />
+                  </div>
                 </Form.Group>
                 <Form.Label className="SourceType">Source Type</Form.Label>
                 <OverlayTrigger
@@ -203,11 +204,12 @@ export function EnrichMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedSourceType}
                   onChange={handleSourceTypeSelectChange}
                 >
@@ -224,6 +226,7 @@ export function EnrichMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={sourceXpath}
@@ -238,6 +241,7 @@ export function EnrichMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Source Property"
                       value={sourceProperty}
@@ -249,6 +253,7 @@ export function EnrichMediatorProperty(props: Props) {
                   <>
                     <Form.Label className="InlineType">Inline Type</Form.Label>
                     <Form.Select
+                      className="custom-form-control"
                       value={selectedInlineType}
                       onChange={handleInlineTypeSelectChange}
                     >
@@ -261,6 +266,7 @@ export function EnrichMediatorProperty(props: Props) {
                           Source XML
                         </Form.Label>
                         <Form.Control
+                          className="custom-form-control"
                           as="textarea"
                           style={{ minHeight: "200px" }}
                           value={sourceXML}
@@ -277,6 +283,7 @@ export function EnrichMediatorProperty(props: Props) {
                         </Form.Label>
                         {/* When a user clicks this textbox, the Resource Key Model appears.*/}
                         <Form.Control
+                          className="custom-form-control"
                           type="text"
                           readOnly
                           value={inlineRegistryKey}
@@ -289,7 +296,6 @@ export function EnrichMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Target</Modal.Title>
             <Form>
@@ -321,11 +327,12 @@ export function EnrichMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedTargetAction}
                   onChange={handleTargetActionSelectChange}
                 >
@@ -336,6 +343,7 @@ export function EnrichMediatorProperty(props: Props) {
                 </Form.Select>
                 <Form.Label className="TargetType">Target Type</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedTargetType}
                   onChange={handleTargetTypeSelectChange}
                 >
@@ -353,6 +361,7 @@ export function EnrichMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={targetXorJPath}
@@ -366,6 +375,7 @@ export function EnrichMediatorProperty(props: Props) {
                       Target Property
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="target_property"
                       value={targetProperty}
@@ -376,7 +386,6 @@ export function EnrichMediatorProperty(props: Props) {
               </Form.Group>
             </Form>
           </Row>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Misc</Modal.Title>
             <Form>
@@ -388,11 +397,12 @@ export function EnrichMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -403,14 +413,12 @@ export function EnrichMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

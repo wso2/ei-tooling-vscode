@@ -132,18 +132,22 @@ export function FaultMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Fault Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="SOAPVersion">SOAP Version</Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedSOAPVersion}
                   onChange={handleSOAPVersionSelectChange}
                 >
@@ -155,6 +159,7 @@ export function FaultMediatorProperty(props: Props) {
                   <>
                     <Form.Label className="SOAP11">SOAP11</Form.Label>
                     <Form.Select
+                      className="custom-form-control"
                       value={selectedSOAP11}
                       onChange={handleSOAP11SelectChange}
                     >
@@ -173,11 +178,12 @@ export function FaultMediatorProperty(props: Props) {
                         </Tooltip>
                       }
                     >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                      <span className="custom-question-icon">
                         <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                       </span>
                     </OverlayTrigger>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Actor"
                       value={actor}
@@ -189,6 +195,7 @@ export function FaultMediatorProperty(props: Props) {
                   <>
                     <Form.Label className="Code">Code</Form.Label>
                     <Form.Select
+                      className="custom-form-control"
                       value={selectedCode}
                       onChange={handleCodeSelectChange}
                     >
@@ -207,11 +214,12 @@ export function FaultMediatorProperty(props: Props) {
                         <Tooltip id="help-tooltip">The SOAP role name</Tooltip>
                       }
                     >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                      <span className="custom-question-icon">
                         <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                       </span>
                     </OverlayTrigger>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Role"
                       value={role}
@@ -224,11 +232,12 @@ export function FaultMediatorProperty(props: Props) {
                         <Tooltip id="help-tooltip">The SOAP node name</Tooltip>
                       }
                     >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                      <span className="custom-question-icon">
                         <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                       </span>
                     </OverlayTrigger>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Node"
                       value={node}
@@ -238,12 +247,9 @@ export function FaultMediatorProperty(props: Props) {
                 )}
                 <Form.Check
                   type="checkbox"
-                  className="SerializeResponse"
-                  style={{ display: "flex", alignItems: "center" }}
+                  className="checkbox"
                   label={
-                    <span style={{ marginLeft: "10px" }}>
-                      Serialize Response
-                    </span>
+                    <span className="checkbox-font">Serialize Response</span>
                   }
                   checked={selectedSerializeResponse === "SerializeResponse"}
                   value="SerializeResponse"
@@ -256,6 +262,7 @@ export function FaultMediatorProperty(props: Props) {
                     <Form.Group>
                       <Form.Label className="DetailType">Type</Form.Label>
                       <Form.Select
+                        className="custom-form-control"
                         value={selectedDetailType}
                         onChange={handleDetailTypeSelectChange}
                       >
@@ -266,6 +273,7 @@ export function FaultMediatorProperty(props: Props) {
                         <>
                           <Form.Label className="DetailValue">Value</Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="eg: Value"
                             value={detailValue}
@@ -280,6 +288,7 @@ export function FaultMediatorProperty(props: Props) {
                           </Form.Label>
                           {/*When a user clicks this textbox, the Expression Selector Model appears*/}
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             readOnly
                             value={detailExpression}
@@ -297,6 +306,7 @@ export function FaultMediatorProperty(props: Props) {
                     <Form.Group>
                       <Form.Label className="ReasonType">Type</Form.Label>
                       <Form.Select
+                        className="custom-form-control"
                         value={selectedReasonType}
                         onChange={handleReasonTypeSelectChange}
                       >
@@ -307,6 +317,7 @@ export function FaultMediatorProperty(props: Props) {
                         <>
                           <Form.Label className="ReasonValue">Value</Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="eg: Value"
                             value={reasonValue}
@@ -321,6 +332,7 @@ export function FaultMediatorProperty(props: Props) {
                           </Form.Label>
                           {/*When a user clicks this textbox, the Expression Selector Model appears*/}
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             readOnly
                             value={reasonExpression}
@@ -338,11 +350,12 @@ export function FaultMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -353,14 +366,12 @@ export function FaultMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

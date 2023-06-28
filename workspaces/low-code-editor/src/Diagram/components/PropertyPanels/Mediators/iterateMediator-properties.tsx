@@ -110,18 +110,22 @@ export function IterateMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Iterate Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
               <Form.Group>
                 <Form.Label className="IterateID">Iterate ID</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Iterate ID"
                   value={iterateID}
@@ -132,6 +136,7 @@ export function IterateMediatorProperty(props: Props) {
                 </Form.Label>
                 {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Iterate Expression"
                   value={iterateExpression}
@@ -140,12 +145,9 @@ export function IterateMediatorProperty(props: Props) {
                 <br />
                 <Form.Check
                   type="checkbox"
-                  className="SequentialMediation"
-                  style={{ display: "flex", alignItems: "center" }}
+                  className="checkbox"
                   label={
-                    <span style={{ marginLeft: "10px" }}>
-                      Sequential Mediation
-                    </span>
+                    <span className="checkbox-font">Sequential Mediation</span>
                   }
                   checked={
                     selectedSequentialMediationMethod === "SequentialMediation"
@@ -156,10 +158,7 @@ export function IterateMediatorProperty(props: Props) {
                 <Form.Check
                   type="checkbox"
                   className="ContinueParent"
-                  style={{ display: "flex", alignItems: "center" }}
-                  label={
-                    <span style={{ marginLeft: "10px" }}>Continue Parent</span>
-                  }
+                  label={<span className="checkbox-font">Continue Parent</span>}
                   checked={selectedContinueParentMethod === "ContinueParent"}
                   value="ContinueParent"
                   onChange={handleContinueParentMethodChange}
@@ -167,9 +166,8 @@ export function IterateMediatorProperty(props: Props) {
                 <Form.Check
                   type="checkbox"
                   className="PreservePayload"
-                  style={{ display: "flex", alignItems: "center" }}
                   label={
-                    <span style={{ marginLeft: "10px" }}>Preserve Payload</span>
+                    <span className="checkbox-font">Preserve Payload</span>
                   }
                   checked={selectedPreservePayloadMethod === "PreservePayload"}
                   value="PreservePayload"
@@ -184,6 +182,7 @@ export function IterateMediatorProperty(props: Props) {
                         Sequence Type
                       </Form.Label>
                       <Form.Select
+                        className="custom-form-control"
                         value={selectedSequenceType}
                         onChange={handleSequenceTypeSelectChange}
                       >
@@ -200,6 +199,7 @@ export function IterateMediatorProperty(props: Props) {
                           </Form.Label>
                           {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             readOnly
                             value={sequenceKey}
@@ -213,6 +213,7 @@ export function IterateMediatorProperty(props: Props) {
                             Sequence Name
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="eg: Sequence Name"
                             value={sequenceName}
@@ -230,11 +231,12 @@ export function IterateMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -245,14 +247,12 @@ export function IterateMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

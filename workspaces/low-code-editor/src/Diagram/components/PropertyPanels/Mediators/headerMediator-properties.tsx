@@ -99,12 +99,15 @@ export function HeaderMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">Header Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
@@ -121,12 +124,13 @@ export function HeaderMediatorProperty(props: Props) {
                         </Tooltip>
                       }
                     >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                      <span className="custom-question-icon">
                         <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                       </span>
                     </OverlayTrigger>
                     {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={headerName}
@@ -148,11 +152,12 @@ export function HeaderMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedHeaderAction}
                   onChange={handleHeaderActionSelectChange}
                 >
@@ -172,6 +177,7 @@ export function HeaderMediatorProperty(props: Props) {
                             Value Type
                           </Form.Label>
                           <Form.Select
+                            className="custom-form-control"
                             value={selectedValueType}
                             onChange={handleValueTypeSelectChange}
                           >
@@ -185,6 +191,7 @@ export function HeaderMediatorProperty(props: Props) {
                                 Value Literal
                               </Form.Label>
                               <Form.Control
+                                className="custom-form-control"
                                 type="text"
                                 placeholder="eg: Value for Literal"
                                 value={valueLiteral}
@@ -199,6 +206,7 @@ export function HeaderMediatorProperty(props: Props) {
                               </Form.Label>
                               {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                               <Form.Control
+                                className="custom-form-control"
                                 type="text"
                                 readOnly
                                 value={valueExpression}
@@ -212,6 +220,7 @@ export function HeaderMediatorProperty(props: Props) {
                                 Value Expression
                               </Form.Label>
                               <Form.Control
+                                className="custom-form-control"
                                 type="text"
                                 placeholder="eg: Value for Inline"
                                 value={valueInlineEx}
@@ -235,11 +244,12 @@ export function HeaderMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedScope}
                   onChange={handleScopeSelectChange}
                 >
@@ -253,11 +263,12 @@ export function HeaderMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -268,14 +279,12 @@ export function HeaderMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

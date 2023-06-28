@@ -150,14 +150,17 @@ export function EntitlementMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">
             Entitlement Mediator
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
@@ -166,6 +169,7 @@ export function EntitlementMediatorProperty(props: Props) {
                   Entitlement Server URL
                 </Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Entitlement Server URL"
                   value={entitlementServerURL}
@@ -173,6 +177,7 @@ export function EntitlementMediatorProperty(props: Props) {
                 />
                 <Form.Label className="UserName">Username</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Username"
                   value={userName}
@@ -180,6 +185,7 @@ export function EntitlementMediatorProperty(props: Props) {
                 />
                 <Form.Label className="Password">Password</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Password"
                   value={password}
@@ -189,6 +195,7 @@ export function EntitlementMediatorProperty(props: Props) {
                   Callback handler
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedCallbackHandler}
                   onChange={handleCallbackHandlerSelectChange}
                 >
@@ -204,6 +211,7 @@ export function EntitlementMediatorProperty(props: Props) {
                       Callback Class Name
                     </Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Callback Class Name"
                       value={callbackClassName}
@@ -215,6 +223,7 @@ export function EntitlementMediatorProperty(props: Props) {
                   Entitlement Client Type
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedEntitlementClientType}
                   onChange={handleEntitlementClientTypeSelectChange}
                 >
@@ -232,6 +241,7 @@ export function EntitlementMediatorProperty(props: Props) {
                   <>
                     <Form.Label className="ThriftHost">Thrift Host</Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Thrift Host"
                       value={thriftHost}
@@ -239,6 +249,7 @@ export function EntitlementMediatorProperty(props: Props) {
                     />
                     <Form.Label className="ThriftPort">Thrift Port</Form.Label>
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       placeholder="eg: Thrift Port"
                       value={thriftPort}
@@ -253,11 +264,12 @@ export function EntitlementMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -275,6 +287,7 @@ export function EntitlementMediatorProperty(props: Props) {
                   On Acceptance Sequence Type
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedOnAcceptSeqType}
                   onChange={handleOnAcceptSeqTypeSelectChange}
                 >
@@ -288,6 +301,7 @@ export function EntitlementMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={onAcceptSeqKey}
@@ -307,6 +321,7 @@ export function EntitlementMediatorProperty(props: Props) {
                   On Rejection Sequence Type
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedOnRejectSeqType}
                   onChange={handleOnRejectSeqTypeSelectChange}
                 >
@@ -320,6 +335,7 @@ export function EntitlementMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={onRejectSeqKey}
@@ -339,6 +355,7 @@ export function EntitlementMediatorProperty(props: Props) {
                   Obligation Sequence Type
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedObligationSeqType}
                   onChange={handleObligationSeqTypeSelectChange}
                 >
@@ -352,6 +369,7 @@ export function EntitlementMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={obligationSeqKey}
@@ -371,6 +389,7 @@ export function EntitlementMediatorProperty(props: Props) {
                   Advice Sequence Type
                 </Form.Label>
                 <Form.Select
+                  className="custom-form-control"
                   value={selectedAdviceSeqType}
                   onChange={handleAdviceSeqTypeSelectChange}
                 >
@@ -384,6 +403,7 @@ export function EntitlementMediatorProperty(props: Props) {
                     </Form.Label>
                     {/* When a user clicks this textbox, the Resource KeyModel appears.*/}
                     <Form.Control
+                      className="custom-form-control"
                       type="text"
                       readOnly
                       value={adviceSeqKey}
@@ -396,14 +416,12 @@ export function EntitlementMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

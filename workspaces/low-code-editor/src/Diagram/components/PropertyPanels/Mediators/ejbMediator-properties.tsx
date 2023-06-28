@@ -109,12 +109,15 @@ export function EJBMediatorProperty(props: Props) {
 
   return (
     <>
-      <Modal show={props.modalOpen} onHide={handleCancelClick}>
+      <Modal
+        show={props.modalOpen}
+        onHide={handleCancelClick}
+        dialogClassName="custom-modal-dialog"
+      >
         <Modal.Header>
           <Modal.Title className="text-primary">EJB Mediator</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <br />
           <Row className="mb-4">
             <Modal.Title className="text-secondary">Properties</Modal.Title>
             <Form>
@@ -130,11 +133,12 @@ export function EJBMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: Beanstalk"
                   value={beanstalk}
@@ -151,11 +155,12 @@ export function EJBMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: /Class"
                   value={ejbClass}
@@ -163,6 +168,7 @@ export function EJBMediatorProperty(props: Props) {
                 />
                 <Form.Label className="Method">Method</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   placeholder="eg: /Method"
                   value={ejbMethod}
@@ -170,11 +176,11 @@ export function EJBMediatorProperty(props: Props) {
                 />
                 <Form.Group style={{ textAlign: "left" }}>
                   <br />
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div>
                     <Form.Check
                       type="checkbox"
-                      className="Remove"
-                      label={<span style={{ marginLeft: "10px" }}>Remove</span>}
+                      className="checkbox"
+                      label={<span className="checkbox-font">Remove</span>}
                       checked={selectedCheckboxMethod === "Remove"}
                       value="Remove"
                       onChange={handleRemoveChange}
@@ -189,7 +195,7 @@ export function EJBMediatorProperty(props: Props) {
                         </Tooltip>
                       }
                     >
-                      <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                      <span className="custom-question-icon">
                         <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                       </span>
                     </OverlayTrigger>
@@ -206,11 +212,12 @@ export function EJBMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   value={target}
                   onChange={handleTarget}
@@ -218,6 +225,7 @@ export function EJBMediatorProperty(props: Props) {
                 />
                 <Form.Label className="Context">JNDI Name</Form.Label>
                 <Form.Control
+                  className="custom-form-control"
                   type="text"
                   value={jndiName}
                   onChange={handleJNDIName}
@@ -235,14 +243,14 @@ export function EJBMediatorProperty(props: Props) {
                     </Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 {/* When a user clicks this textbox, the MethodArgument Model appears.*/}
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
-                  style={{ minHeight: "200px" }}
                   readOnly
                   value={methodArguments}
                   onChange={handleMethodArguments}
@@ -265,11 +273,12 @@ export function EJBMediatorProperty(props: Props) {
                           </Tooltip>
                         }
                       >
-                        <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                        <span className="custom-question-icon">
                           <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                         </span>
                       </OverlayTrigger>
                       <Form.Select
+                        className="custom-form-control"
                         value={selectedSessionIdType}
                         onChange={handleSessionIdTypeSelectChange}
                       >
@@ -282,6 +291,7 @@ export function EJBMediatorProperty(props: Props) {
                             Session Id Literal
                           </Form.Label>
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             placeholder="eg: Session Id Literal"
                             value={sessionIdLiteral}
@@ -296,6 +306,7 @@ export function EJBMediatorProperty(props: Props) {
                           </Form.Label>
                           {/* When a user clicks this textbox, the Expression Selector Model appears.*/}
                           <Form.Control
+                            className="custom-form-control"
                             type="text"
                             readOnly
                             value={sessionIdExpression}
@@ -313,11 +324,12 @@ export function EJBMediatorProperty(props: Props) {
                     <Tooltip id="help-tooltip">Default description</Tooltip>
                   }
                 >
-                  <span style={{ marginLeft: "10px", cursor: "pointer" }}>
+                  <span className="custom-question-icon">
                     <FontAwesomeIcon icon={faQuestionCircle} size="sm" />
                   </span>
                 </OverlayTrigger>
                 <Form.Control
+                  className="custom-form-control"
                   as="textarea"
                   value={description}
                   onChange={handleDescription}
@@ -328,14 +340,12 @@ export function EJBMediatorProperty(props: Props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="footer-button-container">
-            <Button variant="secondary" onClick={handleCancelClick}>
-              Save
-            </Button>
-            <Button variant="primary" onClick={handleCancelClick}>
-              Cancel
-            </Button>
-          </div>
+          <Button variant="primary" onClick={handleCancelClick}>
+            Close
+          </Button>
+          <Button variant="secondary" onClick={handleCancelClick}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
