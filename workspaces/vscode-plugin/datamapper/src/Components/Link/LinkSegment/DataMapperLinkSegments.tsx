@@ -1,3 +1,22 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import * as React from "react";
 import { DefaultLinkSegmentWidgetProps } from "@projectstorm/react-diagrams";
 import { DataMapperLinkModel } from "../Model/DataMapperLinkModel";
@@ -21,15 +40,6 @@ export class DefaultLinkSegmentWidget extends React.Component<DefaultLinkSegment
             }
         );
 
-        const sourcePortName =
-            this.props.link.getSourcePort() instanceof DataMapperPortModel
-                ? this.props.link.getSourcePort().getOptions().type
-                : this.props.link.getSourcePort().getName();
-        const targetPortName =
-            this.props.link.getTargetPort() instanceof DataMapperPortModel
-                ? this.props.link.getTargetPort().getOptions().type
-                : this.props.link.getTargetPort().getName();
-
         const Top = React.cloneElement(Bottom, {
             strokeLinecap: "round",
             onMouseLeave: () => {
@@ -41,9 +51,8 @@ export class DefaultLinkSegmentWidget extends React.Component<DefaultLinkSegment
             ...this.props.extras,
             ref: null,
             "data-linkid": this.props.link.getID(),
-            "data-testid": `link-from-${sourcePortName}-to-${targetPortName}`,
             strokeOpacity: isSelected ? 0.1 : 0,
-            strokeWidth: 10, 
+            strokeWidth: 10,
             onContextMenu: () => {
                 if (!this.props.link.isLocked()) {
                     this.props.link.remove();

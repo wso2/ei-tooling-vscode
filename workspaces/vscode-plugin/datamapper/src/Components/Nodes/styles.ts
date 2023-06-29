@@ -1,3 +1,22 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import { createStyles, makeStyles } from "@mui/styles";
 
 export const nodeStyles = makeStyles(() => createStyles({
@@ -8,22 +27,22 @@ export const nodeStyles = makeStyles(() => createStyles({
         cursor: 'pointer',
         position: 'relative',
         borderRadius: '2px',
-        backgroundColor : 'grey',
+        backgroundColor: 'grey',
     },
-    joinNode : {
-        height: '25px',
+    joinNode: {
+        height: '30px',
         width: '205px',
         alignItems: 'center',
         cursor: 'pointer',
         position: 'relative',
         borderRadius: '2px',
-        backgroundColor : '#ADD8E6',
+        backgroundColor: '#ADD8E6',
     },
     nodeLabel: {
-        textAlign: 'center',
         fontSize: '15px',
         fontFamily: 'Asap',
-        color: 'white'
+        color: 'white',
+        paddingTop: '4px'
     },
     portContainer: {
         padding: '8px',
@@ -31,14 +50,14 @@ export const nodeStyles = makeStyles(() => createStyles({
     },
     root: {
         width: '100%',
-        backgroundColor:'#d8d8d8',
+        backgroundColor: '#d8d8d8',
         display: "flex",
         flexDirection: "column",
         gap: "5px",
         boxShadow: "0px 5px 50px rgba(203, 206, 219, 0.5)",
         borderRadius: "5px",
-		      alignItems: "center",
-		      overflow: "hidden",
+        alignItems: "center",
+        overflow: "hidden",
     },
     element: {
         backgroundColor: 'grey',

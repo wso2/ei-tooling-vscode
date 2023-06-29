@@ -1,3 +1,22 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import React from 'react';
 import createEngine, { DiagramModel } from '@projectstorm/react-diagrams';
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
@@ -9,12 +28,14 @@ import { DataMapperLinkModel } from './../Link/Model/DataMapperLinkModel';
 import { DataMapperLabelFactory } from './../LinkLabel/DataMapperLabelFactory';
 import { portFactories } from '../Port';
 import { FileContext } from './../ContextProvider/FileContext';
-import { Cached, Delete,FitScreen } from '@mui/icons-material';
+import { Cached, Delete, FitScreen } from '@mui/icons-material';
 import { DiagramStyles } from './styles';
 import { Button, Tooltip } from '@mui/material';
+import DataMapperPortModel from '../Port/DataMapperPort/DataMapperPortModel';
+import { IntermediatePortModel } from '../Port/IntermediatePort/IntermediatePortModel';
 
 export var TotNodes: CustomNodeModel[] = [];
-const defaultModelOptions = { zoom: 90 };
+const defaultModelOptions = { zoom: 80 };
 interface vscode {
     postMessage(message: any): void;
 }
@@ -34,7 +55,7 @@ const DataMapperDiagram = () => {
     engine.getLabelFactories().registerFactory(new DataMapperLabelFactory());
     engine.getStateMachine().pushState(new DefaultState());
 
-    const handleSerialization = ()=>{
+    const handleSerialization = () => {
         setTimeout(() => {
             const serialized = JSON.stringify(modelRef.current.serialize());
             vscode.postMessage({
@@ -54,7 +75,6 @@ const DataMapperDiagram = () => {
                 setTimeout(() => {
                     engine.setModel(model);
                 }, 0);
-                vscode.postMessage({ command: 'success_alert', text: 'diagram updated successfully' });
             }
         };
         vscode.postMessage({ command: "deserializing" });
@@ -72,18 +92,23 @@ const DataMapperDiagram = () => {
             const diagramLink: any = [];
             const currentLinks = engine.getModel().getLinks();
             currentLinks.forEach((link) => {
+                let sourceNode = link.getSourcePort()?.getParent() as CustomNodeModel;
+                let targetNode = link.getTargetPort()?.getParent() as CustomNodeModel;
+                let sourcePort = link.getSourcePort() as DataMapperPortModel || IntermediatePortModel;
+                let targetPort = link.getTargetPort() as DataMapperPortModel || IntermediatePortModel;
+
                 const Link = {
                     sourcePort: {
-                        nodeId: link.getSourcePort()?.getParent()?.getName(),
+                        nodeId: sourceNode.getName(),
                         portId: link.getSourcePort()?.getName(),
                         ID: link.getSourcePort()?.getParent()?.getID(),
-                        alignment: link.getSourcePort()?.getPortType()
+                        alignment: sourcePort.getPortType()
                     },
                     targetPort: {
-                        nodeId: link.getTargetPort()?.getParent()?.getName(),
+                        nodeId: targetNode.getName(),
                         portId: link.getTargetPort()?.getName(),
                         ID: link.getTargetPort()?.getParent()?.getID(),
-                        alignment: link.getTargetPort()?.getPortType()
+                        alignment: targetPort.getPortType()
                     },
                     isChecked: false,
                     linkId: link.getOptions().id
@@ -162,9 +187,8 @@ const DataMapperDiagram = () => {
     }
 
     return (<>
-        <div className={classes.clrButtonWrap}>
-            <Button onClick={clearDiagram} className={classes.clrButton} variant='contained' endIcon={<Delete className={classes.icon} />}>
-                Clear Diagram</Button>
+        <div>
+            <Button onClick={clearDiagram} className={classes.clrButton} variant='contained' endIcon={<Delete className={classes.icon} />}>Clear Diagram</Button>
         </div>
         <CanvasWidget className={classes.canvas} engine={engine} />
         <div className={classes.buttonWrap}>
@@ -174,7 +198,7 @@ const DataMapperDiagram = () => {
                 </div>
             </Tooltip>
             <Tooltip title="Zoom">
-                <div className={classes.iconWrap} onClick={() => void engine.zoomToFitNodes({ maxZoom: 60 })}>
+                <div className={classes.iconWrap} onClick={() => void engine.zoomToFitNodes({ maxZoom: 40 })}>
                     <FitScreen className={classes.icon} />
                 </div>
             </Tooltip>

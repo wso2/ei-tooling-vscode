@@ -17,21 +17,25 @@
  *
  */
 
-import { AbstractModelFactory } from '@projectstorm/react-canvas-core';
-import { DiagramEngine, PortModel } from '@projectstorm/react-diagrams';
-import DataMapperPortModel from './DataMapperPortModel';
-import { DataMapperPortWidget } from './DataMapperPortWidget';
+import { writeFile } from "fs";
+import { window } from 'vscode';
+import { workspace } from 'vscode';
+import { join } from 'path';
 
-export class DataMapperPortFactory extends AbstractModelFactory<PortModel, DiagramEngine> {
-	constructor() {
-		super("my-datamapper-port");
-	}
+export default class datamapperSerialization {
 
-	generateModel(event: any): DataMapperPortModel {
-		return new DataMapperPortModel('name', 'IN', 'right');
-	}
-
-	generateReactWidget(event: any): JSX.Element {
-		return <DataMapperPortWidget port={event.port} engine={this.engine} />;
-	}
+    public static serializingDiagram(fileContent: string) {
+        var currentFolder = workspace.workspaceFolders?.[0];
+        if (currentFolder) {
+            var filePath = join(currentFolder.uri.fsPath, "diagram.json");
+            writeFile(filePath, fileContent, (err) => {
+                if (err) {
+                    window.showErrorMessage('Unable to save serialized data file.');
+                }
+            });
+        }
+    }
 }
+
+
+

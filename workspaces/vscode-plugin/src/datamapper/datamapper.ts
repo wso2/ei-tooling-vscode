@@ -1,10 +1,29 @@
-import { readFile, readdirSync } from "fs";
-import { join, dirname } from "path";
-import { Disposable, WebviewPanel, window, ViewColumn, Uri,workspace} from "vscode";
-import * as vscode from 'vscode';
-import DMCFile from "./DMC_test";
-import datamapperFileUpload from "./datamapperFileUpload";
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 
+import * as vscode from 'vscode';
+import { readFile, readdirSync } from "fs";
+import { join } from "path";
+import { Disposable, WebviewPanel, window, ViewColumn, Uri, workspace } from "vscode";
+import DMCFile from "./DMCFileGenerator";
+import datamapperFileUpload from "./datamapperFileUpload";
+import datamapperSerialization from './datamapperSerialization';
 
 export default class dataMapper {
     public static currentPanel: dataMapper | undefined;
@@ -70,9 +89,7 @@ export default class dataMapper {
     }
 
     private _getWebviewContent(webview: any) {
-
         const buildPath = join(this._extensionPath, 'datamapper', 'build', 'static');
-
         const cssFile = readdirSync(join(buildPath, 'css')).find(file => file.endsWith('.css'));
         const jsFile = readdirSync(join(buildPath, 'js')).filter(file => file.startsWith('main.') && file.endsWith('.js'))[0];
 
@@ -82,14 +99,10 @@ export default class dataMapper {
 
         const stylesUri = Uri.file(join(buildPath, 'css', cssFile)).with({ scheme: 'file' });
         const scriptUri = Uri.file(join(buildPath, 'js', jsFile)).with({ scheme: 'file' });
-
         const styles = webview.asWebviewUri(stylesUri);
         const script = webview.asWebviewUri(scriptUri);
-
         this._panel.webview.postMessage({ vscode })
 
-        //<meta http-equiv="Content-Security-Policy" content="default-src 'none'; frame-src vscode-resource: https: http:; script-src vscode-resource: https: http: 'unsafe-inline';">
-        // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
         return /*html*/ `
         <!DOCTYPE html>
         <html lang="en">
@@ -101,14 +114,9 @@ export default class dataMapper {
             <title>Data Mapper View</title>
           </head>
           <body>
-            <noscript>You need to enable JavaScript to run this app.</noscript>
             <div id="root"></div>
             <script>
             const vscode = acquireVsCodeApi();
-            window.onload = function() {
-                vscode.postMessage({ command: 'success_alert' });
-                console.log('Ready to accept data.');
-            };
             </script>
             <script src="${script}"></script>
           </body>
@@ -141,38 +149,35 @@ export default class dataMapper {
                         }
                     case "serializing":
                         {
-                            datamapperFileUpload.serializingDiagram(message.fileContent)
+                            datamapperSerialization.serializingDiagram(message.fileContent);
+                            break;
                         }
-                    case "DMC": {
-                        window.showInformationMessage("DMC file Updated");
-                        DMCFile.fileCreation(message.linkData);
-                        break;
-                    }
-                    case "deserializing": {
-                        var currentFolder = workspace.workspaceFolders?.[0];
-                        if(currentFolder){
-                            var filePath = join(currentFolder.uri.fsPath, "data.json");
-                            readFile(filePath, 'utf8', (err, data) => {
-                                if (err) {
-                                    window.showErrorMessage(`Unable to read file: ${err.message}`);
-                                    console.log("error mesg passed")
-                                    return;
-                                }
-    
-                                const message = { command: 'serialized', data: data };
-                                console.log("mesg passed")
-                                this._panel.webview.postMessage(message);
-                            });
+                    case "DMC":
+                        {
+                            DMCFile.fileCreation(message.linkData);
+                            break;
                         }
-                    }
-                        return;
+                    case "deserializing":
+                        {
+                            var currentFolder = workspace.workspaceFolders?.[0];
+                            if (currentFolder) {
+                                var filePath = join(currentFolder.uri.fsPath, "diagram.json");
+                                readFile(filePath, 'utf8', (err, data) => {
+                                    if (err) {
+                                        window.showErrorMessage(`Unable to read file: ${err.message}`);
+                                        return;
+                                    }
+
+                                    const message = { command: 'serialized', data: data };
+                                    this._panel.webview.postMessage(message);
+                                });
+                            }
+                            break;
+                        }
                 }
             },
             undefined,
             this._disposables
         );
-
-
-
     }
 }

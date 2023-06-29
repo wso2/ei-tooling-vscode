@@ -1,7 +1,26 @@
+/**
+ * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
+import * as React from 'react';
 import { Close, ExpandMore, FolderOpenOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Drawer, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { DiagramEngine } from '@projectstorm/react-diagrams';
-import * as React from 'react';
 import { FunctionStyles } from './styles';
 import { FileContext } from './../ContextProvider/FileContext';
 import { CustomNodeModel } from '../Nodes/Customs/CustomNodeModel';
@@ -19,6 +38,7 @@ export interface FunctionEditorProps {
   link?: DataMapperLinkModel;
 }
 
+// Function Panel Implementation
 const FunctionEditor: React.FunctionComponent<FunctionEditorProps> = (props) => {
   const { onClose, link } = props;
   const classes = FunctionStyles();
@@ -111,16 +131,16 @@ const FunctionEditor: React.FunctionComponent<FunctionEditorProps> = (props) => 
             <AccordionDetails>
               <Typography>
                 {Object.values(item)[0].map((value: any, i: any) => (
-                  <div key={i}  onClick={() => handleNode(value)} className={classes.text}>{value} </div>
+                  <div key={i} onClick={() => handleNode(value)} className={classes.text}>{value} </div>
                 ))}
               </Typography>
             </AccordionDetails>
           </Accordion>
         ))}
       </div>
-
     </Drawer>
   );
 };
 
 export default FunctionEditor;
+
