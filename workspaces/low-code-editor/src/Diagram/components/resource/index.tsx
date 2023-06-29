@@ -45,7 +45,7 @@ export function Resource(props: SquareProps) {
           y={viewState.bBox.y}
           width={viewState.bBox.w}
           height={viewState.bBox.h}
-          fill="#2978B1"
+          fill="#0492C2"
           stroke="#fff"
           stroke-width="4"
         />

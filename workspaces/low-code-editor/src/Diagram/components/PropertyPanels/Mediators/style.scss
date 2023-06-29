@@ -1,0 +1,67 @@
+/* Property/NTLM Mediator Panel. -> Value */
+.small-text {
+  width: 40px !important; /* Adjust the font size as needed */
+  height: 32px !important;
+  background-color: #3a9bdc !important;
+}
+.small-text::placeholder {
+  color: black !important;
+  font-size: 12px !important;
+}
+.large-space {
+  margin-bottom: 20px !important; /* Adjust the margin size as needed */
+  font-size: 12px !important;
+}
+
+.modal-dialog {
+  max-width: 300px !important; /* Set your desired width here */
+  width: 75% !important;
+  margin: 1.75rem auto;
+  font-size: 12px !important;
+}
+
+.modal-content {
+  background-color: #cad1d8 !important;
+  border: 4px solid #ffffff !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2) !important;
+  background-clip: padding-box !important;
+  outline: 0 !important;
+}
+
+.text-primary {
+  font-size: 15px !important;
+}
+
+.text-secondary {
+  text-align: center !important;
+  margin-bottom: 8px !important;
+  font-size: 14px !important;
+}
+
+.custom-question-icon {
+  margin-left: 10px !important;
+  cursor: pointer !important;
+}
+
+.custom-form-control {
+  font-size: 12px !important;
+}
+
+.checkbox {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.checkbox-font{
+  margin-left: 10px !important;
+}
+
+.custom-form-group {
+  text-align: left !important;
+}
+
+.checkbox-wrapper {
+  display: flex !important;
+  align-items: center !important;
+}

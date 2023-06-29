@@ -33,7 +33,7 @@ import {
     DiagramEditorLangClientInterface,
     GetCompletionResponse, HoverResponse
 } from "@wso2-ei/low-code-editor-commons";
-import ItemList, {HoverPanel} from "./ItemList";
+import ItemList, {HoverPanel} from "../ItemList";
 
 interface SquareProps {
     model: Circle;

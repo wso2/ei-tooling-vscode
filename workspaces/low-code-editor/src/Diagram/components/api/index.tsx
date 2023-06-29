@@ -45,7 +45,7 @@ export function Api(props: SquareProps) {
           y={viewState.bBox.y}
           width={viewState.bBox.w}
           height={viewState.bBox.h}
-          fill="#0000FF"
+          fill="#01507D"
           stroke="black"
           stroke-width="3"
         />

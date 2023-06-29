@@ -45,7 +45,7 @@ export function OutSequence(props: SquareProps) {
           y={viewState.bBox.y}
           width={viewState.bBox.w}
           height={viewState.bBox.h}
-          fill="#fff"
+          fill="#89CEFF"
           stroke="#fff"
           stroke-width="4"
         />

@@ -26,7 +26,7 @@ export { Resource as resource } from "./resource";
 
 //callTemplate, loopback, drop, propertyGroup, respond, store, property, log, sequence, call, send
 export { CallTemplate as callTemplate } from "./mediators/CallTemplate";
-export { LoopBack as loopback } from "./mediators/loopBack";
+export { LoopBack as loopBack } from "./mediators/loopBack";
 export { Drop as drop } from "./mediators/drop";
 export { PropertyGroup as propertyGroup } from "./mediators/propertyGroup";
 export { Respond as respond } from "./mediators/respond";
@@ -40,11 +40,11 @@ export { Send as send } from "./mediators/send";
 //validate, filter, switch, conditionalRouter
 export { Validate as validate } from "./mediators/validate";
 export { Filter as filter } from "./mediators/filter";
-export { Switch as switchMediator } from "./mediators/switch";
+export { Switch as switch } from "./mediators/switch";
 export { ConditionalRouter as conditionalRouter } from "./mediators/conditionalRouter";
 
 //class, command, spring, ejb, script, bean
-export { Class as classMediator } from "./mediators/class";
+export { Class as class } from "./mediators/class";
 export { Command as command } from "./mediators/command";
 export { Spring as spring } from "./mediators/spring";
 export { EJB as ejb } from "./mediators/ejb";
@@ -57,20 +57,20 @@ export { Enrich as enrich } from "./mediators/enrich";
 export { Header as header } from "./mediators/header";
 export { Smooks as smooks } from "./mediators/smooks";
 export { PayloadFactory as payloadFactory } from "./mediators/payloadFactory";
-export { UrlRewrite as urlRewrite } from "./mediators/urlRewrite";
+export { UrlRewrite as urlrewrite } from "./mediators/urlRewrite";
 export { XSLT as xslt } from "./mediators/xslt";
 export { Xquery as xquery } from "./mediators/xquery";
-export { FastXSLT as fastXslt } from "./mediators/fastXSLT";
+export { FastXSLT as fastXSLT } from "./mediators/fastXSLT";
 export { Fault as fault } from "./mediators/fault";
 export { JsonTransform as jsonTransform } from "./mediators/jsonTransform";
 
 //enqueue, dbLookup, transaction, dataServiceCall, event, dbReport, cache, throttle
 export { Enqueue as enqueue } from "./mediators/enqueue";
-export { DBLookup as dbLookup } from "./mediators/dbLookup";
-export { Transaction as transactions } from "./mediators/transaction";
+export { DBLookup as dblookup } from "./mediators/dbLookup";
+export { Transaction as transaction } from "./mediators/transaction";
 export { DataServiceCall as dataServiceCall } from "./mediators/dataServiceCall";
 export { Event as event } from "./mediators/event";
-export { DBReport as dbReport } from "./mediators/dbReport";
+export { DBReport as dbreport } from "./mediators/dbReport";
 export { Cache as cache } from "./mediators/cache";
 export { Throttle as throttle } from "./mediators/throttle";
 
