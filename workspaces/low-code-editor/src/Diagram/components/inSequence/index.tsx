@@ -45,7 +45,7 @@ export function InSequence(props: SquareProps) {
           y={viewState.bBox.y}
           width={viewState.bBox.w}
           height={viewState.bBox.h}
-          fill="#fff"
+          fill="#A5E8FF"
           stroke="#fff"
           stroke-width="4"
         />

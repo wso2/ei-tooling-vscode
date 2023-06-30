@@ -24,9 +24,9 @@ import {
     HoverResponse,
     TextEdit
 } from "@wso2-ei/low-code-editor-commons";
-import {applyChange} from "../../../DiagramGenerator/generatorUtil";
+import {applyChange} from "../../DiagramGenerator/generatorUtil";
 import "./style.scss"
-import {LogMediatorProperty} from "./logMediatorProperty";
+import { LogMediatorProperty } from "./PropertyPanels/index";
 
 interface Item {
     detail: string;
@@ -78,7 +78,6 @@ const ItemList: React.FC<Props> = ({ items , textDocumentUrl, textDocumentFsPath
                     </li>
                 ))}
             </ul>}
-            {isClicked && selectedItem && <LogMediatorProperty textEdit={selectedItem.textEdit} textDocumentUrl={textDocumentUrl} textDocumentFsPath={textDocumentFsPath} previousComponentStartPosition={previousComponentStartPosition}/> }
         </div>
     );
 };

@@ -17,13 +17,23 @@
  *
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { Circle } from "@wso2-ei/low-code-diagram";
 import { getComponent } from "../../util";
 import { WorkerLine } from "../worker-line";
+import { DataMapperMediatorProperty } from "../PropertyPanels/index";
+import {
+  DiagramEditorLangClientInterface,
+  GetCompletionResponse,
+} from "@wso2-ei/low-code-editor-commons";
 
 interface SquareProps {
   model: Circle;
+  getDiagramEditorLangClient?: () => Promise<DiagramEditorLangClientInterface>;
+  textDocumentUrl: string;
+  textDocumentFsPath: string;
+  items: GetCompletionResponse[];
+  previousComponentStartPosition: number;
 }
 interface vscode {
   postMessage(message: any): void;
@@ -31,16 +41,26 @@ interface vscode {
 declare const vscode: vscode;
 
 export function DataMapper(props: SquareProps) {
-  const { model } = props;
+  const {
+    model,
+    getDiagramEditorLangClient,
+    textDocumentUrl,
+    textDocumentFsPath,
+    items,
+    previousComponentStartPosition,
+  } = props;
+  const [open, setOpen] = React.useState(false);
 
   const viewState = model.viewState;
+  model.tag;
   const components: JSX.Element[] = [];
 
-  model.children.forEach((child) => {
+  model.children.forEach((child: any) => {
     components.push(getComponent(child.type, { model: child }));
   });
 
   const handleClick = () => {
+    handleButtonClick();
     const button = document.getElementById('datamapperMediator');
     if (button) {
       button.addEventListener('click', () => {
@@ -48,6 +68,16 @@ export function DataMapper(props: SquareProps) {
       });
     }
   }
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+
+  const handleButtonClick = async () => {
+    setOpen(true);
+    setIsClicked(true);
+  };
+
+  const handleCancelClick = (value: boolean) => {
+    setOpen(value);
+  };
 
   return (
     <>
@@ -146,6 +176,9 @@ export function DataMapper(props: SquareProps) {
 
       <WorkerLine model={model} />
       {components}
+      {isClicked && (
+        <DataMapperMediatorProperty modalOpen={open} modalClose={handleCancelClick} />
+      )}
     </>
   );
 }

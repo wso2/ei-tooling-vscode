@@ -17,24 +17,54 @@
  *
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { Circle } from "@wso2-ei/low-code-diagram";
 import { getComponent } from "../../util";
 import { WorkerLine } from "../worker-line";
+import { RespondMediatorProperty } from "../PropertyPanels/index";
+import {
+  DiagramEditorLangClientInterface,
+  GetCompletionResponse,
+} from "@wso2-ei/low-code-editor-commons";
 
 interface SquareProps {
   model: Circle;
+  getDiagramEditorLangClient?: () => Promise<DiagramEditorLangClientInterface>;
+  textDocumentUrl: string;
+  textDocumentFsPath: string;
+  items: GetCompletionResponse[];
+  previousComponentStartPosition: number;
 }
 
 export function Respond(props: SquareProps) {
-  const { model } = props;
+  const {
+    model,
+    getDiagramEditorLangClient,
+    textDocumentUrl,
+    textDocumentFsPath,
+    items,
+    previousComponentStartPosition,
+  } = props;
+  const [open, setOpen] = React.useState(false);
 
   const viewState = model.viewState;
+  model.tag;
   const components: JSX.Element[] = [];
 
-  model.children.forEach((child) => {
+  model.children.forEach((child: any) => {
     components.push(getComponent(child.type, { model: child }));
   });
+
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+
+  const handleButtonClick = async () => {
+    setOpen(true);
+    setIsClicked(true);
+  };
+
+  const handleCancelClick = (value: boolean) => {
+    setOpen(value);
+  };
 
   return (
     <>
@@ -46,6 +76,7 @@ export function Respond(props: SquareProps) {
         viewBox="0 0 600 600"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        onClick={() => handleButtonClick()}
       >
         <circle id="Ellipse 1" cx="300" cy="300" r="300" fill="#3D84B8" />
         <rect
@@ -73,6 +104,9 @@ export function Respond(props: SquareProps) {
 
       <WorkerLine model={model} />
       {components}
+      {isClicked && (
+        <RespondMediatorProperty modalOpen={open} modalClose={handleCancelClick} />
+      )}
     </>
   );
 }

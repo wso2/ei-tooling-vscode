@@ -23,6 +23,7 @@ import { Provider as DiagramProvider } from "./Contexts/diagram";
 import { LowCodeEditorProps as Props } from "./Types";
 import DiagramContainer from "./Diagram/Container";
 export * from "./DiagramGenerator/vscode";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LowCodeEditor: React.FC<Props> = (props: Props) => {
 

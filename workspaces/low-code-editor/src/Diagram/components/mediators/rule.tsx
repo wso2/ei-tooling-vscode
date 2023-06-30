@@ -17,25 +17,45 @@
  *
  */
 
-import React from "react";
+import React, { useState } from "react";
+import { Square } from "@wso2-ei/low-code-diagram";
 import { getComponent } from "../../util";
 import { WorkerLine } from "../worker-line";
-import { Circle, Square } from "@wso2-ei/low-code-diagram";
+import { RuleMediatorProperty } from "../PropertyPanels/index";
+import {
+  DiagramEditorLangClientInterface,
+  GetCompletionResponse,
+} from "@wso2-ei/low-code-editor-commons";
 
 interface SquareProps {
   model: Square;
+  getDiagramEditorLangClient?: () => Promise<DiagramEditorLangClientInterface>;
+  textDocumentUrl: string;
+  textDocumentFsPath: string;
+  items: GetCompletionResponse[];
+  previousComponentStartPosition: number;
 }
 
 export function Rule(props: SquareProps) {
   const { model } = props;
-
+  const [open, setOpen] = React.useState(false);
   const viewState = model.viewState;
-
   const components: JSX.Element[] = [];
 
   model.children.forEach((child) => {
-    components.push(getComponent(child.tag, { model: child }));
+    components.push(getComponent(child.type, { model: child }));
   });
+
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+
+  const handleButtonClick = async () => {
+    setOpen(true);
+    setIsClicked(true);
+  };
+
+  const handleCancelClick = (value: boolean) => {
+    setOpen(value);
+  };
 
   return (
     <>
@@ -47,6 +67,7 @@ export function Rule(props: SquareProps) {
         viewBox="0 0 800 600"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        onClick={() => handleButtonClick()}
       >
         <rect width="800" height="600" fill="#C0C0C0" />
         <path d="M10 10H430V590H10V10Z" fill="#7C3838" fill-opacity="0.93" />
@@ -64,6 +85,9 @@ export function Rule(props: SquareProps) {
 
       <WorkerLine model={model} />
       {components}
+      {isClicked && (
+        <RuleMediatorProperty modalOpen={open} modalClose={handleCancelClick} />
+      )}
     </>
   );
 }
