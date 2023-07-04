@@ -16,7 +16,7 @@ Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * under the License.
 */
 
-import { Uri, window, workspace, WorkspaceEdit } from "vscode";
+import { Uri, window, workspace, WorkspaceEdit, WorkspaceFolder, FileType } from "vscode";
 import * as fse from "fs-extra";
 import * as path from 'path';
 import {
@@ -31,6 +31,9 @@ const fileSystem = require('fs');
 import { ArtifactModule } from "../artifacts/ArtifactModule";
 import { MediatorProjectInfo } from "../mediatorProject/mediarorProjectUtils";
 import { TerminalModule } from "../logging/TerminalModule";
+import * as vscode from 'vscode';
+import { chooseTargetFolder } from "./uiUtils";
+import { error } from "console";
 
 export namespace Utils {
 
@@ -322,10 +325,12 @@ export namespace Utils {
         let directoryType: string = "unidentified";
 
         let projectNatureArray: string[] = [ProjectNatures.COMPOSITE_EXPORTER, ProjectNatures.CONFIGS, ProjectNatures.CONNECTOR_EXPORTER,
-        ProjectNatures.REGISTRY_RESOURCES, ProjectNatures.DATA_SERVICE, ProjectNatures.DATA_SOURCE, ProjectNatures.MEDIATOR_PROJECT];
+        ProjectNatures.REGISTRY_RESOURCES, ProjectNatures.DATA_SERVICE, ProjectNatures.DATA_SOURCE, ProjectNatures.MEDIATOR_PROJECT,
+        ProjectNatures.MULTI_MODULE];
 
         let directoryTypeArray: string[] = [SubDirectories.COMPOSITE_EXPORTER, SubDirectories.CONFIGS, SubDirectories.CONNECTOR_EXPORTER,
-        SubDirectories.REGISTRY_RESOURCES, SubDirectories.DATA_SERVICE, SubDirectories.DATA_SOURCE, SubDirectories.MEDIATOR_PROJECT];
+        SubDirectories.REGISTRY_RESOURCES, SubDirectories.DATA_SERVICE, SubDirectories.DATA_SOURCE, SubDirectories.MEDIATOR_PROJECT,
+        SubDirectories.MULTI_MODULE];
 
         for (let i = 0; i < projectNatures.length; i++) {
             let index: number = projectNatureArray.indexOf(projectNatures[i].textContent.trim());
@@ -344,16 +349,16 @@ export namespace Utils {
         let directory: string = "unidentified";
         let SubDirectories: string[] = fileSystem.readdirSync(rootDirectory);
 
-        SubDirectories.forEach((dir: any) => {
-            let projConfigFilePath: string = path.join(rootDirectory, dir, PROJECT_FILE);
+        for (var i = 0; i < SubDirectories.length; i++) {
+            let projConfigFilePath: string = path.join(rootDirectory, SubDirectories[i], PROJECT_FILE);
             if (fileSystem.existsSync(projConfigFilePath)) {
                 let type: string = getDirectoryType(projConfigFilePath).trim();
                 if (type === directoryType) {
-                    directory = path.join(rootDirectory, dir);
+                    directory = path.join(rootDirectory, SubDirectories[i]);
                     return directory;
                 }
             }
-        });
+        }
         return directory;
     }
 
@@ -652,6 +657,54 @@ export namespace Utils {
     }
 
     /**
+     * Create new Integration Project.
+     * @param rootDirectory root directory of the project.
+     * @param projectName   name of the project.
+     * @param templatePomFilePath template pom.xml file path.
+     * @returns 
+     */
+    export async function createRootProject(rootDirectory: string, projectName: string, templatePomFilePath: string, 
+        templateProjectNaturePath: string, groupId: string, version: string) {
+
+        let newDirectory: string = path.join(rootDirectory, projectName);
+        if (fse.existsSync(newDirectory)) {
+            TerminalModule.printLogMessage(`${projectName} project name already exists, creating root project aborted.`);
+            window.showErrorMessage(`${projectName} name already exists!`);
+            return;
+        }
+        fse.mkdirSync(newDirectory);
+
+        // add .project file
+        const buf: Buffer = fse.readFileSync(templateProjectNaturePath);
+        let projectNature = new DOM().parseFromString(buf.toString(), "text/xml");
+
+        let name = projectNature.getElementsByTagName(NAME_TAG)[0];
+        name.textContent = projectName.trim();
+
+        let projectNatureFilePath: string = path.join(newDirectory, PROJECT_FILE);
+        createXmlFile(projectNatureFilePath, projectNature);
+
+        //add new pom.xml
+        const buff: Buffer = fse.readFileSync(templatePomFilePath);
+        let pomXmlDoc = new DOM().parseFromString(buff.toString(), "text/xml");
+
+        let artifactIds = pomXmlDoc.getElementsByTagName(ARTIFACT_ID_TAG);
+        let groupIds = pomXmlDoc.getElementsByTagName(GROUP_ID_TAG);
+        let versions = pomXmlDoc.getElementsByTagName(VERSION_TAG);
+        let childProjectName = pomXmlDoc.getElementsByTagName(NAME_TAG)[0];
+        let childProjectDescription = pomXmlDoc.getElementsByTagName("description")[0];
+
+        artifactIds[0].textContent = projectName;
+        groupIds[0].textContent = groupId;
+        versions[0].textContent = version;
+        childProjectName.textContent = projectName.trim();
+        childProjectDescription.textContent = projectName.trim();
+
+        let pomFilePath: string = path.join(newDirectory, POM_FILE);
+        createXmlFile(pomFilePath, pomXmlDoc);
+    }
+
+    /**
    * Can be used to create,
    * Composite Exporter
    * ESB Configs
@@ -727,5 +780,85 @@ export namespace Utils {
         }
 
         return isArtifactIdExists;
+    }
+
+    /**
+     * This function will allow the user to select a workspace folder if not set already.
+     * If current folder is not a workspace folder, it will open the selected folder in a new window.
+     * In no folder is currently opened, it will open the workspace folder in the current window.
+     */
+    export async function setNewWorkspaceIfnotExists() {
+        const settings: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('wso2');
+        const workspace = String(settings.get('workspace'));
+        if (workspace === "") {
+            const homedir: string = require('os').homedir();
+            const targetFolderHint = Uri.file(homedir);
+            const targetLocation: string | null = await chooseTargetFolder(targetFolderHint, "Select a workspace folder");
+            if (targetLocation) {
+                settings.update('workspace', targetLocation, true);
+                Utils.createVsCodeSettingsFile(targetLocation);
+                vscode.window.showInformationMessage(`Workspace set to ${targetLocation}`);
+                vscode.commands.executeCommand('vscode.openFolder', Uri.file(targetLocation), false);
+            } else {
+                // cannot proceed without a workspace
+                vscode.commands.executeCommand('workbench.view.explorer');
+            }
+        } else {
+            const workspaceFolders = vscode.workspace.workspaceFolders;
+            if (workspaceFolders) {
+                const openFolders = workspaceFolders.map((folder) => folder.uri.fsPath);
+                if (openFolders.indexOf(workspace) === -1) {
+                    // if workspace is not opened, open it in new window
+                    vscode.commands.executeCommand('vscode.openFolder', Uri.file(workspace), true);
+                }
+            } else {
+                vscode.commands.executeCommand('vscode.openFolder', Uri.file(workspace), false);
+            }
+        }
+    }
+
+    function getFolderNames(workspaceFolder: WorkspaceFolder): Thenable<string[]> {
+        return workspace.fs.readDirectory(workspaceFolder.uri)
+            .then(entries => {
+                const folderNames = entries
+                    .filter(entry => entry[1] === FileType.Directory)
+                    .map(entry => entry[0]);
+
+                return folderNames;
+            });
+    }
+
+    export async function selectFolderFromWorkspace(dialogMessage: string): Promise<string> {
+        const rootFolder = workspace.workspaceFolders;
+        var subfolders: string[] = [];
+        if (rootFolder) {
+            const workspaceFolder = rootFolder[0];
+            const rootPath = workspaceFolder.uri.fsPath;
+            await getFolderNames(workspaceFolder).then((folderNames: string[]) => { subfolders = folderNames; });
+            if (subfolders.includes(".vscode")) {
+                subfolders.splice(subfolders.indexOf(".vscode"), 1);
+            }
+            if (subfolders.length > 1) {
+                var selectedFolder: string = "";
+                await window.showQuickPick(
+                    subfolders,
+                    {
+                        placeHolder: dialogMessage,
+                        canPickMany: false
+                    }
+                ).then((selected: string | undefined) => {
+                    if (selected && selected !== "") {
+                        selectedFolder = selected;
+                    } else {
+                        throw new Error("No folder selected");
+                    }
+                });
+                return path.join(rootPath, selectedFolder);
+            } else {
+                return path.join(rootPath, subfolders[0]);
+            }
+        } else {
+            throw new Error("No workspace folder found");
+        }
     }
 }

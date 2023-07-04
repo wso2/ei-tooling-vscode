@@ -20,7 +20,7 @@ import { ArchetypeModule } from "../archetype/ArchetypeModule";
 import { Runner } from "./mavenRunner";
 import * as path from 'path';
 
-export async function executeProjectCreateCommand(newProject: ArchetypeModule.ESBProject, targetLocation: string) {
+export function executeProjectCreateCommand(newProject: ArchetypeModule.ESBProject, targetLocation: string) {
     let cmd = getMavenGenerateCommand(newProject);
     const projectRootDir: string = path.join(targetLocation, newProject.artifactId);
 

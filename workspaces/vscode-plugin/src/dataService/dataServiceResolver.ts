@@ -35,7 +35,14 @@ export async function createDataServiceProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-        DataServiceModule.createProject(projectName.trim(), workspace.workspaceFolders[0].uri.fsPath);
+        var rootDirectory: string = "";
+            await Utils.selectFolderFromWorkspace('Select a root project to add the connector')
+            .then((result) => rootDirectory = result)
+            .catch((error) => {
+                window.showErrorMessage(String(error));
+                throw String(error);
+            })
+        DataServiceModule.createProject(projectName.trim(), rootDirectory);
     }
 }
 

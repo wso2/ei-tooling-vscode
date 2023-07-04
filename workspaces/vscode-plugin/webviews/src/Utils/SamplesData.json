@@ -1,0 +1,259 @@
+[
+    {
+        "name": "Miscellaneous_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.esb.template.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.template",
+                "priority": "0",
+                "description": "This sample demonstrates a simple HTTP service.",
+                "title": "Hello World Service"
+            }
+        ]
+    },
+    {
+        "name": "Routing_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.esb.contentBasedRoutingTemplate.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.contentBasedRoutingTemplate",
+                "priority": "2",
+                "description": "This sample demonstrates content-based message routing in an integration solution.",
+                "title": "Content Based Routing"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.headerBasedRoutingTemplate.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.headerBasedRoutingTemplate",
+                "priority": "9",
+                "description": "This sample demonstrates header-based message routing in an integration solution.",
+                "title": "Header Based Routing"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.messageFilteringTemplate.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.messageFilteringTemplate",
+                "priority": "15",
+                "description": "This sample demonstrates message filtering in an integration solution.",
+                "title": "Message Filtering"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.protocolSwitchingTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.protocolSwitchingTemplate",
+                "priority": "17",
+                "description": "This sample demonstrates protocol switching in an integration solution.",
+                "title": "Protocol Switching"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.proxyingARESTAPI.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.proxyingARESTAPI",
+                "priority": "18",
+                "description": "This sample exposes a virtual service, which acts as a proxy to an existing RESTful service.",
+                "title": "Proxying a REST Service"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.proxyingASoapService.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.proxyingASoapService",
+                "priority": "19",
+                "description": "This sample exposes a virtual service, which acts as a proxy to an existing SOAP service.",
+                "title": "Proxying a SOAP Service"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.scatterGatherTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.scatterGatherTemplate",
+                "priority": "23",
+                "description": "This sample demonstrates how to implement the Scatter Gather messaging pattern.",
+                "title": "Scatter Gather Integration Pattern"
+            }
+        ]
+    },
+    {
+        "name": "Messaging_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.esb.fileTransferTeamplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.fileTransferTeamplate",
+                "priority": "7",
+                "description": "This sample demonstrates file handling in an integration solution.",
+                "title": "File Transfer"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.guaranteedDeliveryTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.guaranteedDeliveryTemplate",
+                "priority": "8",
+                "description": "This sample demonstrates guaranteed message delivery using the Store and Forward messaging pattern.",
+                "title": "Guaranteed Delivery"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.jmsProxyTemplate.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.jmsProxyTemplate",
+                "priority": "12",
+                "description": "This sample demonstrates how the WSO2 Enterprise Integrator integrates with JMS brokers.",
+                "title": "JMS Integration"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.kafkaTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.kafkaTemplate",
+                "priority": "14",
+                "description": "This sample demonstrates how Kafka messages are consumed and produced using WSO2 Kafka Connector.",
+                "title": "Kafka Consumer and Producer"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.rabbitMQSampleTemplate.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.rabbitMQSampleTemplate",
+                "priority": "20",
+                "description": "This sample demonstrates how the WSO2 Enterprise Integrator integrates with RabbitMQ.",
+                "title": "RabbitMQ Integration"
+            }
+        ]
+    },
+    {
+        "name": "Transformation_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.esb.jsonToXmlMappingTemplate.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.jsonToXmlMappingTemplate",
+                "priority": "13",
+                "description": "This sample demonstrates JSON to XML mapping using the Data Mapper mediator.",
+                "title": "JSON to XML Mapping"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.restToSoapTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.restToSoapTemplate",
+                "priority": "22",
+                "description": "This sample exposes an existing SOAP service as a RESTful API.",
+                "title": "REST to SOAP Conversion"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.xmlToJsonMappingTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.xmlToJsonMappingTemplate",
+                "priority": "25",
+                "description": "This sample demonstrates XML to JSON mapping using the Data Mapper mediator.",
+                "title": "XML to JSON Mapping",
+                "image": "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAs0lEQVR4nGNgwAM0LCYKAPF8IN4PxAn41OIyoAGI/8MwfQyAOrsBig2AeD0Q3wd5AYgLYOL4DJiPZOt5JPEEJPH3IItwGbAfWSEu76C4Asmp69EUNiDFQgHUZpD4fHy2ggzpR9KEbGsAsquQDTiPpGg/1GZ018AMuI/NgASo896jObUByXXzkSxqwBcL65FsvI8kju4dBZoZAIuR/VA/w9gFSOwEnF5AM2wA8gKaAQKEnA0AHqrXulNHeEYAAAAASUVORK5CYII="
+            },
+            {
+                "id": "dashboard.wizardLink.esb.xmlToJsonTransformationTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.xmlToJsonTransformationTemplate",
+                "priority": "26",
+                "description": "This sample demonstrates  XML to JSON message transformation capabilities.",
+                "title": "XML To JSON Transformation"
+            }
+        ]
+    },
+    {
+        "name": "DataIntegration_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.ds.template.project.restDataServiceTemplate",
+                "name": "org.wso2.integrationstudio.wizards.ds.restDataServiceTemplate",
+                "priority": "21",
+                "description": "This sample demonstrates a data service exposed as a RESTful service.",
+                "title": "REST Data Service"
+            },
+            {
+                "id": "dashboard.wizardLink.ds.template.project.studentDataServiceTemplate",
+                "name": "org.wso2.integrationstudio.wizards.ds.studentDataServiceTemplate",
+                "priority": "24",
+                "description": "This sample demonstrates a SOAP data service.",
+                "title": "Students Data Service"
+            }
+        ]
+    },
+    {
+        "name": "Container_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.esb.helloDocker.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.helloDocker",
+                "priority": "10",
+                "description": "This sample demonstrates how to deploy a simple Hello World service on Docker.",
+                "title": "Hello Docker"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.helloKubernetes.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.helloKubernetes",
+                "priority": "11",
+                "description": "This sample demonstrates how to deploy a simple Hello World service on Kubernetes.",
+                "title": "Hello Kubernetes"
+            }
+        ]
+    },
+    {
+        "name": "ErrorHandling_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.esb.exceptionHandlingTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.exceptionHandlingTemplate",
+                "priority": "5",
+                "description": "This sample demonstrates the exception handling capabilities of WSO2 Enterprise Integrator.",
+                "title": "Exception Handling"
+            }
+        ]
+    },
+    {
+        "name": "Testing_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.esb.template.project.apiTesting",
+                "name": "org.wso2.integrationstudio.wizards.esb.apiTesting",
+                "priority": "1",
+                "description": "This sample demonstrates unit testing of a REST API artifact using WSO2 Integration Studio.",
+                "title": "API Testing"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.template.project.unitTestTutorial",
+                "name": "org.wso2.integrationstudio.wizards.esb.unitTestTutorial",
+                "priority": "27",
+                "description": "This sample demonstrates the Unit Testing capabilities of WSO2 Integration Studio.",
+                "title": "Unit Test Tutorial"
+            }
+        ]
+    },
+    {
+        "name": "SaaS_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.esb.emailServiceTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.emailServiceTemplate",
+                "priority": "4",
+                "description": "This sample demonstrates how to send and receive emails using WSO2 Email Connector.",
+                "title": "Email Service"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.readSalesforceAccountsTemplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.readSalesforceAccountsTemplate",
+                "priority": "6",
+                "description": "This sample demonstrates how to fetch leads from the Salesforce system.",
+                "title": "Fetch SalesForce Accounts"
+            }
+        ]
+    },
+    {
+        "name": "Task_Templates",
+        "iconURL": "null",
+        "wizards": [
+            {
+                "id": "dashboard.wizardLink.esb.dataPolling.project",
+                "name": "org.wso2.integrationstudio.wizards.esb.dataPolling",
+                "priority": "3",
+                "description": "This sample demonstrates how to periodically poll data from a database and then trigger a message flow.",
+                "title": "Database Polling"
+            },
+            {
+                "id": "dashboard.wizardLink.esb.scheduleTaskTeamplate",
+                "name": "org.wso2.integrationstudio.wizards.esb.scheduleTaskTeamplate",
+                "priority": "16",
+                "description": "This sample demonstrates how scheduled integration tasks are created and periodically triggered.",
+                "title": "Periodical Scheduled Tasks"
+            }
+        ]
+    }
+]

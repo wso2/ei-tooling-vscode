@@ -66,10 +66,10 @@ export async function showInputBox(promptMsg: string) {
     }).then(text => text);
 }
 
-export async function chooseTargetFolder(entry: Uri | undefined): Promise<string | null> {
+export async function chooseTargetFolder(entry: Uri | undefined, dialog: string): Promise<string | null> {
     const result: Uri | null = await openDialogForFolder({
         defaultUri: entry,
-        openLabel: "Select Destination Folder",
+        openLabel: dialog,
         canSelectFiles: false,
         canSelectFolders: true,
     });
@@ -93,4 +93,13 @@ export async function chooseTargetFile(entry: Uri | undefined, label: string, fi
         window.showErrorMessage("Target file not selected. Operation aborted!");
     }
     return targetLocation;
+}
+
+export function getNonce() {
+    let text = "";
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (let i = 0; i < 32; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
 }

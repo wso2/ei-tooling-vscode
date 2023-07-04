@@ -34,6 +34,7 @@ import {
 } from "./artifactUtils";
 import { showInputBox, showQuickPick } from "../utils/uiUtils";
 import { Utils } from "../utils/Utils";
+import * as path from 'path';
 
 export async function createArtifact(artifactType: string, targetFolderPath: string | undefined) {
     switch (artifactType) {
@@ -267,11 +268,7 @@ export async function createArtifact(artifactType: string, targetFolderPath: str
 
                     ArtifactModule.createResource(RegistryResourceInfo.DESTINATION_FOLDER, selectedArtifactType,
                         artifactName.trim(), artifactType, RegistryResourceInfo.TYPE, registryResource);
-
-
                 }
-
-
             }
             break;
         }
@@ -293,7 +290,14 @@ export async function createESBProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-        ArtifactModule.CreateNewESBConfigProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+        var rootDirectory: string = "";
+        await Utils.selectFolderFromWorkspace('Select a root project for the ESB project')
+            .then((result) => rootDirectory = result)
+            .catch((error) => {
+                window.showErrorMessage(String(error));
+                throw String(error);
+            })
+        ArtifactModule.CreateNewESBConfigProject(rootDirectory, projectName.trim());
     }
 
 }
@@ -307,7 +311,14 @@ export async function createCompositeProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-        Utils.CreateNewCompositeExporterProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+        var rootDirectory: string = "";
+        await Utils.selectFolderFromWorkspace('Select a root project for the CAPP project')
+            .then((result) => rootDirectory = result)
+            .catch((error) => {
+                window.showErrorMessage(String(error));
+                throw String(error);
+            })
+        Utils.CreateNewCompositeExporterProject(rootDirectory, projectName.trim());
     }
 
 }
@@ -321,7 +332,14 @@ export async function createRegistryResourcesProject() {
     }
 
     if (projectName && workspace.workspaceFolders) {
-        ArtifactModule.CreateNewRegistryResourcesProject(workspace.workspaceFolders[0].uri.fsPath, projectName.trim());
+        var rootDirectory: string = "";
+        await Utils.selectFolderFromWorkspace('Select a root project for the Registry project')
+            .then((result) => rootDirectory = result)
+            .catch((error) => {
+                window.showErrorMessage(String(error));
+                throw String(error);
+            })
+        ArtifactModule.CreateNewRegistryResourcesProject(rootDirectory, projectName.trim());
     }
 
 }
