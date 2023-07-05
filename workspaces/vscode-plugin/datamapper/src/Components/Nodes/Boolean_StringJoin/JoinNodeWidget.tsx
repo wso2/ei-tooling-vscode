@@ -17,8 +17,8 @@
  *
  */
 
-import { DiagramEngine } from '@projectstorm/react-diagrams-core';
 import * as React from 'react';
+import { DiagramEngine } from '@projectstorm/react-diagrams-core';
 import { JoinNodeModel } from './JoinNodeModel';
 import { nodeStyles } from '../styles';
 import { IntermediatePortWidget } from '../../Port/IntermediatePort/IntermediatePortWidget';

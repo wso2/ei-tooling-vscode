@@ -18,9 +18,9 @@
  */
 
 import React from 'react';
-import { Close, Pending } from '@mui/icons-material';
-import UploadForm from './UploadForm';
+import { Close } from '@mui/icons-material';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import UploadForm from './UploadForm';
 import { uploadStyles } from './styles';
 
 interface Props {

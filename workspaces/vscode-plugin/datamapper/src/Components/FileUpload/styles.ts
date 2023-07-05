@@ -29,11 +29,12 @@ export const uploadStyles = makeStyles(() => createStyles({
     dialogHeader: {
         height: '40px',
         color: 'white',
+        width :'100%',
         backgroundColor: '#187bcd',
         fontFamily: 'Asap !important',
         fontWeight: '700',
         fontSize: '16px !important',
-        padding: '0px 0px 10px 20px !important',
+        padding: '0px 20px 10px 20px !important',
         marginBottom: '10px !important'
     },
     closeButton: {
