@@ -50,6 +50,8 @@ export function DataMapper(props: SquareProps) {
     previousComponentStartPosition,
   } = props;
   const [open, setOpen] = React.useState(false);
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const viewState = model.viewState;
   model.tag;
@@ -60,7 +62,25 @@ export function DataMapper(props: SquareProps) {
   });
 
   const handleClick = () => {
-    handleButtonClick();
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      handleDatamapperButtonClick();
+      setTimeout(()=>{
+        setClickTimeout(null);
+      },1000);
+    } else {
+      const timeOut = setTimeout(() => {
+        setClickTimeout(null);
+        handlePropertyButtonClick();
+      }, 500)
+      if (timeOut) {
+        setClickTimeout(timeOut);
+      }
+    }
+
+  }
+
+  const handleDatamapperButtonClick = () => {
     const button = document.getElementById('datamapperMediator');
     if (button) {
       button.addEventListener('click', () => {
@@ -68,9 +88,8 @@ export function DataMapper(props: SquareProps) {
       });
     }
   }
-  const [isClicked, setIsClicked] = useState<boolean>(false);
 
-  const handleButtonClick = async () => {
+  const handlePropertyButtonClick = async () => {
     setOpen(true);
     setIsClicked(true);
   };
