@@ -19,12 +19,14 @@
 
 import NodeManager from './Diagram/NodeManager'
 import UploadIcon from './FileUpload/UploadIcon'
+import FunctionEditor from './FunctionEditor/FunctionEditor';
 
 const DataMapper = () => {
     return (
         <>
             <UploadIcon />
             <NodeManager />
+            <FunctionEditor/>
         </>
     )
 }

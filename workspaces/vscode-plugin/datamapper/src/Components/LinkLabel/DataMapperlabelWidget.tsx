@@ -18,13 +18,11 @@
  */
 
 import * as React from 'react';
-import { CodeOutlined, Delete } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 import { DataMapperLabelModel } from './DataMapperLabelModel';
-import { LabelStyles } from './styles';
-import FunctionEditor from '../FunctionEditor/FunctionEditor';
 import { Tooltip } from '@mui/material';
 import { DiagramEngine } from '@projectstorm/react-diagrams';
-import { DataMapperLinkModel } from '../Link/Model/DataMapperLinkModel';
+import { LabelStyles } from './styles';
 
 interface vscode {
     postMessage(message: any): void;
@@ -47,7 +45,6 @@ export const DataMapperLabelWidget: React.FunctionComponent<DataMapperLabelWidge
     const { model, engine } = props;
     const [linkStatus, setLinkStatus] = React.useState<LinkState>(LinkState.LinkNotSelected);
     const [deleteInProgress, setDeleteInProgress] = React.useState(false);
-    const [editorOpen, setEditorOpen] = React.useState(false);
     var firstPoint, lastPoint, midX: number = 0, midY: number = 0;
 
     const labelId = model.getID();
@@ -56,7 +53,6 @@ export const DataMapperLabelWidget: React.FunctionComponent<DataMapperLabelWidge
         .getLinks()
         .find((link) => link.getLabels().some((label) => label.getID() === labelId));
 
-    const dataMapperLink: DataMapperLinkModel = link as DataMapperLinkModel;
 
     if (link) {
         firstPoint = link.getFirstPoint();
@@ -79,10 +75,6 @@ export const DataMapperLabelWidget: React.FunctionComponent<DataMapperLabelWidge
         }
     };
 
-    const onEdit = (e?: React.MouseEvent<HTMLDivElement>) => {
-        setEditorOpen(true);
-    };
-
     React.useEffect(() => {
         if (link) {
             link.registerListener({
@@ -100,14 +92,6 @@ export const DataMapperLabelWidget: React.FunctionComponent<DataMapperLabelWidge
         (
             <div key="configure">
                 <div className={classes.container}>
-                    <div className={classes.element} onClick={onEdit}>
-                        <div className={classes.iconWrapper}>
-                            <Tooltip title="Configure">
-                                <CodeOutlined className={classes.IconButton} />
-                            </Tooltip>
-                        </div>
-                    </div>
-                    <div className={classes.separator} />
                     {deleteInProgress ? (
                         <></>) : (
                         <div className={classes.element} onClick={onDelete}>
@@ -121,7 +105,6 @@ export const DataMapperLabelWidget: React.FunctionComponent<DataMapperLabelWidge
                 </div>
             </div>
         ),
-        editorOpen && <FunctionEditor key="functionEditor" onClose={() => setEditorOpen(false)} engine={engine} link={dataMapperLink} />
     ];
 
     return (linkStatus === LinkState.LinkSelected) ? (

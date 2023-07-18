@@ -35,9 +35,9 @@ export const DiagramStyles = makeStyles(() => createStyles({
 		},
 	},
 	buttonWrap: {
-		position: 'absolute',
 		bottom: '10px',
-		right: '20px'
+		position:'absolute',
+		right: '230px'
 	},
 	iconWrap: {
 		marginBottom: '10px',
