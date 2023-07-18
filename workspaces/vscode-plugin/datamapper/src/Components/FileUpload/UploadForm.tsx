@@ -17,8 +17,8 @@
  *
  */
 
-import { Button, FormControl, FormLabel, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material'
 import React from 'react';
+import { Button, FormControl, FormLabel, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material'
 import { uploadStyles } from './styles';
 import { FileContext } from './../ContextProvider/FileContext';
 
@@ -39,9 +39,8 @@ const UploadForm = (props: Props) => {
   const supportedFileType = ['XML', 'JSON', 'XSD', 'CSV', 'JSON SCHEMA', 'CONNECTOR'];
 
   const [fileType, setFileType] = React.useState("JSON SCHEMA");
-  const [fileName, setFileName] = React.useState(props.title);
   const [file, setFile] = React.useState<File | null>(null);
-  const { setSchemaInput, setSchemaOutput } = React.useContext(FileContext);
+  const { setSchemaInput, setSchemaOutput,projectName } = React.useContext(FileContext);
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -54,16 +53,12 @@ const UploadForm = (props: Props) => {
     setFileType(e.target.value);
   }
 
-  const handleFileName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFileName(e.target.value);
-  }
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (file) {
       try {
-        var filename = fileName + "_" + props.title;
+        var filename = projectName + "_" + props.title;
         var fileExtension = file.name.split('.').pop();
 
         fileReader = new FileReader();
@@ -101,10 +96,6 @@ const UploadForm = (props: Props) => {
             }
           </Select>
         </FormControl>
-
-        <InputLabel className={classes.Label}>{props.title} File name : </InputLabel>
-        <TextField className={classes.TextField}
-          name='fileName' onChange={handleFileName} size="small" />
         <InputLabel className={classes.Label}>Select from file system : </InputLabel>
         <input className={classes.Label} type="file" name='file' onChange={handleFile} />
         <Button className={classes.saveButton} type="submit" variant='contained' disabled={!file}>Save</Button>

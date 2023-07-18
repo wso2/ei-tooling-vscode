@@ -24,10 +24,11 @@ import { join } from 'path';
 
 export default class datamapperSerialization {
 
-    public static serializingDiagram(fileContent: string) {
+    public static serializingDiagram(fileContent: string,name:string) {
+        var fileName = `${name}.datamapper.json`;
         var currentFolder = workspace.workspaceFolders?.[0];
         if (currentFolder) {
-            var filePath = join(currentFolder.uri.fsPath, "diagram.json");
+            var filePath = join(currentFolder.uri.fsPath, fileName);
             writeFile(filePath, fileContent, (err) => {
                 if (err) {
                     window.showErrorMessage('Unable to save serialized data file.');

@@ -26,6 +26,7 @@ import {
   DiagramEditorLangClientInterface,
   GetCompletionResponse,
 } from "@wso2-ei/low-code-editor-commons";
+import DatamapperModal from "../Datamapper/DatamapperModal";
 
 interface SquareProps {
   model: Circle;
@@ -49,8 +50,13 @@ export function DataMapper(props: SquareProps) {
     items,
     previousComponentStartPosition,
   } = props;
+
   const [open, setOpen] = React.useState(false);
+  const [modalOpen, setModalOpen] = React.useState(false);
   const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [isDoubleClicked, setIsDoubleClicked] = useState<boolean>(false);
+  const [datamapperProject, setDatamapperProject] = React.useState('');
+  const [datamapperRegistry,setDatamapperRegistry] = React.useState('');
   const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const viewState = model.viewState;
@@ -65,9 +71,9 @@ export function DataMapper(props: SquareProps) {
     if (clickTimeout) {
       clearTimeout(clickTimeout);
       handleDatamapperButtonClick();
-      setTimeout(()=>{
+      setTimeout(() => {
         setClickTimeout(null);
-      },1000);
+      }, 2000);
     } else {
       const timeOut = setTimeout(() => {
         setClickTimeout(null);
@@ -77,17 +83,18 @@ export function DataMapper(props: SquareProps) {
         setClickTimeout(timeOut);
       }
     }
-
   }
 
   const handleDatamapperButtonClick = () => {
-    const button = document.getElementById('datamapperMediator');
-    if (button) {
-      button.addEventListener('click', () => {
-        vscode.postMessage({ command: 'dataMapperView' });
-      });
-    }
+    setModalOpen(true);
+    setIsDoubleClicked(true);
   }
+
+  React.useEffect(() => {
+    if (datamapperProject) {
+      vscode.postMessage({ command: 'dataMapperView', projectName: datamapperProject });
+    }
+  }, [datamapperProject])
 
   const handlePropertyButtonClick = async () => {
     setOpen(true);
@@ -97,6 +104,18 @@ export function DataMapper(props: SquareProps) {
   const handleCancelClick = (value: boolean) => {
     setOpen(value);
   };
+
+  const handleModalClose = (value: boolean) => {
+    setModalOpen(value);
+  };
+
+  const handleDatamapperProject = (value: string) => {
+    setDatamapperProject(value);
+  }
+
+  const handleDatamapperRegistry = (value: string) => {
+    setDatamapperRegistry(value);
+  }
 
   return (
     <>
@@ -197,6 +216,10 @@ export function DataMapper(props: SquareProps) {
       {components}
       {isClicked && (
         <DataMapperMediatorProperty modalOpen={open} modalClose={handleCancelClick} />
+      )}
+      {isDoubleClicked && (
+        <DatamapperModal modalOpen={modalOpen} modalClose={handleModalClose} projectName={handleDatamapperProject} 
+        registryName= {handleDatamapperRegistry}/>
       )}
     </>
   );

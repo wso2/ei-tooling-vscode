@@ -249,9 +249,10 @@ function registerSynapseCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("wso2ei.car.create.zip", async () => {
         await createProjectFromCar();
     }));
-    context.subscriptions.push(commands.registerCommand("wso2ei.datamapper.view", async () => {
-        window.showInformationMessage("DataMapper Graphical View");
-        await dataMapper.render(context.extensionPath);
+    context.subscriptions.push(commands.registerCommand("wso2ei.datamapper.view", async (projectName) => {
+        console.log("Project Name extension : ",projectName);
+        window.showInformationMessage("DataMapper Graphical View ",projectName);
+        await dataMapper.render(context.extensionPath,projectName);
     }));
 }
 

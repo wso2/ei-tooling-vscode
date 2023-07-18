@@ -37,20 +37,21 @@ export default class datamapperFileUpload {
     }
 
     var currentFolder = workspace.workspaceFolders?.[0];
+
     if (currentFolder) {
-      var filePath = join(currentFolder.uri.fsPath, `${fileName}_schema.json`);
-      writeFile(filePath, schemaJson, (err) => {
-        if (err) {
-          window.showErrorMessage("Cant create Json schema");
-        } else {
-          window.showInformationMessage("Json schema file created");
-          if (node === 'Input') {
-            callback({ type: 'InputSchema', value: schema });
-          } else {
-            callback({ type: 'OutputSchema', value: schema });
-          }
-        }
-      })
+          var filePath = join(currentFolder.uri.fsPath, `${fileName}Schema.json`);
+          writeFile(filePath, schemaJson, (err) => {
+            if (err) {
+              window.showErrorMessage("Cant create Json schema");
+            } else {
+              window.showInformationMessage("Json schema file created");
+              if (node === 'Input') {
+                callback({ type: 'InputSchema', value: schema });
+              } else {
+                callback({ type: 'OutputSchema', value: schema });
+              }
+            }
+          })
     } else {
       window.showErrorMessage("No current workspace");
     }

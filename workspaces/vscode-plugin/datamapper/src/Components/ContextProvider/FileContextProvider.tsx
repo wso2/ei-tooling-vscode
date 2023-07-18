@@ -30,9 +30,10 @@ const FileContextProvider: React.FC<FileContextProviderProps> = ({ children }) =
   const [schemaOutput, setSchemaOutput] = React.useState<any>(null);
   const [addedNode, setAddedNode] = React.useState<CustomNodeModel[]>([]);
   const [removedNode, setRemovedNode] = React.useState<any>(null);
+  const [projectName, setProjectName] = React.useState<any>('');
 
   return (
-    <FileContext.Provider value={{ schemaInput, schemaOutput, addedNode, removedNode, setSchemaInput, setSchemaOutput, setAddedNode, setRemovedNode }}>
+    <FileContext.Provider value={{ schemaInput, schemaOutput, addedNode, removedNode,  projectName, setSchemaInput, setSchemaOutput, setAddedNode, setRemovedNode, setProjectName }}>
       {children}
     </FileContext.Provider>
   );

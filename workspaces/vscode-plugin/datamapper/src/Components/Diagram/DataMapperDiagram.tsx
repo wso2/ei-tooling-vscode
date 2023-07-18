@@ -47,7 +47,7 @@ const DataMapperDiagram = () => {
     const [model, setNewModel] = React.useState<DiagramModel>(new DiagramModel());
     const modelRef = React.useRef<DiagramModel>(model);
     const [links, setLinks] = React.useState<DataMapperLinkModel[]>([]);
-    const { addedNode, removedNode } = React.useContext(FileContext);
+    const { addedNode, removedNode,setProjectName, projectName } = React.useContext(FileContext);
 
     for (const factory of nodeFactories) { engine.getNodeFactories().registerFactory(factory); }
     for (const factory of portFactories) { engine.getPortFactories().registerFactory(factory); }
@@ -60,12 +60,22 @@ const DataMapperDiagram = () => {
             const serialized = JSON.stringify(modelRef.current.serialize());
             vscode.postMessage({
                 command: 'serializing',
-                fileContent: serialized
+                fileContent: serialized,
+                name:projectName
             });
         }, 1000);
     }
 
     React.useEffect(() => {
+        const handleNaming = (e: MessageEvent) =>{
+            if(e.data.command === 'naming'){
+                console.log("Project naming in datamapper : ",e.data.data);
+                setProjectName(e.data.data);
+            }
+        }
+        vscode.postMessage({ command: "ProjectNaming"});
+        window.addEventListener('message', handleNaming);
+
         const handleMessage = (e: MessageEvent) => {
             if (e.data.command === 'serialized') {
                 const parsed = JSON.parse(e.data.data);
@@ -77,7 +87,7 @@ const DataMapperDiagram = () => {
                 }, 0);
             }
         };
-        vscode.postMessage({ command: "deserializing" });
+        vscode.postMessage({ command: "deserializing",name:projectName});
         window.addEventListener('message', handleMessage);
         return () => {
             window.removeEventListener('message', handleMessage);
@@ -115,7 +125,7 @@ const DataMapperDiagram = () => {
                 };
                 diagramLink.push(Link);
             })
-            vscode.postMessage({ command: 'DMC', linkData: diagramLink });
+            vscode.postMessage({ command: 'DMC', linkData: diagramLink,name: projectName });
         },
     })
 
@@ -123,7 +133,9 @@ const DataMapperDiagram = () => {
         if (model.getLinks().length > 0) {
             engine.repaintCanvas(true);
         }
-        handleSerialization();
+        if(links){
+            handleSerialization();
+        }
     }, [links])
 
     React.useEffect(() => {
@@ -150,7 +162,9 @@ const DataMapperDiagram = () => {
             }
         }
         void genModel();
-        handleSerialization();
+        if(addedNode){
+            handleSerialization();
+        }
     }, [addedNode]);
 
     React.useEffect(() => {
@@ -162,7 +176,9 @@ const DataMapperDiagram = () => {
             });
             model.removeNode(removedNode);
         }
-        handleSerialization();
+        if(removedNode){
+            handleSerialization();
+        }
     }, [removedNode]);
 
     const clearDiagram = () => {
@@ -172,7 +188,8 @@ const DataMapperDiagram = () => {
             const serialized = JSON.stringify(clearModel.serialize());
             vscode.postMessage({
                 command: 'serializing',
-                fileContent: serialized
+                fileContent: serialized,
+                name:projectName
             });
         }, 1000);
     }

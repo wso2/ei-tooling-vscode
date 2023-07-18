@@ -21,15 +21,16 @@ import { ExtendedLangClient } from "../extended-language.client";
 import {
     commands,
     Disposable,
-    ExtensionContext, Range, TextDocumentShowOptions,
+    ExtensionContext, Position, Range, TextDocumentShowOptions,
     Uri,
     ViewColumn,
     WebviewPanel,
     window,
     workspace,
+    WorkspaceEdit
 } from "vscode";
 import { DiagramOptions } from "./model";
-import { sep } from "path";
+import { join, sep } from "path";
 import { WebViewRPCHandler } from "../rpc/handler";
 import { existsSync, readFileSync } from "fs";
 import { render } from "./renderer";
@@ -42,7 +43,9 @@ let langClient: ExtendedLangClient;
 let webviewRPCHandler: WebViewRPCHandler;
 let currentDocumentURI: Uri;
 let diagramContext: ExtensionContext;
+
 export let hasDiagram: boolean = false;
+
 
 export function activate(extendedLangClient: ExtendedLangClient, context: ExtensionContext) {
 
@@ -164,7 +167,7 @@ class DiagramPanel {
             {
                 methodName: "gotoSource",
                 handler: async (args: any[]): Promise<boolean> => {
-                    const filePath = args[0];
+                    const filePath = "C:/Hana/Projects/SampleNew/test.xml";
                     const position: { startLine: number, startColumn: number } = args[1];
                     if (!existsSync(filePath)) {
                         return false;
@@ -183,7 +186,7 @@ class DiagramPanel {
                 methodName: "getFileContent",
                 handler: async (args: any[]): Promise<string | undefined> => {
                     // Get the active text editor
-                    const filePath = args[0];
+                    const filePath = "C:/Hana/Projects/SampleNew/test.xml";
                     const doc = workspace.textDocuments.find((doc) => doc.fileName === filePath);
                     if (doc) {
                         return doc.getText();
@@ -239,7 +242,8 @@ class DiagramPanel {
                 switch (command) {
                     case "dataMapperView":
                         {
-                            commands.executeCommand("wso2ei.datamapper.view")
+                            console.log("Project : ",message.projectName)
+                            commands.executeCommand("wso2ei.datamapper.view",message.projectName)
                         }
                         return;
                 }

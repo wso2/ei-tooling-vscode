@@ -30,10 +30,12 @@ export default class dataMapper {
     private readonly _panel: WebviewPanel;
     private _disposables: Disposable[] = [];
     private readonly _extensionPath: string;
+    private readonly _projectName: string;
 
-    private constructor(panel: WebviewPanel, extensionPath: string) {
+    private constructor(panel: WebviewPanel, extensionPath: string,projectName: string) {
         this._panel = panel;
         this._extensionPath = extensionPath;
+        this._projectName = projectName;
 
         // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
         // the panel or when the panel is closed programmatically)
@@ -49,7 +51,7 @@ export default class dataMapper {
         this._panel.webview.postMessage({ type: 'refresh' });
     }
 
-    public static render(extensionPath: string) {
+    public static render(extensionPath: string,projectName: string) {
         if (dataMapper.currentPanel) {
             // If the webview panel already exists reveal it
             dataMapper.currentPanel._panel.reveal(ViewColumn.One);
@@ -61,15 +63,16 @@ export default class dataMapper {
                 // Panel title
                 "Data Mapper View",
                 // The editor column the panel should be displayed in
-                ViewColumn.One,
+                { viewColumn: ViewColumn.One, preserveFocus: true },
                 // Extra panel configurations
                 {
                     // Enable JavaScript in the webview
                     enableScripts: true,
+                    retainContextWhenHidden: true,
                 }
             );
 
-            dataMapper.currentPanel = new dataMapper(panel, extensionPath);
+            dataMapper.currentPanel = new dataMapper(panel, extensionPath,projectName);
         }
     }
 
@@ -149,19 +152,26 @@ export default class dataMapper {
                         }
                     case "serializing":
                         {
-                            datamapperSerialization.serializingDiagram(message.fileContent);
+                            datamapperSerialization.serializingDiagram(message.fileContent,message.name);
                             break;
                         }
                     case "DMC":
                         {
-                            DMCFile.fileCreation(message.linkData);
+                            DMCFile.fileCreation(message.linkData,message.name);
+                            break;
+                        }
+                    case "ProjectNaming":
+                        {
+                            const message = { command: 'naming', data: this._projectName };
+                            this._panel.webview.postMessage(message);
                             break;
                         }
                     case "deserializing":
                         {
+                            var fileName = `${message.name}.datamapper.json`;
                             var currentFolder = workspace.workspaceFolders?.[0];
                             if (currentFolder) {
-                                var filePath = join(currentFolder.uri.fsPath, "diagram.json");
+                                var filePath = join(currentFolder.uri.fsPath, fileName);
                                 readFile(filePath, 'utf8', (err, data) => {
                                     if (err) {
                                         window.showErrorMessage(`Unable to read file: ${err.message}`);

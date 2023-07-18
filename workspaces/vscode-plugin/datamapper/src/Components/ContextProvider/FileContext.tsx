@@ -41,10 +41,12 @@ type FileContextProps = {
   schemaOutput: Schema | null;
   addedNode: CustomNodeModel[];
   removedNode: CustomNodeModel | null;
+  projectName : String;
   setSchemaInput: (schemaInput: Schema) => void;
   setSchemaOutput: (schemaOutput: Schema) => void;
   setAddedNode: (addedNode: CustomNodeModel[]) => void;
   setRemovedNode: (removedNode: CustomNodeModel) => void;
+  setProjectName : (projectName: String) => void;
 }
 
 export const FileContext = React.createContext<FileContextProps>({
@@ -52,9 +54,11 @@ export const FileContext = React.createContext<FileContextProps>({
   schemaOutput: null,
   addedNode: [],
   removedNode: null,
+  projectName : '',
   setSchemaInput: () => { },
   setSchemaOutput: () => { },
   setAddedNode: () => { },
   setRemovedNode: () => { },
+  setProjectName: () => { },
 });
 
