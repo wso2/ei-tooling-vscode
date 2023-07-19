@@ -18,71 +18,59 @@
  */
 
 import * as vscode from 'vscode';
-import { readFile, readdirSync } from "fs";
+import { readdirSync } from "fs";
 import { join } from "path";
-import { Disposable, WebviewPanel, window, ViewColumn, Uri, workspace } from "vscode";
 import DMCFile from "./DMCFileGenerator";
 import datamapperFileUpload from "./datamapperFileUpload";
 import datamapperSerialization from './datamapperSerialization';
+import registryProject from './registryProject';
+import datamapperDeserialization from './datamapperDeserialization';
 
 export default class dataMapper {
     public static currentPanel: dataMapper | undefined;
-    private readonly _panel: WebviewPanel;
-    private _disposables: Disposable[] = [];
+    private readonly _panel: vscode.WebviewPanel;
+    private _disposables: vscode.Disposable[] = [];
     private readonly _extensionPath: string;
     private readonly _projectName: string;
+    private readonly _registryName : string;
 
-    private constructor(panel: WebviewPanel, extensionPath: string,projectName: string) {
+    private constructor(panel: vscode.WebviewPanel, extensionPath: string,projectName: string,registryName: string) {
         this._panel = panel;
         this._extensionPath = extensionPath;
         this._projectName = projectName;
+        this._registryName = registryName;
 
-        // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
-        // the panel or when the panel is closed programmatically)
+        // Set an event listener to listen for when the panel is disposed 
         this._panel.onDidDispose(this.dispose, null, this._disposables);
-
         // Set the HTML content for the webview panel
         this._panel.webview.html = this._getWebviewContent(this._panel.webview);
-
         // Set an event listener to listen for messages passed from the webview context
         this._setWebviewMessageListener();
-
         //refreshing the webview
         this._panel.webview.postMessage({ type: 'refresh' });
     }
 
-    public static render(extensionPath: string,projectName: string) {
+    public static render(extensionPath: string,projectName: string,registryName: string) {
         if (dataMapper.currentPanel) {
-            // If the webview panel already exists reveal it
-            dataMapper.currentPanel._panel.reveal(ViewColumn.One);
+            dataMapper.currentPanel._panel.reveal(vscode.ViewColumn.One);
         } else {
-            // If a webview panel does not already exist create and show a new one
-            const panel = window.createWebviewPanel(
-                // Panel view type
+            const panel = vscode.window.createWebviewPanel(
                 "OpenDataMapperView",
-                // Panel title
                 "Data Mapper View",
-                // The editor column the panel should be displayed in
-                { viewColumn: ViewColumn.One, preserveFocus: true },
-                // Extra panel configurations
+                { viewColumn: vscode.ViewColumn.One, preserveFocus: true },
                 {
-                    // Enable JavaScript in the webview
                     enableScripts: true,
                     retainContextWhenHidden: true,
                 }
             );
 
-            dataMapper.currentPanel = new dataMapper(panel, extensionPath,projectName);
+            dataMapper.currentPanel = new dataMapper(panel, extensionPath,projectName,registryName);
         }
     }
 
     public dispose() {
         dataMapper.currentPanel = undefined;
-
-        // Dispose of the current webview panel
         this._panel.dispose();
-
-        // Dispose of all disposables (i.e. commands) for the current webview panel
         while (this._disposables.length) {
             const disposable = this._disposables.pop();
             if (disposable) {
@@ -100,8 +88,8 @@ export default class dataMapper {
             throw new Error('Could not find CSS or JS file in build directory');
         }
 
-        const stylesUri = Uri.file(join(buildPath, 'css', cssFile)).with({ scheme: 'file' });
-        const scriptUri = Uri.file(join(buildPath, 'js', jsFile)).with({ scheme: 'file' });
+        const stylesUri = vscode.Uri.file(join(buildPath, 'css', cssFile)).with({ scheme: 'file' });
+        const scriptUri = vscode.Uri.file(join(buildPath, 'js', jsFile)).with({ scheme: 'file' });
         const styles = webview.asWebviewUri(stylesUri);
         const script = webview.asWebviewUri(scriptUri);
         this._panel.webview.postMessage({ vscode })
@@ -128,23 +116,24 @@ export default class dataMapper {
     }
 
     private _setWebviewMessageListener() {
+        var registryFolderPath: vscode.Uri ;
         this._panel.webview.onDidReceiveMessage(
             (message: any) => {
                 const command = message.command;
                 switch (command) {
                     case "success_alert":
                         {
-                            window.showInformationMessage(message.text);
+                            vscode.window.showInformationMessage(message.text);
                             break;
                         }
                     case "fail_alert":
                         {
-                            window.showErrorMessage(message.text);
+                            vscode.window.showErrorMessage(message.text);
                             break;
                         }
                     case "fileUpload":
-                        {
-                            datamapperFileUpload.handleFileUpload(message.fileContent, message.fileName, message.extension,
+                        { 
+                            datamapperFileUpload.handleFileUpload(registryFolderPath,message.fileContent, message.fileName, message.extension,
                                 (message) => {
                                     this._panel.webview.postMessage(message);
                                 });
@@ -152,7 +141,7 @@ export default class dataMapper {
                         }
                     case "serializing":
                         {
-                            datamapperSerialization.serializingDiagram(message.fileContent,message.name);
+                            datamapperSerialization.serializingDiagram(registryFolderPath,message.fileContent,message.name);
                             break;
                         }
                     case "DMC":
@@ -168,20 +157,14 @@ export default class dataMapper {
                         }
                     case "deserializing":
                         {
-                            var fileName = `${message.name}.datamapper.json`;
-                            var currentFolder = workspace.workspaceFolders?.[0];
-                            if (currentFolder) {
-                                var filePath = join(currentFolder.uri.fsPath, fileName);
-                                readFile(filePath, 'utf8', (err, data) => {
-                                    if (err) {
-                                        window.showErrorMessage(`Unable to read file: ${err.message}`);
-                                        return;
-                                    }
-
-                                    const message = { command: 'serialized', data: data };
-                                    this._panel.webview.postMessage(message);
-                                });
-                            }
+                            datamapperDeserialization.deserializingDiagram(message.name,registryFolderPath,(message) => {
+                                this._panel.webview.postMessage(message);
+                            })
+                            break;
+                        }
+                    case "RegistryFolder":
+                        {
+                            registryFolderPath=registryProject.getRegistryFolder(this._registryName);
                             break;
                         }
                 }

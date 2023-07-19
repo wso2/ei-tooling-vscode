@@ -48,11 +48,7 @@ export const DataMapperLabelWidget: React.FunctionComponent<DataMapperLabelWidge
     var firstPoint, lastPoint, midX: number = 0, midY: number = 0;
 
     const labelId = model.getID();
-    const link = engine
-        .getModel()
-        .getLinks()
-        .find((link) => link.getLabels().some((label) => label.getID() === labelId));
-
+    const link = engine.getModel().getLinks().find((link) => link.getLabels().some((label) => label.getID() === labelId));
 
     if (link) {
         firstPoint = link.getFirstPoint();

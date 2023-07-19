@@ -21,7 +21,7 @@ import { ExtendedLangClient } from "../extended-language.client";
 import {
     commands,
     Disposable,
-    ExtensionContext, Position, Range, TextDocumentShowOptions,
+    ExtensionContext, FileType, Position, Range, TextDocumentShowOptions,
     Uri,
     ViewColumn,
     WebviewPanel,
@@ -30,7 +30,7 @@ import {
     WorkspaceEdit
 } from "vscode";
 import { DiagramOptions } from "./model";
-import { join, sep } from "path";
+import { sep } from "path";
 import { WebViewRPCHandler } from "../rpc/handler";
 import { existsSync, readFileSync } from "fs";
 import { render } from "./renderer";
@@ -167,7 +167,7 @@ class DiagramPanel {
             {
                 methodName: "gotoSource",
                 handler: async (args: any[]): Promise<boolean> => {
-                    const filePath = "C:/Hana/Projects/SampleNew/test.xml";
+                    const filePath = args[0];
                     const position: { startLine: number, startColumn: number } = args[1];
                     if (!existsSync(filePath)) {
                         return false;
@@ -186,7 +186,7 @@ class DiagramPanel {
                 methodName: "getFileContent",
                 handler: async (args: any[]): Promise<string | undefined> => {
                     // Get the active text editor
-                    const filePath = "C:/Hana/Projects/SampleNew/test.xml";
+                    const filePath = args[0];
                     const doc = workspace.textDocuments.find((doc) => doc.fileName === filePath);
                     if (doc) {
                         return doc.getText();
@@ -235,6 +235,22 @@ class DiagramPanel {
         this.webviewPanel.title = title;
     }
 
+    public getAllCurrentRegistryProjects() : any{
+        var currentFolder = workspace.workspaceFolders?.[0];
+        if (currentFolder) {
+            var folderPath = currentFolder.uri.fsPath;
+            var folderUri = Uri.file(folderPath);
+            
+            workspace.fs.readDirectory(folderUri).then(entries => {
+                var folders = entries.filter(entry => entry[1] === FileType.Directory);
+                var folderNames = folders.map(folder => folder[0]);
+    
+                const message = { command: 'registryResource', data: folderNames};
+                this.webviewPanel.webview.postMessage(message);
+            });
+        } 
+    }
+
     private _setWebviewMessageListener() {
         this.webviewPanel.webview.onDidReceiveMessage(
             (message: any) => {
@@ -242,16 +258,22 @@ class DiagramPanel {
                 switch (command) {
                     case "dataMapperView":
                         {
-                            console.log("Project : ",message.projectName)
-                            commands.executeCommand("wso2ei.datamapper.view",message.projectName)
+                            commands.executeCommand("wso2ei.datamapper.view",message.projectName,message.registryName);
+                            break;
                         }
-                        return;
+                    case "currentRegistryprojects":
+                        {
+                           
+                            this.getAllCurrentRegistryProjects();
+                            break;
+                        }
                 }
             },
             undefined,
         );
     }
 }
+
 
 function getCurrentFileName(): string | undefined {
     if (!diagramElement || !diagramElement!.fileUri) {

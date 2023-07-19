@@ -92,9 +92,9 @@ export function DataMapper(props: SquareProps) {
 
   React.useEffect(() => {
     if (datamapperProject) {
-      vscode.postMessage({ command: 'dataMapperView', projectName: datamapperProject });
+      vscode.postMessage({ command: 'dataMapperView', projectName: datamapperProject,registryName:datamapperRegistry });
     }
-  }, [datamapperProject])
+  }, [datamapperProject,datamapperRegistry])
 
   const handlePropertyButtonClick = async () => {
     setOpen(true);

@@ -45,9 +45,9 @@ const DataMapperDiagram = () => {
     const classes = DiagramStyles();
     const [engine, setEngine] = React.useState(createEngine({ registerDefaultZoomCanvasAction: true }));
     const [model, setNewModel] = React.useState<DiagramModel>(new DiagramModel());
-    const modelRef = React.useRef<DiagramModel>(model);
     const [links, setLinks] = React.useState<DataMapperLinkModel[]>([]);
     const { addedNode, removedNode,setProjectName, projectName } = React.useContext(FileContext);
+    const modelRef = React.useRef<DiagramModel>(model);
 
     for (const factory of nodeFactories) { engine.getNodeFactories().registerFactory(factory); }
     for (const factory of portFactories) { engine.getPortFactories().registerFactory(factory); }
@@ -58,23 +58,19 @@ const DataMapperDiagram = () => {
     const handleSerialization = () => {
         setTimeout(() => {
             const serialized = JSON.stringify(modelRef.current.serialize());
-            vscode.postMessage({
-                command: 'serializing',
-                fileContent: serialized,
-                name:projectName
-            });
+            vscode.postMessage({command: 'serializing',fileContent: serialized,name:projectName});
         }, 1000);
     }
 
     React.useEffect(() => {
         const handleNaming = (e: MessageEvent) =>{
             if(e.data.command === 'naming'){
-                console.log("Project naming in datamapper : ",e.data.data);
                 setProjectName(e.data.data);
             }
         }
         vscode.postMessage({ command: "ProjectNaming"});
         window.addEventListener('message', handleNaming);
+        vscode.postMessage({ command: "RegistryFolder"});
 
         const handleMessage = (e: MessageEvent) => {
             if (e.data.command === 'serialized') {
@@ -133,7 +129,7 @@ const DataMapperDiagram = () => {
         if (model.getLinks().length > 0) {
             engine.repaintCanvas(true);
         }
-        if(links){
+        if(links && links.length > 0){
             handleSerialization();
         }
     }, [links])
@@ -162,7 +158,7 @@ const DataMapperDiagram = () => {
             }
         }
         void genModel();
-        if(addedNode){
+        if(addedNode && addedNode.length>0){
             handleSerialization();
         }
     }, [addedNode]);
@@ -186,14 +182,9 @@ const DataMapperDiagram = () => {
         setNewModel(clearModel);
         setTimeout(() => {
             const serialized = JSON.stringify(clearModel.serialize());
-            vscode.postMessage({
-                command: 'serializing',
-                fileContent: serialized,
-                name:projectName
-            });
+            vscode.postMessage({command: 'serializing',fileContent: serialized,name:projectName});
         }, 1000);
     }
-
     engine.setModel(model);
 
     const resetZoomAndOffset = () => {

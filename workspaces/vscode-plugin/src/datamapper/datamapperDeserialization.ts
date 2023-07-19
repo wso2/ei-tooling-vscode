@@ -17,22 +17,23 @@
  *
  */
 
-import { Uri, window,workspace } from 'vscode';
-import { writeFile } from "fs";
+import { Uri, window, workspace } from 'vscode';
+import { readFile } from 'fs';
 
-export default class datamapperSerialization {
+export default class datamapperDeserialization {
 
-    public static serializingDiagram(registryPath: Uri,fileContent: string,name:string) {
+    public static deserializingDiagram(name: string, registryFolderPath: Uri, callback: (message: any) => void) {
         var fileName = `${name}.datamapper.json`;
-       
-        if (registryPath) {
-            var fileUri = Uri.joinPath(registryPath, fileName);
+        var currentFolder = workspace.workspaceFolders?.[0];
+        
+        if (currentFolder) {
+            var fileUri = Uri.joinPath(registryFolderPath, fileName);
             var filePath = fileUri.fsPath;
-            writeFile(filePath, fileContent, (err) => {
-                if (err) {
-                    window.showErrorMessage('Unable to save serialized data file.');
+
+            readFile(filePath, 'utf8', (err, data) => {
+                if (!err) {
+                    callback({ command: 'serialized', data: data });
                 }
-                console.log("serialized file created")
             });
         }
     }

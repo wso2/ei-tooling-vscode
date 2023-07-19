@@ -29,7 +29,6 @@ export const uploadStyles = makeStyles(() => createStyles({
     dialogHeader: {
         height: '40px',
         color: 'white',
-        width:'98%',
         backgroundColor: '#187bcd',
         fontFamily: 'Asap !important',
         fontWeight: '700',
@@ -38,7 +37,7 @@ export const uploadStyles = makeStyles(() => createStyles({
         marginBottom: '10px !important'
     },
     closeButton: {
-        paddingLeft: '62% !important'
+        paddingLeft: '60% !important'
     },
     saveButton: {
         marginLeft: '70% !important',
