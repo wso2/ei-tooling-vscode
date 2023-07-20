@@ -17,19 +17,21 @@
  *
  */
 
+import { join } from 'path';
 import { FileType, Uri,workspace } from 'vscode';
 
 export default class registryProject {
 
     public static getRegistryFolder(registryName:string):Uri{
         var currentFolder = workspace.workspaceFolders?.[0];
-        var registryFolderPath : Uri = Uri.parse("");       
+        var registryFolderPathUri :  Uri = Uri.parse("");     
 
         if (currentFolder) {
           var folderPath = currentFolder.uri.fsPath;
           var folderUri = Uri.file(folderPath);
-          registryFolderPath = Uri.joinPath(folderUri, registryName);
-          var registryResourcePath = Uri.joinPath(registryFolderPath,'Registry Resources View');
+          var registryFolderPath = join(folderPath, registryName);
+          var registryResourcePath = join(registryFolderPath,'Registry Resources View');
+          registryFolderPathUri = Uri.file(registryFolderPath);
 
           workspace.fs.readDirectory(folderUri).then(entries => {
               var matchingFolders = entries.filter(entry => {
@@ -37,12 +39,12 @@ export default class registryProject {
               });
     
               if (matchingFolders.length <= 0) {
-                workspace.fs.createDirectory(registryFolderPath);
-                workspace.fs.createDirectory(registryResourcePath);
+                workspace.fs.createDirectory(registryFolderPathUri);
+                workspace.fs.createDirectory(Uri.file(registryResourcePath));
               } 
             });
         } 
-        return registryFolderPath;
+        return registryFolderPathUri;
     }
 
 }

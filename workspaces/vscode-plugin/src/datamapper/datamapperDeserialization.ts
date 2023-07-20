@@ -19,6 +19,7 @@
 
 import { Uri, window, workspace } from 'vscode';
 import { readFile } from 'fs';
+import { join } from 'path';
 
 export default class datamapperDeserialization {
 
@@ -27,8 +28,7 @@ export default class datamapperDeserialization {
         var currentFolder = workspace.workspaceFolders?.[0];
         
         if (currentFolder) {
-            var fileUri = Uri.joinPath(registryFolderPath, fileName);
-            var filePath = fileUri.fsPath;
+            var filePath = join(registryFolderPath.fsPath, fileName);
 
             readFile(filePath, 'utf8', (err, data) => {
                 if (!err) {

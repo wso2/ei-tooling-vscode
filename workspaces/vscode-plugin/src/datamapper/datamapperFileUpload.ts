@@ -17,8 +17,9 @@
  *
  */
 
+import { Uri, window } from 'vscode';
 import { writeFile } from "fs";
-import { Uri, window, workspace } from 'vscode';
+import { join } from "path";
 import toJsonSchema = require("to-json-schema");
 
 export default class datamapperFileUpload {
@@ -36,8 +37,7 @@ export default class datamapperFileUpload {
     }
 
     if (registryPath) {
-      var fileUri = Uri.joinPath(registryPath, `${fileName}Schema.json`);
-      var filePath = fileUri.fsPath;
+      var filePath = join(registryPath.fsPath,`${fileName}Schema.json`);
       writeFile(filePath, schemaJson, (err) => {
         if (err) {
           window.showErrorMessage("Cant create Json schema");

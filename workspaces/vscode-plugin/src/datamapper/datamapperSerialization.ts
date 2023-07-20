@@ -17,8 +17,9 @@
  *
  */
 
-import { Uri, window,workspace } from 'vscode';
+import { Uri, window } from 'vscode';
 import { writeFile } from "fs";
+import { join } from 'path';
 
 export default class datamapperSerialization {
 
@@ -26,13 +27,11 @@ export default class datamapperSerialization {
         var fileName = `${name}.datamapper.json`;
        
         if (registryPath) {
-            var fileUri = Uri.joinPath(registryPath, fileName);
-            var filePath = fileUri.fsPath;
+            var filePath = join(registryPath.fsPath,fileName);
             writeFile(filePath, fileContent, (err) => {
                 if (err) {
                     window.showErrorMessage('Unable to save serialized data file.');
                 }
-                console.log("serialized file created")
             });
         }
     }
