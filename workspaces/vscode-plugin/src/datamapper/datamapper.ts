@@ -32,9 +32,9 @@ export default class dataMapper {
     private _disposables: vscode.Disposable[] = [];
     private readonly _extensionPath: string;
     private readonly _projectName: string;
-    private readonly _registryName : string;
+    private readonly _registryName: string;
 
-    private constructor(panel: vscode.WebviewPanel, extensionPath: string,projectName: string,registryName: string) {
+    private constructor(panel: vscode.WebviewPanel, extensionPath: string, projectName: string, registryName: string) {
         this._panel = panel;
         this._extensionPath = extensionPath;
         this._projectName = projectName;
@@ -50,7 +50,7 @@ export default class dataMapper {
         this._panel.webview.postMessage({ type: 'refresh' });
     }
 
-    public static render(extensionPath: string,projectName: string,registryName: string) {
+    public static render(extensionPath: string, projectName: string, registryName: string) {
         if (dataMapper.currentPanel) {
             dataMapper.currentPanel._panel.reveal(vscode.ViewColumn.One);
         } else {
@@ -64,7 +64,7 @@ export default class dataMapper {
                 }
             );
 
-            dataMapper.currentPanel = new dataMapper(panel, extensionPath,projectName,registryName);
+            dataMapper.currentPanel = new dataMapper(panel, extensionPath, projectName, registryName);
         }
     }
 
@@ -116,7 +116,7 @@ export default class dataMapper {
     }
 
     private _setWebviewMessageListener() {
-        var registryFolderPath: vscode.Uri ;
+        var registryFolderPath: vscode.Uri;
         this._panel.webview.onDidReceiveMessage(
             (message: any) => {
                 const command = message.command;
@@ -132,8 +132,8 @@ export default class dataMapper {
                             break;
                         }
                     case "fileUpload":
-                        { 
-                            datamapperFileUpload.handleFileUpload(registryFolderPath,message.fileContent, message.fileName, message.extension,
+                        {
+                            datamapperFileUpload.handleFileUpload(registryFolderPath, message.fileContent, message.fileName, message.extension,
                                 (message) => {
                                     this._panel.webview.postMessage(message);
                                 });
@@ -141,12 +141,12 @@ export default class dataMapper {
                         }
                     case "serializing":
                         {
-                            datamapperSerialization.serializingDiagram(registryFolderPath,message.fileContent,message.name);
+                            datamapperSerialization.serializingDiagram(registryFolderPath, message.fileContent, message.name);
                             break;
                         }
                     case "DMC":
                         {
-                            DMCFile.fileCreation(message.linkData,message.name);
+                            DMCFile.fileCreation(message.linkData);
                             break;
                         }
                     case "ProjectNaming":
@@ -157,14 +157,14 @@ export default class dataMapper {
                         }
                     case "deserializing":
                         {
-                            datamapperDeserialization.deserializingDiagram(message.name,registryFolderPath,(message) => {
+                            datamapperDeserialization.deserializingDiagram(message.name, registryFolderPath, (message) => {
                                 this._panel.webview.postMessage(message);
                             })
                             break;
                         }
                     case "RegistryFolder":
                         {
-                            registryFolderPath=registryProject.getRegistryFolder(this._registryName);
+                            registryFolderPath = registryProject.getRegistryFolder(this._registryName);
                             break;
                         }
                 }

@@ -19,11 +19,12 @@
 
 import { join } from 'path';
 import { FileType, Uri,workspace } from 'vscode';
+import { checkWorkSpaceFolder } from './checkWorkSpaceFolder';
 
 export default class registryProject {
 
     public static getRegistryFolder(registryName:string):Uri{
-        var currentFolder = workspace.workspaceFolders?.[0];
+        var currentFolder = checkWorkSpaceFolder();
         var registryFolderPathUri :  Uri = Uri.parse("");     
 
         if (currentFolder) {
