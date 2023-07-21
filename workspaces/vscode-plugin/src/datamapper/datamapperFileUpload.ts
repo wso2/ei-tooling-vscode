@@ -17,11 +17,9 @@
  *
  */
 
-import { Uri, window } from 'vscode';
+import { Uri } from 'vscode';
 import { writeFile } from "fs";
 import { join } from "path";
-import toJsonSchema = require("to-json-schema");
-
 import { XMLtoJSON } from "./DataMapper_FileUpload/XMLtoJSON";
 import { JSONtoSchema } from "./DataMapper_FileUpload/JSONtoSchema";
 import { CSVtoJSON } from "./DataMapper_FileUpload/CSVtoJSON";
@@ -45,6 +43,7 @@ export default class datamapperFileUpload {
     let arrayOutput1: any[][] = [];
     var fileContent1 = "";
     var schema: any;
+    var filePath: string;
 
     switch (extension) {
       case 'xml': fileContent1 = XMLtoJSON(fileContent);
@@ -68,7 +67,6 @@ export default class datamapperFileUpload {
     }
 
     let json1: Details = JSON.parse(schemaJson);
-
     arrayOutput1 = createArray(json1, node);
     if (node === 'Input') {
       this.arrayInput = arrayOutput1;
@@ -77,19 +75,17 @@ export default class datamapperFileUpload {
     }
 
     if (registryPath) {
-      var filePath = join(registryPath.fsPath, `${fileName}Schema.json`);
+      filePath = join(registryPath.fsPath, `${fileName}Schema.json`);
       writeFile(filePath, schemaJson, (err) => {
-        if (err) {
-          window.showErrorMessage("Cant create Json schema");
-        } else {
-          window.showInformationMessage("Json schema file created");
+        if (!err) {
           if (node === 'Input') {
             callback({ type: 'InputSchema', value: schema });
           } else {
             callback({ type: 'OutputSchema', value: schema });
           }
-        }
+        } 
       })
     }
   }
+
 }

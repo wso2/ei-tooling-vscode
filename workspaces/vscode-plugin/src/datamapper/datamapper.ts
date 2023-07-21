@@ -146,7 +146,7 @@ export default class dataMapper {
                         }
                     case "DMC":
                         {
-                            DMCFile.fileCreation(message.linkData);
+                            DMCFile.fileCreation(message.linkData,registryFolderPath,this._projectName);
                             break;
                         }
                     case "ProjectNaming":

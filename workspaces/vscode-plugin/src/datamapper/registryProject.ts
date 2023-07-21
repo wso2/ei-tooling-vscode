@@ -27,7 +27,7 @@ export default class registryProject {
         var currentFolder = checkWorkSpaceFolder();
         var registryFolderPathUri :  Uri = Uri.parse("");     
 
-        if (currentFolder) {
+        if (currentFolder && registryName.length>0) {
           var folderPath = currentFolder.uri.fsPath;
           var folderUri = Uri.file(folderPath);
           var registryFolderPath = join(folderPath, registryName);

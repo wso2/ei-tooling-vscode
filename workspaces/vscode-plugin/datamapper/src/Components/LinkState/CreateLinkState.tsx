@@ -68,6 +68,7 @@ export class CreateLinkState extends State<DiagramEngine> {
                             if (element.portType === "IN") {
                                 if (this.sourcePort.canLinkToPort(element)) {
                                     this.link.setTargetPort(element);
+                                    this.sourcePort.setSelected(false);
                                     this.link.addLabel(new DataMapperLabelModel());
                                     this.engine.getModel().addAll(this.link);
                                     this.clearState();
@@ -82,6 +83,7 @@ export class CreateLinkState extends State<DiagramEngine> {
                             if (element.portType === "IN") {
                                 if (this.sourcePort.canLinkToPort(element)) {
                                     this.link.setTargetPort(element);
+                                    this.sourcePort.setSelected(false);
                                     this.link.addLabel(new DataMapperLabelModel());
                                     this.engine.getModel().addAll(this.link);
                                     this.clearState();

@@ -20,7 +20,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-
 import { createinputDMCArray } from './DMC_SubPart/createinputDMCArray';
 import { createoutputDMCArray } from './DMC_SubPart/createoutputDMCArray';
 import { modifyDMCArrays } from './DMC_SubPart/modifyDMCArrays';
@@ -33,40 +32,32 @@ export default class DMCFile {
 	static simplified_transformDataArray: any[][];
 	static simplified_inputQueueArray1: any[][];
 
-	public static fileCreation(linkData: []) {
+	public static fileCreation(linkData: [],registryFolderPath: vscode.Uri,projectName : string) {
 
 		const transformedData: DataModel[] = linkData;
-
 		var workspaceFolder = workspace.workspaceFolders?.[0];
-
+		
 		if (workspaceFolder) {
 
 			this.simplified_transformDataArray = [];
 			this.simplified_inputQueueArray1 = [];
-
 			[this.simplified_transformDataArray, this.simplified_inputQueueArray1] = transformData(transformedData);
 
 			let outputObjectArray = transformedData.filter(j => j.targetPort.nodeId === "Output" || j.sourcePort.nodeId === "Output");
 			let outputDMCArray = createoutputDMCArray(outputObjectArray);
-
 			let inputObjectArray = transformedData.filter(j => j.targetPort.nodeId !== "Output" && j.sourcePort.nodeId !== "Output");
 			let inputDMCArray = createinputDMCArray(inputObjectArray);
 
 			let content = modifyDMCArrays(outputDMCArray, inputDMCArray);
-
-			const fileName = 'DMCFile.dmc';
-			const workspaceFolderPath = workspaceFolder.uri.fsPath;
-			var filePath = path.join(workspaceFolderPath, fileName);
+			const fileName = `${projectName}.dmc`
+			var filePath = path.join(registryFolderPath.fsPath, fileName);
 
 			fs.writeFile(filePath, content, (err) => {
 				if (err) {
 					vscode.window.showErrorMessage('Unable to create file: ' + err.message);
 					return;
 				}
-				vscode.window.showInformationMessage('File created successfully: ' + filePath);
 			});
-		} else {
-			vscode.window.showErrorMessage('Unable to create file: Workspace folder not found');
-		}
+		} 
 	}
 }
