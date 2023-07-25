@@ -22,6 +22,7 @@ import { DiagramEngine, DiagramModel, DiagramModelGenerics } from "@projectstorm
 import { DataMapperNodeModel } from "./DataMapperNodeModel";
 import { DataMapperNodeWidget } from "./DataMapperNodeWidget";
 
+// Implemenattion of input and output nodes.
 export class DataMapperNodeFactory extends AbstractReactFactory<DataMapperNodeModel, DiagramEngine>{
 	model!: DiagramModel<DiagramModelGenerics>;
 

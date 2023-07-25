@@ -22,6 +22,7 @@ import { DiagramEngine } from '@projectstorm/react-diagrams';
 import { DataMapperLabelModel } from './DataMapperLabelModel';
 import { DataMapperLabelWidget } from './DataMapperlabelWidget';
 
+// Implementation of customized label for link
 export class DataMapperLabelFactory extends AbstractReactFactory<DataMapperLabelModel, DiagramEngine> {
 	constructor() {
 		super('DataMapper-label');

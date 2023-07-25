@@ -25,8 +25,9 @@ import { createoutputDMCArray } from './DMC_SubPart/createoutputDMCArray';
 import { modifyDMCArrays } from './DMC_SubPart/modifyDMCArrays';
 import { transformData } from './DMC_SubPart/transformData';
 import { DataModel } from './DMC_SubPart/models';
-import { workspace } from 'vscode';
+import { checkWorkSpaceFolder } from './checkWorkSpaceFolder';
 
+// DMC file generation entry component.
 export default class DMCFile {
 
 	static simplified_transformDataArray: any[][];
@@ -35,7 +36,7 @@ export default class DMCFile {
 	public static fileCreation(linkData: [],registryFolderPath: vscode.Uri,projectName : string) {
 
 		const transformedData: DataModel[] = linkData;
-		var workspaceFolder = workspace.workspaceFolders?.[0];
+		var workspaceFolder = checkWorkSpaceFolder();
 		
 		if (workspaceFolder) {
 

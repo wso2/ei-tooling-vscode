@@ -17,14 +17,14 @@
  *
  */
 
-import { DiagramEngine } from '@projectstorm/react-diagrams-core';
 import * as React from 'react';
-import { SplitNodeModel } from './SplitNodeModel';
-import { nodeStyles } from '../../styles';
-import { IntermediatePortWidget } from '../../../Port/IntermediatePort/IntermediatePortWidget';
-import { FileContext } from '../../../ContextProvider/FileContext';
+import { DiagramEngine } from '@projectstorm/react-diagrams-core';
 import { Delete } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
+import { SplitNodeModel } from './SplitNodeModel';
+import { IntermediatePortWidget } from '../../../Port/IntermediatePort/IntermediatePortWidget';
+import { FileContext } from '../../../ContextProvider/FileContext';
+import { nodeStyles } from '../../styles';
 
 export interface SplitNodeWidgetProps {
     node: SplitNodeModel;

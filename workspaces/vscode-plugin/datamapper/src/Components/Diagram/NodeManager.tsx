@@ -23,6 +23,7 @@ import { DataMapperNodeModel } from '../Nodes/DataMapperNodes/DataMapperNodeMode
 import { CustomNodeModel } from '../Nodes/Customs/CustomNodeModel';
 import DataMapperDiagram from './DataMapperDiagram';
 
+// Updating input and output nodes based on the schema files uploaded.
 const NodeManager = () => {
     const { schemaInput, schemaOutput } = React.useContext(FileContext);
     const { setAddedNode } = React.useContext(FileContext);

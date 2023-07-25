@@ -34,6 +34,7 @@ enum PortState {
     Unselected
 }
 
+// Customizing the appearence of ports for the Input and output nodes.
 export const DataMapperPortWidget: React.FC<DataMapperPortWidgetProps> = ({ port, engine }) => {
     const classes = portStyles();
     const checkedIcon = <RadioButtonChecked color="disabled" sx={{ fontSize: '16px' }} />;

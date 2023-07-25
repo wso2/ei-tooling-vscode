@@ -19,6 +19,7 @@
 
 import { DiagramModel, NodeModel, NodeModelGenerics } from '@projectstorm/react-diagrams';
 
+// Implementation of the customized node model.
 export abstract class CustomNodeModel extends NodeModel<NodeModelGenerics>{
     private diagramModel!: DiagramModel;
     name: string;

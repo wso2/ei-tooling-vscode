@@ -19,12 +19,12 @@
 
 import * as React from 'react';
 import { DiagramEngine } from '@projectstorm/react-diagrams-core';
-import { TransformNodeModel } from './TransformNodeModel';
-import { nodeStyles } from '../styles';
-import { IntermediatePortWidget } from '../../Port/IntermediatePort/IntermediatePortWidget';
-import { FileContext } from '../../ContextProvider/FileContext';
 import { Delete } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
+import { FileContext } from '../../ContextProvider/FileContext';
+import { TransformNodeModel } from './TransformNodeModel';
+import { IntermediatePortWidget } from '../../Port/IntermediatePort/IntermediatePortWidget';
+import { nodeStyles } from '../styles';
 
 export interface TransformNodeWidgetProps {
     node: TransformNodeModel;

@@ -22,6 +22,7 @@ import { DefaultLinkFactory } from '@projectstorm/react-diagrams';
 import { DataMapperLinkModel } from './DataMapperLinkModel';
 import { DataMapperLinkWidget } from './DataMapperLinkWidget';
 
+//Implementation of customized link.
 export class DataMapperLinkFactory extends DefaultLinkFactory {
   constructor() {
     super('DataMapper-link');

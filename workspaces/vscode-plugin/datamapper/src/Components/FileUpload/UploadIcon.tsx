@@ -17,22 +17,22 @@
  *
  */
 
-import { Button } from '@mui/material'
 import React from 'react'
-import UploadModal from './UploadModal';
+import { Button } from '@mui/material'
 import { uploadStyles } from './styles';
 import { AddCircleRounded } from '@mui/icons-material';
+import UploadModal from './UploadModal';
 
+// Navbar with upload options
 const UploadIcon = () => {
     const classes = uploadStyles();
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState('');
+    const NodeTitle = ['Input', 'Output'];
 
     const handleClose = (value: boolean) => {
         setOpen(value);
     }
-
-    const NodeTitle = ['Input', 'Output'];
 
     return (
         <>

@@ -32,6 +32,7 @@ interface SchemaProperty {
   };
 }
 
+// Declaration of model for input and output nodes.
 export class DataMapperNodeModel extends CustomNodeModel {
   name: string;
   schema: SchemaProperty;

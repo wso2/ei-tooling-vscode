@@ -7,6 +7,7 @@ export interface DataMapperNodeModelGenerics {
     PORT: DataMapperPortModel;
 }
 
+// Declaration of model for customized ports for the Input and output nodes.
 export default class DataMapperPortModel extends PortModel<PortModelGenerics & DataMapperNodeModelGenerics>  {
     linkedPorts: DataMapperPortModel[] =[];
    
@@ -39,15 +40,8 @@ export default class DataMapperPortModel extends PortModel<PortModelGenerics & D
         port.linkedPorts.push(this);
     }
 
-    setDescendantHasValue(): void {
-        this.descendantHasValue = true;
-        if (this.parentModel) {
-            this.parentModel.setDescendantHasValue();
-        }
-    }
-
     isDisabled(): boolean | undefined {
-        return this.ancestorHasValue || this.descendantHasValue
+        return this.ancestorHasValue || this.descendantHasValue;
     }
 
     isLinkedTo(port: DataMapperPortModel): boolean {

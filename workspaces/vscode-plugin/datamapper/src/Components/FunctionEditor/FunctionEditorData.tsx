@@ -18,7 +18,6 @@
  */
 
 export const FunctionData = [
-
   {
       Common:
           ['Constant', 'Custom Function', 'Properties', 'Compare', 'Global Variable']

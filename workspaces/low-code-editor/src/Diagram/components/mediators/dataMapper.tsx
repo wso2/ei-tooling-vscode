@@ -41,6 +41,7 @@ interface vscode {
 }
 declare const vscode: vscode;
 
+//single click opens property panel, double click opens datamapper view
 export function DataMapper(props: SquareProps) {
   const {
     model,
@@ -218,8 +219,8 @@ export function DataMapper(props: SquareProps) {
         <DataMapperMediatorProperty modalOpen={open} modalClose={handleCancelClick} />
       )}
       {isDoubleClicked && (
-        <DatamapperModal modalOpen={modalOpen} modalClose={handleModalClose} projectName={handleDatamapperProject} 
-        registryName= {handleDatamapperRegistry}/>
+        <DatamapperModal modalOpen={modalOpen} modalClose={handleModalClose} 
+        projectName={handleDatamapperProject} registryName= {handleDatamapperRegistry}/>
       )}
     </>
   );

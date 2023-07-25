@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import { Button, FormControl, FormLabel, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material'
+import { Button, FormControl, FormLabel, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { uploadStyles } from './styles';
 import { FileContext } from './../ContextProvider/FileContext';
 
@@ -33,6 +33,8 @@ interface vscode {
 declare const vscode: vscode;
 let fileReader: FileReader;
 
+/* File upload component. Project name given during configuration is passed to store the input and output files in that name.
+Schema input and output state variables are updated with the recently uploaded file contents.*/
 const UploadForm = (props: Props) => {
 
   const classes = uploadStyles();

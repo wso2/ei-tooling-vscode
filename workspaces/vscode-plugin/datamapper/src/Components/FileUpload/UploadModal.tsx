@@ -17,11 +17,10 @@
  *
  */
 
-import React from 'react';
-import { Close } from '@mui/icons-material';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
-import UploadForm from './UploadForm';
+import { Close } from '@mui/icons-material';
 import { uploadStyles } from './styles';
+import UploadForm from './UploadForm';
 
 interface Props {
     modalOpen: boolean,
@@ -29,6 +28,7 @@ interface Props {
     modalClose: (value: boolean) => void;
 }
 
+// modal to upload input and output files.
 const UploadModal = (props: Props) => {
     const classes = uploadStyles();
 

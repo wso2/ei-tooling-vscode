@@ -17,16 +17,18 @@
  *
  */
 
-import { join } from 'path';
 import { FileType, Uri,workspace } from 'vscode';
+import { join } from 'path';
 import { checkWorkSpaceFolder } from './checkWorkSpaceFolder';
 
+// Checking if the registry proect folder name given by user is in the workspace
 export default class registryProject {
 
     public static getRegistryFolder(registryName:string):Uri{
         var currentFolder = checkWorkSpaceFolder();
         var registryFolderPathUri :  Uri = Uri.parse("");     
 
+       console.log("REGISTRY NAME : ",registryName);
         if (currentFolder && registryName.length>0) {
           var folderPath = currentFolder.uri.fsPath;
           var folderUri = Uri.file(folderPath);
@@ -35,6 +37,7 @@ export default class registryProject {
           registryFolderPathUri = Uri.file(registryFolderPath);
 
           workspace.fs.readDirectory(folderUri).then(entries => {
+            console.log("all projects : ",entries);
               var matchingFolders = entries.filter(entry => {
                 return entry[1] === FileType.Directory && entry[0] === registryName;
               });

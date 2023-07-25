@@ -22,6 +22,7 @@ import { DiagramEngine, PortModel } from '@projectstorm/react-diagrams';
 import { IntermediatePortModel, INT_PORT_TYPE_ID } from './IntermediatePortModel';
 import { IntermediatePortWidget } from './IntermediatePortWidget';
 
+// Implementation of  customized ports for the other given functions.
 export class IntermediatePortFactory extends AbstractModelFactory<PortModel, DiagramEngine> {
 
     constructor() {

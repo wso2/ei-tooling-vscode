@@ -21,6 +21,7 @@ import { Uri, window } from 'vscode';
 import { writeFile } from "fs";
 import { join } from 'path';
 
+// serializing datamapper diagram data and storing it in json format.
 export default class datamapperSerialization {
 
     public static serializingDiagram(registryPath: Uri,fileContent: string,name:string) {

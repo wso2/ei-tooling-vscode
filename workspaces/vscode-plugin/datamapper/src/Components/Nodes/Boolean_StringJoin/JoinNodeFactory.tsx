@@ -22,6 +22,7 @@ import { DiagramEngine } from '@projectstorm/react-diagrams-core';
 import { JoinNodeWidget } from './JoinNodeWidget';
 import { JoinNodeModel } from './JoinNodeModel';
 
+// Implemenattion of arithmetic functional nodes.
 export class JoinNodeFactory extends AbstractReactFactory<JoinNodeModel, DiagramEngine> {
 	constructor() {
 		super('join-node');

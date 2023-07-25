@@ -20,11 +20,11 @@
 import React from 'react';
 import { InputsNodeModel } from './InputsNodeModel';
 import { DiagramEngine } from '@projectstorm/react-diagrams-core';
-import { nodeStyles } from '../styles';
-import { IntermediatePortWidget } from '../../Port/IntermediatePort/IntermediatePortWidget';
-import { FileContext } from '../../ContextProvider/FileContext';
 import { Tooltip } from '@mui/material';
 import { Delete } from '@mui/icons-material';
+import { IntermediatePortWidget } from '../../Port/IntermediatePort/IntermediatePortWidget';
+import { FileContext } from '../../ContextProvider/FileContext';
+import { nodeStyles } from '../styles';
 
 export interface InputsNodeProps {
     node: InputsNodeModel;

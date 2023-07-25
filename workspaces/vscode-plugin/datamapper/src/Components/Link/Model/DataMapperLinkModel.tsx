@@ -19,9 +19,10 @@
 
 import { BezierCurve } from '@projectstorm/geometry';
 import { DefaultLinkModel } from '@projectstorm/react-diagrams';
-import { DataMapperLabelModel } from '../../LinkLabel/DataMapperLabelModel';
 import { DeserializeEvent } from '@projectstorm/react-canvas-core';
+import { DataMapperLabelModel } from '../../LinkLabel/DataMapperLabelModel';
 
+// Declration of customized link model.
 export class DataMapperLinkModel extends DefaultLinkModel {
 	constructor() {
 		super({

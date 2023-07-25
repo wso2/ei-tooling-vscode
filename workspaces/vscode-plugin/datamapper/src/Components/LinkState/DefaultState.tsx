@@ -23,6 +23,7 @@ import { CreateLinkState } from './CreateLinkState';
 import DataMapperPortModel from '../Port/DataMapperPort/DataMapperPortModel';
 import { IntermediatePortModel } from '../Port/IntermediatePort/IntermediatePortModel';
 
+// Track the selection of ports.
 export class DefaultState extends State<DiagramEngine> {
   createLink: CreateLinkState;
   dragItems: DragDiagramItemsState;

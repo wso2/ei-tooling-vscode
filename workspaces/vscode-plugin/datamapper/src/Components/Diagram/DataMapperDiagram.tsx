@@ -41,6 +41,8 @@ interface vscode {
 }
 declare const vscode: vscode;
 
+/* Main diagram component. 
+Keep track of added nodes, removed nodes, created links, serialization,deserialization, project name and registry resource project folder name.*/
 const DataMapperDiagram = () => {
     const classes = DiagramStyles();
     const [engine, setEngine] = React.useState(createEngine({ registerDefaultZoomCanvasAction: true }));
@@ -83,6 +85,7 @@ const DataMapperDiagram = () => {
                 }, 0);
             }
         };
+
         vscode.postMessage({ command: "deserializing",name:projectName});
         window.addEventListener('message', handleMessage);
         return () => {

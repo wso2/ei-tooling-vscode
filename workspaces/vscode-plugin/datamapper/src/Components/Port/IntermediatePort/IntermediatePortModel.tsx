@@ -25,6 +25,7 @@ export interface IntermediateNodeModelGenerics {
 }
 export const INT_PORT_TYPE_ID = "datamapper-intermediate-port";
 
+// Declaration of model for customized ports for the other given functions.
 export class IntermediatePortModel extends PortModel<PortModelGenerics & IntermediateNodeModelGenerics> {
 	constructor(
 		public portId: string,

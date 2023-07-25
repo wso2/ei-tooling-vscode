@@ -21,12 +21,11 @@ import { BaseModelOptions, DeserializeEvent } from '@projectstorm/react-canvas-c
 import { LabelModel } from '@projectstorm/react-diagrams';
 
 export interface DataMapperLabelOptions extends BaseModelOptions {
-	editorLabel?: string;
 	deleteLink?: () => void;
 }
 
+// Declaring the model for customized link label.
 export class DataMapperLabelModel extends LabelModel {
-	editorLabel?: string;
 	deleteLink?: () => void;
 	id: string ;
 
@@ -36,7 +35,6 @@ export class DataMapperLabelModel extends LabelModel {
 			type: 'DataMapper-label'
 		});
 		this.id = this.getID();
-		this.editorLabel = options.editorLabel;
 		this.deleteLink = options.deleteLink;
 	}
 

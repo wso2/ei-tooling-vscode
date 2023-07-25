@@ -22,6 +22,7 @@ import { DiagramEngine } from "@projectstorm/react-diagrams-core";
 import { InputsNodeModel } from "./InputsNodeModel";
 import { InputsNodeWidget } from "./InputsNodeWidget";
 
+// Implemenattion of nodes for the global functions.
 export class InputsNodeFactory extends AbstractReactFactory<InputsNodeModel, DiagramEngine> {
 	constructor() {
 		super("my-input-node");

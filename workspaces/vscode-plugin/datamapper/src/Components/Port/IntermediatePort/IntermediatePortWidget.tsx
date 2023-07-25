@@ -19,8 +19,8 @@
 
 import React from "react";
 import { DiagramEngine, PortWidget } from "@projectstorm/react-diagrams-core";
-import { IntermediatePortModel } from "./IntermediatePortModel";
 import { RadioButtonChecked, RadioButtonUnchecked } from "@mui/icons-material";
+import { IntermediatePortModel } from "./IntermediatePortModel";
 import { portStyles } from "../styles";
 
 export interface IntermediatePortWidgetProps {
@@ -28,6 +28,7 @@ export interface IntermediatePortWidgetProps {
     port: IntermediatePortModel;
 }
 
+// Customizing the appearence of the ports for the other given functions.
 export const IntermediatePortWidget: React.FC<IntermediatePortWidgetProps> = (props: IntermediatePortWidgetProps) => {
     const classes = portStyles();
     const { engine, port } = props;

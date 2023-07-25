@@ -17,10 +17,11 @@
  *
  */
 
-import { Uri, window, workspace } from 'vscode';
+import { Uri, workspace } from 'vscode';
 import { readFile } from 'fs';
 import { join } from 'path';
 
+// deserializing the diagram json format data.
 export default class datamapperDeserialization {
 
     public static deserializingDiagram(name: string, registryFolderPath: Uri, callback: (message: any) => void) {

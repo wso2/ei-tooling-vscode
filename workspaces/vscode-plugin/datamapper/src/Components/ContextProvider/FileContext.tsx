@@ -20,6 +20,7 @@
 import React from 'react';
 import { CustomNodeModel } from '../Nodes/Customs/CustomNodeModel';
 
+//Declration of JSON schema 
 interface Schema {
   $schema?: string;
   inputType?: string;
@@ -49,6 +50,7 @@ type FileContextProps = {
   setProjectName : (projectName: String) => void;
 }
 
+//  Global declaration of states(variables) 
 export const FileContext = React.createContext<FileContextProps>({
   schemaInput: null,
   schemaOutput: null,

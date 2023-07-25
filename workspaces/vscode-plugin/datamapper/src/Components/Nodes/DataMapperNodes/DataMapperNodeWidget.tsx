@@ -32,6 +32,7 @@ export interface DataMapperNodeProps {
     engine: DiagramEngine;
 }
 
+// Customizing the appearence of the input and output nodes.
 export const DataMapperNodeWidget: React.FC<DataMapperNodeProps> = ({ node, engine }) => {
     const classes = nodeStyles();
     const inputPorts = Object.values(node.getPorts()) as DataMapperPortModel[];

@@ -17,10 +17,11 @@
  *
  */
 
+import { DeserializeEvent } from '@projectstorm/react-canvas-core';
 import { IntermediatePortModel } from '../../Port/IntermediatePort/IntermediatePortModel';
 import { CustomNodeModel } from '../Customs/CustomNodeModel';
-import { DeserializeEvent } from '@projectstorm/react-canvas-core';
 
+// Declaration of the model for the nodes for the global functions.
 export class InputsNodeModel extends CustomNodeModel {
     onClick: any;
     name: string;

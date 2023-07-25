@@ -21,6 +21,7 @@ import * as React from "react";
 import { DefaultLinkSegmentWidgetProps } from "@projectstorm/react-diagrams";
 import { DataMapperLinkModel } from "../Model/DataMapperLinkModel";
 
+// Customizing the appearence of the link segment(line connecting input and output ports).
 export class DefaultLinkSegmentWidget extends React.Component<DefaultLinkSegmentWidgetProps> {
     render() {
         const isSelected = !(this.props.link as DataMapperLinkModel) &&

@@ -21,6 +21,7 @@ import { DeserializeEvent } from "@projectstorm/react-canvas-core";
 import { IntermediatePortModel } from "../../Port/IntermediatePort/IntermediatePortModel";
 import { CustomNodeModel } from "../Customs/CustomNodeModel";
 
+// Declaration the model for arithmetic functional nodes.
 export class JoinNodeModel extends CustomNodeModel {
     name: string;
     public inPort1!: IntermediatePortModel;

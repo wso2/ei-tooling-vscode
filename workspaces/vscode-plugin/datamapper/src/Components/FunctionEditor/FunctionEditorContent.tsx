@@ -18,8 +18,8 @@
  */
 
 import React from 'react';
-import { ExpandMore, FolderOpenOutlined, NavigateNext } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Icon, Typography } from '@mui/material';
+import { ExpandMore, FolderOpenOutlined, NavigateNext } from '@mui/icons-material';
 import { FileContext } from './../ContextProvider/FileContext';
 import { CustomNodeModel } from '../Nodes/Customs/CustomNodeModel';
 import { JoinNodeModel } from '../Nodes/Boolean_StringJoin/JoinNodeModel';
@@ -30,6 +30,7 @@ import { SubStringNodeModel } from '../Nodes/String/SubString/SubStringNodeModel
 import { FunctionData as data } from './FunctionEditorData';
 import { FunctionStyles } from './styles';
 
+// Static Function panel(right hand side of datamapper view) contents and action logic.
 const FunctionEditorContent = () => {
     const classes = FunctionStyles();
     const { setAddedNode } = React.useContext(FileContext);

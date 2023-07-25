@@ -18,10 +18,10 @@
  */
 
 import * as React from 'react';
-import { Delete } from '@mui/icons-material';
-import { DataMapperLabelModel } from './DataMapperLabelModel';
-import { Tooltip } from '@mui/material';
 import { DiagramEngine } from '@projectstorm/react-diagrams';
+import { Tooltip } from '@mui/material';
+import { Clear } from '@mui/icons-material';
+import { DataMapperLabelModel } from './DataMapperLabelModel';
 import { LabelStyles } from './styles';
 
 interface vscode {
@@ -40,6 +40,7 @@ export enum LinkState {
     LinkNotSelected
 }
 
+// Customizing link label appearence and setting it to display when only the link is selected.
 export const DataMapperLabelWidget: React.FunctionComponent<DataMapperLabelWidgetProps> = (props) => {
     const classes = LabelStyles();
     const { model, engine } = props;
@@ -93,7 +94,7 @@ export const DataMapperLabelWidget: React.FunctionComponent<DataMapperLabelWidge
                         <div className={classes.element} onClick={onDelete}>
                             <div className={classes.iconWrapper}>
                                 <Tooltip title="Delete">
-                                    <Delete className={classes.IconButton} />
+                                    <Clear className={classes.IconButton}/>
                                 </Tooltip>
                             </div>
                         </div>

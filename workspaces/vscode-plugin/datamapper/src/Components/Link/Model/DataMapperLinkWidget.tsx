@@ -21,6 +21,7 @@ import * as React from "react";
 import { DefaultLinkWidget as ReactDiagramDefaultLinkWidget } from "@projectstorm/react-diagrams";
 import { DefaultLinkSegmentWidget } from "../LinkSegment/DataMapperLinkSegments";
 
+// Implementation of the appearence of the customized link.
 export class DataMapperLinkWidget extends ReactDiagramDefaultLinkWidget {
     generateLink(
         path: string,

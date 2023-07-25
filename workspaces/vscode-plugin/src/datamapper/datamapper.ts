@@ -26,6 +26,7 @@ import datamapperSerialization from './datamapperSerialization';
 import registryProject from './registryProject';
 import datamapperDeserialization from './datamapperDeserialization';
 
+// datamapper vscode panel entry component.
 export default class dataMapper {
     public static currentPanel: dataMapper | undefined;
     private readonly _panel: vscode.WebviewPanel;
@@ -50,6 +51,7 @@ export default class dataMapper {
         this._panel.webview.postMessage({ type: 'refresh' });
     }
 
+    //rendering the datamapper graphical view
     public static render(extensionPath: string, projectName: string, registryName: string) {
         if (dataMapper.currentPanel) {
             dataMapper.currentPanel._panel.reveal(vscode.ViewColumn.One);
@@ -79,6 +81,7 @@ export default class dataMapper {
         }
     }
 
+    // Setting the react frontend as the webview for the datamapper vscode panel.
     private _getWebviewContent(webview: any) {
         const buildPath = join(this._extensionPath, 'datamapper', 'build', 'static');
         const cssFile = readdirSync(join(buildPath, 'css')).find(file => file.endsWith('.css'));
@@ -115,6 +118,7 @@ export default class dataMapper {
       `;
     }
 
+    // communication between extension and webview.
     private _setWebviewMessageListener() {
         var registryFolderPath: vscode.Uri;
         this._panel.webview.onDidReceiveMessage(
