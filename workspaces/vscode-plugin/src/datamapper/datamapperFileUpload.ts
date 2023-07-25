@@ -55,6 +55,14 @@ export default class datamapperFileUpload {
         break;
       case 'csv': schema = CSVtoJSON(fileContent);
         break;
+      case 'xsd':
+        const Xsd2JSONSchema = require('xsd2jsonschema').Xsd2JsonSchema;
+        const xs2js = new Xsd2JSONSchema();
+        const convertedSchemas = xs2js.processAllSchemas({
+          schemas: { 'hello_world.xsd': fileContent },
+        });
+        schema = convertedSchemas['hello_world.xsd'].getJsonSchema();
+        break;
     }
 
     var schemaJson = JSON.stringify(schema);
@@ -83,7 +91,7 @@ export default class datamapperFileUpload {
           } else {
             callback({ type: 'OutputSchema', value: schema });
           }
-        } 
+        }
       })
     }
   }
