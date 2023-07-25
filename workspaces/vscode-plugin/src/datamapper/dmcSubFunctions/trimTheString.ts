@@ -17,13 +17,18 @@
  *
  */
 
-export function andOrActionPush(row: any[], action: {}): string {
-    if (!row[5] || !row[3] || row[7]) {
-        return "";
-    }
-    let f = "";
-    let g = action === "OR" ? "||" : "&";
-    f = `${row[6]} = ${row[2]} ${g} ${row[4]};`
-    row[7] = true;
-    return f;
+/* 
+There are two functions in the file.
+First function will crop the string from the begining to the colon.
+Second function will crop the string from the colon to the end.
+*/
+
+export function trimTheStringUptoColon(str: {}): string {
+    let str1 = str.toString();
+    return str1.substring(0, str1.indexOf(" : "));
+}
+
+export function trimTheStringFromColumnToEnd(str: {}): string {
+    let str1 = str.toString();
+    return str1.substring(str1.indexOf(" : ") + 1, str1.length);
 }

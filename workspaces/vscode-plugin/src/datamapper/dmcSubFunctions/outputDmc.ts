@@ -17,15 +17,27 @@
  *
  */
 
+/* 
+Description:
+This file is used to record the respective nodes and ports which are connected to output nodes and ports
+*/
+
 import datamapperFileUpload from "../datamapperFileUpload";
 import { portOutput } from "./portOutput";
-import { trimTheStringUptoColon } from "./trimTheString";
+import { trimTheStringFromColumnToEnd, trimTheStringUptoColon } from "./trimTheString";
 
-export function sourceEqualsTarget(targetPortPortID: {}, targetPortNodeID: {}, targetPortID: {}): string {
-    let arrayInput = datamapperFileUpload.arrayInput;
-    let string = "";
-    let action = targetPortNodeID;
-    switch (action) {
+export function outputDMC(sourcePortPortID: {}, targetPortNodeID: {}, targetPortPortID: {}, targetPortID: {}): string {
+    let arrayOutput = datamapperFileUpload.arrayOutput;
+    let e: string = "";
+    let f: string = "";
+    for (let row of arrayOutput) {
+        let outputPort = trimTheStringUptoColon(sourcePortPortID);
+        if (outputPort.endsWith(row[1])) {
+            f = row[0];
+            row[2] = true;
+        }
+    }
+    switch (targetPortNodeID) {
         case "Split":
         case "Concat":
         case "StartsWith":
@@ -55,17 +67,16 @@ export function sourceEqualsTarget(targetPortPortID: {}, targetPortNodeID: {}, t
         case "Replace":
         case "SubString":
         case "IfElse":
-            string = portOutput(action, targetPortID, targetPortPortID);
-            break;
-        case "Input":
-            for (let row of arrayInput) {
-                if (trimTheStringUptoColon(targetPortPortID).endsWith(row[1])) {
-                    string = row[0];
-                }
-            }
+            e = portOutput(targetPortNodeID, targetPortID, targetPortPortID);
             break;
         default:
-            string = `${targetPortNodeID}.${trimTheStringUptoColon(targetPortPortID)}`;
+            if (trimTheStringFromColumnToEnd(sourcePortPortID) === trimTheStringFromColumnToEnd(targetPortPortID)) {
+                e = targetPortNodeID + "." + trimTheStringUptoColon(targetPortPortID);
+            } else if (trimTheStringFromColumnToEnd(sourcePortPortID).endsWith("string")) {
+                e = targetPortNodeID + "." + trimTheStringUptoColon(targetPortPortID) + ".toString()";
+            } else if (trimTheStringFromColumnToEnd(sourcePortPortID).endsWith("integer")) {
+                e = "parseInt((" + targetPortNodeID + "." + trimTheStringUptoColon(targetPortPortID) + "),10)";
+            }
     }
-    return string;
+    return `${f} = ${e};`;
 }

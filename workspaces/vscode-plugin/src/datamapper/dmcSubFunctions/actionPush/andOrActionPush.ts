@@ -17,12 +17,11 @@
  *
  */
 
-export function trimTheStringUptoColon(str: {}): string {
-    let str1 = str.toString();
-    return str1.substring(0, str1.indexOf(" : "));
-}
-
-export function trimTheStringFromColumnToEnd(str: {}): string {
-    let str1 = str.toString();
-    return str1.substring(str1.indexOf(" : ") + 1, str1.length);
+export function andOrActionPush(row: any[], action: {}): string {
+    if (!row[5] || !row[3] || row[7]) {
+        return "";
+    }
+    let g = action === "OR" ? "||" : "&";
+    row[7] = true;
+    return `${row[6]} = ${row[2]} ${g} ${row[4]};`;
 }

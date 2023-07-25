@@ -17,31 +17,36 @@
  *
  */
 
+/**
+Description:
+This file takes care of adding the nodes and ports connected to each other, excluding the output node and ports.
+*/
+
 import DMCFile from "../DMCFileGenerator";
 import { inputDmcPush } from "./inputDmcPush";
 import { DataModel } from "./models";
 
-export function createinputDMCArray(inputObjectArray: DataModel[]): string[] {
+export function createinputDmcArray(inputObjectArray: DataModel[]): string[] {
 
     let simplified_inputQueueArray1 = DMCFile.simplified_inputQueueArray1;
     let inputDMCArray: string[] = [];
 
     for (let row1 of simplified_inputQueueArray1) {
         for (let row2 of inputObjectArray) {
-            let [e, f]: [string, string] = ["", ""];
+            let [portLink, portAction]: [string, string] = ["", ""];
             let { sourcePort, targetPort } = row2;
 
             if (sourcePort.nodeId === row1[0] && sourcePort.alignment === "OUT") {
-                [e, f] = inputDmcPush(targetPort.nodeId, targetPort.portId, sourcePort.ID, sourcePort.nodeId, sourcePort.portId, targetPort.ID);
+                [portLink, portAction] = inputDmcPush(targetPort.nodeId, targetPort.portId, sourcePort.ID, sourcePort.nodeId, sourcePort.portId, targetPort.ID);
             } else if (targetPort.nodeId === row1[0] && targetPort.alignment === "OUT") {
-                [e, f] = inputDmcPush(sourcePort.nodeId, sourcePort.portId, targetPort.ID, targetPort.nodeId, targetPort.portId, sourcePort.ID);
+                [portLink, portAction] = inputDmcPush(sourcePort.nodeId, sourcePort.portId, targetPort.ID, targetPort.nodeId, targetPort.portId, sourcePort.ID);
             }
 
-            if (e !== "") {
-                inputDMCArray.push(e);
+            if (portLink !== "") {
+                inputDMCArray.push(portAction);
             }
-            if (f !== "") {
-                inputDMCArray.push(f + "\n");
+            if (portAction !== "") {
+                inputDMCArray.push(portLink + "\n");
             }
         }
     }

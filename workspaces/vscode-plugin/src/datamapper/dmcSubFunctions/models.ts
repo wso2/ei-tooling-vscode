@@ -17,6 +17,12 @@
  *
  */
 
+/*
+Description:
+This file contains the interfaces of DataModels and PortModel used in the datamapper component.
+User can call this class to convert the incoming model in string form to object form
+*/
+
 export interface DataModel {
     sourcePort: PortModel;
     targetPort: PortModel;

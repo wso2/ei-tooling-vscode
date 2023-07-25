@@ -1,6 +1,6 @@
 import {processors} from "xml2js";
 
-export function XMLtoJSON(fileContent: string,): string {
+export function xmlToJson(fileContent: string,): string {
     var schema1 = "";
     var parseString = require('xml2js').parseString;
     var xml = fileContent;

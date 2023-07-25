@@ -20,7 +20,7 @@
 import * as vscode from 'vscode';
 import { readdirSync } from "fs";
 import { join } from "path";
-import DMCFile from "./DMCFileGenerator";
+import DMCFile from "./dmcFileGenerator";
 import datamapperFileUpload from "./datamapperFileUpload";
 import datamapperSerialization from './datamapperSerialization';
 import registryProject from './registryProject';

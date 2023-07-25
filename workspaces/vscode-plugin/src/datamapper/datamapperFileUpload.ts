@@ -20,9 +20,9 @@
 import { Uri } from 'vscode';
 import { writeFile } from "fs";
 import { join } from "path";
-import { XMLtoJSON } from "./DataMapper_FileUpload/XMLtoJSON";
-import { JSONtoSchema } from "./DataMapper_FileUpload/JSONtoSchema";
-import { CSVtoJSON } from "./DataMapper_FileUpload/CSVtoJSON";
+import { xmlToJson } from "./dataMapperFileConversion/xmlToJson";
+import { jsonToSchema } from "./dataMapperFileConversion/jsonToSchema";
+import { csvToJson } from "./dataMapperFileConversion/csvToJson";
 import { createArray } from "./createArray";
 
 interface Details {
@@ -46,14 +46,14 @@ export default class datamapperFileUpload {
     var filePath: string;
 
     switch (extension) {
-      case 'xml': fileContent1 = XMLtoJSON(fileContent);
-        schema = JSONtoSchema(fileContent1);
+      case 'xml': fileContent1 = xmlToJson(fileContent);
+        schema = jsonToSchema(fileContent1);
         break;
-      case 'json': schema = JSONtoSchema(fileContent);
+      case 'json': schema = jsonToSchema(fileContent);
         break;
       case 'jsonschema': schema = JSON.parse(fileContent);
         break;
-      case 'csv': schema = CSVtoJSON(fileContent);
+      case 'csv': schema = csvToJson(fileContent);
         break;
       case 'xsd':
         const Xsd2JSONSchema = require('xsd2jsonschema').Xsd2JsonSchema;

@@ -21,17 +21,17 @@ export function arithmeticOperationPush2(row: any[], action: {}): string {
     if (row[5] || !row[3]) {
         return "";
     }
-    let f = "";
+    let actionString = "";
     switch (action) {
-        case "Round": f = `round`;
+        case "Round": actionString = `round`;
             break;
-        case "Floor": f = `floor`;
+        case "Floor": actionString = `floor`;
             break;
-        case "Ceiling": f = `ceil`;
+        case "Ceiling": actionString = `ceil`;
             break;
-        case "AbsoluteValue": f = `abs`;
+        case "AbsoluteValue": actionString = `abs`;
             break;
     }
     row[5] = true;
-    return row[4] + ` = Math.` + f + `(${row[2]});`;
+    return row[4] + ` = Math.` + actionString + `(${row[2]});`;
 }

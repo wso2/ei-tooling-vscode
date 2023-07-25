@@ -1,6 +1,6 @@
 import toJsonSchema = require("to-json-schema");
 
-export function CSVtoJSON(fileContent: string): toJsonSchema.JSONSchema3or4 {
+export function csvToJson(fileContent: string): toJsonSchema.JSONSchema3or4 {
     var schema: any;
     const csvData: string = fileContent;
     const csvRows: string[] = csvData.split('\n');

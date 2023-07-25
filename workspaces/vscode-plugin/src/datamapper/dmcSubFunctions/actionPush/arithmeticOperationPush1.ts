@@ -21,30 +21,30 @@ export function arithmeticOperationPush1(row: any[], action: {}): string {
     if (!row[5] || !row[3] || row[7]) {
         return "";
     }
-    let g = "";
+    let rightHandString = "";
     switch (action) {
         case "Add":
-            g = `${row[2]} + ${row[4]};`;
+            rightHandString = `${row[2]} + ${row[4]};`;
             break;
         case "Multiply":
-            g = `${row[2]} * ${row[4]};`;
+            rightHandString = `${row[2]} * ${row[4]};`;
             break;
         case "Min":
-            g = `Math.min(${row[2]} , ${row[4]});`;
+            rightHandString = `Math.min(${row[2]} , ${row[4]});`;
             break;
         case "Max":
-            g = `Math.max(${row[2]} , ${row[4]});`;
+            rightHandString = `Math.max(${row[2]} , ${row[4]});`;
             break;
         case "Subtract":
-            g = `${row[2]} - ${row[4]};`
+            rightHandString = `${row[2]} - ${row[4]};`
             break;
         case "Division":
-            g = `${row[2]} / ${row[4]};`
+            rightHandString = `${row[2]} / ${row[4]};`
             break;
         case "Set Precision":
-            g = `${row[2]}.toFixed(${row[4]});`
+            rightHandString = `${row[2]}.toFixed(${row[4]});`
         break;
     }
     row[7] = true;
-    return `${row[6]} = ` + g;
+    return `${row[6]} = ` + rightHandString;
 }

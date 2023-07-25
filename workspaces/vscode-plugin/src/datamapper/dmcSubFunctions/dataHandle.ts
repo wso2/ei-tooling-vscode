@@ -17,6 +17,14 @@
  *
  */
 
+/*
+Description:
+This is used to check whether any link is connected to output node or input node. If yes, the opposite node is only saved.
+Else, both nodes are saved.
+Because, connections to Output node is seperately taken care of
+and input node is added to the inputDMCarray initially.
+*/ 
+
 import { integer } from "vscode-languageserver-protocol";
 import { checkTransformDataArray } from "./checkTransformDataArray";
 import { DataModel } from "./models";

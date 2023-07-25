@@ -17,6 +17,12 @@
  *
  */
 
+/*
+Description:
+This will modify the content taken from inputDMC and outputDMC arrays,
+and will modify and return the content to be written to the DMC file.
+*/
+
 export function modifyDMCArrays(outputDMCArray: string[], inputDMCArray: string[]): string {
     const inputdmc = inputDMCArray.filter(j => j.length !== 0).join('\n');
     const outputdmc = outputDMCArray.join('\n');

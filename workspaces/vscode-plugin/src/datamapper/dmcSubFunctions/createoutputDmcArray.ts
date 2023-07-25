@@ -17,28 +17,34 @@
  *
  */
 
+/*  
+Description:
+This is used to record the links connected to the ports of output nodes.
+This will also record the remaning unconnected ports of the output nodes, to the outputDmc Array
+*/
+
 import { DataModel } from "./models";
 import datamapperFileUpload from "../datamapperFileUpload";
-import { outputDMC } from "./outputDMC";
+import { outputDMC } from "./outputDmc";
 
-export function createoutputDMCArray(outputObjectArray: DataModel[]): string[] {
-    let outputDMCArray: string[] = [];
+export function createoutputDmcArray(outputObjectArray: DataModel[]): string[] {
+    let outputDmcArray: string[] = [];
     let arrayOutput = datamapperFileUpload.arrayOutput
     outputObjectArray.forEach((outputObj) => {
         const { sourcePort, targetPort } = outputObj;
         if (sourcePort.nodeId === "Output") {
-            outputDMCArray.push(outputDMC(sourcePort.portId, targetPort.nodeId, targetPort.portId, targetPort.ID));
+            outputDmcArray.push(outputDMC(sourcePort.portId, targetPort.nodeId, targetPort.portId, targetPort.ID));
             outputObj.isChecked = true;
         } else if (targetPort.nodeId === "Output") {
-            outputDMCArray.push(outputDMC(targetPort.portId, sourcePort.nodeId, sourcePort.portId, sourcePort.ID));
+            outputDmcArray.push(outputDMC(targetPort.portId, sourcePort.nodeId, sourcePort.portId, sourcePort.ID));
             outputObj.isChecked = true;
         }
     });
 
     for (let row of arrayOutput) {
         if (!row[2]) {
-            outputDMCArray.push(`${row[0]} = {};`);
+            outputDmcArray.push(`${row[0]} = {};`);
         }
     }
-    return outputDMCArray;
+    return outputDmcArray;
 }
