@@ -20,36 +20,49 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { createinputDMCArray } from './DMC_SubPart/createinputDMCArray';
-import { createoutputDMCArray } from './DMC_SubPart/createoutputDMCArray';
-import { modifyDMCArrays } from './DMC_SubPart/modifyDMCArrays';
-import { transformData } from './DMC_SubPart/transformData';
-import { DataModel } from './DMC_SubPart/models';
-import { checkWorkSpaceFolder } from './checkWorkSpaceFolder';
+import { modifyDMCArrays } from './dmcSubFunctions/modifyDMCArrays';
+import { transformData } from './dmcSubFunctions/transformData';
+import { DataModel } from './dmcSubFunctions/models';
+import { checkWorkspaceFolder } from './checkWorkspaceFolder';
+import { createOutputDmcArray } from './dmcSubFunctions/createoutputDmcArray';
+import { createInputDmcArray } from './dmcSubFunctions/createinputDmcArray';
 
 // DMC file generation entry component.
 export default class DMCFile {
 
+	// Two seperate Arrays are declared to record the nodes and links in the order they are added to the canvas
 	static simplified_transformDataArray: any[][];
 	static simplified_inputQueueArray1: any[][];
 
-	public static fileCreation(linkData: [],registryFolderPath: vscode.Uri,projectName : string) {
+	public static fileCreation(linkData: [], registryFolderPath: vscode.Uri, projectName: string) {
 
+		// Below is the model received from the canvas
 		const transformedData: DataModel[] = linkData;
-		var workspaceFolder = checkWorkSpaceFolder();
-		
-		if (workspaceFolder) {
+		var workspaceFolder = checkWorkspaceFolder();
 
+		if (workspaceFolder) {
 			this.simplified_transformDataArray = [];
 			this.simplified_inputQueueArray1 = [];
+
+			// Used to record all the nodes and ports involved in the data model
 			[this.simplified_transformDataArray, this.simplified_inputQueueArray1] = transformData(transformedData);
 
-			let outputObjectArray = transformedData.filter(j => j.targetPort.nodeId === "Output" || j.sourcePort.nodeId === "Output");
-			let outputDMCArray = createoutputDMCArray(outputObjectArray);
-			let inputObjectArray = transformedData.filter(j => j.targetPort.nodeId !== "Output" && j.sourcePort.nodeId !== "Output");
-			let inputDMCArray = createinputDMCArray(inputObjectArray);
+			// In here, the whole data model received from canvas is divided into two, 
+			// 1. The output ports and connected links
+			// 2. The remaining ports and connected links.
+			// The output ports and connected links are added to create the outputDMCArray
+			// The remaining ports and connected links are added to create the inputDMCArray
 
+			let outputObjectArray = transformedData.filter(j => j.targetPort.nodeId === "Output" || j.sourcePort.nodeId === "Output");
+			let outputDMCArray = createOutputDmcArray(outputObjectArray);
+
+			let inputObjectArray = transformedData.filter(j => j.targetPort.nodeId !== "Output" && j.sourcePort.nodeId !== "Output");
+			let inputDMCArray = createInputDmcArray(inputObjectArray);
+
+			// The contents of the inputDMCArray and outputDMCArray are modified to create the content of the DMC file.
 			let content = modifyDMCArrays(outputDMCArray, inputDMCArray);
+
+			// The DMC file is created in the registry folder of the project
 			const fileName = `${projectName}.dmc`
 			var filePath = path.join(registryFolderPath.fsPath, fileName);
 
@@ -59,6 +72,6 @@ export default class DMCFile {
 					return;
 				}
 			});
-		} 
+		}
 	}
 }

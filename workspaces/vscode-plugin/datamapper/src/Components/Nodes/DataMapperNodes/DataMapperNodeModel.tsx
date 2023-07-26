@@ -18,18 +18,26 @@
  */
 
 import { DeserializeEvent } from "@projectstorm/react-canvas-core";
+import { DiagramEngine } from "@projectstorm/react-diagrams";
 import DataMapperPortModel from "../../Port/DataMapperPort/DataMapperPortModel";
 import { CustomNodeModel } from "../Customs/CustomNodeModel";
-import { DiagramEngine } from "@projectstorm/react-diagrams";
 import { IntermediatePortModel } from "../../Port/IntermediatePort/IntermediatePortModel";
 
 interface SchemaProperty {
   [key: string]: {
-    type: string;
+    type?: string;
     id?: string;
     description?: string;
     properties?: SchemaProperty;
+    items?: items;
+    definitions?: SchemaProperty;
   };
+}
+
+interface items {
+  type: string;
+  properties?: SchemaProperty;
+  items?: items;
 }
 
 // Declaration of model for input and output nodes.
@@ -55,22 +63,39 @@ export class DataMapperNodeModel extends CustomNodeModel {
     }
 
     if (this.schema) {
-      const processProperties = (properties: SchemaProperty) => {
+      let myArray: any[] = [];
+      let i = 0;
+      const processProperties = (properties: SchemaProperty, i: number) => {
         for (const [propertyName, property] of Object.entries(properties)) {
-          if (property.type === 'object') {
-            port = new DataMapperPortModel(`${propertyName}`, portType, alignment);
-            this.addPort(port);
-            if (property.properties) {
-              processProperties(property.properties);
+          myArray[i] = propertyName;
+          const str: string = myArray.join('.');
+
+          port = (property.type === 'object' || property.type === 'array' || property.type ===  undefined) ?
+            new DataMapperPortModel(`${str}`, portType, alignment) :
+            new DataMapperPortModel(`${str} : ${property.type}`, portType, alignment);
+
+          this.addPort(port);
+          if (property.type === 'array' && property.items?.properties) {
+            processProperties(property.items.properties, i + 1);
+            for (let j = i; j < myArray.length; j++) {
+              myArray.length = i + 1;
             }
           }
-          else {
-            port = new DataMapperPortModel(`${propertyName} : ${property.type}`, portType, alignment);
-            this.addPort(port);
+          if (property.properties) {
+            processProperties(property.properties, i + 1);
+            for (let j = i; j < myArray.length; j++) {
+              myArray.length = i + 1;
+            }
           }
+          if (property.definitions){
+            processProperties(property.definitions, i + 1);
+            for (let j = i; j < myArray.length; j++) {
+              myArray.length = i + 1;
+            }
+          } 
         }
       }
-      processProperties(this.schema);
+      processProperties(this.schema, i);
     }
   }
 

@@ -17,7 +17,14 @@
  *
  */
 
-import { datahandle } from "./datahandle";
+/*
+Description:
+This file is used to save the contents taken from the data model, i.e. links, nodes and ports.
+Two seperate arrays are used, one to record the name of nodes and node ID
+and the other to record the name of nodes, ID and ports.
+*/
+
+import { datahandle } from "./dataHandle";
 import { DataModel } from "./models";
 
 export function transformData(transformedData: DataModel[]): any[] {

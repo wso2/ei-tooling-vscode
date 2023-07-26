@@ -20,11 +20,11 @@
 import * as vscode from 'vscode';
 import { readdirSync } from "fs";
 import { join } from "path";
-import DMCFile from "./DMCFileGenerator";
 import datamapperFileUpload from "./datamapperFileUpload";
 import datamapperSerialization from './datamapperSerialization';
 import registryProject from './registryProject';
 import datamapperDeserialization from './datamapperDeserialization';
+import DMCFile from './DMCFileGenerator';
 
 // datamapper vscode panel entry component.
 export default class dataMapper {

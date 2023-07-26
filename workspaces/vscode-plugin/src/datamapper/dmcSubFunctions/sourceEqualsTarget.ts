@@ -17,22 +17,20 @@
  *
  */
 
+/*
+This action will include the content to be written to right hand side of the string,
+to be added to the input DMC file.
+*/
+
 import datamapperFileUpload from "../datamapperFileUpload";
 import { portOutput } from "./portOutput";
-import { trimTheStringFromColumnToEnd, trimTheStringUptoColon } from "./trimTheString";
+import { trimTheStringUptoColon } from "./trimTheString";
 
-export function outputDMC(sourcePortPortID: {}, targetPortNodeID: {}, targetPortPortID: {}, targetPortID: {}): string {
-    let arrayOutput = datamapperFileUpload.arrayOutput;
-    let e: string = "";
-    let f: string = "";
-    for (let row of arrayOutput) {
-        let outputPort = trimTheStringUptoColon(sourcePortPortID);
-        if (outputPort.endsWith(row[1])) {
-            f = row[0];
-            row[2] = true;
-        }
-    }
-    switch (targetPortNodeID) {
+export function sourceEqualsTarget(targetPortPortID: {}, targetPortNodeID: {}, targetPortID: {}): string {
+    let arrayInput = datamapperFileUpload.arrayInput;
+    let string = "";
+    let action = targetPortNodeID;
+    switch (action) {
         case "Split":
         case "Concat":
         case "StartsWith":
@@ -62,16 +60,17 @@ export function outputDMC(sourcePortPortID: {}, targetPortNodeID: {}, targetPort
         case "Replace":
         case "SubString":
         case "IfElse":
-            e = portOutput(targetPortNodeID, targetPortID, targetPortPortID);
+            string = portOutput(action, targetPortID, targetPortPortID);
+            break;
+        case "Input":
+            for (let row of arrayInput) {
+                if (trimTheStringUptoColon(targetPortPortID).endsWith(row[1])) {
+                    string = row[0];
+                }
+            }
             break;
         default:
-            if (trimTheStringFromColumnToEnd(sourcePortPortID) === trimTheStringFromColumnToEnd(targetPortPortID)) {
-                e = targetPortNodeID + "." + trimTheStringUptoColon(targetPortPortID);
-            } else if (trimTheStringFromColumnToEnd(sourcePortPortID).endsWith("string")) {
-                e = targetPortNodeID + "." + trimTheStringUptoColon(targetPortPortID) + ".toString()";
-            } else if (trimTheStringFromColumnToEnd(sourcePortPortID).endsWith("integer")) {
-                e = "parseInt((" + targetPortNodeID + "." + trimTheStringUptoColon(targetPortPortID) + "),10)";
-            }
+            string = `${targetPortNodeID}.${trimTheStringUptoColon(targetPortPortID)}`;
     }
-    return `${f} = ${e};`;
+    return string;
 }

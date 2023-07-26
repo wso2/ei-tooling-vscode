@@ -17,21 +17,36 @@
  *
  */
 
-export function arithmeticOperationPush2(row: any[], action: {}): string {
+export function StringOperationPush1(row: any[], action: {}): string {
     if (row[5] || !row[3]) {
         return "";
     }
     let f = "";
+    let g = ".toString().";
     switch (action) {
-        case "Round": f = `round`;
+        case "StringToBoolean":
+            f = row[2] + g + `toLowerCase() === true;`;
             break;
-        case "Floor": f = `floor`;
+        case "StringToNumber":
+            f = `Number(${row[2]});`;
             break;
-        case "Ceiling": f = `ceil`;
+        case "Trim":
+            f = row[2] + g + `trim();`;
             break;
-        case "AbsoluteValue": f = `abs`;
+        case "StringLength":
+            f = row[2] + g + `length();`;
+            break;
+        case "LowerCase":
+        case "UpperCase":
+            f = row[2] + g + `to${action}();`;
+            break;
+        case "Split":
+            f = row[2] + g + `split(" ");`;
+            break;
+        case "NOT":
+            f = `!${row[2]};`;
             break;
     }
     row[5] = true;
-    return row[4] + ` = Math.` + f + `(${row[2]});`;
+    return row[4] + " = " + f;
 }

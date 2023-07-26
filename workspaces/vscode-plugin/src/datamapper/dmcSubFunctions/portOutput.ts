@@ -17,6 +17,16 @@
  *
  */
 
+/*
+Description:
+This file is used to add value to the right hand side of the string, to be uploaded to the relevant input/output DMC file. 
+It checks whether the same node is available in the simplified_transformDataArray, before adding to the DMC file.
+This function is called from following two functions.
+1. outputDMC.ts
+2. sourceequalstarget.ts
+*/
+
+
 import DMCFile from "../DMCFileGenerator";
 import { trimTheStringUptoColon } from "./trimTheString";
 

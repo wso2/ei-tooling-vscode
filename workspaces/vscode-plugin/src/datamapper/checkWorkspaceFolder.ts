@@ -17,12 +17,9 @@
  *
  */
 
-export function trimTheStringUptoColon(str: {}): string {
-    let str1 = str.toString();
-    return str1.substring(0, str1.indexOf(" : "));
-}
+import { workspace } from 'vscode';
 
-export function trimTheStringFromColumnToEnd(str: {}): string {
-    let str1 = str.toString();
-    return str1.substring(str1.indexOf(" : ") + 1, str1.length);
+export function checkWorkspaceFolder(): any {
+    const workspaceFolder = workspace.workspaceFolders?.[0];
+    return workspaceFolder;
 }

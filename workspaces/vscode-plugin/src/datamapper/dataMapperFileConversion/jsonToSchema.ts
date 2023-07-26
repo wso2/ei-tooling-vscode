@@ -17,11 +17,10 @@
  *
  */
 
-export function modifyDMCArrays(outputDMCArray: string[], inputDMCArray: string[]): string {
-    console.log("OutputDMCArray....");
-    console.log(outputDMCArray);
-    const inputdmc = inputDMCArray.filter(j => j.length !== 0).join('\n');
-    const outputdmc = outputDMCArray.join('\n');
-    const content = `map_S_Input_S_Output = function(){\n\n${inputdmc}\n\n${outputdmc}\n\nreturn Output;\n}`;
-    return content;
+import toJsonSchema = require("to-json-schema");
+
+export function jsonToSchema(fileContent: string): toJsonSchema.JSONSchema3or4 {
+    var jsonObj = JSON.parse(fileContent);
+    var schema = toJsonSchema(jsonObj);
+    return schema;
 }

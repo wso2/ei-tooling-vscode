@@ -17,13 +17,21 @@
  *
  */
 
-import { StringOperationPush1 } from "./StringOperationPush1";
-import { andOrActionPush } from "./andOrActionPush";
-import { arithmeticOperationPush1 } from "./arithmeticOperationPush1";
-import { arithmeticOperationPush2 } from "./arithmeticOperationPush2";
+/** 
+* Description:
+* This file will add all the nodes and ports connected to each other, 
+* starting from the input node, using the breadth first search algorithm.
+* If all the ports connected to the input ports of a particular node are identified, 
+* then it will record the function performed by the respective node, to the DMCArray.
+*/
+
+import { StringOperationPush1 } from "./actionPush/StringOperationPush1";
+import { andOrActionPush } from "./actionPush/andOrActionPush";
+import { arithmeticOperationPush1 } from "./actionPush/arithmeticOperationPush1";
+import { arithmeticOperationPush2 } from "./actionPush/arithmeticOperationPush2";
 import { sourceEqualsTarget } from "./sourceEqualsTarget";
+import { StringOperationPush2 } from "./actionPush/StringOperationPush2";
 import DMCFile from "../DMCFileGenerator";
-import { StringOperationPush2 } from "./StringOperationPush2";
 
 export function inputDmcPush(sourcePortNodeID: {}, sourcePortPortID: {}, sourcePortID: {}, targetPortNodeID: {}, targetPortPortID: {}, targetPortID: {}): [string, string] {
     let e: string = "";

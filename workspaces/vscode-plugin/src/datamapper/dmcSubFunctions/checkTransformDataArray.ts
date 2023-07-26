@@ -16,6 +16,14 @@
  * under the License.
  *
  */
+
+/** 
+* Description:
+* This file is used to save all the nodes, node IDs and relevent ports.
+* Additionally, some boolean values are added to check whether the relevent node and ports are added to inputDMC array.
+* Once added, all false value will be converted to true
+* This will be used to prevent the repetition of nodes and ports in the inputDMC array.
+*/
 export function checkTransformDataArray(actionnode: any, actionID: any, i: any, transformDataArray: any[][]): any[] {
     if (transformDataArray.filter(item => item[1] === actionID).length !== 0) {
         return [];

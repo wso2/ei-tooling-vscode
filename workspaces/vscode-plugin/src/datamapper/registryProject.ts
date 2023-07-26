@@ -17,39 +17,37 @@
  *
  */
 
-import { FileType, Uri,workspace } from 'vscode';
+import { FileType, Uri, workspace } from 'vscode';
 import { join } from 'path';
-import { checkWorkSpaceFolder } from './checkWorkSpaceFolder';
+import { checkWorkspaceFolder } from './checkWorkspaceFolder';
 
 // Checking if the registry proect folder name given by user is in the workspace
 export default class registryProject {
 
-    public static getRegistryFolder(registryName:string):Uri{
-        var currentFolder = checkWorkSpaceFolder();
-        var registryFolderPathUri :  Uri = Uri.parse("");     
+  public static getRegistryFolder(registryName: string): Uri {
+    var currentFolder = checkWorkspaceFolder();
+    var registryFolderPathUri: Uri = Uri.parse("");
+    if (currentFolder && registryName.length > 0) {
+      var folderPath = currentFolder.uri.fsPath;
+      var folderUri = Uri.file(folderPath);
+      var registryFolderPath = join(folderPath, registryName);
+      var registryResourcePath = join(registryFolderPath, 'Registry Resources View');
+      registryFolderPathUri = Uri.file(registryFolderPath);
 
-       console.log("REGISTRY NAME : ",registryName);
-        if (currentFolder && registryName.length>0) {
-          var folderPath = currentFolder.uri.fsPath;
-          var folderUri = Uri.file(folderPath);
-          var registryFolderPath = join(folderPath, registryName);
-          var registryResourcePath = join(registryFolderPath,'Registry Resources View');
-          registryFolderPathUri = Uri.file(registryFolderPath);
+      workspace.fs.readDirectory(folderUri).then(entries => {
+        console.log("all projects : ", entries);
+        var matchingFolders = entries.filter(entry => {
+          return entry[1] === FileType.Directory && entry[0] === registryName;
+        });
 
-          workspace.fs.readDirectory(folderUri).then(entries => {
-            console.log("all projects : ",entries);
-              var matchingFolders = entries.filter(entry => {
-                return entry[1] === FileType.Directory && entry[0] === registryName;
-              });
-    
-              if (matchingFolders.length <= 0) {
-                workspace.fs.createDirectory(registryFolderPathUri);
-                workspace.fs.createDirectory(Uri.file(registryResourcePath));
-              } 
-            });
-        } 
-        return registryFolderPathUri;
+        if (matchingFolders.length <= 0) {
+          workspace.fs.createDirectory(registryFolderPathUri);
+          workspace.fs.createDirectory(Uri.file(registryResourcePath));
+        }
+      });
     }
+    return registryFolderPathUri;
+  }
 
 }
 

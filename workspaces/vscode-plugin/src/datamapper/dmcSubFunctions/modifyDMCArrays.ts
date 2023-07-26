@@ -17,13 +17,14 @@
  *
  */
 
-export function andOrActionPush(row: any[], action: {}): string {
-    if (!row[5] || !row[3] || row[7]) {
-        return "";
-    }
-    let f = "";
-    let g = action === "OR" ? "||" : "&";
-    f = `${row[6]} = ${row[2]} ${g} ${row[4]};`
-    row[7] = true;
-    return f;
+/** 
+* Description:
+* This will modify the content taken from inputDMC and outputDMC arrays, and will modify and return the content to be written to the DMC file.
+*/
+
+export function modifyDMCArrays(outputDMCArray: string[], inputDMCArray: string[]): string {
+    const inputdmc = inputDMCArray.filter(j => j.length !== 0).join('\n');
+    const outputdmc = outputDMCArray.join('\n');
+    const content = `map_S_Input_S_Output = function(){\n\n${inputdmc}\n\n${outputdmc}\n\nreturn Output;\n}`;
+    return content;
 }
