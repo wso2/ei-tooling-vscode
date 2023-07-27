@@ -87,7 +87,7 @@ export const DataMapperLabelWidget: React.FunctionComponent<DataMapperLabelWidge
 
     const elements: React.ReactNode[] = [
         (
-            <div key="configure">
+            <div key="configure" style={{position:'fixed',top:`${midY}px`,left:`${midX}px`}}>
                 <div className={classes.container}>
                     {deleteInProgress ? (
                         <></>) : (

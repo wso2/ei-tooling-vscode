@@ -27,7 +27,7 @@ This function is called from following two functions.
 */
 
 
-import DMCFile from "../DMCFileGenerator";
+import DMCFile from "../dmcFileGenerator";
 import { trimTheStringUptoColon } from "./trimTheString";
 
 export function portOutput(action: {}, targetPortID: {}, targetPortPortID: {}): string {

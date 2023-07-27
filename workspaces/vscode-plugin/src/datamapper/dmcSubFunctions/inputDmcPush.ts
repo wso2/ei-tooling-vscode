@@ -31,7 +31,7 @@ import { arithmeticOperationPush1 } from "./actionPush/arithmeticOperationPush1"
 import { arithmeticOperationPush2 } from "./actionPush/arithmeticOperationPush2";
 import { sourceEqualsTarget } from "./sourceEqualsTarget";
 import { StringOperationPush2 } from "./actionPush/StringOperationPush2";
-import DMCFile from "../DMCFileGenerator";
+import DMCFile from "../dmcFileGenerator";
 
 export function inputDmcPush(sourcePortNodeID: {}, sourcePortPortID: {}, sourcePortID: {}, targetPortNodeID: {}, targetPortPortID: {}, targetPortID: {}): [string, string] {
     let e: string = "";

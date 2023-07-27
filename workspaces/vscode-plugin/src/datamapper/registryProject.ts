@@ -35,7 +35,6 @@ export default class registryProject {
       registryFolderPathUri = Uri.file(registryFolderPath);
 
       workspace.fs.readDirectory(folderUri).then(entries => {
-        console.log("all projects : ", entries);
         var matchingFolders = entries.filter(entry => {
           return entry[1] === FileType.Directory && entry[0] === registryName;
         });

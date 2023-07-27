@@ -22,8 +22,6 @@
 * This file takes care of adding the nodes and ports connected to each other, excluding the output node and ports.
 */
 
-
-
 import DMCFile from "../DMCFileGenerator";
 import { inputDmcPush } from "./inputDmcPush";
 import { DataModel } from "./models";

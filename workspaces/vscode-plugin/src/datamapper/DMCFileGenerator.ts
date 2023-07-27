@@ -24,7 +24,7 @@ import { modifyDMCArrays } from './dmcSubFunctions/modifyDMCArrays';
 import { transformData } from './dmcSubFunctions/transformData';
 import { DataModel } from './dmcSubFunctions/models';
 import { checkWorkspaceFolder } from './checkWorkspaceFolder';
-import { createOutputDmcArray } from './dmcSubFunctions/createoutputDmcArray';
+import { createOutputDmcArray } from './dmcSubFunctions/createOutputDmcArray';
 import { createInputDmcArray } from './dmcSubFunctions/createinputDmcArray';
 
 // DMC file generation entry component.
@@ -33,13 +33,14 @@ export default class DMCFile {
 	// Two seperate Arrays are declared to record the nodes and links in the order they are added to the canvas
 	static simplified_transformDataArray: any[][];
 	static simplified_inputQueueArray1: any[][];
+	
 
 	public static fileCreation(linkData: [], registryFolderPath: vscode.Uri, projectName: string) {
 
 		// Below is the model received from the canvas
 		const transformedData: DataModel[] = linkData;
 		var workspaceFolder = checkWorkspaceFolder();
-
+		
 		if (workspaceFolder) {
 			this.simplified_transformDataArray = [];
 			this.simplified_inputQueueArray1 = [];
@@ -65,7 +66,7 @@ export default class DMCFile {
 			// The DMC file is created in the registry folder of the project
 			const fileName = `${projectName}.dmc`
 			var filePath = path.join(registryFolderPath.fsPath, fileName);
-
+			
 			fs.writeFile(filePath, content, (err) => {
 				if (err) {
 					vscode.window.showErrorMessage('Unable to create file: ' + err.message);
