@@ -47,6 +47,7 @@ import { SYNAPSE_LANGUAGE_ID, } from './language/languageUtils';
 import * as path from 'path';
 import { Utils } from './utils/Utils';
 import { TerminalModule } from './logging/TerminalModule';
+import dataMapper from './datamapper/datamapper';
 
 export let serverLaunched: boolean = false;
 let fileWatcherCreated: boolean = false;
@@ -247,6 +248,9 @@ function registerSynapseCommands(context: ExtensionContext) {
     }));
     context.subscriptions.push(commands.registerCommand("wso2ei.car.create.zip", async () => {
         await createProjectFromCar();
+    }));
+    context.subscriptions.push(commands.registerCommand("wso2ei.datamapper.view", async (projectName,registryName) => {
+        await dataMapper.render(context.extensionPath,projectName,registryName);
     }));
 }
 

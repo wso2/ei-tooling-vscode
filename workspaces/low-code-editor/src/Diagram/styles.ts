@@ -167,6 +167,12 @@ export const useStyles = makeStyles((theme: Theme) =>
             position: "fixed",
             top: '4.1rem',
             zIndex: 3
+        },
+        formSpacing : {
+            paddingBottom : '10px'
+        },
+        formLabel : {
+            color :'blue'
         }
     }),
 );

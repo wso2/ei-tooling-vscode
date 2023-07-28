@@ -17,11 +17,11 @@
  *
  */
 
-import {ExtendedLangClient} from "../extended-language.client";
+import { ExtendedLangClient } from "../extended-language.client";
 import {
     commands,
     Disposable,
-    ExtensionContext, Position, Range, TextDocumentShowOptions,
+    ExtensionContext, FileType, Position, Range, TextDocumentShowOptions,
     Uri,
     ViewColumn,
     WebviewPanel,
@@ -29,14 +29,14 @@ import {
     workspace,
     WorkspaceEdit
 } from "vscode";
-import {DiagramOptions} from "./model";
-import {join, sep} from "path";
-import {WebViewRPCHandler} from "../rpc/handler";
-import {existsSync, readFileSync} from "fs";
-import {render} from "./renderer";
-import {getCommonWebViewOptions} from "../utils/webview-utils";
-import {WebViewMethod} from "../rpc/model";
-import {SYNAPSE_LANGUAGE_ID} from "../language/languageUtils";
+import { DiagramOptions } from "./model";
+import { sep } from "path";
+import { WebViewRPCHandler } from "../rpc/handler";
+import { existsSync, readFileSync } from "fs";
+import { render } from "./renderer";
+import { getCommonWebViewOptions } from "../utils/webview-utils";
+import { WebViewMethod } from "../rpc/model";
+import { SYNAPSE_LANGUAGE_ID } from "../language/languageUtils";
 
 let diagramElement: DiagramOptions | undefined = undefined;
 let langClient: ExtendedLangClient;
@@ -57,7 +57,7 @@ export function activate(extendedLangClient: ExtendedLangClient, context: Extens
         if (args.length > 0) {
             path = args[0];
         } else {
-            if(window.activeTextEditor) {
+            if (window.activeTextEditor) {
                 path = window.activeTextEditor.document.uri.fsPath;
             } else {
                 path = '';
@@ -81,7 +81,7 @@ export function activate(extendedLangClient: ExtendedLangClient, context: Extens
 }
 
 export async function showDiagramEditor(startLine: number, startColumn: number, filePath: string,
-                                        isCommand: boolean = false): Promise<void> {
+    isCommand: boolean = false): Promise<void> {
 
     const editor = window.activeTextEditor;
     if (isCommand) {
@@ -140,6 +140,7 @@ class DiagramPanel {
     private constructor(panel: WebviewPanel) {
         this.webviewPanel = panel;
         this.update();
+        this._setWebviewMessageListener();
         this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
     }
 
@@ -233,7 +234,46 @@ class DiagramPanel {
         }
         this.webviewPanel.title = title;
     }
+
+    public getAllCurrentRegistryProjects() : any{
+        var currentFolder = workspace.workspaceFolders?.[0];
+        if (currentFolder) {
+            var folderPath = currentFolder.uri.fsPath;
+            var folderUri = Uri.file(folderPath);
+            
+            workspace.fs.readDirectory(folderUri).then(entries => {
+                var folders = entries.filter(entry => entry[1] === FileType.Directory);
+                var folderNames = folders.map(folder => folder[0]);
+    
+                const message = { command: 'registryResource', data: folderNames};
+                this.webviewPanel.webview.postMessage(message);
+            });
+        } 
+    }
+
+    private _setWebviewMessageListener() {
+        this.webviewPanel.webview.onDidReceiveMessage(
+            (message: any) => {
+                const command = message.command;
+                switch (command) {
+                    case "dataMapperView":
+                        {
+                            commands.executeCommand("wso2ei.datamapper.view",message.projectName,message.registryName);
+                            break;
+                        }
+                    case "currentRegistryprojects":
+                        {
+                           
+                            this.getAllCurrentRegistryProjects();
+                            break;
+                        }
+                }
+            },
+            undefined,
+        );
+    }
 }
+
 
 function getCurrentFileName(): string | undefined {
     if (!diagramElement || !diagramElement!.fileUri) {
