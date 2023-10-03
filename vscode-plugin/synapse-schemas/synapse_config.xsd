@@ -35,6 +35,7 @@
     <xs:include schemaLocation="task.xsd" />
     <xs:include schemaLocation="template.xsd" />
     <xs:include schemaLocation="registry.xsd" />
+    <xs:include schemaLocation="mediators/mediators.xsd" />
 
     <xs:element name="definitions" type="Definition">
         <xs:annotation>
@@ -68,4 +69,3 @@
         </xs:choice>
     </xs:complexType>
 </xs:schema>
-
