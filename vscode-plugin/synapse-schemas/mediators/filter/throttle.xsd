@@ -24,7 +24,9 @@
         targetNamespace="http://ws.apache.org/ns/synapse" 
         xmlns="http://ws.apache.org/ns/synapse">
 
-    <xs:import namespace="http://schemas.xmlsoap.org/ws/2004/09/policy" />
+    <xs:import
+        namespace="http://schemas.xmlsoap.org/ws/2004/09/policy"
+        schemaLocation="http://schemas.xmlsoap.org/ws/2004/09/policy/ws-policy.xsd"/>
 
 
     <xs:include schemaLocation="../mediators.xsd" />
